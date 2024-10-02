@@ -7,6 +7,8 @@ const {
   //   updateWorkout
 } = require("../controllers/userController");
 
+const authController = require("../controllers/authController");
+
 const router = express.Router();
 
 // GET all workouts
@@ -15,8 +17,9 @@ router.get("/", getUsers);
 // GET a single workout
 router.get("/:id", getUser);
 
-// POST a new workout
-router.post("/", createEvent);
+// POST a new user
+router.post("/signup", authController.signup);
+router.post("/login", authController.login);
 
 // // DELETE a workout
 // router.delete('/:id', deleteWorkout)

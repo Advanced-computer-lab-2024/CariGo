@@ -1,16 +1,17 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
+const bcrypt = require("bcryptjs");
+
 const experienceSchema = require("./Experience");
 const activitySchema = require("./Activity");
 // const productSchema = require("./Product");
-const schema = mongoose.Schema;
 
 const userSchema = new mongoose.Schema(
   {
     username: {
       type: String,
       required: true,
-      minLength: 4,
+      minLength: 2,
       maxLength: 15,
     },
     email: {
@@ -23,7 +24,7 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       required: [true, "Please provide a password!"],
-      minlength: 8,
+      minlength: 6,
       select: false,
     },
     passwordConfirm: {
@@ -37,7 +38,7 @@ const userSchema = new mongoose.Schema(
         message: "Passwords do not match",
       },
     },
-    roles: {
+    role: {
       type: String,
       enum: [
         "Admin",
@@ -55,6 +56,7 @@ const userSchema = new mongoose.Schema(
     DOB: {
       type: Date,
     },
+    job: String,
     wallet: {
       type: Number,
       default: 0.0,
@@ -91,7 +93,6 @@ const userSchema = new mongoose.Schema(
     },
     about: {
       type: String,
-      required: [true, "Please add the Company info"],
     },
     isActive: {
       type: Boolean,
@@ -176,6 +177,6 @@ userSchema.methods.createPasswordResetToken = function () {
   return resetToken;
 };
 
-const Users = mongoose.model("User", userSchema, "User");
+const User = mongoose.model("User", userSchema, "User");
 
-module.exports = Users;
+module.exports = User;
