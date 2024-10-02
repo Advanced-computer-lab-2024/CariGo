@@ -1,15 +1,16 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
-
+const experienceSchema = require("./Experience");
+const activitySchema = require("./Activity");
+const productSchema = require("./Product");
 const schema = mongoose.Schema;
-
 
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
     required: true,
     minLength: 4,
-    minLength: 15,
+    maxLength: 15,
   },
   email: {
     type: String,
@@ -90,21 +91,21 @@ const userSchema = new mongoose.Schema({
     type: [activitySchema],
     default: undefined,
   },
-  about:{
+  about: {
     type: String,
-    required: [true, "Please add the Company info"]
+    required: [true, "Please add the Company info"],
   },
   isActive: {
     type: Boolean,
     default: true,
   },
-  verified:{
+  verified: {
     type: Boolean,
-    default: false
+    default: false,
   },
-  activityGuests:{
+  activityGuests: {
     type: Number,
-    default: 0
+    default: 0,
   },
   refreshToken: String,
   passwordChangedAt: Date,
@@ -137,7 +138,6 @@ userSchema.pre("save", function (next) {
   this.passwordChangedAt = Date.now() - 1000;
   next();
 });
-
 
 userSchema.methods.correctPassword = async function (
   enteredPassword,
@@ -176,10 +176,6 @@ userSchema.methods.createPasswordResetToken = function () {
   return resetToken;
 };
 
-const Users = mongoose.model("User", userSchema);
+const Users = mongoose.model("User", userSchema, "User");
 
 module.exports = Users;
-
-
-
-
