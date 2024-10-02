@@ -1,22 +1,22 @@
-const express = require('express')
+const express = require("express");
 const {
-  getUsers, 
-//   getWorkout, 
-//   createWorkout, 
-//   deleteWorkout, 
-//   updateWorkout
-} = require('../controllers/userController')
+  getUsers,
+  getUser,
+  createEvent,
+  //   deleteWorkout,
+  //   updateWorkout
+} = require("../controllers/userController");
 
-const router = express.Router()
+const router = express.Router();
 
 // GET all workouts
-router.get('/', getUsers)
+router.get("/", getUsers);
 
-// // GET a single workout
-// router.get('/:id', getWorkout)
+// GET a single workout
+router.get("/:id", getUser);
 
-// // POST a new workout
-// router.post('/', createWorkout)
+// POST a new workout
+router.post("/", createEvent);
 
 // // DELETE a workout
 // router.delete('/:id', deleteWorkout)
@@ -24,4 +24,4 @@ router.get('/', getUsers)
 // // UPDATE a workout
 // router.patch('/:id', updateWorkout)
 
-module.exports = router
+module.exports = router;

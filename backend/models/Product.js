@@ -1,34 +1,41 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
+const ratingSchema = require("./Rating");
+const reviewSchema = require("./Review");
 
 const schema = mongoose.Schema;
-const ratingSchema = require('./Rating')
-const reviewSchema = require('./Review')
 
-const productSchema = new schema({
-    author:{
-     type:mongoose.Schema.ObjectId,
-     ref:'User'
+const productSchema = new schema(
+  {
+    author: {
+      type: mongoose.Schema.ObjectId,
+      ref: "User", // Refers to the 'User' model
     },
-    name:{
-     type:String
+    name: {
+      type: String,
+      required: true, // Make it required if it's necessary
     },
-    picture:{
-        type:String // ??
+    picture: {
+      type: String, // You can specify a URL or file path for the picture
     },
-    price:{
-        type:Number,
-                default: 0.0
+    price: {
+      type: Number,
+      default: 0.0, // Default price is 0.0
     },
-    description:String,
-    ratings:{
-        type:[ratingSchema], default: undefined
+    description: {
+      type: String,
     },
-    reviews: {
-        type:[reviewSchema], default: undefined
+    ratings: {
+      type: [mongoose.Schema.ObjectId], // Array of embedded rating documents
+      ref: "Rating",
     },
-    quantity:{
-        type: Number
-    }
-  })
+    quantity: {
+      type: Number,
+      required: true, // Make it required if necessary
+    },
+  },
+  { timestamps: true }
+);
 
-const product = mongoose.model('Product', productSchema);
+const Product = mongoose.model("Product", productSchema);
+
+module.exports = Product; // Exporting the Product model
