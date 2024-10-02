@@ -8,10 +8,10 @@ const itinerarySchema = new schema({
     type: mongoose.Schema.ObjectId,
     ref: "User",
   },
-  activities: {
-    type: [activitySchema],
+  activities: [{
+    type: mongoose.Schema.ObjectId,
     default: undefined,
-  },
+  }],
   language: String,
   price: Number,
   location: {

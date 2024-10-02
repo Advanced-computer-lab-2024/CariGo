@@ -61,10 +61,13 @@ const userSchema = new mongoose.Schema(
       type: Number,
       default: 0.0,
     },
-    experience: {
-      type: [experienceSchema],
-      default: undefined,
-    },
+    experience: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: "Experience", // References the 'Rating' model
+        default: [],
+      },
+    ],
     sellerName: {
       type: String,
     },
@@ -87,10 +90,13 @@ const userSchema = new mongoose.Schema(
     hotline: {
       type: Number,
     },
-    activities: {
-      type: [activitySchema],
-      default: undefined,
-    },
+    activities: [
+      {
+        type: mongoose.Schema.ObjectId,
+        default: undefined,
+        default: [],
+      },
+    ],
     about: {
       type: String,
     },
