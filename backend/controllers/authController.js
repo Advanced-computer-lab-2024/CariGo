@@ -36,7 +36,7 @@ exports.signup = catchAsync(async (req, res, next) => {
   console.log(userType);
 
   let newUserData;
-  if (userType === "Advertizer") {
+  if (userType === "Advertiser") {
     newUserData = {
       username: req.body.username,
       email: req.body.email,
