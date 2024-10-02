@@ -2,116 +2,116 @@ const mongoose = require("mongoose");
 const validator = require("validator");
 const experienceSchema = require("./Experience");
 const activitySchema = require("./Activity");
-const productSchema = require("./Product");
+// const productSchema = require("./Product");
 const schema = mongoose.Schema;
 
-const userSchema = new mongoose.Schema({
-  username: {
-    type: String,
-    required: true,
-    minLength: 4,
-    maxLength: 15,
-  },
-  email: {
-    type: String,
-    required: [true, "Please provide your email!"],
-    unique: true,
-    lowercase: true,
-    validate: [validator.isEmail, "Please enter a valid email"],
-  },
-  password: {
-    type: String,
-    required: [true, "Please provide a password!"],
-    minlength: 8,
-    select: false,
-  },
-  passwordConfirm: {
-    type: String,
-    required: [true, "Please confirm your password!"],
-    validate: {
-      //ONLY WORKS ON CREATE AND SAVE!!
-      validator: function (el) {
-        return el === this.password;
-      },
-      message: "Passwords do not match",
+const userSchema = new mongoose.Schema(
+  {
+    username: {
+      type: String,
+      required: true,
+      minLength: 4,
+      maxLength: 15,
     },
-  },
-  roles: {
-    type: [String],
-    enum: [
-      "Admin",
-      "Tourist",
-      "Tour_Guide",
-      "Advertiser",
-      "Seller",
-      "Tourism_Governer",
-    ],
-  },
-  mobile_number: {
-    type: String,
-  },
-  nationality: String,
-  DOB: {
-    type: Date,
-  },
-  wallet: {
-    type: Number,
-    default: 0.0,
-  },
-  experience: {
-    type: [experienceSchema],
-    default: undefined,
-  },
-  sellerName: {
-    type: String,
-  },
-  description: {
-    type: String,
-  },
-  products: {
-    type: [productSchema],
-  },
-  website_link: {
-    type: String,
-    validate: {
-      validator: function (url) {
-        return validator.isURL(url, {
-          protocols: ["http", "https"],
-          require_protocol: true,
-          require_valid_protocol: true,
-        });
-      },
-      message: "Please enter a valid URL",
+    email: {
+      type: String,
+      required: [true, "Please provide your email!"],
+      unique: true,
+      lowercase: true,
+      validate: [validator.isEmail, "Please enter a valid email"],
     },
+    password: {
+      type: String,
+      required: [true, "Please provide a password!"],
+      minlength: 8,
+      select: false,
+    },
+    passwordConfirm: {
+      type: String,
+      required: [true, "Please confirm your password!"],
+      validate: {
+        //ONLY WORKS ON CREATE AND SAVE!!
+        validator: function (el) {
+          return el === this.password;
+        },
+        message: "Passwords do not match",
+      },
+    },
+    roles: {
+      type: String,
+      enum: [
+        "Admin",
+        "Tourist",
+        "Tour_Guide",
+        "Advertiser",
+        "Seller",
+        "Tourism_Governer",
+      ],
+    },
+    mobile_number: {
+      type: String,
+    },
+    nationality: String,
+    DOB: {
+      type: Date,
+    },
+    wallet: {
+      type: Number,
+      default: 0.0,
+    },
+    experience: {
+      type: [experienceSchema],
+      default: undefined,
+    },
+    sellerName: {
+      type: String,
+    },
+    description: {
+      type: String,
+    },
+    website_link: {
+      type: String,
+      validate: {
+        validator: function (url) {
+          return validator.isURL(url, {
+            protocols: ["http", "https"],
+            require_protocol: true,
+            require_valid_protocol: true,
+          });
+        },
+        message: "Please enter a valid URL",
+      },
+    },
+    hotline: {
+      type: Number,
+    },
+    activities: {
+      type: [activitySchema],
+      default: undefined,
+    },
+    about: {
+      type: String,
+      required: [true, "Please add the Company info"],
+    },
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
+    verified: {
+      type: Boolean,
+      default: false,
+    },
+    activityGuests: {
+      type: Number,
+      default: 0,
+    },
+    refreshToken: String,
+    passwordChangedAt: Date,
+    passwordResetToken: String,
+    passwordResetExpires: Date,
   },
-  hotline: {
-    type: Number,
-  },
-  activities: {
-    type: [activitySchema],
-    default: undefined,
-  },
-  about: {
-    type: String,
-    required: [true, "Please add the Company info"],
-  },
-  isActive: {
-    type: Boolean,
-    default: true,
-  },
-  verified: {
-    type: Boolean,
-    default: false,
-  },
-  activityGuests: {
-    type: Number,
-    default: 0,
-  },
-  refreshToken: String,
-  passwordChangedAt: Date,
-  passwordResetToken: String,
-  passwordResetExpires: Date,
-});
+  { timestamps: true }
+);
 
 /////// Middleware to hash passwords before saving /////////
 
