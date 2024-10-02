@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 
 const schema = mongoose.Schema;
-const ratingSchema = require('../model/Rating')
-const reviewSchema = require('../model/Review')
+const ratingSchema = require('./Rating')
+const reviewSchema = require('./Review')
 
 const productSchema = new schema({
     author:{
