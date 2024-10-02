@@ -2,7 +2,7 @@ const express = require("express");
 const {
   getUsers,
   getUser,
-  createEvent,
+  updateUserData,
   //   deleteWorkout,
   //   updateWorkout
 } = require("../controllers/userController");
@@ -16,12 +16,14 @@ router.get("/", getUsers);
 router.get("/:id", getUser);
 
 // POST a new workout
-router.post("/", createEvent);
+
 
 // // DELETE a workout
 // router.delete('/:id', deleteWorkout)
 
 // // UPDATE a workout
 // router.patch('/:id', updateWorkout)
+
+router.patch("/update/:userId",updateUserData);
 
 module.exports = router;

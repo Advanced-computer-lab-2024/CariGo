@@ -86,7 +86,7 @@ const userSchema = new mongoose.Schema(
       type: Number,
     },
     activities: {
-      type: [activitySchema],
+      type: [mongoose.Schema.ObjectId],
       default: undefined,
     },
     about: {

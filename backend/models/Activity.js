@@ -66,5 +66,5 @@ const activitySchema = new schema({
     ref: 'Review',
   },
 });
-// const activity = mongoose.model("Activity", activitySchema);
-module.exports = activitySchema;
+const activity = mongoose.model("Activity", activitySchema);
+module.exports = activity;
