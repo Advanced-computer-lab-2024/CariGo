@@ -1,14 +1,14 @@
 const express = require("express");
-const {
-  getUsers,
-  getUser,
-  createEvent,
-  //   deleteWorkout,
-  //   updateWorkout
-} = require("../controllers/userController");
+const { createItinerary,
+  createvintage,
+    createProduct,
+    createActivity
+} = require("../controllers/eventController");
 
 const router = express.Router();
 
-router.post('/createEvent', createEvent);
-
+router.post('/createItinerary', createItinerary);
+router.post('/createvintage', createvintage);
+router.post('/createProduct', createProduct);
+router.post('/createActivity', createActivity);
 module.exports = router;
