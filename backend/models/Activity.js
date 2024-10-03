@@ -24,18 +24,8 @@ const activitySchema = new schema({
   },
   locations: [
     {
-      type: {
-        type: String,
-        default: "Point",
-        enum: ["Point"], // Ensure the value is always 'Point'
-      },
-      coordinates: {
-        type: [Number], // Format: [longitude, latitude]
-        required: true,
-      },
-      address: String,
-      description: String,
-      day: Number,
+      lon: String,
+      lan: String
     },
   ],
   price: {

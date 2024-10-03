@@ -16,7 +16,7 @@ const app = require("./app");
 const uri = process.env.DATABASE;
 console.log(uri);
 mongoose
-  .connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
+  .connect(uri)
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.log("MongoDB connection error:", err));
 
