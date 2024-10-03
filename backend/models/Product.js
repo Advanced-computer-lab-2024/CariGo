@@ -24,10 +24,13 @@ const productSchema = new schema(
     description: {
       type: String,
     },
-    ratings: {
-      type: [mongoose.Schema.ObjectId], // Array of embedded rating documents
-      ref: "Rating",
-    },
+    ratings: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: "Rating", // References the 'Rating' model
+        default: [],
+      },
+    ],
     quantity: {
       type: Number,
       required: true, // Make it required if necessary
