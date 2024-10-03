@@ -44,10 +44,10 @@ const activitySchema = new schema({
       max: Number,
     },
   },
-  category: {
-     type: mongoose.Schema.ObjectId,
-        ref: 'Category',
-  },
+  // category: {
+  //    type: mongoose.Schema.ObjectId,
+  //       ref: 'Category',
+  // },
   discount: {
     type: Number,
     default: 0,
