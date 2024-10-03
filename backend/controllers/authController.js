@@ -15,7 +15,6 @@ const signToken = (id) => {
 };
 
 exports.signup = catchAsync(async (req, res, next) => {
-  let newUser = User;
   const userType = req.body.role;
 
   if (userType === "admin" || userType === "Tourism_Governer") {
@@ -74,7 +73,7 @@ exports.signup = catchAsync(async (req, res, next) => {
     passwordChangedAt: Date.now(),
   };
 
-  newUser = await User.create(newUserData);
+  const newUser = await User.create(newUserData);
 
   createSendToken(newUser, 201, res);
 });
