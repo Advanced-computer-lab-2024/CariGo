@@ -26,92 +26,6 @@ const getUser = async (req, res) => {
   res.status(200).json(user);
 };
 
-const createEvent = async (req, res) => {
-  
-  const userType = req.body.roles;
-  console.log(userType);
-  if (userType == "advertizer") {
-    const {
-      author,
-      start_date,
-      end_date,
-      time,
-      location,
-      price,
-      category,
-      discount,
-      tags,
-      isOpened,
-      ratings,
-      reviews,
-    } = req.body;
-    try {
-      const activity = await activityModel.create({
-        author,
-        start_date,
-        end_date,
-        time,
-        location,
-        price,
-        category,
-        discount,
-        tags,
-        isOpened,
-        ratings,
-        reviews,
-      });
-      res.status(200).json(activity);
-    } catch (error) {
-      res.status(400).json({ error: error.message }); //res.status(500).json({error:couldn't create a new ${targetedCollection}});
-    }
-  } else if (userType == "seller") {
-    console.log("inside seller");
-    const authorId = new mongoose.Types.ObjectId(req.body.author); // Convert to ObjectId
-    const {
-      name,
-      picture,
-      price,
-      description,
-      ratings,
-      reviews,
-      quantity,
-    } = req.body;
-    try {
-      const product = await productModel.create({
-        author: authorId,  // Use the ObjectId for author,
-        name,
-        picture,
-        price,
-        description,
-        ratings,
-        reviews,
-        quantity,
-      });
-      res.status(200).json(product);
-    } catch (error) {
-      res.status(400).json({ error: error.message });
-    }
-  } else if (userType == "tour guide") {
-    const authorId = mongoose.Types.ObjectId(req.body.author); // Convert to ObjectId
-    const { activities, language, price, location, availability } =
-      req.body;
-    try {
-      const itinerary = await itineraryModel.create({
-        author: authorId,  // Use the ObjectId for author
-        activities,
-        language,
-        price,
-        location,
-        availability,
-      });
-      res.status(200).json(itinerary);
-    } catch (error) {
-      res.status(400).json({ error: error.message });
-    }
-  } else {
-    return res.status(400).json({ error: "Invalid user type" });
-  }
-};
 // create a new user
 // const createWorkout = async (req, res) => {
 //   const {title, load, reps} = req.body
@@ -135,10 +49,32 @@ const createEvent = async (req, res) => {
 
 // }
 
+const updateUserData = (req, res) => {
+  const update = req.body; 
+  console.log(update);
+
+  if (mongoose.Types.ObjectId.isValid(req.params.userId)) {
+    console.log("inside the update");
+    User
+      .updateOne({ _id: new mongoose.Types.ObjectId(req.params.userId) }, { $set: update })
+      .then((result) => {
+        res.status(201).json(result);
+      })
+      .catch((error) => {
+        res.status(500).json({ error: "couldn't update user data" });
+      });
+  } else {
+    res
+      .status(500)
+      .json({ error: "couldn't update user data, user id invalid" });
+  }
+};
+
+
 module.exports = {
   getUsers,
   getUser,
-  createEvent,
+  updateUserData
   //   deleteWorkout,
   //   updateWorkout
 };

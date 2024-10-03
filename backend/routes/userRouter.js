@@ -2,7 +2,7 @@ const express = require("express");
 const {
   getUsers,
   getUser,
-  createEvent,
+  updateUserData,
   //   deleteWorkout,
   //   updateWorkout
 } = require("../controllers/userController");
@@ -26,5 +26,7 @@ router.post("/login", authController.login);
 
 // // UPDATE a workout
 // router.patch('/:id', updateWorkout)
+
+router.patch("/update/:userId",updateUserData);
 
 module.exports = router;
