@@ -1,5 +1,5 @@
 body {
-  background-image: url('path/to/your/image.jpg'); /* Path to your image */
+  background-image: url('../pictures/0ae1e586-0d84-43c3-92d4-924c13c01059.jpeg'); /* Path to your image */
     background-size: cover; /* Cover the entire viewport */
     background-position: center; /* Center the image */
     background-repeat: no-repeat; /* Prevent tiling */
@@ -98,7 +98,7 @@ header div.container{
   top: 5%; /* Move down 50% from the top */
   left: 5%;
   text-align: right;
-  text-align: bottom;
+  margin-top:25px;
   margin-right :  200px;
 }
 
@@ -109,10 +109,10 @@ nav a{
   padding: 0px;
   margin: 20px;
   top: 50px;
+  transition: transform 0.3s ease;
 }
 
 nav a:hover{
-  font-size: 105%;
-  font-weight: 110%;
-  transition: font-size 0.3s ease;
+  transform: scale(1.1); 
+    font-weight: 600;
 }

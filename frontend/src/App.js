@@ -11,7 +11,7 @@ function App() {
       id={'29148012'}
       title={'Activity Title'}
       description={'Description of the activity'}
-      img = {"./The Great Wall of China _ National Geographic….jpeg"}
+      img = {'../pictures/0ae1e586-0d84-43c3-92d4-924c13c01059.jpeg'}
       />
      
     </div>
