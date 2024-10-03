@@ -7,7 +7,7 @@ const ratingModel = require("../models/Rating");
 const reviewModel = require("../models/Review");
 const tagModel = require("../models/Tag");
 const userModel = require("../models/User");
-// const VintageModel = require("../models/Vintage");
+const VintageModel = require("../models/Vintage");
 const mongoose = require("mongoose");
 
 const createItinerary = async (req, res) => {
@@ -47,7 +47,7 @@ const createvintage = async (req, res) => {
   }
   const role = userType.roles.toLowerCase();
   console.log(role);
-  if (userType == "tourism_governer") {
+  if (role == "tourism_governer") {
     const {
       author,
       name,
@@ -58,6 +58,7 @@ const createvintage = async (req, res) => {
       tags,
       opening_hours,
     } = req.body;
+    console.log("ana gowa el if")
     try {
       const vintage = await VintageModel.create({
         author,
@@ -159,7 +160,7 @@ const createActivity = async (req, res) => {
 };
 
 const readAllItineraries = async (req,res)=>{
-  const itineraries = await itineraryModel.find(sort({ createdAt: -1 }));
+  const itineraries = await itineraryModel.find().sort({ createdAt: -1 });
 
   return res.status(200).json(itineraries);
 }
@@ -171,7 +172,7 @@ const updateItinerary = async (req,res)=>{
   if (mongoose.Types.ObjectId.isValid(req.params.itineraryId)) {
     console.log("inside the update");
     itineraryModel
-      .updateOne({ _id: new mongoose.Types.ObjectId(req.params.userId) }, { $set: update })
+      .updateOne({ _id: new mongoose.Types.ObjectId(req.params.itineraryId) }, { $set: update })
       .then((result) => {
         res.status(201).json(result);
       })
@@ -190,7 +191,7 @@ const readSingleItinerary= (req,res) => {
   if (mongoose.Types.ObjectId.isValid(req.params.itineraryId)) {
     console.log("inside the the read");
     itineraryModel
-      .findOne({ _id: new mongoose.Types.ObjectId(req.params.userId) }).sort({ createdAt: -1 })
+      .findOne({ _id: new mongoose.Types.ObjectId(req.params.itineraryId) }).sort({ createdAt: -1 })
       .then((result) => {
         res.status(201).json(result);
       })
@@ -205,7 +206,7 @@ const readSingleItinerary= (req,res) => {
 }
 
 const readAllVintages = async (req,res)=>{
-  const historicPlaces = await VintageModel.find(sort({ createdAt: -1 }));
+  const historicPlaces = await VintageModel.find().sort({ createdAt: -1 });
 
   return res.status(200).json(historicPlaces);
 }
@@ -217,7 +218,7 @@ const updateVintage = async (req,res)=>{
   if (mongoose.Types.ObjectId.isValid(req.params.vintageId)) {
     console.log("inside the update");
     VintageModel
-      .updateOne({ _id: new mongoose.Types.ObjectId(req.params.userId) }, { $set: update })
+      .updateOne({ _id: new mongoose.Types.ObjectId(req.params.vintageId) }, { $set: update })
       .then((result) => {
         res.status(201).json(result);
       })
@@ -236,7 +237,7 @@ const readSingleVintage= (req,res) => {
   if (mongoose.Types.ObjectId.isValid(req.params.vintageId)) {
     console.log("inside read vintage");
     VintageModel
-      .findOne({ _id: new mongoose.Types.ObjectId(req.params.userId) }).sort({ createdAt: -1 })
+      .findOne({ _id: new mongoose.Types.ObjectId(req.params.vintageId) }).sort({ createdAt: -1 })
       .then((result) => {
         res.status(201).json(result);
       })
@@ -252,7 +253,7 @@ const readSingleVintage= (req,res) => {
 
 
 const readActivities = async (req,res)=>{
-  const activities = await activityModel.find(sort({ createdAt: -1 }));
+  const activities = await activityModel.find().sort({ createdAt: -1 });
 
   return res.status(200).json(activities);
 }
