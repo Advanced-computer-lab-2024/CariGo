@@ -112,52 +112,52 @@ const createProduct = async (req, res) => {
   }
 };
 
-const createActivity = async (req, res) => {
-  const userId = new mongoose.Types.ObjectId(req.body.author); // Convert to ObjectId
-  const userType = await userModel.findOne({ _id: userId }); // Project only 'roles' field
-  if (!userType) {
-    return res.status(404).json({ message: "user not found" });
-  }
-  const role = userType.roles.toLowerCase();
-  console.log(role);
-  if (role == "advertiser") {
-    const authorId = new mongoose.Types.ObjectId(req.body.author); // Convert to ObjectId
-    const {
-      start_date,
-      end_date,
-      time,
-      location,
-      price,
-      category,
-      discount,
-      tags,
-      isOpened,
-      ratings,
-      reviews,
-    } = req.body;
-    try {
-      const activity = await activityModel.create({
-        author: authorId,
-        start_date,
-        end_date,
-        time,
-        location,
-        price,
-        category,
-        discount,
-        tags,
-        isOpened,
-        ratings,
-        reviews,
-      });
-      res.status(200).json(activity);
-    } catch (error) {
-      res.status(400).json({ error: error.message }); //res.status(500).json({error:couldn't create a new ${targetedCollection}});
-    }
-  } else {
-    return res.status(400).json({ error: "Invalid user type" });
-  }
-};
+// const createActivity = async (req, res) => {
+//   const userId = new mongoose.Types.ObjectId(req.body.author); // Convert to ObjectId
+//   const userType = await userModel.findOne({ _id: userId }); // Project only 'roles' field
+//   if (!userType) {
+//     return res.status(404).json({ message: "user not found" });
+//   }
+//   const role = userType.roles.toLowerCase();
+//   console.log(role);
+//   if (role == "advertiser") {
+//     const authorId = new mongoose.Types.ObjectId(req.body.author); // Convert to ObjectId
+//     const {
+//       start_date,
+//       end_date,
+//       time,
+//       location,
+//       price,
+//       category,
+//       discount,
+//       tags,
+//       isOpened,
+//       ratings,
+//       reviews,
+//     } = req.body;
+//     try {
+//       const activity = await activityModel.create({
+//         author: authorId,
+//         start_date,
+//         end_date,
+//         time,
+//         location,
+//         price,
+//         category,
+//         discount,
+//         tags,
+//         isOpened,
+//         ratings,
+//         reviews,
+//       });
+//       res.status(200).json(activity);
+//     } catch (error) {
+//       res.status(400).json({ error: error.message }); //res.status(500).json({error:couldn't create a new ${targetedCollection}});
+//     }
+//   } else {
+//     return res.status(400).json({ error: "Invalid user type" });
+//   }
+// };
 
 const readAllItineraries = async (req,res)=>{
   const itineraries = await itineraryModel.find().sort({ createdAt: -1 });
@@ -262,7 +262,7 @@ module.exports = {
     createItinerary,
     createvintage,
     createProduct,
-    createActivity,
+    // createActivity,
     readAllItineraries,
     readSingleItinerary,
     updateItinerary,

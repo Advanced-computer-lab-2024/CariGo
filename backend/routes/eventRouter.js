@@ -3,7 +3,7 @@ const {
   createItinerary,
   createvintage,
   createProduct,
-  createActivity,
+  // createActivity,
   readAllItineraries,
   readSingleItinerary,
   updateItinerary,
@@ -18,7 +18,7 @@ const router = express.Router();
 router.post('/createItinerary', createItinerary);
 router.post('/createvintage', createvintage);
 router.post('/createProduct', createProduct);
-router.post('/createActivity', createActivity);
+// router.post('/createActivity', createActivity);
 
 router.get('/readAllItineraries', readAllItineraries);
 router.get('/readSingleItinerary/:itineraryId', readSingleItinerary);
