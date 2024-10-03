@@ -5,6 +5,7 @@ const rateLimit = require('express-rate-limit');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const userRouter = require('./routes/userRouter.js');
+const {createActivity, getActivities, getActivity, deleteActivity, updateActivity}= require('./routes/activityRouter.js')
 const app = express();
 // LIMIT REQUESTS FROM SAME API
 const limiter = rateLimit({
@@ -23,6 +24,14 @@ app.use(bodyParser.json());
 app.use(mongoSanitize());
 // DATA SANITIZATION AGAINST XSS
 app.use(xss());
+
+app.use(express.json())
+app.post("/addActivity",createActivity);
+app.get('/Activities', getActivities);
+app.get('/Activity/:id', getActivity);
+app.put('/updateActivity/:id',updateActivity);
+app.delete("/delete/:id",deleteActivity);
+
 
 
 
