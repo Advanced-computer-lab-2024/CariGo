@@ -1,15 +1,22 @@
-const userModel = require('./models/User');
-const activityModel = require('./models/Activity.js');
-const activityModel = require('./models/Activity.js');
-const { default: mongoose } = require('mongoose');
+const express = require('express');
+const activityController = require('../controllers/activityController');
+const authController = require('../controllers/authController');
 
-const createActivity = async (req, res) => {
 
-    const { author, start_date, authoend_date, duration, locations, price, catagory, discount, tags, isOpened, reviews } = req.body;
-    try {
-        const activity = await activityModel.create({ author, start_date, authoend_date, duration, locations, price, catagory, discount, tags, isOpened, reviews });
-        res.status(200).json(activity)
-    } catch (error) {
-        res.status(400).json({ error: error.message })
-    }
-}
+
+const router = express.Router();
+
+
+
+router.get('/', activityController.getActivities);
+
+router.get('/getOne/:id', activityController.getActivity);
+
+router.post('/createActivity',authController.protect, activityController.createActivity);
+
+router.patch('/updateActivity/:id',activityController.updateActivity);
+
+router.delete('/deleteActivity/:id', activityController.deleteActivity);
+
+
+module.exports = router;
