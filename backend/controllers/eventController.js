@@ -158,10 +158,115 @@ const createActivity = async (req, res) => {
   }
 };
 
+const readAllItineraries = async (req,res)=>{
+  const itineraries = await itineraryModel.find(sort({ createdAt: -1 }));
+
+  return res.status(200).json(itineraries);
+}
+
+const updateItinerary = async (req,res)=>{
+  const update = req.body; 
+  console.log(update);
+
+  if (mongoose.Types.ObjectId.isValid(req.params.itineraryId)) {
+    console.log("inside the update");
+    itineraryModel
+      .updateOne({ _id: new mongoose.Types.ObjectId(req.params.userId) }, { $set: update })
+      .then((result) => {
+        res.status(201).json(result);
+      })
+      .catch((error) => {
+        res.status(500).json({ error: "couldn't update itinerary data" });
+      });
+  } else {
+    res
+      .status(500)
+      .json({ error: "couldn't update user data, itinerary id invalid" });
+  }
+}
+
+const readSingleItinerary= (req,res) => {
+
+  if (mongoose.Types.ObjectId.isValid(req.params.itineraryId)) {
+    console.log("inside the the read");
+    itineraryModel
+      .findOne({ _id: new mongoose.Types.ObjectId(req.params.userId) }).sort({ createdAt: -1 })
+      .then((result) => {
+        res.status(201).json(result);
+      })
+      .catch((error) => {
+        res.status(500).json({ error: "couldn't get itinerary data" });
+      });
+  } else {
+    res
+      .status(500)
+      .json({ error: "couldn't get the itinerary data, itinerary id invalid" });
+  }
+}
+
+const readAllVintages = async (req,res)=>{
+  const historicPlaces = await VintageModel.find(sort({ createdAt: -1 }));
+
+  return res.status(200).json(historicPlaces);
+}
+
+const updateVintage = async (req,res)=>{
+  const update = req.body; 
+  console.log(update);
+
+  if (mongoose.Types.ObjectId.isValid(req.params.vintageId)) {
+    console.log("inside the update");
+    VintageModel
+      .updateOne({ _id: new mongoose.Types.ObjectId(req.params.userId) }, { $set: update })
+      .then((result) => {
+        res.status(201).json(result);
+      })
+      .catch((error) => {
+        res.status(500).json({ error: "couldn't update historical place data" });
+      });
+  } else {
+    res
+      .status(500)
+      .json({ error: "couldn't update historical place data, id invalid" });
+  }
+}
+
+const readSingleVintage= (req,res) => {
+
+  if (mongoose.Types.ObjectId.isValid(req.params.vintageId)) {
+    console.log("inside read vintage");
+    VintageModel
+      .findOne({ _id: new mongoose.Types.ObjectId(req.params.userId) }).sort({ createdAt: -1 })
+      .then((result) => {
+        res.status(201).json(result);
+      })
+      .catch((error) => {
+        res.status(500).json({ error: "couldn't get historical place data" });
+      });
+  } else {
+    res
+      .status(500)
+      .json({ error: "couldn't get historical place data, id invalid" });
+  }
+}
+
+
+const readActivities = async (req,res)=>{
+  const activities = await activityModel.find(sort({ createdAt: -1 }));
+
+  return res.status(200).json(activities);
+}
 
 module.exports = {
     createItinerary,
     createvintage,
     createProduct,
-    createActivity
+    createActivity,
+    readAllItineraries,
+    readSingleItinerary,
+    updateItinerary,
+    readAllVintages,
+    readSingleVintage,
+    updateVintage,
+    readActivities
 };
