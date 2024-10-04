@@ -1,7 +1,3 @@
-// const fs = require('fs');
-const multer = require("multer");
-const sharp = require("sharp");
-
 const Advertiser = require("./../models/User");
 const catchAsync = require("./../utils/catchAsync");
 const AppError = require("./../utils/appError");
