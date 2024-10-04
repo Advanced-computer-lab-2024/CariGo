@@ -35,10 +35,9 @@ const vintageSchema = new schema({
     ],
   },
   opening_hours: {
-    min: Number,
-    max: Number,
+    opening: String,
+    closing: String,
   },
 });
 const vintage = mongoose.model("Vintage", vintageSchema);
 module.exports = vintage;
-
