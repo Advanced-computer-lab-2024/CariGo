@@ -1,44 +1,42 @@
-import React from 'react';
+import React from 'react'; 
 import ProfileHeader from './components/ProfileHeader.js';
 import CompanyInfo from './components/CompanyInfo.js';
-import ProfileForm from './components/ProfileForm.js';
-import SideDrawer from './components/SideDrawer';
-import NavBar from './components/NavBar'
-import './styles/AdvertiserProfile.css';
+import CenteredTabs from './components/CenteredTabs'; // Import your CenteredTabs component
 
+import NavBar from './components/NavBar';
+import './styles/AdvertiserProfile.css'; // Custom styles
+import coverImage from './assets/header.png'; // Update with your cover image
+import logoImage from './assets/profile.png'; // Update with your logo image
 
 const AdvertiserProfile = () => {
   const profile = {
     companyName: 'CariGo',
+    userName: 'John Doe', // Add user name here
     website: 'https://carigo.com',
-    description: 'We are a logistics company revolutionizing transportation in the region.',
-    logo: 'https://via.placeholder.com/150', // Placeholder image for logo
-    coverImage: 'https://via.placeholder.com/800x200', // Placeholder image for cover photo
-  };
-
-  const handleFormSubmit = (updatedProfile) => {
-    // Handle form submission logic here
-    console.log('Profile updated:', updatedProfile);
+    description: 'We are a logistics company revolutionizing transportation in the region with innovative solutions and a commitment to excellence.',
+    logo: logoImage, // Use the imported logo
+    coverImage: coverImage, // Use the imported cover image
   };
 
   return (
     <div className="advertiser-profile">
       <NavBar />
-       <header>
-        <h1>Advertiser Profile</h1>
-        <SideDrawer /> {/* SideDrawer is included here */}
+      <header className="profile-header">
+        <ProfileHeader 
+          companyName={profile.companyName} 
+          coverImage={profile.coverImage} 
+          logo={profile.logo}
+        />
       </header>
-      <ProfileHeader 
-        companyName={profile.companyName} 
-        coverImage={profile.coverImage} 
-        logo={profile.logo}
-      />
       <div className="profile-content">
         <CompanyInfo 
+          userName={profile.userName} // Pass userName as a prop
           description={profile.description}
           website={profile.website}
-        />
-        <ProfileForm profile={profile} onSubmit={handleFormSubmit} />
+          companyName={profile.companyName} // Pass companyName as a prop
+          />
+        
+        <CenteredTabs /> {/* Add the CenteredTabs component here */}
       </div>
     </div>
   );
