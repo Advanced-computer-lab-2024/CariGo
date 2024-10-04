@@ -12,11 +12,15 @@ router.get('/', activityController.getActivities);
 
 router.get('/getOne/:id', activityController.getActivity);
 
-router.post('/createActivity',authController.protect, activityController.createActivity);
+router.post('/createActivity',[authController.protect ,authController.restrictTo("Advertiser")], activityController.createActivity);
 
 router.patch('/updateActivity/:id',activityController.updateActivity);
 
 router.delete('/deleteActivity/:id', activityController.deleteActivity);
+
+router.get('/sortActivityByPrice',activityController.sortActivities);
+
+
 
 
 module.exports = router;

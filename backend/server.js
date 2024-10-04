@@ -14,7 +14,7 @@ const app = require("./app");
 // const DB = process.env.DATABASE;
 
 const uri = process.env.DATABASE;
-console.log(uri);
+
 mongoose
   .connect(uri)
   .then(() => console.log("MongoDB connected"))

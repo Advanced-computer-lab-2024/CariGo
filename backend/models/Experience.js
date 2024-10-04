@@ -2,9 +2,6 @@ const mongoose = require("mongoose");
 
 const schema = mongoose.Schema;
 const experienceSchema = new schema({
-  years_of_experience: {
-    type: Number,
-  },
   company: {
     type: String,
     required: true,

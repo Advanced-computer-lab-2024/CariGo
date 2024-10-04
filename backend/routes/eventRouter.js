@@ -1,32 +1,61 @@
 const express = require("express");
-const {     
+const {
   createItinerary,
   createvintage,
   createProduct,
-  createActivity,
   readAllItineraries,
   readSingleItinerary,
   updateItinerary,
   readAllVintages,
   readSingleVintage,
   updateVintage,
-  readActivities
+  deleteItinerary,
+  deleteVintage,
 } = require("../controllers/eventController");
-
+const authController = require("../controllers/authController");
 const router = express.Router();
 
-router.post('/createItinerary', createItinerary);
-router.post('/createvintage', createvintage);
-router.post('/createProduct', createProduct);
-router.post('/createActivity', createActivity);
+// middleware for authentication
+router.use(authController.protect);
 
-router.get('/readAllItineraries', readAllItineraries);
-router.get('/readSingleItinerary/:itineraryId', readSingleItinerary);
-router.patch('/updateItinerary/:itineraryId', updateItinerary);
+// POST a new itinerary, vintage, and product, and create an activity if needed.
+router.post(
+  "/createItinerary",
+  authController.restrictTo("Tour_Guide"),
+  createItinerary
+);
+router.post(
+  "/createvintage",
+  authController.restrictTo("Tourism_Governer"),
+  createvintage
+);
+router.post(
+  "/createProduct",
+  authController.restrictTo("Seller", "Admin"),
+  createProduct
+);
+// router.post('/createActivity', createActivity);
 
-router.get('/readAllVintages', readAllVintages);
-router.get('/readSingleVintage/:vintageId', readSingleVintage);
-router.patch('/updateVintage/:vintageId', updateVintage);
+router.get(
+  "/readAllItineraries",
+  authController.restrictTo("Tour_Guide"),
+  readAllItineraries
+); // itineraries
+router.get("/readSingleItinerary/:itineraryId", readSingleItinerary); // itineraries/:id
+router.patch(
+  "/updateItinerary/:itineraryId",
+  authController.restrictTo("Tour_Guide"),
+  updateItinerary
+); // itineraries/:id
+router.delete(
+  "/itineraries/:id",
+  authController.restrictTo("Tour_Guide", "Admin"),
+  deleteItinerary
+);
 
-router.get('/readActivities', readActivities);
+router.get("/readAllVintages", readAllVintages);
+router.get("/readSingleVintage/:vintageId", readSingleVintage);
+router.patch("/updateVintage/:vintageId", updateVintage);
+router.delete("/deleteVintage/:id", deleteVintage);
+
 module.exports = router;
