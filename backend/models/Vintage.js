@@ -26,13 +26,8 @@ const vintageSchema = new schema({
     },
   },
   tags: {
-    type: [
-      {
-        type: mongoose.Schema.ObjectId,
-        ref: "Tag",
-        default: undefined,
-      },
-    ],
+    type: [String],
+    default:[],
   },
   opening_hours: {
     opening: String,
