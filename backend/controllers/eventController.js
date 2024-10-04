@@ -125,20 +125,7 @@ const createProduct = async (req, res) => {
   }
 };
 
-const readAllItineraries = async (req, res) => {
-  const { id } = req.query;
-  try {
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: "not a valid Id" });
-    }
-    const itineraries = await itineraryModel
-      .find({ author: id })
-      .sort({ createdAt: -1 });
-    res.status(200).json(itineraries);
-  } catch (error) {
-    res.status(500).json({ message: "server failed!" });
-  }
-};
+
 
 // const readAllItineraries = async (req,res)=>{
 //   const sort =req.query.sort || '-createdAt' ;
@@ -178,9 +165,17 @@ const updateItinerary = async (req, res) => {
       .status(500)
       .json({ error: "couldn't update user data, itinerary id invalid" });
   }
-}
+};
 
 
+const readAllItineraries = async (req, res) => {
+  const sort = req.query.sort || '-createdAt'; // Default to "-createdAt" if no parameter is provided
+
+  // Validate sortBy parameter
+  const validSortFields = ['price', '-createdAt'];
+  if (!validSortFields.includes(sort)) {
+    return res.status(400).json({ message:' Invalid sortBy parameter. Allowed values are: ${validSortFields.join(", ")}' });
+  }
 
   try {
     // Initialize APIFeatures with the query and query string
@@ -197,7 +192,8 @@ const updateItinerary = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: 'An error occurred', error });
   }
-;
+};
+
 
 const deleteItinerary = async (req, res) => {
   const { id } = req.params;
