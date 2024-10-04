@@ -180,14 +180,7 @@ const updateItinerary = async (req, res) => {
   }
 }
 
-const readAllItineraries = async (req, res) => {
-  const sort = req.query.sort || '-createdAt'; // Default to "-createdAt" if no parameter is provided
 
-  // Validate sortBy parameter
-  const validSortFields = ['price', '-createdAt'];
-  if (!validSortFields.includes(sort)) {
-    return res.status(400).json({ message: `Invalid sortBy parameter. Allowed values are: ${validSortFields.join(", ")}` });
-  }
 
   try {
     // Initialize APIFeatures with the query and query string
