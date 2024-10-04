@@ -13,21 +13,32 @@ const mongoose = require("mongoose");
 const createItinerary = async (req, res) => {
   const userId = new mongoose.Types.ObjectId(req.body.author); // Convert to ObjectId
   const userType = await userModel.findOne({ _id: userId }); // Project only 'roles' field
+  console.log(userType);
   if (!userType) {
     return res.status(404).json({ message: "user not found" });
   }
-  const role = userType.roles.toLowerCase();
+  const role = userType.role.toLowerCase();
   console.log(role);
   if (role == "tour_guide") {
     const authorId = new mongoose.Types.ObjectId(req.body.author); // Convert to ObjectId
-    const { activities, language, price, location, availability } = req.body;
+    const {
+      activities,
+      language,
+      price,
+      locations,
+      pick_up,
+      drop_off,
+      availability,
+    } = req.body;
     try {
       const itinerary = await itineraryModel.create({
         author: authorId, // Use the ObjectId for author
         activities,
         language,
         price,
-        location,
+        locations,
+        pick_up,
+        drop_off,
         availability,
       });
       res.status(200).json(itinerary);
@@ -45,7 +56,8 @@ const createvintage = async (req, res) => {
   if (!userType) {
     return res.status(404).json({ message: "user not found" });
   }
-  const role = userType.roles.toLowerCase();
+  console.log(userType);
+  const role = userType.role.toLowerCase();
   console.log(role);
   if (role == "tourism_governer") {
     const {
@@ -58,7 +70,7 @@ const createvintage = async (req, res) => {
       tags,
       opening_hours,
     } = req.body;
-    console.log("ana gowa el if")
+    console.log("ana gowa el if");
     try {
       const vintage = await VintageModel.create({
         author,
@@ -85,7 +97,7 @@ const createProduct = async (req, res) => {
   if (!userType) {
     return res.status(404).json({ message: "user not found" });
   }
-  const role = userType.roles.toLowerCase();
+  const role = userType.role.toLowerCase();
   console.log(role);
   if (role == "seller") {
     console.log("inside seller");
@@ -112,67 +124,37 @@ const createProduct = async (req, res) => {
   }
 };
 
-// const createActivity = async (req, res) => {
-//   const userId = new mongoose.Types.ObjectId(req.body.author); // Convert to ObjectId
-//   const userType = await userModel.findOne({ _id: userId }); // Project only 'roles' field
-//   if (!userType) {
-//     return res.status(404).json({ message: "user not found" });
-//   }
-//   const role = userType.roles.toLowerCase();
-//   console.log(role);
-//   if (role == "advertiser") {
-//     const authorId = new mongoose.Types.ObjectId(req.body.author); // Convert to ObjectId
-//     const {
-//       start_date,
-//       end_date,
-//       time,
-//       location,
-//       price,
-//       category,
-//       discount,
-//       tags,
-//       isOpened,
-//       ratings,
-//       reviews,
-//     } = req.body;
-//     try {
-//       const activity = await activityModel.create({
-//         author: authorId,
-//         start_date,
-//         end_date,
-//         time,
-//         location,
-//         price,
-//         category,
-//         discount,
-//         tags,
-//         isOpened,
-//         ratings,
-//         reviews,
-//       });
-//       res.status(200).json(activity);
-//     } catch (error) {
-//       res.status(400).json({ error: error.message }); //res.status(500).json({error:couldn't create a new ${targetedCollection}});
-//     }
-//   } else {
-//     return res.status(400).json({ error: "Invalid user type" });
-//   }
-// };
+const readAllItineraries = async (req, res) => {
+  const { id } = req.query;
+  try {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "not a valid Id" });
+    }
+    const itineraries = await itineraryModel
+      .find({ author: id })
+      .sort({ createdAt: -1 });
+    res.status(200).json(itineraries);
+  } catch (error) {
+    res.status(500).json({ message: "server failed!" });
+  }
+};
 
-const readAllItineraries = async (req,res)=>{
-  const itineraries = await itineraryModel.find().sort({ createdAt: -1 });
-
-  return res.status(200).json(itineraries);
-}
-
-const updateItinerary = async (req,res)=>{
-  const update = req.body; 
+const updateItinerary = async (req, res) => {
+  const update = req.body;
   console.log(update);
 
   if (mongoose.Types.ObjectId.isValid(req.params.itineraryId)) {
     console.log("inside the update");
+    const itinerary = await itineraryModel.findById(id);
+
+    if (!itinerary) {
+      return res.status(404).json({ error: "Itinerary not found" });
+    }
     itineraryModel
-      .updateOne({ _id: new mongoose.Types.ObjectId(req.params.itineraryId) }, { $set: update })
+      .updateOne(
+        { _id: new mongoose.Types.ObjectId(req.params.itineraryId) },
+        { $set: update }
+      )
       .then((result) => {
         res.status(201).json(result);
       })
@@ -184,14 +166,44 @@ const updateItinerary = async (req,res)=>{
       .status(500)
       .json({ error: "couldn't update user data, itinerary id invalid" });
   }
-}
+};
 
-const readSingleItinerary= (req,res) => {
+const deleteItinerary = async (req, res) => {
+  const { id } = req.params;
+  if (mongoose.Types.ObjectId.isValid(id)) {
+    const itinerary = await itineraryModel.findById(id);
 
+    if (!itinerary) {
+      return res.status(404).json({ error: "Itinerary not found" });
+    }
+
+    if (itinerary.isBooked || itinerary.booked_users.length > 0) {
+      return res
+        .status(403)
+        .json({ error: "Cannot delete itinerary with existing bookings" });
+    }
+    try {
+      const result = await itineraryModel.deleteOne({ _id: id });
+      res.status(200).json({ message: "Itinerary deleted successfully", result });
+    } catch (error) {
+      res.status(500).json({ error: "couldn't update itinerary data" });
+    }
+    
+    // .catch((error) => {
+    //   
+    // });
+    
+  } else {
+    res.status(500).json({ error: "Invalid user ID" });
+  }
+};
+
+const readSingleItinerary = (req, res) => {
   if (mongoose.Types.ObjectId.isValid(req.params.itineraryId)) {
     console.log("inside the the read");
     itineraryModel
-      .findOne({ _id: new mongoose.Types.ObjectId(req.params.itineraryId) }).sort({ createdAt: -1 })
+      .findOne({ _id: new mongoose.Types.ObjectId(req.params.itineraryId) })
+      .sort({ createdAt: -1 })
       .then((result) => {
         res.status(201).json(result);
       })
@@ -203,41 +215,57 @@ const readSingleItinerary= (req,res) => {
       .status(500)
       .json({ error: "couldn't get the itinerary data, itinerary id invalid" });
   }
-}
+};
 
-const readAllVintages = async (req,res)=>{
-  const historicPlaces = await VintageModel.find().sort({ createdAt: -1 });
+const readAllVintages = async (req, res) => {
+  const { id } = req.query;
+  try {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "not a valid Id" });
+    }
+    const historicPlaces = await VintageModel.find({ author: id }).sort({
+      createdAt: -1,
+    });
+    return res.status(200).json(historicPlaces);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "couldn't get the itinerary data, itinerary id invalid" });
+  }
+};
 
-  return res.status(200).json(historicPlaces);
-}
-
-const updateVintage = async (req,res)=>{
-  const update = req.body; 
+const updateVintage = async (req, res) => {
+  const update = req.body;
   console.log(update);
 
   if (mongoose.Types.ObjectId.isValid(req.params.vintageId)) {
     console.log("inside the update");
-    VintageModel
-      .updateOne({ _id: new mongoose.Types.ObjectId(req.params.vintageId) }, { $set: update })
+    VintageModel.updateOne(
+      { _id: new mongoose.Types.ObjectId(req.params.vintageId) },
+      { $set: update }
+    )
       .then((result) => {
         res.status(201).json(result);
       })
       .catch((error) => {
-        res.status(500).json({ error: "couldn't update historical place data" });
+        res
+          .status(500)
+          .json({ error: "couldn't update historical place data" });
       });
   } else {
     res
       .status(500)
       .json({ error: "couldn't update historical place data, id invalid" });
   }
-}
+};
 
-const readSingleVintage= (req,res) => {
-
+const readSingleVintage = (req, res) => {
   if (mongoose.Types.ObjectId.isValid(req.params.vintageId)) {
     console.log("inside read vintage");
-    VintageModel
-      .findOne({ _id: new mongoose.Types.ObjectId(req.params.vintageId) }).sort({ createdAt: -1 })
+    VintageModel.findOne({
+      _id: new mongoose.Types.ObjectId(req.params.vintageId),
+    })
+      .sort({ createdAt: -1 })
       .then((result) => {
         res.status(201).json(result);
       })
@@ -249,25 +277,17 @@ const readSingleVintage= (req,res) => {
       .status(500)
       .json({ error: "couldn't get historical place data, id invalid" });
   }
-}
-
-
-const readActivities = async (req,res)=>{
-  const activities = await activityModel.find().sort({ createdAt: -1 });
-
-  return res.status(200).json(activities);
-}
+};
 
 module.exports = {
-    createItinerary,
-    createvintage,
-    createProduct,
-    // createActivity,
-    readAllItineraries,
-    readSingleItinerary,
-    updateItinerary,
-    readAllVintages,
-    readSingleVintage,
-    updateVintage,
-    readActivities
+  createItinerary,
+  createvintage,
+  createProduct,
+  readAllItineraries,
+  readSingleItinerary,
+  updateItinerary,
+  readAllVintages,
+  readSingleVintage,
+  updateVintage,
+  deleteItinerary,
 };
