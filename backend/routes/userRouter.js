@@ -8,6 +8,7 @@ const {
 } = require("../controllers/userController");
 
 const authController = require("../controllers/authController");
+const joinController = require("../controllers/joiController");
 
 const router = express.Router();
 
@@ -15,7 +16,7 @@ const router = express.Router();
 router.get("/", getUsers);
 
 // POST a new user
-router.post("/signup", authController.signup);
+router.post("/signup",[joinController.validateUser] ,authController.signup);
 router.post("/login", authController.login);
 
 // UPDATE user data
