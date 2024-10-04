@@ -1,5 +1,6 @@
+
 body {
-  background-image: url('../pictures/0ae1e586-0d84-43c3-92d4-924c13c01059.jpeg'); /* Path to your image */
+  /* background-image: url('../../public/ca353eb3-2c2e-4c9a-bcea-615f80995fd2.jpeg'); //Path to your image */
     background-size: cover; /* Cover the entire viewport */
     background-position: center; /* Center the image */
     background-repeat: no-repeat; /* Prevent tiling */
@@ -11,6 +12,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* position: relative;  */
 }
 
 code {
@@ -23,44 +25,84 @@ code {
 } */
 
 
+.brief{
+  
+  /* background-color: antiquewhite; */
+  width:40%;
+  margin-left: 50%;
+  margin-top: -30%;
+}
+
+.tags{
+  /* background-color: aqua; */
+  margin-top: -10%;
+  margin-bottom: 20px; 
+  margin-left:10px;
+  height:100px;
+  display: flex;          /* Use flexbox layout */
+  flex-wrap: wrap;        /* Allow tags to wrap to the next line */
+  gap: 5px;
+                 /* Optional: add some space between the tags */
+}
+
+.tags .tag{
+  background-color: rgba(47, 94, 93, 0.549);
+  padding: 2px 4px;
+  margin:0px;
+ 
+  border-radius: 5px;
+  color:white;
+  align-items: center;
+  border-radius: 2px;
+  font-size: 12px ;
+  font-weight: 600;
+  height:18px;
+
+}
+
 .card-container{
  
   display: flex;
-  justify-content: center;
+  /* justify-content: center; */
   flex-wrap: wrap;
-  margin-top: 20px; 
+  /* margin-top: 20px;  */
 }
 .card{
-  
-  width: 70vw;
+  position: center;
+  width: 40vw;
   height: 350px;
   margin-right: 15vw;
-  background-color: rgb(209, 135, 31);
+  background-color: white;
   border-radius: 8px;
   overflow: hidden;
-  
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
   margin: 10px ;
   color: white;
 }
 .card img{
-  width: 40vw;
+  scale: 1;
+  width: 300px;
   height: 200px;
-  height: auto;
+  border-radius: 8px;
+  
 }
 .card-content{
   padding: 3px;
 }
 .card-content h3{  /* title */
-  margin-left: 55%;;
+   
   font-size: 28px;
-  margin-top: 40px;
-  /* margin-bottom: 8px; */
+  margin-left:10px;
+  color: rgb(7, 65, 75);
+  margin-top: 8px; 
 }
 .card-content p{
+  /* background-color: aquamarine; */
   color: #666;
-  font-size: 15px;
-  line-height: 1.3;
+  font-size: 18px;
+  margin-left:2%;
+  margin-top:40px;
+  height: 120px;
 }
 .card a{
   text-decoration: none;

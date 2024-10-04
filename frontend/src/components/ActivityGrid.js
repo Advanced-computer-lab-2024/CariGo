@@ -1,9 +1,9 @@
 import Activity from "./Activity";
 
-const activity_grid = ({ Activity }) => {
+const ActivityGrid = ({ Activities }) => {
   return (
     <div className="card-container">
-      {Activity.map((Activity) => (
+      {Activities.map((Activity) => (
         <Activity
           title={Activity.title}
           img={Activity.img}
@@ -22,4 +22,4 @@ const activity_grid = ({ Activity }) => {
 };
 
 
-export default activity_grid;
+export default ActivityGrid;
