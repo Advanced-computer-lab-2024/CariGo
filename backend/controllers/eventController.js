@@ -184,17 +184,33 @@ const deleteItinerary = async (req, res) => {
     }
     try {
       const result = await itineraryModel.deleteOne({ _id: id });
-      res.status(200).json({ message: "Itinerary deleted successfully", result });
+      res
+        .status(200)
+        .json({ message: "Itinerary deleted successfully", result });
     } catch (error) {
-      res.status(500).json({ error: "couldn't update itinerary data" });
+      res.status(500).json({ error: "couldn't delete itinerary data" });
     }
-    
-    // .catch((error) => {
-    //   
-    // });
-    
   } else {
-    res.status(500).json({ error: "Invalid user ID" });
+    res.status(500).json({ error: "Invalid itinerary ID" });
+  }
+};
+
+const deleteVintage = async (req, res) => {
+  const { id } = req.params;
+  if (mongoose.Types.ObjectId.isValid(id)) {
+    const vintage = await VintageModel.findById(id);
+
+    if (!vintage) {
+      return res.status(404).json({ error: "Vintage not found" });
+    }
+    try {
+      const result = await VintageModel.deleteOne({ _id: id });
+      res.status(200).json({ message: "Vintage deleted successfully", result });
+    } catch (error) {
+      res.status(500).json({ error: "couldn't delete vintage data" });
+    }
+  } else {
+    res.status(500).json({ error: "Invalid vintage ID" });
   }
 };
 
@@ -290,4 +306,5 @@ module.exports = {
   readSingleVintage,
   updateVintage,
   deleteItinerary,
+  deleteVintage,
 };
