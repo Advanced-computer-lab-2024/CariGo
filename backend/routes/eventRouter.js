@@ -10,20 +10,48 @@ const {
   readSingleVintage,
   updateVintage,
   deleteItinerary,
-  deleteVintage
+  deleteVintage,
 } = require("../controllers/eventController");
-
+const authController = require("../controllers/authController");
 const router = express.Router();
 
-router.post("/createItinerary", createItinerary);
-router.post("/createvintage", createvintage);
-router.post("/createProduct", createProduct);
+// middleware for authentication
+router.use(authController.protect);
+
+// POST a new itinerary, vintage, and product, and create an activity if needed.
+router.post(
+  "/createItinerary",
+  authController.restrictTo("Tour_Guide"),
+  createItinerary
+);
+router.post(
+  "/createvintage",
+  authController.restrictTo("Tourism_Governer"),
+  createvintage
+);
+router.post(
+  "/createProduct",
+  authController.restrictTo("Seller", "Admin"),
+  createProduct
+);
 // router.post('/createActivity', createActivity);
 
-router.get("/readAllItineraries", readAllItineraries); // itineraries
+router.get(
+  "/readAllItineraries",
+  authController.restrictTo("Tour_Guide"),
+  readAllItineraries
+); // itineraries
 router.get("/readSingleItinerary/:itineraryId", readSingleItinerary); // itineraries/:id
-router.patch("/updateItinerary/:itineraryId", updateItinerary); // itineraries/:id
-router.delete("/itineraries/:id", deleteItinerary);
+router.patch(
+  "/updateItinerary/:itineraryId",
+  authController.restrictTo("Tour_Guide"),
+  updateItinerary
+); // itineraries/:id
+router.delete(
+  "/itineraries/:id",
+  authController.restrictTo("Tour_Guide", "Admin"),
+  deleteItinerary
+);
 
 router.get("/readAllVintages", readAllVintages);
 router.get("/readSingleVintage/:vintageId", readSingleVintage);
