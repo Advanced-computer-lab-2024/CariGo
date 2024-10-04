@@ -118,8 +118,9 @@ exports.login = catchAsync(async (req, res, next) => {
   }
 
   // send token to client
-
+ 
   createSendToken(user, 200, res);
+
 });
 
 exports.protect = catchAsync(async (req, res, next) => {
@@ -208,7 +209,10 @@ exports.AcceptAdvertiser = catchAsync(async (req, res, next) => {
 
 exports.restrictTo = (...roles) => {
   return (req, res, next) => {
+    console.log(roles);
+    console.log(req.user.role);
     if (!roles.includes(req.user.role)) {
+
       return next(
         new AppError("You do not have permission to access this route ❌", 403)
       );
