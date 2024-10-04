@@ -25,7 +25,7 @@ const addAdmin = async (req, res) => {
             password, 
             passwordConfirm,
             about,
-            roles: 'Admin', 
+            role: 'Admin', 
         });
 
         res.status(201).json({ message: "Admin created successfully", newAdmin });
@@ -75,7 +75,7 @@ const addTourismGovernor = async (req, res) => {
             password,  
             passwordConfirm, 
             about,
-            roles: 'Tourism_Governer', 
+            role: 'Tourism_Governer', 
         });
 
         res.status(201).json({ message: "Tourism Governor created successfully", newGovernor });
