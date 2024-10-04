@@ -5,7 +5,8 @@ const rateLimit = require("express-rate-limit");
 const mongoSanitize = require("express-mongo-sanitize");
 const xss = require("xss-clean");
 const userRouter = require("./routes/userRouter.js");
-activityRouter = require("./routes/activityRouter.js");
+const advertiserRouter = require("./routes/avertiserRouter.js");
+const activityRouter = require("./routes/activityRouter.js");
 const eventRouter = require("./routes/eventRouter.js");
 const experienceRouter = require("./routes/experienceRouter");
 const app = express();
@@ -30,6 +31,7 @@ app.use(xss());
 /////////////////////// ROUTES /////////////////////////
 
 app.use("/cariGo/users", userRouter);
+app.use("/cariGo/advertiser", advertiserRouter);
 app.use("/cariGo/activity", activityRouter);
 app.use("/cariGo/Event", eventRouter)
 app.use("/cariGo/experience", experienceRouter);
