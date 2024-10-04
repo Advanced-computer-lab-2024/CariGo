@@ -1,5 +1,5 @@
 const express = require("express");
-const advertiserController = require("./../controllers/advertiserController");
+const touristController = require("./../controllers/touristController");
 const authController = require("./../controllers/authController");
 // const joinController = require("./../controllers/joiController");
 
@@ -15,24 +15,24 @@ const router = express.Router();
 
 router.get(
   "/MyAccount",
-  advertiserController.getMe,
-  advertiserController.getAdvertiser
+  touristController.getMe,
+  touristController.getTourist
 );
-router.patch("/updateMe", advertiserController.updateMe);
-router.delete("/deleteMe", advertiserController.deleteMe);
+router.patch("/updateMe", touristController.updateMe);
+router.delete("/deleteMe", touristController.deleteMe);
 
 
 //// After this is all is restricted to admin: ////
 router.use(authController.protect);
 router.use(authController.restrictTo("Admin"));
 
-router.route("/").get(advertiserController.getAllAdvertisers);
+router.route("/").get(touristController.updateMe);
 
 router
   .route("/:id")
-  .get(advertiserController.getAdvertiser)
-  .patch(advertiserController.updateAdvertiser)
-  .delete(advertiserController.deleteAdvertiser);
+  .get(touristController.getTourist)
+  .patch(touristController.updateTourist)
+  .delete(touristController.deleteTourist);
 
 
 module.exports = router;

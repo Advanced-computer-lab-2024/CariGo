@@ -1,18 +1,11 @@
-const Advertiser = require("./../models/User");
+const Tourist = require("./../models/User");
 const catchAsync = require("./../utils/catchAsync");
 const AppError = require("./../utils/appError");
 const factory = require("./handlerFactory");
-const { isActive } = require("./authController");
 
-exports.aliasTopAdvertisers = (req, res, next) => {
-  req.query.limit = "5";
-  req.query.sort = "-ratingsAverage,price";
-  next();
-};
+exports.getAllTourists = factory.getAllSpecificUsers("Tourist");
 
-exports.getAllAdvertisers = factory.getAllSpecificUsers("Advertiser");
-
-exports.getAdvertiser = factory.getOne(Advertiser, {});
+exports.getTourist = factory.getOne(Tourist, {});
 
 const filterObj = (obj, ...allowedFields) => {
   const newObj = {};
@@ -38,31 +31,9 @@ exports.updateMe = catchAsync(async (req, res, next) => {
     );
   }
 
-  // Filtered out unwanted fields names that are not allowed to be updated
-  const filteredBody = filterObj(req.body, "username", "email");
-
-  // Update user document
-  const updatedUser = await User.findByIdAndUpdate(req.user.id, filteredBody, {
-    new: true,
-    runValidators: true,
-  });
-
-  res.status(200).json({
-    status: "success",
-    data: {
-      user: updatedUser,
-    },
-  });
-});
-
-exports.updateAdvertiser = catchAsync(async (req, res, next) => {
-  // Give error if user POSTs password data
-  if (req.body.password || req.body.passwordConfirm) {
+  if (req.body.wallet) {
     return next(
-      new AppError(
-        "This route is not for password updates. Please use /updateMyPassword. 🔑🚫",
-        400
-      )
+      new AppError("You can't change your balance manualy. 🔑🚫", 400)
     );
   }
 
@@ -70,19 +41,15 @@ exports.updateAdvertiser = catchAsync(async (req, res, next) => {
   const filteredBody = filterObj(req.body, "username", "email");
 
   // Update user document
-  const updatedUser = await User.findByIdAndUpdate(
-    req.params.id,
-    filteredBody,
-    {
-      new: true,
-      runValidators: true,
-    }
-  );
+  const updatedTourist = await Tourist.findByIdAndUpdate(req.user.id, filteredBody, {
+    new: true,
+    runValidators: true,
+  });
 
   res.status(200).json({
     status: "success",
     data: {
-      user: updatedUser,
+      tourist: updatedTourist,
     },
   });
 });
@@ -96,7 +63,7 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.deleteAdvertiser = catchAsync(async (req, res, next) => {
+exports.deleteTourist = catchAsync(async (req, res, next) => {
   await User.findByIdAndUpdate(req.params.id, { isActive: false });
 
   res.status(204).json({
