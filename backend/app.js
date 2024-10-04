@@ -30,7 +30,7 @@ app.use(xss());
 
 app.use("/cariGo/users", userRouter);
 app.use("/cariGo/activity", activityRouter);
-app.use("/Event", eventRouter)
+app.use("/cariGo/Event", eventRouter)
 
 app.all("*", (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));

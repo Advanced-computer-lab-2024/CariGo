@@ -9,7 +9,8 @@ const {
   readAllVintages,
   readSingleVintage,
   updateVintage,
-  deleteItinerary
+  deleteItinerary,
+  deleteVintage
 } = require("../controllers/eventController");
 
 const router = express.Router();
@@ -27,5 +28,6 @@ router.delete("/itineraries/:id", deleteItinerary);
 router.get("/readAllVintages", readAllVintages);
 router.get("/readSingleVintage/:vintageId", readSingleVintage);
 router.patch("/updateVintage/:vintageId", updateVintage);
+router.delete("/deleteVintage/:id", deleteVintage);
 
 module.exports = router;
