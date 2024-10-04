@@ -1,0 +1,28 @@
+.company-info {
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    margin-bottom: 20px;
+  }
+  
+  .company-info h2 {
+    margin-bottom: 10px;
+    font-size: 20px;
+    font-weight: bold;
+  }
+  
+  .company-info p {
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+  
+  .company-info a {
+    font-size: 16px;
+    color: #0073b1;
+    text-decoration: none;
+  }
+  
+  .company-info a:hover {
+    text-decoration: underline;
+  }
+  
