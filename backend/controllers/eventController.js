@@ -9,6 +9,7 @@ const tagModel = require("../models/Tag");
 const userModel = require("../models/User");
 const VintageModel = require("../models/Vintage");
 const mongoose = require("mongoose");
+const APIFeatures = require('../utils/apiFeatures');
 
 const createItinerary = async (req, res) => {
   const userId = new mongoose.Types.ObjectId(req.body.author); // Convert to ObjectId
@@ -139,6 +140,17 @@ const readAllItineraries = async (req, res) => {
   }
 };
 
+// const readAllItineraries = async (req,res)=>{
+//   const sort =req.query.sort || '-createdAt' ;
+//   const validSortFields = [ "price",'-createdAt' ];
+//   if (!validSortFields.includes(sort)) {
+//     return res.status(400).json({ message: `Invalid sortBy parameter. Allowed values are: ${validSortFields.join(", ")}` });
+//   }
+//   const itineraries = await itineraryModel.find().sort(sort);
+
+//   return res.status(200).json(itineraries);
+// }
+
 const updateItinerary = async (req, res) => {
   const update = req.body;
   console.log(update);
@@ -165,6 +177,32 @@ const updateItinerary = async (req, res) => {
     res
       .status(500)
       .json({ error: "couldn't update user data, itinerary id invalid" });
+  }
+}
+
+const readAllItineraries = async (req, res) => {
+  const sort = req.query.sort || '-createdAt'; // Default to "-createdAt" if no parameter is provided
+
+  // Validate sortBy parameter
+  const validSortFields = ['price', '-createdAt'];
+  if (!validSortFields.includes(sort)) {
+    return res.status(400).json({ message: `Invalid sortBy parameter. Allowed values are: ${validSortFields.join(", ")}` });
+  }
+
+  try {
+    // Initialize APIFeatures with the query and query string
+    const features = new APIFeatures(itineraryModel.find(), req.query).filter();
+
+    // Apply sorting
+    const itineraries = await features.query.sort(sort);
+
+    if (!itineraries.length) {
+      return res.status(404).json({ message: 'No itineraries found' });
+    }
+
+    res.status(200).json(itineraries);
+  } catch (error) {
+    res.status(500).json({ message: 'An error occurred', error });
   }
 };
 
