@@ -1,8 +1,6 @@
 const mongoose = require("mongoose");
 
 const schema = mongoose.Schema;
-const activitySchema = require("./Activity");
-const locationSchema = require("./Location");
 const itinerarySchema = new schema({
   author: {
     type: mongoose.Schema.ObjectId,
@@ -45,6 +43,7 @@ const itinerarySchema = new schema({
     max: [5, "Rating must be below 5.0"],
     set: (val) => Math.round(val * 10) / 10, // Rounding ratings
   },
+  tags: { type: [String], default: [] },
 });
 const itinerary = mongoose.model("Itinerary", itinerarySchema);
 module.exports = itinerary;
