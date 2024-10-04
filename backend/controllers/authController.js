@@ -60,7 +60,29 @@ exports.signup = catchAsync(async (req, res, next) => {
       job: req.body.job,
       passwordChangedAt: Date.now(),
     };
-  } else {
+  } else if (userType === "Tour_Guide"){
+    newUserData = {
+      username: req.body.username,
+      email: req.body.email,
+      password: req.body.password,
+      passwordConfirm: req.body.passwordConfirm,
+      role: req.body.role,
+      mobile_number: req.body.mobile_number,
+      experience:[],
+      passwordChangedAt: Date.now(),
+    }
+  }else if(userType === "Seller"){
+    newUserData = {
+      username: req.body.username,
+      email: req.body.email,
+      password: req.body.password,
+      passwordConfirm: req.body.passwordConfirm,
+      role: req.body.role,
+      description: req.body.description,
+      passwordChangedAt: Date.now(),
+    }
+  }
+  else {
     // Handle other roles here or create a generic new user object
     newUserData = {
       ...req.body,
