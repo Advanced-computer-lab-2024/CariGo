@@ -26,28 +26,6 @@ const getUser = async (req, res) => {
   res.status(200).json(user);
 };
 
-// create a new user
-// const createWorkout = async (req, res) => {
-//   const {title, load, reps} = req.body
-
-//   // add to the database
-//   try {
-//     const workout = await Workout.create({ title, load, reps })
-//     res.status(200).json(workout)
-//   } catch (error) {
-//     res.status(400).json({ error: error.message })
-//   }
-// }
-
-// // delete a workout
-// const deleteWorkout = async (req, res) => {
-
-// }
-
-// // update a workout
-// const updateWorkout = async (req, res) => {
-
-// }
 
 const updateUserData = (req, res) => {
   const update = req.body; 
