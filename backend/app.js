@@ -7,6 +7,7 @@ const xss = require("xss-clean");
 const userRouter = require("./routes/userRouter.js");
 activityRouter = require("./routes/activityRouter.js");
 const eventRouter = require("./routes/eventRouter.js");
+const productRouter = require("./routes/productRouter.js");
 const app = express();
 // LIMIT REQUESTS FROM SAME API
 const limiter = rateLimit({
@@ -31,6 +32,7 @@ app.use(xss());
 app.use("/cariGo/users", userRouter);
 app.use("/cariGo/activity", activityRouter);
 app.use("/Event", eventRouter)
+app.use("/cariGo/products",productRouter)
 
 app.all("*", (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
