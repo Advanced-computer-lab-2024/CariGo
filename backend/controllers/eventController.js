@@ -197,7 +197,7 @@ const updateItinerary = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: 'An error occurred', error });
   }
-};
+;
 
 const deleteItinerary = async (req, res) => {
   const { id } = req.params;
