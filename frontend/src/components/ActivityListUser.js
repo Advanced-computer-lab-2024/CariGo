@@ -1,17 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import ActivityPost from "./ActivityPost.js";
 import { Grid } from '@mui/material';
-
+import { Box } from '@mui/material';
 
 export default function ActivityList({ActivityPosts}){
-    const [activities, setActivities] = useState([]);
+    const [activities, setActivities] = useState(null);
 
   useEffect(() => {
     // Fetch activities from the backend API
-    fetch('/cariGo/activities')
-      .then(response => response.json())
-      .then(data => setActivities(data))
-      .catch(error => console.error('Error fetching activities:', error));
+    const fetchActivities = async() =>{
+        const response = await fetch('/cariGo/activities');
+        const json= await response.json();
+
+        if(response.ok){
+            setActivities(json)
+        }    
+    }  
   }, []);
 
     return (
@@ -29,7 +33,7 @@ export default function ActivityList({ActivityPosts}){
                         category={activity.category}
                         discount={activity.discount}
                         isOpened={activity.isOpened}
-                        title={activity.title}
+                        title= {activity.title} 
                         tags={activity.tags}
                         description={activity.description}
                         img={activity.img}
@@ -37,5 +41,6 @@ export default function ActivityList({ActivityPosts}){
                 </Grid>
             ))}
         </Grid>
+        
     );
 };

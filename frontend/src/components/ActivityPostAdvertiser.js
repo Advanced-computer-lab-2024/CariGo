@@ -17,6 +17,9 @@ import { Chip } from '@mui/material';
 import PinDropIcon from '@mui/icons-material/PinDrop';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import SellIcon from '@mui/icons-material/Sell';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+
 
 
 
@@ -26,6 +29,15 @@ export default function ActivityPost({ author, img, start_date, end_date, durati
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
+  };
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
   };
 
   return (
@@ -76,7 +88,12 @@ export default function ActivityPost({ author, img, start_date, end_date, durati
           >
             <CardHeader
               avatar={<Avatar sx={{ bgcolor: red[500] }}>R</Avatar>}
-              
+              action={
+                <IconButton aria-label="settings">
+                    
+                  <MoreVertIcon />
+                </IconButton>
+              }
               title={
                 <Typography variant="h5" sx={{ width: '300px', fontWeight: 'bold', fontSize: '24px' }}>
                   {title}

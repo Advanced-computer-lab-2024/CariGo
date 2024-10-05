@@ -17,6 +17,13 @@ import { Chip } from '@mui/material';
 import PinDropIcon from '@mui/icons-material/PinDrop';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import SellIcon from '@mui/icons-material/Sell';
+import List from '@mui/material/List';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import Divider from '@mui/material/Divider';
+import InboxIcon from '@mui/icons-material/Inbox';
+import DraftsIcon from '@mui/icons-material/Drafts';
 
 
 
@@ -27,6 +34,7 @@ export default function ActivityPost({ author, img, start_date, end_date, durati
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
+  
 
   return (
     <Card
@@ -76,7 +84,11 @@ export default function ActivityPost({ author, img, start_date, end_date, durati
           >
             <CardHeader
               avatar={<Avatar sx={{ bgcolor: red[500] }}>R</Avatar>}
-              
+              action={
+                <IconButton aria-label="settings">
+                  <MoreVertIcon />
+                </IconButton>
+              }
               title={
                 <Typography variant="h5" sx={{ width: '300px', fontWeight: 'bold', fontSize: '24px' }}>
                   {title}

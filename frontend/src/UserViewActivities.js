@@ -8,8 +8,8 @@ import { Box } from '@mui/material';
 
 
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
+export default UserViewActivities =()=>{
+  return(
   <React.StrictMode>
     <Navbar/>
     <Box sx={{
@@ -31,13 +31,13 @@ root.render(
       marginLeft: '100px',
       '&::-webkit-scrollbar': {display: 'none',},
       }}> {/* Enable vertical scrolling only */}
-    <ActivityList 
-     />
+    {/* <ActivityList 
+     /> */}
   </Box>
   </Box>
   </React.StrictMode>
 );
-
+}
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals

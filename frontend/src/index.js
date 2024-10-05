@@ -10,14 +10,7 @@ import { Link } from 'react-router-dom';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-      <Router>
-      <Navbar/>
-      <Routes>
-        <Route path="/" element={<App />} />
-        <Route path="/activities" element={<ActivityList  />} /> {/* Route to your activity list */}
-      </Routes>
-    </Router>
-  
+      <App/>
   </React.StrictMode>
 );
 
