@@ -25,7 +25,18 @@ export default function ActivityList({ActivityPosts}){
         fetchActivities(); // Call the function to fetch activities
     }, []);
 
+    const StringDate = (date) => {
+        // Ensure date is a Date object
+        const d = new Date(date);
+        
+        // Get day, month, and year
+        const day = String(d.getDate()).padStart(2, '0'); // Pad with leading zero if needed
+        const month = String(d.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+        const year = d.getFullYear();
     
+        // Return formatted string
+        return `${day}/${month}/${year}`;
+    };
     
 
     return (
@@ -35,8 +46,8 @@ export default function ActivityList({ActivityPosts}){
                 <Grid size ={4} key={index}>
                     <ActivityPost
                         id={activity.id}
-                        start_date={activity.start_date}
-                        end_date={activity.end_date}
+                        start_date={StringDate(activity.start_date)}
+                        end_date={StringDate(activity.end_date)}
                         location={activity.location}
                         duration={activity.duration}
                         price= {activity.price}

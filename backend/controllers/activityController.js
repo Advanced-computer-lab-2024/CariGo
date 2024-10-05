@@ -24,6 +24,7 @@ const createActivity = async (req, res) => {
         if (!tagDoc) {
             return res.status(400).json({ error: 'Please choose a valid tag' });
         }
+        
 
         // Create the activity with the category and tag IDs
         const activity = await Activity.create({
