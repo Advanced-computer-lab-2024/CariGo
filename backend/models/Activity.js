@@ -40,12 +40,12 @@ const activitySchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    tags: [
+    tag: 
       {
         type: mongoose.Schema.ObjectId,
         ref: "Tag",
       },
-    ],
+    
     bookingOpened: {
       type: Boolean,
       default: true,
