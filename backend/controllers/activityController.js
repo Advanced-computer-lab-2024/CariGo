@@ -25,6 +25,7 @@ const deleteActivity = async (req, res) => {
         res.status(500).json({ message: 'Error deleting Activity', error });
     }
 };
+
 const getActivities = async (req, res) => {
     const today = new Date();
     const sortBy = req.query.sort || '-createdAt'; // Default to "-createdAt" if no parameter is provided

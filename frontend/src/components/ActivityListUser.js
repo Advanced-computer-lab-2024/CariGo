@@ -4,25 +4,35 @@ import { Grid } from '@mui/material';
 import { Box } from '@mui/material';
 
 export default function ActivityList({ActivityPosts}){
-    const [activities, setActivities] = useState(null);
+    const [activities, setActivities] = useState([]);
 
-  useEffect(() => {
-    // Fetch activities from the backend API
-    const fetchActivities = async() =>{
-        const response = await fetch('/cariGo/activities');
-        const json= await response.json();
+    useEffect(() => {
+        // Fetch activities from the backend API
+        const fetchActivities = async () => {
+            try {
+                const response = await fetch("http://localhost:4000/cariGo/activity");
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const json = await response.json();
+                console.log("Fetched activities:", json);
+                setActivities(json); // Set activities if response is okay
+            } catch (error) {
+                console.log('Error fetching activities:', error);
+            }
+        };
 
-        if(response.ok){
-            setActivities(json)
-        }    
-    }  
-  }, []);
+        fetchActivities(); // Call the function to fetch activities
+    }, []);
+
+    
+    
 
     return (
         <Grid container spacing={2} sx={{display: 'flex',
             flexDirection: 'column', width: '100vw'}}>
-            {activities.map(activity => (
-                <Grid size ={4} key={activity.id}>
+            {activities.map((activity,index) => (
+                <Grid size ={4} key={index}>
                     <ActivityPost
                         id={activity.id}
                         start_date={activity.start_date}
@@ -31,8 +41,9 @@ export default function ActivityList({ActivityPosts}){
                         duration={activity.duration}
                         price= {activity.price}
                         category={activity.category}
+                        rating={activity.ratingsAverage}
                         discount={activity.discount}
-                        isOpened={activity.isOpened}
+                        isOpened= {activity.isOpened==true? "open":"closed"}
                         title= {activity.title} 
                         tags={activity.tags}
                         description={activity.description}

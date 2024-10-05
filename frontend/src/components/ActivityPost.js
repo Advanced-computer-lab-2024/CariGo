@@ -21,7 +21,7 @@ import SellIcon from '@mui/icons-material/Sell';
 
 
 export default function ActivityPost({ author, img, start_date, end_date, duration, tags, description, title,location,
-    price,category,discount,isOpened}) {
+    price,category,discount,isOpened, rating}) {
   const [expanded, setExpanded] = React.useState(false);
 
   const handleExpandClick = () => {
@@ -53,7 +53,7 @@ export default function ActivityPost({ author, img, start_date, end_date, durati
         
         <CardMedia
           component="img"
-          image={img}
+          image={img || "/0ae1e586-0d84-43c3-92d4-924c13c01059.jpeg"}
           alt={title}
           sx={{
             width: '500px',
@@ -79,16 +79,16 @@ export default function ActivityPost({ author, img, start_date, end_date, durati
               
               title={
                 <Typography variant="h5" sx={{ width: '300px', fontWeight: 'bold', fontSize: '24px' }}>
-                  {title}
+                  TITLE
                 </Typography>
               }
             />
 
             {/* Tags below title */}
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginLeft: '15px' }}>
-              {tags.map((tag) => (
+              {/* {tags.map((tag) => (
                 <Chip key={tag} label={tag} sx={{backgroundColor :'#126782', color: 'white' }} />
-              ))}
+              )) || "tags"} */}
             </Box>
           </Box>
           
@@ -100,7 +100,7 @@ export default function ActivityPost({ author, img, start_date, end_date, durati
               marginLeft: '30px',
             }}
           >
-            <Typography sx={{fontSize: '16px'}}>{category}</Typography>
+            <Typography sx={{fontSize: '16px'}}>{""+rating+""}</Typography>
             <Box sx={{
                 fontSize: '16px',
                 backgroundColor: isOpened === 'open' ? '#70db70' : '#ff4d4d',
@@ -114,9 +114,10 @@ export default function ActivityPost({ author, img, start_date, end_date, durati
                 marginLeft: '6px',
                 marginBottom: '2px',
                 }}>
-                {isOpened}
+                {isOpened || "status"}
                 </Typography>
                 </Box>
+                <Typography sx={{fontSize: '16px'}}>{category}</Typography>
             <Typography sx={{fontSize: '16px'}}>From: {start_date}</Typography>
             <Typography sx={{fontSize: '16px'}}>To: {end_date}</Typography>
             <Box sx={{ display: 'flex',
@@ -135,13 +136,13 @@ export default function ActivityPost({ author, img, start_date, end_date, durati
                 margoinLeft:'-10px' ,
                 
                 }}>
-            <AttachMoneyIcon sx={{marginTop:'0px',}}/>
+            <AttachMoneyIcon />
             <Typography sx={{
                 marginLeft:'5px',
                 textDecoration: discount>0 ? 'line-through' : 'none',
                 color: discount>0 ? '#ff4d4d' : '#126782',
                 marginRight: '5px',
-            }}> {price}</Typography>
+            }}> {""+price+"" || 'no specified price'}</Typography>
             <Typography sx={{fontSize: '16px'}}> {discount >0?  (price -(price*discount/100)): ''}</Typography>
             <Box sx={{
                 backgroundColor : '#ff4d4d',
@@ -151,8 +152,10 @@ export default function ActivityPost({ author, img, start_date, end_date, durati
                 padding: '0px',
                 }}>
                   
-            <Typography sx={{marginLeft:'5px', color: "white"}}> -{discount}%</Typography>
-            <SellIcon  sx={{scale: '0.7', color: 'white', marginTop:'2px',marginLeft:'-2px'}}/>
+            <Typography sx={{marginLeft:'5px', color: "white"}}> {"-"+discount+"%" || ''}</Typography>
+            <SellIcon  sx={{scale: '0.7', color: 'white', marginTop:'2px',marginLeft:'-2px',
+                //do smth about display
+            }}/>
             </Box>
             </Box>
 
@@ -175,7 +178,7 @@ export default function ActivityPost({ author, img, start_date, end_date, durati
             top: '290px',
           }}
         >
-          {description}
+          DESCRIPTION
         </Typography>
       </CardContent>
 

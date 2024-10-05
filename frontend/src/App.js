@@ -12,7 +12,8 @@ function App() {
   return (
     <div className="App">
      
-      <ActivityPostAdvertiser/>
+     
+      <ActivityList/>
       
     </div>
   );

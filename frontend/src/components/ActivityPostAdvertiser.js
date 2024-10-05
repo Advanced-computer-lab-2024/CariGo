@@ -23,7 +23,7 @@ import MenuItem from '@mui/material/MenuItem';
 
 
 
-export default function ActivityPost({ author, img, start_date, end_date, duration, tags, description, title,location,
+export default function ActivityPostAdvertiser({ author, img, start_date, end_date, duration, tags, description, title,location,
     price,category,discount,isOpened}) {
   const [expanded, setExpanded] = React.useState(false);
 
@@ -103,9 +103,9 @@ export default function ActivityPost({ author, img, start_date, end_date, durati
 
             {/* Tags below title */}
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginLeft: '15px' }}>
-              {tags.map((tag) => (
+              {/* {tags.map((tag) => (
                 <Chip key={tag} label={tag} sx={{backgroundColor :'#126782', color: 'white' }} />
-              ))}
+              ))} */}
             </Box>
           </Box>
           
