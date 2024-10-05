@@ -8,12 +8,16 @@ const userRouter = require("./routes/userRouter.js");
 const advertiserRouter = require("./routes/avertiserRouter.js");
 const activityRouter = require("./routes/activityRouter.js");
 const eventRouter = require("./routes/eventRouter.js");
+const adminRouter= require("./routes/adminRouter.js");
 
 const productRouter = require("./routes/productRouter.js");
 
 const experienceRouter = require("./routes/experienceRouter");
 
+
 const app = express();
+
+
 // LIMIT REQUESTS FROM SAME API
 const limiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
@@ -39,11 +43,11 @@ app.use("/cariGo/advertiser", advertiserRouter);
 app.use("/cariGo/activity", activityRouter);
 
 app.use("/Event", eventRouter)
+app.use("/Admin",adminRouter);
 app.use("/cariGo/products",productRouter)
 
 app.use("/cariGo/Event", eventRouter)
 app.use("/cariGo/experience", experienceRouter);
-
 
 app.all("*", (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));

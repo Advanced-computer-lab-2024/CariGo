@@ -9,7 +9,7 @@ const tagModel = require("../models/Tag");
 const userModel = require("../models/User");
 const VintageModel = require("../models/Vintage");
 const mongoose = require("mongoose");
-const APIFeatures = require('../utils/apiFeatures');
+const APIFeatures = require("../utils/apiFeatures");
 
 const createItinerary = async (req, res) => {
   const userId = new mongoose.Types.ObjectId(req.body.author); // Convert to ObjectId
@@ -30,6 +30,12 @@ const createItinerary = async (req, res) => {
       pick_up,
       drop_off,
       availability,
+      tags,
+      accommodation,
+      transportation,
+      start_date,
+      end_date,
+      accessibility,
     } = req.body;
     try {
       const itinerary = await itineraryModel.create({
@@ -41,6 +47,12 @@ const createItinerary = async (req, res) => {
         pick_up,
         drop_off,
         availability,
+        tags,
+        accommodation,
+        transportation,
+        start_date,
+        end_date,
+        accessibility,
       });
       res.status(200).json(itinerary);
     } catch (error) {
@@ -125,8 +137,6 @@ const createProduct = async (req, res) => {
   }
 };
 
-
-
 // const readAllItineraries = async (req,res)=>{
 //   const sort =req.query.sort || '-createdAt' ;
 //   const validSortFields = [ "price",'-createdAt' ];
@@ -167,14 +177,18 @@ const updateItinerary = async (req, res) => {
   }
 };
 
-
 const readAllItineraries = async (req, res) => {
-  const sort = req.query.sort || '-createdAt'; // Default to "-createdAt" if no parameter is provided
+  const sort = req.query.sort || "-createdAt"; // Default to "-createdAt" if no parameter is provided
 
   // Validate sortBy parameter
-  const validSortFields = ['price', '-createdAt'];
+  const validSortFields = ["price", "-createdAt"];
   if (!validSortFields.includes(sort)) {
-    return res.status(400).json({ message:' Invalid sortBy parameter. Allowed values are: ${validSortFields.join(", ")}' });
+    return res
+      .status(400)
+      .json({
+        message:
+          ' Invalid sortBy parameter. Allowed values are: ${validSortFields.join(", ")}',
+      });
   }
 
   try {
@@ -185,15 +199,14 @@ const readAllItineraries = async (req, res) => {
     const itineraries = await features.query.sort(sort);
 
     if (!itineraries.length) {
-      return res.status(404).json({ message: 'No itineraries found' });
+      return res.status(404).json({ message: "No itineraries found" });
     }
 
     res.status(200).json(itineraries);
   } catch (error) {
-    res.status(500).json({ message: 'An error occurred', error });
+    res.status(500).json({ message: "An error occurred", error });
   }
 };
-
 
 const deleteItinerary = async (req, res) => {
   const { id } = req.params;
