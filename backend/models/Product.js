@@ -23,10 +23,11 @@ const productSchema = new schema(
     description: {
       type: String,
     },
-    ratingsAverage: {
-      default: 2.5,  // 3shan el msdaqeya
-      avgSoFar:Number,
-      contributers:Number
+    ratingsAverage: { 
+      avgSoFar: {type:Number, default:2.5 // 3shan el msdaqeya
+      },
+      contributers:{type:Number, default:0
+      }
     },
     quantity: {
       type: Number,
