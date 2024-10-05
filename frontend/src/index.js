@@ -6,11 +6,19 @@ import Navbar from './Navbar';
 import ActivityList from './components/ActivityListUser';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import UserViewActivities from './UserViewActivities';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-      <App/>
+    <Router>
+      <Navbar /> {/* Navbar placed outside Routes to display on all pages */}
+      <Routes>
+        <Route path="/" element={<App />} /> {/* Default route */}
+        <Route path="/activities" element={<UserViewActivities />} /> {/* Activities page route */}
+        {/* Add more routes as needed */}
+      </Routes>
+    </Router>
   </React.StrictMode>
 );
 

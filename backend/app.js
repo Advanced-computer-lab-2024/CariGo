@@ -8,12 +8,14 @@ const userRouter = require("./routes/userRouter.js");
 const advertiserRouter = require("./routes/avertiserRouter.js");
 const activityRouter = require("./routes/activityRouter.js");
 const eventRouter = require("./routes/eventRouter.js");
+
+const cors = require("cors");
+
 const adminRouter= require("./routes/adminRouter.js");
 
 const productRouter = require("./routes/productRouter.js");
 
 const experienceRouter = require("./routes/experienceRouter");
-
 
 const app = express();
 
@@ -25,6 +27,13 @@ const limiter = rateLimit({
   message: "Too many requests from this IP, please try again in an hour!⌚",
 });
 app.use("/cariGo", limiter);
+
+app.use(
+  cors({
+    origin: "http://localhost:3000", // The port React is running on
+    methods: "GET,POST",
+  })
+); // Enable CORS for all routes and origins
 // BODY PARSER, reading data from body into req.body
 app.use(bodyParser.raw({ type: "application/octet-stream", limit: "10mb" }));
 app.use(express.json({ limit: "10kb" }));
