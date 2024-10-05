@@ -6,6 +6,7 @@ import { Box, TextField, FormHelperText } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { Button as BaseButton } from '@mui/base/Button';
 import SelectTags from "./SelectTags";
+import SelectCategory from "./SelectCategory";
 import { useNavigate } from 'react-router-dom';
 
 
@@ -140,6 +141,8 @@ export default function CreateActivityForm(){
 
         <Label sx={{marginLeft:"10px"}}>Tags</Label>
         <SelectTags />
+        <Label sx={{marginLeft:"10px"}}>Category</Label>
+        <SelectCategory />
 
         <FormControl defaultValue="" required>
         <Label sx={{marginLeft:"2px"}}>price</Label>
