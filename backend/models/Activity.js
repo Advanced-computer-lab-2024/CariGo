@@ -43,7 +43,7 @@ const activitySchema = new mongoose.Schema(
     tags: [
       {
         type: mongoose.Schema.ObjectId,
-        ref: "Tag",
+        ref: "PreferenceTag",
       },
     ],
     bookingOpened: {
