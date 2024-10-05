@@ -13,10 +13,13 @@ router.get('/getadvact',[authController.protect ,authController.restrictTo("Adve
 
 router.get('/getOne/:id',authController.restrictTo("Advertiser"), activityController.getActivity);
 
+
+
 router.post('/createActivity', activityController.createActivity);
 
 // router.post('/createActivity',[authController.protect ,authController.restrictTo("Advertiser")], activityController.createActivity);
 router.patch('/updateActivity/:id',authController.restrictTo("Advertiser"),activityController.updateActivity);
+
 
 router.delete('/deleteActivity/:id', authController.restrictTo("Advertiser"),activityController.deleteActivity);
 

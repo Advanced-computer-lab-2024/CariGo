@@ -17,30 +17,27 @@ import { Chip } from '@mui/material';
 import PinDropIcon from '@mui/icons-material/PinDrop';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import SellIcon from '@mui/icons-material/Sell';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
+import StarIcon from '@mui/icons-material/Star';
+import Link from '@mui/material/Link';
+import { useNavigate } from 'react-router-dom';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 
-
-
-
-export default function ActivityPostAdvertiser({ author, img, start_date, end_date, duration, tags, description, title,location,
-    price,category,discount,isOpened}) {
+export default function ActivityPost({ id,author, img, start_date, end_date, duration, tags, description, title,location,
+    price,category,discount,isOpened, rating}) {
   const [expanded, setExpanded] = React.useState(false);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
 
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const open = Boolean(anchorEl);
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
+const navigate = useNavigate();
   return (
+    // <Link 
+    // to={`/activities/${id}`} 
+    // style={{textDecoration:'none'}} 
+    // onClick={() => navigate(`/activities/${id}`)}
+    // >
     <Card
       sx={{
         width: '100%', // Use full width of the container
@@ -57,7 +54,7 @@ export default function ActivityPostAdvertiser({ author, img, start_date, end_da
         transition: 'transform 0.3s ease', // Transition effect for size change
         '&:hover': {
           transform: 'scale(1.02)', // Scale up the card on hover
-          cursor: 'pointer', // Change cursor to pointer
+           // Change cursor to pointer
         },
       }}
     >
@@ -65,7 +62,7 @@ export default function ActivityPostAdvertiser({ author, img, start_date, end_da
         
         <CardMedia
           component="img"
-          image={img}
+          image={img || "/0ae1e586-0d84-43c3-92d4-924c13c01059.jpeg"}
           alt={title}
           sx={{
             width: '500px',
@@ -84,19 +81,15 @@ export default function ActivityPostAdvertiser({ author, img, start_date, end_da
               display: 'flex',
               flexDirection: 'column',
               overflow: 'overflow',
+              
             }}
           >
             <CardHeader
-              avatar={<Avatar sx={{ bgcolor: red[500] }}>R</Avatar>}
-              action={
-                <IconButton aria-label="settings">
-                    
-                  <MoreVertIcon />
-                </IconButton>
-              }
+              // avatar={<Avatar sx={{ bgcolor: red[500] }}>R</Avatar>}
+              
               title={
                 <Typography variant="h5" sx={{ width: '300px', fontWeight: 'bold', fontSize: '24px' }}>
-                  {title}
+                  TITLE
                 </Typography>
               }
             />
@@ -105,7 +98,7 @@ export default function ActivityPostAdvertiser({ author, img, start_date, end_da
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginLeft: '15px' }}>
               {/* {tags.map((tag) => (
                 <Chip key={tag} label={tag} sx={{backgroundColor :'#126782', color: 'white' }} />
-              ))} */}
+              )) || "tags"} */}
             </Box>
           </Box>
           
@@ -117,7 +110,10 @@ export default function ActivityPostAdvertiser({ author, img, start_date, end_da
               marginLeft: '30px',
             }}
           >
-            <Typography sx={{fontSize: '16px'}}>{category}</Typography>
+            <Box sx={{display:'flex', }}>
+            <StarIcon sx={{scale:'0.9'}}/>
+            <Typography sx={{fontSize: '16px',marginTop:'1px'}}>{""+rating+""}</Typography>
+            </Box>
             <Box sx={{
                 fontSize: '16px',
                 backgroundColor: isOpened === 'open' ? '#70db70' : '#ff4d4d',
@@ -131,9 +127,10 @@ export default function ActivityPostAdvertiser({ author, img, start_date, end_da
                 marginLeft: '6px',
                 marginBottom: '2px',
                 }}>
-                {isOpened}
+                {isOpened || "status"}
                 </Typography>
                 </Box>
+                <Typography sx={{fontSize: '16px'}}>{category}</Typography>
             <Typography sx={{fontSize: '16px'}}>From: {start_date}</Typography>
             <Typography sx={{fontSize: '16px'}}>To: {end_date}</Typography>
             <Box sx={{ display: 'flex',
@@ -152,13 +149,13 @@ export default function ActivityPostAdvertiser({ author, img, start_date, end_da
                 margoinLeft:'-10px' ,
                 
                 }}>
-            <AttachMoneyIcon sx={{marginTop:'0px',}}/>
+            <AttachMoneyIcon />
             <Typography sx={{
                 marginLeft:'5px',
                 textDecoration: discount>0 ? 'line-through' : 'none',
                 color: discount>0 ? '#ff4d4d' : '#126782',
                 marginRight: '5px',
-            }}> {price}</Typography>
+            }}> {""+price+"" || 'no specified price'}</Typography>
             <Typography sx={{fontSize: '16px'}}> {discount >0?  (price -(price*discount/100)): ''}</Typography>
             <Box sx={{
                 backgroundColor : '#ff4d4d',
@@ -168,12 +165,44 @@ export default function ActivityPostAdvertiser({ author, img, start_date, end_da
                 padding: '0px',
                 }}>
                   
-            <Typography sx={{marginLeft:'5px', color: "white"}}> -{discount}%</Typography>
-            <SellIcon  sx={{scale: '0.7', color: 'white', marginTop:'2px',marginLeft:'-2px'}}/>
+            <Typography sx={{marginLeft:'5px', color: "white"}}> {"-"+discount+"%" || ''}</Typography>
+            <SellIcon  sx={{scale: '0.7', color: 'white', marginTop:'2px',marginLeft:'-2px',
+                //do smth about display
+            }}/>
             </Box>
             </Box>
-
+           
           </Box>
+          <Box sx={{display: "flex" ,
+            marginLeft:'300px',
+            marginTop:'100px',
+            gap:'15px',
+            }}>
+                <Link 
+                  to={`/activities/update/${id}`} 
+                  style={{textDecoration:'none'}} 
+                  onClick={() => navigate(`/activities/${id}`)}
+                  sx={{
+                    color: '#126782',
+                    '&:hover': {
+                      cursor: 'pointer',
+                    }}}
+                >
+                  <EditIcon/>
+                </Link>
+                <Link 
+                  to={`/activities/`} 
+                  style={{textDecoration:'none'}} 
+                  // onClick={() => navigate()}
+                  sx={{
+                    color: '#126782',
+                    '&:hover': {
+                      cursor: 'pointer',
+                    }}}
+                >
+                  <DeleteIcon/>
+                  </Link>
+            </Box>
         </Box>
       </Box>
 
@@ -192,7 +221,7 @@ export default function ActivityPostAdvertiser({ author, img, start_date, end_da
             top: '290px',
           }}
         >
-          {description}
+          DESCRIPTION
         </Typography>
       </CardContent>
 
@@ -215,5 +244,6 @@ export default function ActivityPostAdvertiser({ author, img, start_date, end_da
         </Box>
       </CardActions>
     </Card>
+    // </Link>
   );
 }

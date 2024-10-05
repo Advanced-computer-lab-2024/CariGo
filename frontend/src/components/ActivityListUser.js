@@ -45,7 +45,7 @@ export default function ActivityList({ActivityPosts}){
             {activities.map((activity,index) => (
                 <Grid size ={4} key={index}>
                     <ActivityPost
-                        id={activity.id}
+                        id={activity._id}
                         start_date={StringDate(activity.start_date)}
                         end_date={StringDate(activity.end_date)}
                         location={activity.location}

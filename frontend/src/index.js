@@ -8,16 +8,21 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import UserViewActivities from './UserViewActivities';
 import CreateActivityForm from './components/CreateActivityForm';
-
+import ActivityDetail from './components/ActivityDetail';
+import ActivityPostAdvertiser from './components/ActivityPostAdvertiser';
+import updateActivityForm from './components/UpdateActivityForm';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <Router>
-      <CreateActivityForm/>
+      <Navbar /> {/* Navigation bar */}
+      
       <Routes>
         <Route path="/" element={<App />} /> {/* Default route */}
         <Route path="/activities" element={<UserViewActivities />} /> {/* Activities page route */}
+        <Route path="/activities/:id" element={<ActivityDetail/>} />
+        <Route path="/activities/update/:id" element={<updateActivityForm/>} />
         {/* Add more routes as needed */}
       </Routes>
     </Router>
