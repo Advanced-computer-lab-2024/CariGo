@@ -10,14 +10,17 @@ import ActivityPost from './components/ActivityPost';
 import { BrowserRouter,Route,Router,Routes } from 'react-router-dom';
 import ActivityList from './components/ActivityListUser';
 import ActivityPostAdvertiser from './components/ActivityPostAdvertiser';
-
+import UserViewActivities from './UserViewActivities';
+import CreateActivityForm from './components/CreateActivityForm';
+import SelectTags from './components/SelectTags';
 
 function App() {
   return (
     <div className="App">
-      <AdvertiserProfile />
-      <ActivityList/>
-
+      <SelectTags/>
+     <CreateActivityForm/>
+    {/* <UserViewActivities/> */}
+      
     </div>
   );
 }

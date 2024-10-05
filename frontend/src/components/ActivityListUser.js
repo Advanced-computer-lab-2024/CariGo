@@ -10,7 +10,7 @@ export default function ActivityList({ActivityPosts}){
         // Fetch activities from the backend API
         const fetchActivities = async () => {
             try {
-                const response = await fetch("http://localhost:4000/cariGo/activity");
+                const response = await fetch("/cariGo/activity");
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }

@@ -8,14 +8,13 @@ import { Box } from '@mui/material';
 
 
 
-export default UserViewActivities =()=>{
+export default function UserViewActivities (){
   return(
-  <React.StrictMode>
-    <Navbar/>
+    <div>
+    
     <Box sx={{
       width:'1150px' ,
       overflow: 'hidden',
-      position : 'center',
       margin: '0 auto', 
       padding:'20px',
       height: '80vh', // Set a fixed height for the scrolling area
@@ -27,15 +26,17 @@ export default UserViewActivities =()=>{
       }}>
     <Box sx={{ 
       height: '100%',
-      
       marginLeft: '100px',
+      width: '100%',
       '&::-webkit-scrollbar': {display: 'none',},
       }}> {/* Enable vertical scrolling only */}
-    {/* <ActivityList 
-     /> */}
+
+     <ActivityList /> 
+
   </Box>
   </Box>
-  </React.StrictMode>
+  </div>
+  
 );
 }
 // If you want to start measuring performance in your app, pass a function
