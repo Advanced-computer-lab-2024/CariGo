@@ -23,7 +23,7 @@ const MenuProps = {
   },
 };
 
-export default function SelectTags() {
+export default function SelectCategory() {
   const [tag, setTag] = React.useState([]);
   const [names, setNames] = React.useState([]); // State to hold tag names
 
@@ -31,10 +31,10 @@ export default function SelectTags() {
     // Function to fetch tags from backend
     const fetchTags = async () => {
       try {
-        const response = await fetch('http://localhost:4000/Admin/getTags');
+        const response = await fetch('http://localhost:4000/Admin/getCategories');
         const data = await response.json(); // Parse the JSON from the response
         console.log(data); // Log the data to see its structure
-        const tagNames = data.map(tag => tag.title);
+        const tagNames = data.map(tag => tag.name);
         setNames(tagNames);
       } catch (error) {
         console.error('Error fetching tags:', error);
@@ -59,7 +59,7 @@ export default function SelectTags() {
       <FormControl sx={{ marginTop: '-18px', width: 300, height: 50, marginLeft: "-40px" }}>  {/* Adjust margin and width */}
         <InputLabel id="demo-multiple-checkbox-label"
           sx={{ fontSize: '14px', marginLeft: '40px', marginTop: '2px' }}
-        >Tag</InputLabel>
+        >Category</InputLabel>
         <Select sx={{ scale: '0.65', borderRadius: '10px', marginLeft: '-15px' }}
           labelId="demo-multiple-checkbox-label"
           id="demo-multiple-checkbox"
