@@ -8,6 +8,7 @@ const createActivity = async (req, res) => {
         console.log(req.body);
         const activity = await Activity.create({ start_date, end_date, duration, locations, price, discount, tags, bookingOpened, author: req.user.id });
         res.status(200).json(activity);
+        console.log("activity created successfully");
     } catch (error) {
         res.status(400).json({ error: error.message });
     }

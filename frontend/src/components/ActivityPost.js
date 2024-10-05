@@ -17,6 +17,7 @@ import { Chip } from '@mui/material';
 import PinDropIcon from '@mui/icons-material/PinDrop';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import SellIcon from '@mui/icons-material/Sell';
+import StarIcon from '@mui/icons-material/Star';
 
 
 
@@ -72,6 +73,7 @@ export default function ActivityPost({ author, img, start_date, end_date, durati
               display: 'flex',
               flexDirection: 'column',
               overflow: 'overflow',
+              
             }}
           >
             <CardHeader
@@ -100,7 +102,10 @@ export default function ActivityPost({ author, img, start_date, end_date, durati
               marginLeft: '30px',
             }}
           >
-            <Typography sx={{fontSize: '16px'}}>{""+rating+""}</Typography>
+            <Box sx={{display:'flex', }}>
+            <StarIcon sx={{scale:'0.9'}}/>
+            <Typography sx={{fontSize: '16px',marginTop:'1px'}}>{""+rating+""}</Typography>
+            </Box>
             <Box sx={{
                 fontSize: '16px',
                 backgroundColor: isOpened === 'open' ? '#70db70' : '#ff4d4d',
