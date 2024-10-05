@@ -24,13 +24,17 @@ const productSchema = new schema(
     description: {
       type: String,
     },
-    ratings: [
-      {
-        type: mongoose.Schema.ObjectId,
-        ref: "Rating", // References the 'Rating' model
-        default: [],
-      },
-    ],
+    ratingsAverage: {
+      type: Number,
+      default: 4.5,
+      min: [1, "Rating must be above 1.0"],
+      max: [5, "Rating must be below 5.0"],
+      set: val => Math.round(val * 10) / 10 //rounding ratings
+    },
+    ratingsQuantity: {
+      type: Number,
+      default: 0
+    },
     quantity: {
       type: Number,
       required: true, // Make it required if necessary

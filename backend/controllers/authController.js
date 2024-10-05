@@ -15,7 +15,6 @@ const signToken = (id) => {
 };
 
 exports.signup = catchAsync(async (req, res, next) => {
-  let newUser = User;
   const userType = req.body.role;
 
   if (userType === "admin" || userType === "Tourism_Governer") {
@@ -61,7 +60,29 @@ exports.signup = catchAsync(async (req, res, next) => {
       job: req.body.job,
       passwordChangedAt: Date.now(),
     };
-  } else {
+  } else if (userType === "Tour_Guide"){
+    newUserData = {
+      username: req.body.username,
+      email: req.body.email,
+      password: req.body.password,
+      passwordConfirm: req.body.passwordConfirm,
+      role: req.body.role,
+      mobile_number: req.body.mobile_number,
+      experience:[],
+      passwordChangedAt: Date.now(),
+    }
+  }else if(userType === "Seller"){
+    newUserData = {
+      username: req.body.username,
+      email: req.body.email,
+      password: req.body.password,
+      passwordConfirm: req.body.passwordConfirm,
+      role: req.body.role,
+      description: req.body.description,
+      passwordChangedAt: Date.now(),
+    }
+  }
+  else {
     // Handle other roles here or create a generic new user object
     newUserData = {
       ...req.body,
@@ -74,7 +95,7 @@ exports.signup = catchAsync(async (req, res, next) => {
     passwordChangedAt: Date.now(),
   };
 
-  newUser = await User.create(newUserData);
+  const newUser = await User.create(newUserData);
 
   createSendToken(newUser, 201, res);
 });
@@ -119,8 +140,9 @@ exports.login = catchAsync(async (req, res, next) => {
   }
 
   // send token to client
-
+ 
   createSendToken(user, 200, res);
+
 });
 
 exports.protect = catchAsync(async (req, res, next) => {
@@ -209,7 +231,9 @@ exports.AcceptAdvertiser = catchAsync(async (req, res, next) => {
 
 exports.restrictTo = (...roles) => {
   return (req, res, next) => {
+    console.log(req.user.role)
     if (!roles.includes(req.user.role)) {
+
       return next(
         new AppError("You do not have permission to access this route ❌", 403)
       );
