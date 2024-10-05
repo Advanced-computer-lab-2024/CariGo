@@ -14,6 +14,10 @@ const itinerarySchema = new schema({
       description: String,
     },
   ],
+  strat_date: Date,
+  end_date: Date,
+  transportation: String,
+  accommodation: String,
   language: String,
   price: Number,
   locations: {
@@ -25,6 +29,7 @@ const itinerarySchema = new schema({
   availability: {
     dates: [Date], // time will be included in Date
   },
+  accessibility: String,
   isBooked: {
     type: Boolean,
     default: false,

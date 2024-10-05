@@ -1,15 +1,13 @@
 const mongoose = require("mongoose");
 
 const schema = mongoose.Schema;
-const tagSchema = new schema({
-  // Tourism Governers' Tags
-  type: {
+const PreferenceTagSchema = new schema({
+
+  title:{
     type: String,
-  },
-  historical_period: {
-    type: String,
-  },
+    required: true,
+  }
 });
 
-const tag = mongoose.model("Tag", tagSchema);
+const tag = mongoose.model("Tag", PreferenceTagSchema);
 module.exports = tag;
