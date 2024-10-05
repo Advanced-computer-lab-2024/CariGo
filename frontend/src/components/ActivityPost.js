@@ -20,7 +20,7 @@ import SellIcon from '@mui/icons-material/Sell';
 
 
 
-export default function ActivityPost({ author, img, start_date, end_date, duration, tags, description, title,locations,
+export default function ActivityPost({ author, img, start_date, end_date, duration, tags, description, title,location,
     price,category,discount,isOpened}) {
   const [expanded, setExpanded] = React.useState(false);
 
@@ -129,7 +129,7 @@ export default function ActivityPost({ author, img, start_date, end_date, durati
                 
                 }}>
             <PinDropIcon sx={{marginTop:'0px',}}/>
-            <Typography sx={{marginLeft:'5px'}}> {locations}</Typography>
+            <Typography sx={{marginLeft:'5px'}}> {location}</Typography>
             </Box>
             
             <Typography sx={{fontSize: '16px', marginLeft: '30px'}}> {duration}</Typography>

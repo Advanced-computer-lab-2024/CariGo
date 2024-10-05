@@ -23,7 +23,7 @@ export default function ActivityList({ActivityPosts}){
                         id={activity.id}
                         start_date={activity.start_date}
                         end_date={activity.end_date}
-                        locations={activity.locations}
+                        location={activity.location}
                         duration={activity.duration}
                         price= {activity.price}
                         category={activity.category}
