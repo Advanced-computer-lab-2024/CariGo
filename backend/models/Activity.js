@@ -32,7 +32,7 @@ const activitySchema = new mongoose.Schema(
         max: Number,
       },
     },
-    category: {
+    Category: {
       type: mongoose.Schema.ObjectId,
       ref: "Category",
     },

@@ -10,13 +10,13 @@ const router = express.Router();
 
 router.get('/', activityController.getActivities);
 
-router.get('/getOne/:id', activityController.getActivity);
+router.get('/getOne/:id',authController.restrictTo("Advertiser"), activityController.getActivity);
 
 router.post('/createActivity',[authController.protect ,authController.restrictTo("Advertiser")], activityController.createActivity);
 
-router.patch('/updateActivity/:id',activityController.updateActivity);
+router.patch('/updateActivity/:id',authController.restrictTo("Advertiser"),activityController.updateActivity);
 
-router.delete('/deleteActivity/:id', activityController.deleteActivity);
+router.delete('/deleteActivity/:id', authController.restrictTo("Advertiser"),activityController.deleteActivity);
 
 router.get('/sortActivityByPrice',activityController.sortActivities);
 

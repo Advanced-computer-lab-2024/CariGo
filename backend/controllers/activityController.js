@@ -1,12 +1,32 @@
 const Activity = require('../models/Activity');
+const Category = require('../models/Category');
 const APIFeatures = require('../utils/apiFeatures');
 // const User = require('./../models/userModel');
 
 const createActivity = async (req, res) => {
-    const { start_date, end_date, duration, locations, price, discount, tags, bookingOpened } = req.body;
+    const { start_date, end_date, duration, locations, price, discount, tags, bookingOpened, category } = req.body;
+
     try {
-        console.log(req.body);
-        const activity = await Activity.create({ start_date, end_date, duration, locations, price, discount, tags, bookingOpened, author: req.user.id });
+        // Find the category by name
+        const categoryDoc = await Category.findOne({ name: category });
+        if (!categoryDoc) {
+            return res.status(400).json({ error: 'please choosea valid Category' });
+        }
+
+        // Create the activity with the category ID
+        const activity = await Activity.create({
+            start_date,
+            end_date,
+            duration,
+            locations,
+            price,
+            discount,
+            tags,
+            bookingOpened,
+            Category: categoryDoc._id, // Use the category ID
+            author: req.user.id
+        });
+
         res.status(200).json(activity);
     } catch (error) {
         res.status(400).json({ error: error.message });
