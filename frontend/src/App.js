@@ -1,3 +1,6 @@
+import './styles/App.css';
+import React from 'react';
+import AdvertiserProfile from './AdvertiserProfile';  // Adjust the path based on your structure
 //import './styles/App.css';
 import './styles/index.css';
 import Activity from './components/Activity';
@@ -8,15 +11,16 @@ import { BrowserRouter,Route,Router,Routes } from 'react-router-dom';
 import ActivityList from './components/ActivityListUser';
 import ActivityPostAdvertiser from './components/ActivityPostAdvertiser';
 
+
 function App() {
   return (
     <div className="App">
-     
-     
+      <AdvertiserProfile />
       <ActivityList/>
-      
+
     </div>
   );
 }
 
 export default App;
+
