@@ -54,7 +54,6 @@ exports.getOne = (Model, popOptions) =>
 
     if (popOptions) query = query.populate(popOptions);
     
-    //only when entire query is ready we store it
     const doc = await query;
 
     if (!doc) {
@@ -70,7 +69,6 @@ exports.getOne = (Model, popOptions) =>
   });
 
 exports.getAll = Model => catchAsync(async (req, res, next) => {
-    // To allow for nested GET reviews on tour (hack) ????
     let filter = {};
     if (req.params.productId)
          filter = { product: req.params.productId };
@@ -80,10 +78,8 @@ exports.getAll = Model => catchAsync(async (req, res, next) => {
       .sort()
       .limitFields()
       .paginate();
-    // const doc = await features.query.explain();
     const doc = await features.query;
 
-    // RESPONSE
     res.status(200).json({
       status: 'success',
       results: doc.length,
@@ -92,3 +88,27 @@ exports.getAll = Model => catchAsync(async (req, res, next) => {
       }
     });
   });
+
+  exports.getAllSpecificUsers =(role) => catchAsync(async (req, res, next) => {
+    let filter = { role: role};
+  
+    if (req.params.userId) {
+      filter.advertiser = req.params.userId;
+    }
+  
+    const features = new APIFeatures(Advertiser.find(filter), req.query)
+      .filter()
+      .sort()
+      .limitFields()
+      .paginate();
+    const doc = await features.query;
+  
+    res.status(200).json({
+      status: "success",
+      results: doc.length,
+      data: {
+        data: doc,
+      },
+    });
+  });
+

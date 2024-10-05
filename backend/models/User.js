@@ -68,6 +68,10 @@ const userSchema = new mongoose.Schema(
         default: [],
       },
     ],
+    years_of_experience: {
+      type: Number,
+      default: 0,
+    },
     sellerName: {
       type: String,
     },

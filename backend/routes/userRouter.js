@@ -2,29 +2,26 @@ const express = require("express");
 const {
   getUsers,
   getUser,
-  createEvent,
+  updateUserData,
   //   deleteWorkout,
   //   updateWorkout
 } = require("../controllers/userController");
 
 const authController = require("../controllers/authController");
+const joinController = require("../controllers/joiController");
 
 const router = express.Router();
 
 // GET all workouts
 router.get("/", getUsers);
 
-// GET a single workout
-router.get("/:id", getUser);
-
 // POST a new user
-router.post("/signup", authController.signup);
+router.post("/signup",[joinController.validateUser] ,authController.signup);
 router.post("/login", authController.login);
 
-// // DELETE a workout
-// router.delete('/:id', deleteWorkout)
-
-// // UPDATE a workout
-// router.patch('/:id', updateWorkout)
-
+// UPDATE user data
+router.use(authController.protect);
+router.patch("/update/:userId", updateUserData);
+// GET a single workout
+router.get("/:id", getUser);
 module.exports = router;

@@ -1,19 +1,12 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const schema = mongoose.Schema;
-const tagSchema = new schema({   // Tourism Governers' Tags
-    place:{ 
-      type: mongoose.Schema.ObjectId,
-      ref:'Vintage'
-    },
-    type:{
-        type:String
-    },
-    historical_period:{
-        type:String
-    }
-  });
+const PreferenceTagSchema = new schema({
+  title:{
+    type: String,
+    required: true,
+  }
+});
 
-const tag = mongoose.model('Tag', tagSchema);
-module.exports = tag
-  
+const tag = mongoose.model("Tag", PreferenceTagSchema);
+module.exports = tag;
