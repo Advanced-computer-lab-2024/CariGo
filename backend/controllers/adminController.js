@@ -149,15 +149,15 @@ const createCategory = async (req, res) => {
   };
   
  const createTag = async (req, res) => {
-    const {type} = req.body;
+    const {title} = req.body;
   
     try {
-      const existingTag = await tagModel.findOne({type});
+      const existingTag = await tagModel.findOne({title});
       if (existingTag) {
         return res.status(400).json({ message: 'Preference Tag already exists' });
       }
   
-      const tag = await tagModel.create({type})
+      const tag = await tagModel.create({title})
       res.status(201).json({ message: 'Preference Tag created successfully', tag });
     } catch (error) {
       res.status(400).json({ error: error.message });

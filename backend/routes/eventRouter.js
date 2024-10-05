@@ -10,7 +10,7 @@ const {
   readSingleVintage,
   updateVintage,
   deleteItinerary,
-  deleteVintage,
+  deleteVintage,readAllVintage
 } = require("../controllers/eventController");
 const authController = require("../controllers/authController");
 const router = express.Router();
@@ -38,7 +38,7 @@ router.post(
 
 router.get(
   "/readAllItineraries",
-  authController.restrictTo("Tour_Guide"),
+  authController.restrictTo("Tour_Guide","Advertiser"),
   readAllItineraries
 ); // itineraries
 router.get("/readSingleItinerary/:itineraryId", readSingleItinerary); // itineraries/:id
@@ -54,6 +54,7 @@ router.delete(
 );
 
 router.get("/readAllVintages", readAllVintages);
+router.get("/readAllVintage", readAllVintage);
 router.get("/readSingleVintage/:vintageId", readSingleVintage);
 router.patch("/updateVintage/:vintageId", updateVintage);
 router.delete("/deleteVintage/:id", deleteVintage);

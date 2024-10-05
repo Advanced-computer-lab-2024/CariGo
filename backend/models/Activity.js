@@ -9,6 +9,15 @@ const activitySchema = new mongoose.Schema(
       type: mongoose.Schema.ObjectId,
       ref: "User",
     },
+    title: {
+      type: String,
+      required: true,
+    },
+    description: {
+      type: String,
+      required: true,
+      maxlength: [200, "Description must be less than or equal to 200 characters"],
+    },
     start_date: {
       type: Date,
       required: true,
@@ -32,7 +41,7 @@ const activitySchema = new mongoose.Schema(
         max: Number,
       },
     },
-    category: {
+    Category: {
       type: mongoose.Schema.ObjectId,
       ref: "Category",
     },
@@ -40,12 +49,10 @@ const activitySchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    tags: [
-      {
-        type: mongoose.Schema.ObjectId,
-        ref: "Tag",
-      },
-    ],
+    tag: {
+      type: mongoose.Schema.ObjectId,
+      ref: "Tag",
+    },
     bookingOpened: {
       type: Boolean,
       default: true,
