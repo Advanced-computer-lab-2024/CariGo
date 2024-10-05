@@ -148,17 +148,17 @@ const createCategory = async (req, res) => {
     }
   };
   
-  const createTag = async (req, res) => {
-    const { place, type, historical_period } = req.body;
+ const createTag = async (req, res) => {
+    const {type} = req.body;
   
     try {
-      const existingTag = await tagModel.findOne({ place, type, historical_period });
+      const existingTag = await tagModel.findOne({type});
       if (existingTag) {
-        return res.status(400).json({ message: 'Tag already exists' });
+        return res.status(400).json({ message: 'Preference Tag already exists' });
       }
   
-      const tag = await tagModel.create({ place, type, historical_period })
-      res.status(201).json({ message: 'Tag created successfully', tag });
+      const tag = await tagModel.create({type})
+      res.status(201).json({ message: 'Preference Tag created successfully', tag });
     } catch (error) {
       res.status(400).json({ error: error.message });
     }
@@ -175,20 +175,20 @@ const createCategory = async (req, res) => {
 
   const updateTag = async (req, res) => {
     const { id } = req.params;
-    const { place, type, historical_period } = req.body;
+    const {type} = req.body;
   
     try {
       const updatedTag = await tagModel.findByIdAndUpdate(
         id,
-        { place, type, historical_period },
+        {type},
         { new: true, runValidators: true }
       );
   
       if (!updatedTag) {
-        return res.status(404).json({ message: 'Tag not found' });
+        return res.status(404).json({ message: 'Preference Tag not found' });
       }
   
-      res.status(200).json({ message: 'Tag updated successfully', updatedTag });
+      res.status(200).json({ message: 'Preference Tag updated successfully', updatedTag });
     } catch (error) {
       res.status(400).json({ error: error.message });
     }
@@ -201,10 +201,10 @@ const createCategory = async (req, res) => {
       const deletedTag = await tagModel.findByIdAndDelete(id);
   
       if (!deletedTag) {
-        return res.status(404).json({ message: 'Tag not found' });
+        return res.status(404).json({ message: 'Preference Tag not found' });
       }
   
-      res.status(200).json({ message: 'Tag deleted successfully' });
+      res.status(200).json({ message: 'Preference Tag deleted successfully' });
     } catch (error) {
       res.status(400).json({ error: error.message });
     }
