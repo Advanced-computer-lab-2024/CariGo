@@ -5,7 +5,7 @@ const APIFeatures = require('../utils/apiFeatures');
 // const User = require('./../models/userModel');
 
 const createActivity = async (req, res) => {
-    const { start_date, end_date, duration, locations, price, discount, tag, bookingOpened, category } = req.body;
+    const { start_date, end_date, duration, locations, price, discount, tag, bookingOpened, category,title ,description } = req.body;
 
     try {
         // Validate that end_date is after start_date
@@ -36,7 +36,7 @@ const createActivity = async (req, res) => {
             tag: tagDoc._id,
             bookingOpened,
             category: categoryDoc._id, // Use the category ID
-            author: req.user.id
+            author: req.user.id,description,title
         });
 
         res.status(200).json(activity);
