@@ -6,13 +6,12 @@ import { Box, TextField, FormHelperText } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { Button as BaseButton } from '@mui/base/Button';
 import SelectTags from "./SelectTags";
+import SelectCategory from "./SelectCategory";
 import { useNavigate } from 'react-router-dom';
-import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 
 
 
 export default function CreateActivityForm(){
-  console.log("CreateActivityForm mounted");
 
     const navigate = useNavigate();
 
@@ -25,74 +24,11 @@ export default function CreateActivityForm(){
     const[price,setPrice]= useState(0);
     const[discount,setDiscount]= useState(0);
 
-  // const[error,setError]= useState(null);
-
-  // const [titleError, setTitleError] = useState('');
-  // const [descriptionError, setDescriptionError] = useState('');
-  // const [startDateError, setStartDateError] = useState('');
-  // const [endDateError, setEndDateError] = useState('');
-  // const [locationError, setLocationError] = useState('');
-  // const [priceError, setPriceError] = useState('');
-  // const [discountError, setDiscountError] = useState('');
-
-
-
-    // const stringToDate =(dateString)=>{
-
-    // const date = dateString;
-    
-    //   if (isNaN(date.getTime())) {
-    //     console.error('Invalid date format', dateString);
-    //     return null;
-    //   }
-    // }
-
-    // console.log(stringToDate('22/02/2020'));
+    const[error,setError]= useState(null);
     
     const handleCreate = async(e) =>{
         e.preventDefault();
-         // Clear previous errors
-    setTitleError('');
-    setDescriptionError('');
-    setStartDateError('');
-    setEndDateError('');
-    setLocationError('');
-    setPriceError('');
-    setDiscountError('');
 
-    // Validation
-    let valid = true;
-    if (!title) {
-        setTitleError('Title is required.');
-        valid = false;
-    }
-    if (!description) {
-        setDescriptionError('Description is required.');
-        valid = false;
-    }
-    if (!start_date) {
-        setStartDateError('Start date is required.');
-        valid = false;
-    }
-    if (!end_date) {
-        setEndDateError('End date is required.');
-        valid = false;
-    }
-    if (!location) {
-        setLocationError('Location is required.');
-        valid = false;
-    }
-    if (price < 0) {
-        setPriceError('Price cannot be negative.');
-        valid = false;
-    }
-    if (discount < 0) {
-        setDiscountError('Discount cannot be negative.');
-        valid = false;
-    }
-
-    // If valid, proceed with the API call
-    if (valid) {
         const activity = {
             title,
             description,
@@ -104,7 +40,7 @@ export default function CreateActivityForm(){
             discount,
         }
 
-        const response = await fetch("http://localhost:4000/cariGO/activity/createActivity",
+        const response = await fetch("/cariGO/activities/createActivity",
             {
                 method: 'POST',
                 body: JSON.stringify(activity),
@@ -151,8 +87,7 @@ export default function CreateActivityForm(){
             gap:'5px',
             margin:'20px',
             border: '2px solid #126782',
-            paddingLeft:'30px', 
-            
+            paddingLeft:'30px',  
         }}>
         <Box sx={{marginLeft:'50px'}}>
         <h3 sx={{color:'#ff4d4d', }}>CREATE A NEW ACTIVITY</h3>
@@ -165,7 +100,7 @@ export default function CreateActivityForm(){
         onChange={(e) => setTitle(e.target.value)}
         value={title}
         />
-        <HelperText>{titleError}</HelperText>
+        <HelperText />
         </FormControl>
 
         <FormControl defaultValue="" required>
@@ -174,25 +109,25 @@ export default function CreateActivityForm(){
         onChange={(e) => setDescription(e.target.value)}
         value={description}
         />
-        <HelperText>{descriptionError}</HelperText>
+        <HelperText />
         </FormControl>
 
         <FormControl defaultValue="" required>
         <Label sx={{marginLeft:"2px"}}>start date</Label>
-        <StyledInput placeholder="dd/mm/yyyy" 
+        <StyledInput placeholder="date activity starts" 
         onChange={(e) => setStart(e.target.value)}
         value={start_date}
         />
-        <HelperText>{startDateError}</HelperText>
+        <HelperText />
         </FormControl>
 
         <FormControl defaultValue="" required>
         <Label sx={{marginLeft:"2px"}}>end date</Label>
-        <DateCalendar 
+        <StyledInput placeholder="date activity ends" 
         onChange={(e) => setEnd(e.target.value)}
         value={end_date}
         />
-        <HelperText>{endDateError}</HelperText>
+        <HelperText />
         </FormControl>
 
         <FormControl defaultValue="" required>
@@ -201,11 +136,13 @@ export default function CreateActivityForm(){
         onChange={(e) => setLocation(e.target.value)}
         value={location}
         />
-        <HelperText>{locationError}</HelperText>
+        <HelperText />
         </FormControl>
 
         <Label sx={{marginLeft:"10px"}}>Tags</Label>
         <SelectTags />
+        <Label sx={{marginLeft:"10px"}}>Category</Label>
+        <SelectCategory />
 
         <FormControl defaultValue="" required>
         <Label sx={{marginLeft:"2px"}}>price</Label>
@@ -214,7 +151,7 @@ export default function CreateActivityForm(){
         onChange={(e) => setPrice(e.target.value)}
         value={price}
         />
-        <HelperText>{priceError}</HelperText>
+        <HelperText />
         </FormControl>
 
         <FormControl defaultValue="" >
@@ -224,7 +161,7 @@ export default function CreateActivityForm(){
         onChange={(e) => setDiscount(e.target.value)}
         value ={discount}
         />
-        <HelperText>{discountError}</HelperText>
+        <HelperText />
         </FormControl>
 
 
@@ -238,10 +175,6 @@ export default function CreateActivityForm(){
 
     );
 }
-
-
-
-
 
 const StyledInput = styled(Input)(
     ({ theme }) => `
@@ -271,7 +204,7 @@ const StyledInput = styled(Input)(
     }
   `,
   );
-}
+  
 const Button = styled(BaseButton)(
     ({ theme }) => `
     font-family: 'IBM Plex Sans', sans-serif;

@@ -12,14 +12,14 @@ import ActivityList from './components/ActivityListUser';
 import ActivityPostAdvertiser from './components/ActivityPostAdvertiser';
 import UserViewActivities from './UserViewActivities';
 import CreateActivityForm from './components/CreateActivityForm';
-import ActivityCreateForm from './components/ActivityCreateForm';
+
 import SelectTags from './components/SelectTags';
 
 function App() {
   return (
     <div className="App">
     <SelectTags/>
-    <ActivityCreateForm/>
+    <CreateActivityForm/>
     
       
     </div>
