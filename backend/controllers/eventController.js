@@ -9,6 +9,7 @@ const tagModel = require("../models/Tag");
 const userModel = require("../models/User");
 const VintageModel = require("../models/Vintage");
 const mongoose = require("mongoose");
+const APIFeatures = require("../utils/apiFeatures");
 
 const createItinerary = async (req, res) => {
   const userId = new mongoose.Types.ObjectId(req.body.author); // Convert to ObjectId
@@ -29,6 +30,12 @@ const createItinerary = async (req, res) => {
       pick_up,
       drop_off,
       availability,
+      tags,
+      accommodation,
+      transportation,
+      start_date,
+      end_date,
+      accessibility,
     } = req.body;
     try {
       const itinerary = await itineraryModel.create({
@@ -40,6 +47,12 @@ const createItinerary = async (req, res) => {
         pick_up,
         drop_off,
         availability,
+        tags,
+        accommodation,
+        transportation,
+        start_date,
+        end_date,
+        accessibility,
       });
       res.status(200).json(itinerary);
     } catch (error) {
@@ -124,20 +137,16 @@ const createProduct = async (req, res) => {
   }
 };
 
-const readAllItineraries = async (req, res) => {
-  const { id } = req.query;
-  try {
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: "not a valid Id" });
-    }
-    const itineraries = await itineraryModel
-      .find({ author: id })
-      .sort({ createdAt: -1 });
-    res.status(200).json(itineraries);
-  } catch (error) {
-    res.status(500).json({ message: "server failed!" });
-  }
-};
+// const readAllItineraries = async (req,res)=>{
+//   const sort =req.query.sort || '-createdAt' ;
+//   const validSortFields = [ "price",'-createdAt' ];
+//   if (!validSortFields.includes(sort)) {
+//     return res.status(400).json({ message: `Invalid sortBy parameter. Allowed values are: ${validSortFields.join(", ")}` });
+//   }
+//   const itineraries = await itineraryModel.find().sort(sort);
+
+//   return res.status(200).json(itineraries);
+// }
 
 const updateItinerary = async (req, res) => {
   const update = req.body;
@@ -168,6 +177,37 @@ const updateItinerary = async (req, res) => {
   }
 };
 
+const readAllItineraries = async (req, res) => {
+  const sort = req.query.sort || "-createdAt"; // Default to "-createdAt" if no parameter is provided
+
+  // Validate sortBy parameter
+  const validSortFields = ["price", "-createdAt"];
+  if (!validSortFields.includes(sort)) {
+    return res
+      .status(400)
+      .json({
+        message:
+          ' Invalid sortBy parameter. Allowed values are: ${validSortFields.join(", ")}',
+      });
+  }
+
+  try {
+    // Initialize APIFeatures with the query and query string
+    const features = new APIFeatures(itineraryModel.find(), req.query).filter();
+
+    // Apply sorting
+    const itineraries = await features.query.sort(sort);
+
+    if (!itineraries.length) {
+      return res.status(404).json({ message: "No itineraries found" });
+    }
+
+    res.status(200).json(itineraries);
+  } catch (error) {
+    res.status(500).json({ message: "An error occurred", error });
+  }
+};
+
 const deleteItinerary = async (req, res) => {
   const { id } = req.params;
   if (mongoose.Types.ObjectId.isValid(id)) {
@@ -184,17 +224,33 @@ const deleteItinerary = async (req, res) => {
     }
     try {
       const result = await itineraryModel.deleteOne({ _id: id });
-      res.status(200).json({ message: "Itinerary deleted successfully", result });
+      res
+        .status(200)
+        .json({ message: "Itinerary deleted successfully", result });
     } catch (error) {
-      res.status(500).json({ error: "couldn't update itinerary data" });
+      res.status(500).json({ error: "couldn't delete itinerary data" });
     }
-    
-    // .catch((error) => {
-    //   
-    // });
-    
   } else {
-    res.status(500).json({ error: "Invalid user ID" });
+    res.status(500).json({ error: "Invalid itinerary ID" });
+  }
+};
+
+const deleteVintage = async (req, res) => {
+  const { id } = req.params;
+  if (mongoose.Types.ObjectId.isValid(id)) {
+    const vintage = await VintageModel.findById(id);
+
+    if (!vintage) {
+      return res.status(404).json({ error: "Vintage not found" });
+    }
+    try {
+      const result = await VintageModel.deleteOne({ _id: id });
+      res.status(200).json({ message: "Vintage deleted successfully", result });
+    } catch (error) {
+      res.status(500).json({ error: "couldn't delete vintage data" });
+    }
+  } else {
+    res.status(500).json({ error: "Invalid vintage ID" });
   }
 };
 
@@ -290,4 +346,5 @@ module.exports = {
   readSingleVintage,
   updateVintage,
   deleteItinerary,
+  deleteVintage,
 };
