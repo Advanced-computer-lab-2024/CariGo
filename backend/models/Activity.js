@@ -22,12 +22,10 @@ const activitySchema = new mongoose.Schema(
       type: Date,
       // required: true,
     },
-    locations: [
-      {
-        lon: String,
-        lan: String,
-      },
-    ],
+    locations: {
+      lon: String,
+      lan: String,
+    },
     price: {
       range: {
         min: Number,
