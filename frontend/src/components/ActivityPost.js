@@ -88,7 +88,7 @@ const navigate = useNavigate();
               
               title={
                 <Typography variant="h5" sx={{ width: '300px', fontWeight: 'bold', fontSize: '24px' }}>
-                  TITLE
+                  {title}
                 </Typography>
               }
             />
@@ -140,7 +140,13 @@ const navigate = useNavigate();
                 
                 }}>
             <PinDropIcon sx={{marginTop:'0px',}}/>
-            <Typography sx={{marginLeft:'5px'}}> {location}</Typography>
+            <Typography sx={{marginLeft:'5px'}}> 
+
+              {/* {(location.lan != null && location.lon != null) ?
+              `lan : ${location.lan}<br></br>
+              lon: ${location.lon}`: 'no location specified'
+              } */}
+              </Typography>
             </Box>
             
             <Typography sx={{fontSize: '16px', marginLeft: '30px'}}> {duration}</Typography>
@@ -153,11 +159,20 @@ const navigate = useNavigate();
             <AttachMoneyIcon />
             <Typography sx={{
                 marginLeft:'5px',
-                textDecoration: discount>0 ? 'line-through' : 'none',
-                color: discount>0 ? '#ff4d4d' : '#126782',
+                //textDecoration: discount>0 ? 'line-through' : 'none',
+                color: '#126782',
+                //discount>0 ? '#ff4d4d' : '#126782',
                 marginRight: '5px',
-            }}> {price != null? price+"" :'no specified price'}</Typography>
-            <Typography sx={{fontSize: '16px'}}> {discount >0?  (price -(price*discount/100)): ''}</Typography>
+            }}> {
+              price != null? 
+              (price.range.max+"-"+price.range.min )
+              :'no specified price'}
+              </Typography>
+
+
+            {/* <Typography sx={{fontSize: '16px'}}> {discount >0?  (price -(price*discount/100)): ''}</Typography> */}
+
+
             <Box sx={{
                 backgroundColor : '#ff4d4d',
                 display: 'flex',
@@ -192,7 +207,7 @@ const navigate = useNavigate();
             top: '290px',
           }}
         >
-          DESCRIPTION
+          {description}
         </Typography>
       </CardContent>
 
