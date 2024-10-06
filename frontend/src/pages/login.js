@@ -114,7 +114,7 @@ export default function LoginPage() {
           </Button>
         </form>
         <Typography
-          endDecorator={<Link href="/sign-up">Sign up</Link>}
+          endDecorator={<Link href="/signup">Sign up</Link>}
           sx={{ fontSize: 'sm', alignSelf: 'center' }}
         >
           Don&apos;t have an account?

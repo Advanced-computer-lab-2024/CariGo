@@ -12,6 +12,8 @@ import SignUp from './pages/Signup';
 import { jwtDecode } from 'jwt-decode';
 import NavBar from "./components/NavBar";
 
+
+
 function App() {
   const token = localStorage.getItem('jwt');
 
