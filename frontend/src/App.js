@@ -10,6 +10,7 @@ import LoginPage from './pages/login';
 import { jwtDecode } from 'jwt-decode';
 import NavBar from "./components/NavBar";
 import CreateActivityForm from "./pages/CreateActivityForm";
+import TouristProfile from "./pages/TouristProfile";
 function App() {
   const token = localStorage.getItem('jwt');
 
@@ -28,7 +29,7 @@ function App() {
         <Route path="/" element={<Home />} /> {/* Default route */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/activities" element={<UserViewActivities />} /> 
-        <Route path="/createActivity" element={<CreateActivityForm />} /> 
+        <Route path="/createActivity" element={<CreateActivityForm userId={localStorage.getItem("id")} />} /> 
         <Route path="/advertiser" element={<AdvertiserProfile userId={localStorage.getItem("id")} />} />
         <Route path="/tourist" element={<TouristProfile userId={localStorage.getItem("id")} />} />
         {/* <Route path="/activities/:id" element={<ActivityDetail/>} /> */}
