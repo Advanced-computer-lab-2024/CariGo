@@ -154,22 +154,24 @@ const updateItinerary = async (req, res) => {
 
   if (mongoose.Types.ObjectId.isValid(req.params.itineraryId)) {
     console.log("inside the update");
-    const itinerary = await itineraryModel.findById(id);
 
-    if (!itinerary) {
-      return res.status(404).json({ error: "Itinerary not found" });
-    }
-    itineraryModel
-      .updateOne(
+    try {
+      const itinerary = await itineraryModel.findById(req.params.itineraryId);
+
+      if (!itinerary) {
+        return res.status(404).json({ error: "Itinerary not found" });
+      }
+
+      const result = await itineraryModel.updateOne(
         { _id: new mongoose.Types.ObjectId(req.params.itineraryId) },
         { $set: update }
-      )
-      .then((result) => {
-        res.status(201).json(result);
-      })
-      .catch((error) => {
-        res.status(500).json({ error: "couldn't update itinerary data" });
-      });
+      );
+
+      res.status(201).json(result);
+    } catch (error) {
+      res.status(500).json({ error: "couldn't update itinerary data" });
+    }
+
   } else {
     res
       .status(500)
@@ -286,7 +288,7 @@ const readAllVintages = async (req, res) => {
   } catch (error) {
     res
       .status(500)
-      .json({ error: "couldn't get the itinerary data, itinerary id invalid" });
+      .json({ error: "couldn't get the historical place data, id invalid" });
   }
 };
 
@@ -296,22 +298,33 @@ const updateVintage = async (req, res) => {
 
   if (mongoose.Types.ObjectId.isValid(req.params.vintageId)) {
     console.log("inside the update");
-    VintageModel.updateOne(
-      { _id: new mongoose.Types.ObjectId(req.params.vintageId) },
-      { $set: update }
-    )
-      .then((result) => {
-        res.status(201).json(result);
-      })
-      .catch((error) => {
-        res
-          .status(500)
-          .json({ error: "couldn't update historical place data" });
-      });
+    
+    try {
+      // Check if the vintage item exists first
+      const vintage = await VintageModel.findById(req.params.vintageId);
+
+      if (!vintage) {
+        return res.status(404).json({ error: "Historical place not found" });
+      }
+
+      // Update the vintage item
+      const result = await VintageModel.updateOne(
+        { _id: new mongoose.Types.ObjectId(req.params.vintageId) },
+        { $set: update }
+      );
+
+      res.status(200).json(result);
+
+    } catch (error) {
+      console.error("Error updating vintage:", error);
+      res
+        .status(500)
+        .json({ error: "Couldn't update historical place data" });
+    }
   } else {
     res
-      .status(500)
-      .json({ error: "couldn't update historical place data, id invalid" });
+      .status(400)  // Use 400 for invalid input
+      .json({ error: "Invalid vintage ID" });
   }
 };
 
@@ -335,11 +348,29 @@ const readSingleVintage = (req, res) => {
   }
 };
 
+const readMyItineraries = async (req, res) => {
+  const { id } = req.query;
+  try {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "not a valid Id" });
+    }
+    const itineraries = await itineraryModel.find({ author: id }).sort({
+      createdAt: -1,
+    });
+    return res.status(200).json(itineraries);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "couldn't get the itinerary data, itinerary id invalid" });
+  }
+};
+
 module.exports = {
   createItinerary,
   createvintage,
   createProduct,
   readAllItineraries,
+  readMyItineraries,
   readSingleItinerary,
   updateItinerary,
   readAllVintages,

@@ -11,10 +11,9 @@ dotenv.config({ path: "./.env" });
 
 const app = require("./app");
 
-const cors = require('cors');
+const cors = require("cors");
 
 app.use(cors());
-
 
 // const DB = process.env.DATABASE;
 

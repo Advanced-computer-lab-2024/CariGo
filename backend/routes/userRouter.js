@@ -23,5 +23,5 @@ router.post("/login", authController.login);
 router.use(authController.protect);
 router.patch("/update/:userId", updateUserData);
 // GET a single workout
-router.get("/:id", getUser);
+router.get("/:id", authController.restrictTo("Tour_Guide"), getUser);
 module.exports = router;

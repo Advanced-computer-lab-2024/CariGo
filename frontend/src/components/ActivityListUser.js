@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import ActivityPost from "./ActivityPost.js";
 import { Grid } from '@mui/material';
 import { Box } from '@mui/material';
+import Paper from '@mui/material/Paper';
 
-export default function ActivityList({ActivityPosts}){
+export default function ActivityList({}){
     const [activities, setActivities] = useState([]);
 
     useEffect(() => {
@@ -29,6 +30,7 @@ export default function ActivityList({ActivityPosts}){
     
 
     return (
+        <Paper elevation={3} sx={{ padding: 2 }}>
         <Grid container spacing={2} sx={{display: 'flex',
             flexDirection: 'column', width: '100vw'}}>
             {activities.map((activity,index) => (
@@ -52,6 +54,7 @@ export default function ActivityList({ActivityPosts}){
                 </Grid>
             ))}
         </Grid>
+        </Paper>
         
     );
 };

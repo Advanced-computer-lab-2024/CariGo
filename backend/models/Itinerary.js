@@ -10,7 +10,7 @@ const itinerarySchema = new schema(
     activities: [
       {
         name: String,
-        strat_date: Date,
+        start_date: Date,
         end_date: Date,
         description: String,
       },

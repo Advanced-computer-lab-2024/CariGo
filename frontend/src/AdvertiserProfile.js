@@ -17,7 +17,22 @@ const AdvertiserProfile = ({ userId }) => {
     const fetchProfile = async () => {
       try {
         console.log('Fetching profile for userId:', userId); // Debugging log
-        const response = await axios.get(`http://localhost:4000/cariGo/users/66fe6614193a10b4e3523979`);
+
+        // Retrieve the token from localStorage (or sessionStorage)
+        const token = localStorage.getItem('jwt');  // or sessionStorage.getItem('jwt')
+
+        // Check if the token exists
+        if (!token) {
+          throw new Error("No token found. Please log in.");
+        }
+
+        // Set the headers with the Authorization token
+        const response = await axios.get(`http://localhost:4000/cariGo/users/${userId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
         console.log('Profile data received:', response.data); // Debugging log
         setProfile(response.data);
       } catch (err) {
@@ -44,7 +59,7 @@ const AdvertiserProfile = ({ userId }) => {
 
   return (
     <div className="advertiser-profile">
-      <NavBar />
+      {/* <NavBar /> */}
       <header className="profile-header">
         <ProfileHeader 
           companyName={profile.companyName || 'CariGo'} 
