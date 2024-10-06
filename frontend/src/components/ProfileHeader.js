@@ -32,7 +32,15 @@ const ProfileHeader = ({ companyName, logo, coverImage }) => {
           alt={`${companyName} logo`} 
           onClick={() => openModal(logo)}
         />
-        <SmallButton /> {/* SmallButton Component */}
+        <SmallButton initialData={{
+        id: '123', 
+        email: 'menna@gmail.com',
+        role: 'Advertiser',
+        hotline: '2132135',
+        about: 'Hey everyone, this is a test',
+        description: 'Tour guide shater',
+        }} />
+        {/* SmallButton Component */}
       </div>
       <ImageModal 
         isOpen={isModalOpen} 
