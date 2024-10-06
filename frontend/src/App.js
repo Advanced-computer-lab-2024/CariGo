@@ -6,9 +6,12 @@ import './styles/index.css';
 import { BrowserRouter as Router,Route,Routes } from 'react-router-dom';
 import UserViewActivities from './pages/UserViewActivities';
 import Home from './pages/Home';
+
 import LoginPage from './pages/login';
+import SignUp from './pages/Signup';
 import { jwtDecode } from 'jwt-decode';
 import NavBar from "./components/NavBar";
+
 function App() {
   const token = localStorage.getItem('jwt');
 
@@ -26,6 +29,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} /> {/* Default route */}
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/SignUp" element={<SignUp />} />
         <Route path="/activities" element={<UserViewActivities />} /> 
         <Route path="/advertiser" element={<AdvertiserProfile userId={localStorage.getItem("id")} />} />
         {/* <Route path="/activities/:id" element={<ActivityDetail/>} /> */}

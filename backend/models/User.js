@@ -66,6 +66,7 @@ const userSchema = new mongoose.Schema(
         type: mongoose.Schema.ObjectId,
         ref: "Experience", // References the 'Rating' model
         default: [],
+        required: [false]
       },
     ],
     years_of_experience: {

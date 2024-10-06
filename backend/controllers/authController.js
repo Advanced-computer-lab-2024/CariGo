@@ -68,9 +68,11 @@ exports.signup = catchAsync(async (req, res, next) => {
       passwordConfirm: req.body.passwordConfirm,
       role: req.body.role,
       mobile_number: req.body.mobile_number,
-      experience:[],
+      experience:req.body.experience,
+      years_of_experience:req.body.years_of_experience,
       passwordChangedAt: Date.now(),
     }
+    console.log(newUserData);
   }else if(userType === "Seller"){
     newUserData = {
       username: req.body.username,
