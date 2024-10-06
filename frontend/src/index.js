@@ -17,6 +17,7 @@ root.render(
         <Route path="/" element={<App />} /> {/* Default route */}
         <Route path="/activities" element={<UserViewActivities />} /> {/* Activities page route */}
         {/* Add more routes as needed */}
+       }
       </Routes>
     </Router>
   </React.StrictMode>
