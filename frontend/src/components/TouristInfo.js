@@ -1,9 +1,9 @@
 import React from 'react';
-import './styles/CompanyInfo.css'; // Assuming you have some styles for the component
+import './styles/TouristInfo.css'; // Assuming you have some styles for the component
 
-const CompanyInfo = ({ userName, email, role, hotline, website, about, description }) => {
+const TouristInfo = ({ userName, email, role, hotline, website, about, description }) => {
   return (
-    <div className="company-info">
+    <div className="tourist-info">
       <h2>{userName}</h2>
       <p><strong>Email:</strong> {email}</p>
       <p><strong>Role:</strong> {role}</p>
@@ -15,4 +15,4 @@ const CompanyInfo = ({ userName, email, role, hotline, website, about, descripti
   );
 };
 
-export default CompanyInfo;
+export default TouristInfo;

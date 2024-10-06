@@ -20,6 +20,7 @@ export default function CenteredTabs() {
   return (
     <Box sx={{ width: '100%', bgcolor: 'background.paper' }}>
       {/* Tab Navigation */}
+      {/* Tab Navigation */}
       <Tabs
         value={value}
         onChange={handleChange}
@@ -38,6 +39,9 @@ export default function CenteredTabs() {
           },
         }}
       >
+        <Tab label="Company Info" />
+        <Tab label="Activity Post" />
+        <Tab label="Settings" />
         <Tab label="Company Info" />
         <Tab label="Activity Post" />
         <Tab label="Settings" />

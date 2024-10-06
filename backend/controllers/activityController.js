@@ -13,21 +13,31 @@ const APIFeatures = require('../utils/apiFeatures');
 const createActivity = async (req, res) => {
     
     try {
-        const { start_date, end_date, duration, locations, price, discount, tag, bookingOpened, category,title ,description } = req.body;
+        const { start_date, end_date, duration, lon,lan,minPrice, maxPrice,discount, tag, bookingOpened, category,title ,description } = req.body;
 
         // Validate that end_date is after start_date
+        const price = {
+            range: {
+                min: minPrice,
+                max: maxPrice
+            }
+        };
+        const locations ={
+            lon :lon ,lan :lan
+        };
         if (new Date(end_date) <= new Date(start_date)) {
             return res.status(400).json({ error: 'End date must be after start date' });
         }
 
         // Find the category by name
-        console.log(start_date);
+        
         const categoryDoc = await Category.findOne({ name: category });
         if (!categoryDoc) {
             return res.status(400).json({ error: 'Please choose a valid category' });
         }
 
         // Find the tag by title
+        
         const tagDoc = await Tag.findOne({ title: tag });
         if (!tagDoc) {
             return res.status(400).json({ error: 'Please choose a valid tag' });

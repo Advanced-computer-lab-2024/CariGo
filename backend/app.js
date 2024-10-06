@@ -32,7 +32,7 @@ app.use("/cariGo", limiter);
 app.use(
   cors({
     origin: "http://localhost:3000", // The port React is running on
-    methods: "GET,POST",
+    credentials: true// allow session cookies from same site
   })
 ); // Enable CORS for all routes and origins
 // BODY PARSER, reading data from body into req.body
