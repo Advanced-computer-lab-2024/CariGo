@@ -1,31 +1,39 @@
-import './styles/App.css';
-import React from 'react';
-import AdvertiserProfile from './AdvertiserProfile';  // Adjust the path based on your structure
+import "./styles/App.css";
+import React from "react";
+import AdvertiserProfile from "./AdvertiserProfile"; // Adjust the path based on your structure
 //import './styles/App.css';
 import './styles/index.css';
-import Activity from './components/Activity';
-import Navbar from './Navbar';
-import ActivityGrid from './components/ActivityGrid';
-import ActivityPost from './components/ActivityPost';
-import { BrowserRouter,Route,Router,Routes } from 'react-router-dom';
-import ActivityList from './components/ActivityListUser';
-import ActivityPostAdvertiser from './components/ActivityPostAdvertiser';
-import UserViewActivities from './UserViewActivities';
-import CreateActivityForm from './components/CreateActivityForm';
-import SelectTags from './components/SelectTags';
-
-
+import { BrowserRouter as Router,Route,Routes } from 'react-router-dom';
+import UserViewActivities from './pages/UserViewActivities';
+import Home from './pages/Home';
+import LoginPage from './pages/login';
+import { jwtDecode } from 'jwt-decode';
+import NavBar from "./components/NavBar";
 function App() {
+  const token = localStorage.getItem('jwt');
+
+  // Decode the token safely
+  let userId;
+  if (token) {
+    try {
+      const decoded = jwtDecode(token);
+      userId = decoded.id; // Assuming the id is in the decoded token
+    } catch (error) {
+      console.error('Failed to decode token:', error);
+    }
+  }
   return (
-    <div className="App">
-      <SelectTags/>
-     <CreateActivityForm/>
-     {/* <LoginPage/> */}
-    {/* <UserViewActivities/> */}
-      
-    </div>
+      <Routes>
+        <Route path="/" element={<Home />} /> {/* Default route */}
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/activities" element={<UserViewActivities />} /> 
+        <Route path="/advertiser" element={<AdvertiserProfile userId={localStorage.getItem("id")} />} />
+        {/* <Route path="/activities/:id" element={<ActivityDetail/>} /> */}
+        <Route path="/activities/update/:id" element={<updateActivityForm/>} />
+        {/* Add more routes as needed */}
+      </Routes>
+    
   );
 }
 
 export default App;
-
