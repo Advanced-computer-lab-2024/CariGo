@@ -84,6 +84,7 @@ export default function CreateActivityForm() {
           'Content-Type': 'application/json',
         },
       });
+      console.log(activity);
 
       const json = await response.json();
 
