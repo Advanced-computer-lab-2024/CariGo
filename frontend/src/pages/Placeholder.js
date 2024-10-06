@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ActivityPost from "./ActivityPost.js";
-import { Grid, Box,Menu, TextField, Button, CircularProgress, Typography, MenuItem } from '@mui/material';
-
-
-
+import { Grid, Box, TextField, Button, CircularProgress, Typography, MenuItem } from '@mui/material';
 
 export default function ActivityList() {
     const [activities, setActivities] = useState([]);
