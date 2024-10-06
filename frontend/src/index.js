@@ -2,16 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './styles/index.css';
 import App from './App';
-import NavBar from './components/NavBar';
-import ActivityList from './components/ActivityListUser';
+
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-import UserViewActivities from './pages/UserViewActivities';
-import CreateActivityForm from './components/CreateActivityForm';
-import ActivityDetail from './components/ActivityDetail';
-import ActivityPostAdvertiser from './components/ActivityPostAdvertiser';
-import updateActivityForm from './components/UpdateActivityForm';
-import AdvertiserProfile from './AdvertiserProfile';
+
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

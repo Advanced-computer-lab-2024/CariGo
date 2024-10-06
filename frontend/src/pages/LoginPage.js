@@ -119,6 +119,6 @@ export default function LoginPage() {
           Don&apos;t have an account?
         </Typography>
       </Sheet>
-    </main>
-  );
+    </main>
+  );
 }

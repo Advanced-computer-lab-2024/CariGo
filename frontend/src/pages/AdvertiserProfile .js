@@ -1,26 +1,30 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import ProfileHeader from './components/ProfileHeader';
-import CompanyInfo from './components/CompanyInfo';
-import CenteredTabs from './components/CenteredTabs';
-import NavBar from './components/NavBar';
-import './styles/AdvertiserProfile.css';
-import coverImage from './assets/header.png'; 
-import logoImage from './assets/profile.png'; 
+import ProfileHeader from '../components/ProfileHeader';
+import CompanyInfo from '../components/CompanyInfo';
+import CenteredTabs from '../components/CenteredTabs';
+import NavBar from '../components/NavBar';
+import '../styles/AdvertiserProfile.css';
+import coverImage from '../assets/header.png'; 
+import logoImage from '../assets/profile.png'; 
 
-const AdvertiserProfile = ({ userId }) => {
+const AdvertiserProfile = () => {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const id=localStorage.getItem("id");
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        console.log('Fetching profile for userId:', userId); // Debugging log
+       
+
+        console.log('Fetching profile for userId:', id); // Debugging log
 
         // Retrieve the token from localStorage (or sessionStorage)
         const token = localStorage.getItem('jwt');  // or sessionStorage.getItem('jwt')
-
+        console.log(token); 
+        
         // Check if the token exists
         if (!token) {
           throw new Error("No token found. Please log in.");
@@ -28,7 +32,7 @@ const AdvertiserProfile = ({ userId }) => {
 
         // Set the headers with the Authorization token
 
-        const response = await axios.get(`http://localhost:4000/cariGo/users/${userId}`, {
+        const response = await axios.get(`http://localhost:4000/cariGo/users/${id}`, {
           headers: {
         Authorization: `Bearer ${token}`,
           },
@@ -44,7 +48,7 @@ const AdvertiserProfile = ({ userId }) => {
     };
 
     fetchProfile();
-  }, [userId]);
+  }, [id]);
 
   if (loading) {
     return <div>Loading...</div>;
