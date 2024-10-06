@@ -1,32 +1,30 @@
 {
-  "proxy": "http://localhost:4000",
-  "name": "frontend",
+  "name": "my-website",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@ant-design/icons": "^5.5.1",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
-    "@fontsource/inter": "^5.1.0",
-    "@fortawesome/free-regular-svg-icons": "^6.6.0",
-    "@fortawesome/react-fontawesome": "^0.2.2",
-    "@mui/base": "^5.0.0-beta.58",
+    "@fontsource/roboto": "^5.1.0",
+    "@loadable/component": "^5.16.4",
     "@mui/icons-material": "^6.1.2",
-    "@mui/joy": "^5.0.0-beta.48",
     "@mui/material": "^6.1.2",
-    "@mui/x-date-pickers": "^7.19.0",
+    "@mui/styled-engine-sc": "^6.1.2",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "antd": "^5.21.2",
     "axios": "^1.7.7",
-    "base": "^3.0.0",
-    "cors": "^2.8.5",
-    "date-fns": "^4.1.0",
-    "jwt-decode": "^4.0.0",
+    "chart.js": "^4.4.4",
     "react": "^18.3.1",
+    "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.3.1",
-    "react-modal": "^3.16.1",
+    "react-pro-sidebar": "^1.1.0",
     "react-router-dom": "^6.26.2",
     "react-scripts": "^5.0.1",
+    "react-toastify": "^10.0.5",
+    "styled-components": "^6.1.13",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -52,5 +50,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.11",
+    "@types/react-dom": "^18.3.0",
+    "typescript": "^4.9.5"
   }
 }
