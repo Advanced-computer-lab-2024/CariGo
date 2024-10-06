@@ -15,7 +15,7 @@ router.get('/getOne/:id',authController.restrictTo("Advertiser"), activityContro
 
 
 
-router.post('/createActivity', activityController.createActivity);
+router.post('/createActivity',[authController.protect ,authController.restrictTo("Advertiser")], activityController.createActivity);
 
 // router.post('/createActivity',[authController.protect ,authController.restrictTo("Advertiser")], activityController.createActivity);
 router.patch('/updateActivity/:id',authController.restrictTo("Advertiser"),activityController.updateActivity);
