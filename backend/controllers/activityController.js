@@ -1,17 +1,54 @@
 const Activity = require('../models/Activity');
+const Category = require('../models/Category');
+const Tag = require('../models/Tag');
 const APIFeatures = require('../utils/apiFeatures');
 // const User = require('./../models/userModel');
 
 const createActivity = async (req, res) => {
-    const { start_date, end_date, duration, locations, price, discount, tags, bookingOpened } = req.body;
+    
     try {
-        console.log(req.body);
-        const activity = await Activity.create({ start_date, end_date, duration, locations, price, discount, tags, bookingOpened, author: req.user.id });
+        const { start_date, end_date, duration, locations, price, discount, tag, bookingOpened, category,title ,description } = req.body;
+
+        // Validate that end_date is after start_date
+        if (new Date(end_date) <= new Date(start_date)) {
+            return res.status(400).json({ error: 'End date must be after start date' });
+        }
+
+        // Find the category by name
+        console.log(start_date);
+        const categoryDoc = await Category.findOne({ name: category });
+        if (!categoryDoc) {
+            return res.status(400).json({ error: 'Please choose a valid category' });
+        }
+
+        // Find the tag by title
+        const tagDoc = await Tag.findOne({ title: tag });
+        if (!tagDoc) {
+            return res.status(400).json({ error: 'Please choose a valid tag' });
+        }
+        
+
+        // Create the activity with the category and tag IDs
+        const activity = await Activity.create({
+            start_date,
+            end_date,
+            duration,
+            locations,
+            price,
+            discount,
+            tag: tagDoc._id,
+            bookingOpened,
+            category: categoryDoc._id, // Use the category ID
+            author: req.user.id,description,title
+        });
+
         res.status(200).json(activity);
+        console.log("activity created successfully");
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
 };
+
 
 const deleteActivity = async (req, res) => {
     try {
@@ -28,12 +65,17 @@ const deleteActivity = async (req, res) => {
 
 const getActivities = async (req, res) => {
     const today = new Date();
-    const sortBy = req.query.sort || '-createdAt'; // Default to "-createdAt" if no parameter is provided
+    let sortBy = req.query.sort || '-createdAt'; // Default to "-createdAt" if no parameter is provided
 
     // Validate sortBy parameter
     const validSortFields = ['discount', 'price', 'ratingsAverage', '-createdAt'];
     if (!validSortFields.includes(sortBy)) {
         return res.status(400).json({ message: `Invalid sortBy parameter. Allowed values are: ${validSortFields.join(", ")}` });
+    }
+
+    // Change sortBy to "price.min" if it is "price"
+    if (sortBy === 'price') {
+        sortBy = 'price.min';
     }
 
     try {
@@ -42,7 +84,6 @@ const getActivities = async (req, res) => {
             .filter();
 
         // Apply sorting
-
         const activities = await features.query.sort(sortBy);
 
         if (!activities.length) {
@@ -54,6 +95,25 @@ const getActivities = async (req, res) => {
         res.status(500).json({ message: 'An error occurred', error });
     }
 };
+
+const getAdvActivities = async (req, res) => {
+    try {
+        const id = req.user.id;
+
+        // Corrected the find method syntax
+        const activities = await Activity.find({ author: id });
+
+        if (!activities.length) {
+            return res.status(404).json({ message: 'Activities not found' });
+        }
+
+        res.status(200).json(activities);
+    } catch (error) {
+        res.status(500).json({ message: 'Error retrieving activities', error });
+    }
+};
+
+
 
 const updateActivity = async (req, res) => {
     try {
@@ -136,4 +196,4 @@ const sortActivities = async (req, res) => {
 
 
 
-module.exports = { createActivity, getActivities, getActivity, deleteActivity, updateActivity, sortActivities };
+module.exports = { createActivity, getActivities, getActivity, deleteActivity, updateActivity, sortActivities,getAdvActivities };
