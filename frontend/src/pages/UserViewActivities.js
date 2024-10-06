@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './styles/index.css';
-import App from './App';
-import Navbar from './Navbar';
-import ActivityList from './components/ActivityListUser';
+import '../styles/index.css';
+import App from '../App';
+import NavBar from '../components/NavBarTourist';
+import ActivityList from '../components/ActivityListUser';
 import { Box } from '@mui/material';
 
 
@@ -11,7 +11,8 @@ import { Box } from '@mui/material';
 export default function UserViewActivities (){
   return(
     <div>
-    
+    <NavBar/>
+
     <Box sx={{
       width:'1150px' ,
       overflow: 'hidden',

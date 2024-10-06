@@ -5,15 +5,17 @@ const APIFeatures = require('../utils/apiFeatures');
 // const User = require('./../models/userModel');
 
 const createActivity = async (req, res) => {
-    const { start_date, end_date, duration, locations, price, discount, tag, bookingOpened, category,title ,description } = req.body;
-
+    
     try {
+        const { start_date, end_date, duration, locations, price, discount, tag, bookingOpened, category,title ,description } = req.body;
+
         // Validate that end_date is after start_date
         if (new Date(end_date) <= new Date(start_date)) {
             return res.status(400).json({ error: 'End date must be after start date' });
         }
 
         // Find the category by name
+        console.log(start_date);
         const categoryDoc = await Category.findOne({ name: category });
         if (!categoryDoc) {
             return res.status(400).json({ error: 'Please choose a valid category' });
@@ -24,6 +26,7 @@ const createActivity = async (req, res) => {
         if (!tagDoc) {
             return res.status(400).json({ error: 'Please choose a valid tag' });
         }
+        
 
         // Create the activity with the category and tag IDs
         const activity = await Activity.create({

@@ -18,10 +18,11 @@ import PinDropIcon from '@mui/icons-material/PinDrop';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import SellIcon from '@mui/icons-material/Sell';
 import StarIcon from '@mui/icons-material/Star';
+import Link from '@mui/material/Link';
+import { useNavigate } from 'react-router-dom';
 
 
-
-export default function ActivityPost({ author, img, start_date, end_date, duration, tags, description, title,location,
+export default function ActivityPost({ id,author, img, start_date, end_date, duration, tags, description, title,location,
     price,category,discount,isOpened, rating}) {
   const [expanded, setExpanded] = React.useState(false);
 
@@ -29,7 +30,13 @@ export default function ActivityPost({ author, img, start_date, end_date, durati
     setExpanded(!expanded);
   };
 
+const navigate = useNavigate();
   return (
+    // <Link 
+    // to={`/activities/${id}`} 
+    // style={{textDecoration:'none'}} 
+    // onClick={() => navigate(`/activities/${id}`)}
+    // >
     <Card
       sx={{
         width: '100%', // Use full width of the container
@@ -88,9 +95,11 @@ export default function ActivityPost({ author, img, start_date, end_date, durati
 
             {/* Tags below title */}
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginLeft: '15px' }}>
-              {/* {tags.map((tag) => (
-                <Chip key={tag} label={tag} sx={{backgroundColor :'#126782', color: 'white' }} />
-              )) || "tags"} */}
+              {
+              tags != null ?
+              tags.map((tag) => (
+                <Chip key={tag} label={tag.title} sx={{backgroundColor :'#126782', color: 'white' }} />
+              )) : ""}
             </Box>
           </Box>
           
@@ -147,7 +156,7 @@ export default function ActivityPost({ author, img, start_date, end_date, durati
                 textDecoration: discount>0 ? 'line-through' : 'none',
                 color: discount>0 ? '#ff4d4d' : '#126782',
                 marginRight: '5px',
-            }}> {""+price+"" || 'no specified price'}</Typography>
+            }}> {price != null? price+"" :'no specified price'}</Typography>
             <Typography sx={{fontSize: '16px'}}> {discount >0?  (price -(price*discount/100)): ''}</Typography>
             <Box sx={{
                 backgroundColor : '#ff4d4d',
@@ -206,5 +215,6 @@ export default function ActivityPost({ author, img, start_date, end_date, durati
         </Box>
       </CardActions>
     </Card>
+    // </Link>
   );
 }

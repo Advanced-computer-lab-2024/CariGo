@@ -8,69 +8,63 @@ import { Button as BaseButton } from '@mui/base/Button';
 import SelectTags from "./SelectTags";
 import SelectCategory from "./SelectCategory";
 import { useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 
 
-export default function CreateActivityForm(){
+
+export default function UpdateActivityForm(){
+    // const navigate = useNavigate();
+
+    const [formData, setFormData] = useState({
+        title: '',
+        description: '',
+        start_date: '',
+        end_date: '',
+        tags: [],
+        location: '',
+        price: 0,
+        discount: 0
+      });
 
     const navigate = useNavigate();
+   
+    const { id } = useParams();
 
-    const[title,setTitle]= useState('');
-    const[description,setDescription]= useState('');
-    const[start_date,setStart]= useState('');
-    const[end_date,setEnd]= useState('');
-    const[tags,setTags]= useState('');
-    const[location,setLocation]= useState('');
-    const[price,setPrice]= useState(0);
-    const[discount,setDiscount]= useState(0);
-
-    const[error,setError]= useState(null);
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({
+          ...formData,
+          [name]: value
+        });
+      };
     
-    const handleCreate = async(e) =>{
-        e.preventDefault();
-
-        const activity = {
-            title,
-            description,
-            start_date,
-            end_date,
-            tags,
-            location,
-            price,
-            discount,
-        }
-
-        const response = await fetch("/cariGO/activities/createActivity",
-            {
-                method: 'POST',
-                body: JSON.stringify(activity),
+        // Ensure the ID is correctly used in the URL.
+        const handleUpdate = async (event) => {
+            event.preventDefault();
+        
+            try {
+              const response = await fetch(`http://localhost:4000/cariGO/activities/updateActivity/${id}`, {
+                method: 'PATCH', // Ensure the method is capitalized (PATCH)
+                body: JSON.stringify(formData),
                 headers: {
                     'Content-Type': 'application/json',
                 },
+              });
+        
+              if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+              }
+        
+              navigate('/activities'); 
+            } catch (error) {
+              console.error("Error:", error.message);
+              alert("Login failed: " + error.message);
             }
-        )
-        const json= await response.json();
 
-        if(!response.ok){
-            setError(json.error);
-        }
-        if(response.ok){
-
-            setTitle('');
-            setDescription('');
-            setStart('');
-            setEnd('');
-            setTags('');
-            setLocation('');
-            setPrice(0);
-            setDiscount(0);
-
-            setError(null)
-            console.log("activity created");
-            navigate('/activities');
-
-        }
-    }
+        
+    };
+    
 
     return(
         <Box  
@@ -90,51 +84,49 @@ export default function CreateActivityForm(){
             paddingLeft:'30px',  
         }}>
         <Box sx={{marginLeft:'50px'}}>
-        <h3 sx={{color:'#ff4d4d', }}>CREATE A NEW ACTIVITY</h3>
+        <h3 sx={{color:'#ff4d4d', }}>UPDATE ACTIVITY</h3>
         {/*----FIELDS BOX---------------*/}
 
         <Box sx={{width:'100%',padding:'5px',paddingBottom:'20px'}}>
-        <FormControl defaultValue="" required sx={{marginTop:'20px'} }>
+        <FormControl defaultValue=""  sx={{marginTop:'20px'} }>
         <Label sx={{marginLeft:"2px"}}>TITLE</Label>
         <StyledInput placeholder="Write your title here" 
-        onChange={(e) => setTitle(e.target.value)}
-        value={title}
+        onChange={handleChange}
+        
         />
         <HelperText />
         </FormControl>
 
-        <FormControl defaultValue="" required>
+        <FormControl defaultValue="" >
         <Label sx={{marginLeft:"2px"}}>DESCRIPTION</Label>
         <StyledInput placeholder="brief description of your activity" 
-        onChange={(e) => setDescription(e.target.value)}
-        value={description}
+        onChange={handleChange}
+        
         />
         <HelperText />
         </FormControl>
 
-        <FormControl defaultValue="" required>
+        <FormControl defaultValue="" >
         <Label sx={{marginLeft:"2px"}}>start date</Label>
         <StyledInput placeholder="date activity starts" 
-        onChange={(e) => setStart(e.target.value)}
-        value={start_date}
+        onChange={handleChange}
+       
         />
         <HelperText />
         </FormControl>
 
-        <FormControl defaultValue="" required>
+        <FormControl defaultValue="" >
         <Label sx={{marginLeft:"2px"}}>end date</Label>
         <StyledInput placeholder="date activity ends" 
-        onChange={(e) => setEnd(e.target.value)}
-        value={end_date}
+        onChange={handleChange}
         />
         <HelperText />
         </FormControl>
 
-        <FormControl defaultValue="" required>
+        <FormControl defaultValue="" >
         <Label sx={{marginLeft:"2px"}}>location</Label>
         <StyledInput placeholder="activity location" 
-        onChange={(e) => setLocation(e.target.value)}
-        value={location}
+        onChange={handleChange}
         />
         <HelperText />
         </FormControl>
@@ -144,12 +136,11 @@ export default function CreateActivityForm(){
         <Label sx={{marginLeft:"10px"}}>Category</Label>
         <SelectCategory />
 
-        <FormControl defaultValue="" required>
+        <FormControl defaultValue="" >
         <Label sx={{marginLeft:"2px"}}>price</Label>
         <StyledInput placeholder="enter activity price" 
          type="number"
-        onChange={(e) => setPrice(e.target.value)}
-        value={price}
+         onChange={handleChange}
         />
         <HelperText />
         </FormControl>
@@ -158,8 +149,7 @@ export default function CreateActivityForm(){
         <Label sx={{marginLeft:"2px"}}>discount</Label>
         <StyledInput placeholder="enter any discounts" 
         type="number"
-        onChange={(e) => setDiscount(e.target.value)}
-        value ={discount}
+        onChange={handleChange}
         />
         <HelperText />
         </FormControl>
@@ -167,8 +157,8 @@ export default function CreateActivityForm(){
 
         </Box>
         <Button sx={{ marginLeft:'350px',marginBottom:'20px',}}
-         onClick={handleCreate} 
-        >CREATE</Button>
+         onClick={handleUpdate} 
+        >UPDATE</Button>
         
         </Box>
         </Box>
