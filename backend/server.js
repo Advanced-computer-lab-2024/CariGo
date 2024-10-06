@@ -14,24 +14,9 @@ const app = require("./app");
 const cors = require('cors');
 
 
-
-const corsOptions = {
-  origin: 'http://localhost:3000', // Frontend URL
-  methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'], // Allowed HTTP methods
-  // AccessControlAllowMethods :['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
-  credentials: true, // Allow credentials (cookies, authorization headers, etc.)
-  // preflightContinue: true,
-  onSuccess: (req, res) => {
-    console.log('CORS request successful');
-},
-};
-
 // Apply CORS middleware
-app.use(cors(corsOptions));
+app.use(cors);
 
-// Handle preflight requests for all routes
-app.options('*', cors(corsOptions));
 
 
 // const DB = process.env.DATABASE;

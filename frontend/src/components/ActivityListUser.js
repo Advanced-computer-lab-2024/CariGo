@@ -34,30 +34,55 @@ export default function ActivityList({ActivityPosts}){
         const day = String(d.getDate()).padStart(2, '0'); // Pad with leading zero if needed
         const month = String(d.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
         const year = d.getFullYear();
-    
+        
         // Return formatted string
         return `${day}/${month}/${year}`;
     };
+
+    const calculateDuration=(date1,date2)=>{
+        const start = new Date(date1);
+        const end = new Date(date2);
+        
+        // Calculate differences
+        const years = end.getFullYear() - start.getFullYear();
+        const months = end.getMonth() - start.getMonth() + (years * 12);
+        const days = Math.floor((end - start) / (1000 * 60 * 60 * 24));
+        const weeks = Math.floor(days / 7);
+      
+        // Determine the largest unit
+        if (years > 0) {
+          return `${years} year${years > 1 ? 's' : ''}`;
+        } else if (months > 0) {
+          return `${months} month${months > 1 ? 's' : ''}`;
+        } else if (weeks > 0) {
+          return `${weeks} week${weeks > 1 ? 's' : ''}`;
+        } else {
+          return `${days} day${days > 1 ? 's' : ''}`;
+        }
+    }
     
 
     return (
         <Grid container spacing={2} sx={{display: 'flex',
             flexDirection: 'column', width: '100vw'}}>
-            {activities.map((activity,index) => (
+            {activities.map((activity,index) => 
+                
+            (
                 <Grid size ={4} key={index}>
                     <ActivityPost
                         id={activity._id}
+                        author={activity.author}
                         start_date={StringDate(activity.start_date)}
                         end_date={StringDate(activity.end_date)}
-                        location={activity.location}
-                        duration={activity.duration}
+                        location={activity.locations}
+                        duration={calculateDuration(activity.start_date,activity.end_date)}
                         price= {activity.price}
-                        category={activity.category}
+                        category={activity.Category}
                         rating={activity.ratingsAverage}
                         discount={activity.discount}
                         isOpened= {activity.isOpened==true? "open":"closed"}
                         title= {activity.title} 
-                        tags={activity.tags}
+                        tag={activity.tag}
                         description={activity.description}
                         img={activity.img}
                     />

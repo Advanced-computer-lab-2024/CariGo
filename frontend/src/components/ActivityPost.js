@@ -22,7 +22,7 @@ import Link from '@mui/material/Link';
 import { useNavigate } from 'react-router-dom';
 
 
-export default function ActivityPost({ id,author, img, start_date, end_date, duration, tags, description, title,location,
+export default function ActivityPost({ id,author, img, start_date, end_date, duration, tag, description, title,location,
     price,category,discount,isOpened, rating}) {
   const [expanded, setExpanded] = React.useState(false);
 
@@ -41,7 +41,7 @@ const navigate = useNavigate();
       sx={{
         width: '100%', // Use full width of the container
         maxWidth: '900px', // Set a max width
-        height: '400px',
+        maxHeight: '500px',
         color: '#126782',
         fontSize: '18px',
         display: 'flex',
@@ -96,10 +96,10 @@ const navigate = useNavigate();
             {/* Tags below title */}
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginLeft: '15px' }}>
               {
-              tags != null ?
-              tags.map((tag) => (
-                <Chip key={tag} label={tag.title} sx={{backgroundColor :'#126782', color: 'white' }} />
-              )) : ""}
+              tag != null ?
+              
+                (<Chip label={tag} sx={{backgroundColor :'#126782', color: 'white' }} />)
+              : ""}
             </Box>
           </Box>
           
@@ -111,6 +111,14 @@ const navigate = useNavigate();
               marginLeft: '30px',
             }}
           >
+            
+            <Typography>author : {author}</Typography>
+
+            <Typography>
+              category: {category != null ? category:"no specified category"}
+              
+            </Typography>
+
             <Box sx={{display:'flex', }}>
             <StarIcon sx={{scale:'0.9'}}/>
             <Typography sx={{fontSize: '16px',marginTop:'1px'}}>{""+rating+""}</Typography>
@@ -134,6 +142,7 @@ const navigate = useNavigate();
                 <Typography sx={{fontSize: '16px'}}>{category}</Typography>
             <Typography sx={{fontSize: '16px'}}>From: {start_date}</Typography>
             <Typography sx={{fontSize: '16px'}}>To: {end_date}</Typography>
+            <Typography sx={{fontSize: '16px', marginLeft: '30px'}}> {duration}</Typography>
             <Box sx={{ display: 'flex',
                 marginTop: '5px',
                 margoinLeft:'-10px' ,
@@ -142,14 +151,18 @@ const navigate = useNavigate();
             <PinDropIcon sx={{marginTop:'0px',}}/>
             <Typography sx={{marginLeft:'5px'}}> 
 
-              {/* {(location.lan != null && location.lon != null) ?
-              `lan : ${location.lan}<br></br>
-              lon: ${location.lon}`: 'no location specified'
-              } */}
+            {location != null ? (
+              <>
+                lan: {location.lan}<br />
+                lon: {location.lon}
+              </>
+            ) : (
+              'no location specified'
+            )}
               </Typography>
             </Box>
             
-            <Typography sx={{fontSize: '16px', marginLeft: '30px'}}> {duration}</Typography>
+           
 
             <Box sx={{ display: 'flex',
                 marginTop: '5px',
