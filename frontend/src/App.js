@@ -10,7 +10,7 @@ import UserViewActivities from './pages/UserViewActivities';
 import AdvertiserProfile from './pages/AdvertiserProfile ';
 import Home from './pages/Home';
 import LoginPage from './pages/LoginPage';
-
+import UpdateActivityForm from './components/UpdateActivityForm';
 function App() {
   return (
       <Routes>
@@ -19,7 +19,7 @@ function App() {
         <Route path="/activities" element={<UserViewActivities />} /> 
         <Route path="/advertiser" element={<AdvertiserProfile />} />
         {/* <Route path="/activities/:id" element={<ActivityDetail/>} /> */}
-        <Route path="/activities/update/:id" element={<updateActivityForm/>} />
+        <Route path="/activities/update/:id" element={<UpdateActivityForm/>} />
         {/* Add more routes as needed */}
       </Routes>
     

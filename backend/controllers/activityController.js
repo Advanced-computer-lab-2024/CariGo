@@ -1,24 +1,12 @@
+
 const Activity = require('../models/Activity');
 const Category = require('../models/Category');
 const Tag = require('../models/Tag');
 const APIFeatures = require('../utils/apiFeatures');
+
+
 // const User = require('./../models/userModel');
 
-
-
-
-// const authenticateToken = (req, res) => {
-//     const authHeader = req.headers['authorization'];
-//     const token = authHeader && authHeader.split(' ')[1]; // Extract token from header
-
-//     if (!token) return res.sendStatus(401); // Unauthorized if no token
-
-//     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-//         if (err) return res.sendStatus(403); // Forbidden if token is invalid
-//         req.user = user; // Attach user to request
-//          // Proceed to the next middleware or route handler
-//     });
-// };
 
 
 
@@ -115,13 +103,16 @@ const getActivities = async (req, res) => {
 };
 
 const getAdvActivities = async (req, res) => {
+    
     try {
-        console.log("request sent");
-        console.log('Headers:', req.headers);
-        console.log('Request body:', req.body);
-        cconsole.log(req.user);
-        const id = req.user.id;
+        // console.log("request sent");
+        // console.log('Headers:', req.headers);
+        // console.log('Request body:', req.body);
+        // console.log('request user:' ,req.user);
 
+
+        const id = req.user.id;
+        console.log('user id:', id);
         // Corrected the find method syntax
         const activities = await Activity.find({ author: id });
 
@@ -138,6 +129,7 @@ const getAdvActivities = async (req, res) => {
 
 
 const updateActivity = async (req, res) => {
+    console.log("trying to update")
     try {
         const { id } = req.params;
         const updatedActivity = await Activity.findByIdAndUpdate(id, req.body, { new: true }); // Fixed from activityModel to Activity

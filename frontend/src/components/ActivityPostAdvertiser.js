@@ -89,7 +89,7 @@ const navigate = useNavigate();
               
               title={
                 <Typography variant="h5" sx={{ width: '300px', fontWeight: 'bold', fontSize: '24px' }}>
-                  TITLE
+                  {title}
                 </Typography>
               }
             />
@@ -181,7 +181,7 @@ const navigate = useNavigate();
                 <Link 
                   to={`/activities/update/${id}`} 
                   style={{textDecoration:'none'}} 
-                  onClick={() => navigate(`/activities/${id}`)}
+                  onClick={() => navigate(`/activities/update/${id}`)}
                   sx={{
                     color: '#126782',
                     '&:hover': {
@@ -221,7 +221,7 @@ const navigate = useNavigate();
             top: '290px',
           }}
         >
-          DESCRIPTION
+          {description}
         </Typography>
       </CardContent>
 
