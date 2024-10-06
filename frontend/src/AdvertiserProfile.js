@@ -13,12 +13,11 @@ const AdvertiserProfile = ({ userId }) => {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [refreshKey, setRefreshKey] = useState(0); // Add refreshKey state
+  const [refreshKey, setRefreshKey] = useState(0); // refresh key to know when profile is updated
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const id = localStorage.getItem('id')
         console.log('Fetching profile for userId:', userId); // Debugging log
         
         const token = localStorage.getItem('jwt');  // or sessionStorage.getItem('jwt')
@@ -27,7 +26,7 @@ const AdvertiserProfile = ({ userId }) => {
         if (!token) {
           throw new Error("No token found. Please log in.");
         }
-        
+  
         const response = await axios.get(`http://localhost:4000/cariGo/users/${userId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
