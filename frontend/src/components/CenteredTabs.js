@@ -2,6 +2,11 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
+import ActivityPostAdvList from './ActivityPostAdvList';
+
+// Example Components for the tabs
+import ActivityPostAdvertiser from './ActivityPostAdvertiser'; // Replace with actual path
+import CompanyInfo from './CompanyInfo'; // Replace with actual path
 
 export default function CenteredTabs() {
   const [value, setValue] = React.useState(0);
@@ -12,6 +17,7 @@ export default function CenteredTabs() {
 
   return (
     <Box sx={{ width: '100%', bgcolor: 'background.paper' }}>
+      {/* Tab Navigation */}
       <Tabs
         value={value}
         onChange={handleChange}
@@ -30,10 +36,17 @@ export default function CenteredTabs() {
           },
         }}
       >
-        <Tab label="Item One" />
-        <Tab label="Item Two" />
-        <Tab label="Item Three" />
+        <Tab label="Company Info" />
+        <Tab label="Activity Post" />
+        <Tab label="Settings" />
       </Tabs>
+
+      {/* Conditional Rendering Based on the Tab Selection */}
+      <Box sx={{ padding: 3 }}>
+        {value === 0 && <CompanyInfo />}  {/* Render Company Info in Tab 1 */}
+        {value === 1 && <ActivityPostAdvList />}  {/* Render Activity Post in Tab 2 */}
+        {value === 2 && <div>Settings Component</div>}  {/* Placeholder for Settings in Tab 3 */}
+      </Box>
     </Box>
   );
 }

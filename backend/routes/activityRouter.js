@@ -8,6 +8,7 @@ const router = express.Router();
 
 
 
+
 router.get('/', activityController.getActivities);
 router.get('/getadvact',[authController.protect ,authController.restrictTo("Advertiser")], activityController.getAdvActivities);
 

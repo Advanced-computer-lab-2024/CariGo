@@ -3,6 +3,7 @@ import ActivityPost from "./ActivityPost.js";
 import { Grid } from '@mui/material';
 import { Box } from '@mui/material';
 
+
 export default function ActivityList({ActivityPosts}){
     const [activities, setActivities] = useState([]);
 

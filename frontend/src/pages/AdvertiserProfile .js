@@ -6,7 +6,8 @@ import CenteredTabs from '../components/CenteredTabs';
 import NavBar from '../components/NavBar';
 import '../styles/AdvertiserProfile.css';
 import coverImage from '../assets/header.png'; 
-import logoImage from '../assets/profile.png'; 
+import logoImage from '../assets/profile.png';
+import ActivityPostAdvList from '../components/ActivityPostAdvList'; 
 
 const AdvertiserProfile = () => {
   const [profile, setProfile] = useState(null);

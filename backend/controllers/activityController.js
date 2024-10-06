@@ -4,6 +4,24 @@ const Tag = require('../models/Tag');
 const APIFeatures = require('../utils/apiFeatures');
 // const User = require('./../models/userModel');
 
+
+
+
+// const authenticateToken = (req, res) => {
+//     const authHeader = req.headers['authorization'];
+//     const token = authHeader && authHeader.split(' ')[1]; // Extract token from header
+
+//     if (!token) return res.sendStatus(401); // Unauthorized if no token
+
+//     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+//         if (err) return res.sendStatus(403); // Forbidden if token is invalid
+//         req.user = user; // Attach user to request
+//          // Proceed to the next middleware or route handler
+//     });
+// };
+
+
+
 const createActivity = async (req, res) => {
     
     try {
@@ -98,6 +116,10 @@ const getActivities = async (req, res) => {
 
 const getAdvActivities = async (req, res) => {
     try {
+        console.log("request sent");
+        console.log('Headers:', req.headers);
+        console.log('Request body:', req.body);
+        cconsole.log(req.user);
         const id = req.user.id;
 
         // Corrected the find method syntax
