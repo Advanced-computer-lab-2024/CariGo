@@ -96,16 +96,18 @@ function SignUp() {
       const token = data.token;
 
       // Store the token in local storage
-      localStorage.setItem("jwt", token); // Use sessionStorage if you prefer
+      //localStorage.setItem("jwt", token); // Use sessionStorage if you prefer
 
       // Optionally redirect the user or perform another action
       // For example, using react-router:
       // history.push('/dashboard');
+      window.location.href = '/login'; 
+      console.log(token);
     } catch (error) {
       console.error("Error:", error.message); // Log the error in console
       alert("signup failed: " + error.message); // Show alert to the user
     }
-    console.log(localStorage.getItem("jwt"));
+    
   };
 
   return (
@@ -160,7 +162,7 @@ function SignUp() {
            {formData.role === "Tourist" && (
             <>
             <input
-              type="text"
+              type="number"
               name="mobile_number"
               placeholder="mobile number"
               onChange={handleChange}
@@ -188,7 +190,7 @@ function SignUp() {
            {formData.role === "Tour_Guide" && (
             <>
             <input
-              type="text"
+              type="number"
               name="mobile_number"
               placeholder="mobile number"
               onChange={handleChange}
