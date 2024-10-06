@@ -21,18 +21,37 @@ export default function CreateActivityForm() {
   const [category, setCategory] = useState('');
   const [lon, setLon] = useState('');
   const [lan, setLan] = useState('');
-  const [minPrice, setminPrice] = useState(0);
-  const [maxPrice, setmaxPrice] = useState(0);
+  const [minPrice, setMinPrice] = useState(0);
+  const [maxPrice, setMaxPrice] = useState(0);
   const [discount, setDiscount] = useState(0);
-  const [error, setError] = useState(null);
+  const [errorMessages, setErrorMessages] = useState({});
+
+  const validateFields = () => {
+    const errors = {};
+    if (!title) errors.title = "Title is required.";
+    if (!description) errors.description = "Description is required.";
+    if (!startDate) errors.startDate = "Start date is required.";
+    if (!endDate) errors.endDate = "End date is required.";
+    if (!lon) errors.lon = "Longitude is required.";
+    if (!lan) errors.lan = "Latitude is required.";
+    if (!tag) errors.tag = "Tag is required.";
+    if (!category) errors.category = "Category is required.";
+    if (minPrice < 0) errors.minPrice = "Minimum price cannot be negative.";
+    if (maxPrice < 0) errors.maxPrice = "Maximum price cannot be negative.";
+    if (discount < 0) errors.discount = "Discount cannot be negative.";
+    
+    return errors;
+  };
 
   const handleCreate = async (e) => {
     e.preventDefault();
-
-    // Validate start and end dates
-    if (!startDate || !endDate) {
-      setError("Start date and end date are required.");
+    
+    const errors = validateFields();
+    if (Object.keys(errors).length > 0) {
+      setErrorMessages(errors);
       return;
+    } else {
+      setErrorMessages({});
     }
 
     const activity = {
@@ -41,7 +60,8 @@ export default function CreateActivityForm() {
       start_date: startDate.format('YYYY-MM-DD'),
       end_date: endDate.format('YYYY-MM-DD'),
       tag,
-      lon,lan,
+      lon,
+      lan,
       minPrice: parseFloat(minPrice),
       maxPrice: parseFloat(maxPrice),
       discount: parseFloat(discount),
@@ -51,7 +71,7 @@ export default function CreateActivityForm() {
     const token = localStorage.getItem('jwt');
 
     if (!token) {
-      setError("No token found. Please log in.");
+      setErrorMessages({ general: "No token found. Please log in." });
       return;
     }
 
@@ -64,12 +84,11 @@ export default function CreateActivityForm() {
           'Content-Type': 'application/json',
         },
       });
-      console.log(activity);
 
       const json = await response.json();
 
       if (!response.ok) {
-        setError(json.error || "An error occurred while creating the activity.");
+        setErrorMessages({ general: json.error || "An error occurred while creating the activity." });
         return;
       }
 
@@ -81,14 +100,14 @@ export default function CreateActivityForm() {
       setTags('');
       setLon('');
       setLan('');
-      setminPrice(0);
-      setmaxPrice(0);
+      setMinPrice(0);
+      setMaxPrice(0);
       setDiscount(0);
-      setError(null);
+      setErrorMessages({});
       console.log("Activity created");
       navigate('/activities');
     } catch (err) {
-      setError("Failed to create activity. Please try again.");
+      setErrorMessages({ general: "Failed to create activity. Please try again." });
       console.error(err);
     }
   };
@@ -118,7 +137,7 @@ export default function CreateActivityForm() {
               onChange={(e) => setTitle(e.target.value)}
               value={title}
             />
-            <HelperText />
+            {errorMessages.title && <HelperText>{errorMessages.title}</HelperText>}
           </FormControl>
 
           <FormControl required>
@@ -128,7 +147,7 @@ export default function CreateActivityForm() {
               onChange={(e) => setDescription(e.target.value)}
               value={description}
             />
-            <HelperText />
+            {errorMessages.description && <HelperText>{errorMessages.description}</HelperText>}
           </FormControl>
 
           <FormControl required>
@@ -140,7 +159,7 @@ export default function CreateActivityForm() {
                 renderInput={(params) => <StyledInput {...params} />}
               />
             </LocalizationProvider>
-            <HelperText />
+            {errorMessages.startDate && <HelperText>{errorMessages.startDate}</HelperText>}
           </FormControl>
 
           <FormControl required>
@@ -152,61 +171,60 @@ export default function CreateActivityForm() {
                 renderInput={(params) => <StyledInput {...params} />}
               />
             </LocalizationProvider>
-            <HelperText />
+            {errorMessages.endDate && <HelperText>{errorMessages.endDate}</HelperText>}
           </FormControl>
 
           <FormControl required>
             <Label>LON</Label>
             <StyledInput
-              placeholder="Activity location"
+              placeholder="Activity longitude"
               onChange={(e) => setLon(e.target.value)}
               value={lon}
             />
-            <HelperText />
+            {errorMessages.lon && <HelperText>{errorMessages.lon}</HelperText>}
           </FormControl>
           <FormControl required>
             <Label>LAN</Label>
             <StyledInput
-              placeholder="Activity location"
+              placeholder="Activity latitude"
               onChange={(e) => setLan(e.target.value)}
               value={lan}
             />
-            <HelperText />
+            {errorMessages.lan && <HelperText>{errorMessages.lan}</HelperText>}
           </FormControl>
 
           <FormControl required>
             <Label>Tags</Label>
             <SelectTags tags={tag} setTags={setTags} />
-            <p>Selected Tag: {tag}</p> {/* Display the selected tag */}
+            {errorMessages.tag && <HelperText>{errorMessages.tag}</HelperText>}
           </FormControl>
-
 
           <FormControl required>
             <Label>Category</Label>
             <SelectCategory tags={category} setTags={setCategory} />
+            {errorMessages.category && <HelperText>{errorMessages.category}</HelperText>}
           </FormControl>
 
           <FormControl required>
-            <Label>minimum Price</Label>
+            <Label>Minimum Price</Label>
             <StyledInput
-              placeholder="Enter activity price"
+              placeholder="Enter minimum activity price"
               type="number"
-              onChange={(e) => setminPrice(e.target.value)}
+              onChange={(e) => setMinPrice(e.target.value)}
               value={minPrice}
             />
-            <HelperText />
+            {errorMessages.minPrice && <HelperText>{errorMessages.minPrice}</HelperText>}
           </FormControl>
 
-         
           <FormControl required>
-            <Label>maximum Price</Label>
+            <Label>Maximum Price</Label>
             <StyledInput
-              placeholder="Enter activity price"
+              placeholder="Enter maximum activity price"
               type="number"
-              onChange={(e) => setmaxPrice(e.target.value)}
+              onChange={(e) => setMaxPrice(e.target.value)}
               value={maxPrice}
             />
-            <HelperText />
+            {errorMessages.maxPrice && <HelperText>{errorMessages.maxPrice}</HelperText>}
           </FormControl>
 
           <FormControl>
@@ -217,9 +235,10 @@ export default function CreateActivityForm() {
               onChange={(e) => setDiscount(e.target.value)}
               value={discount}
             />
-            <HelperText />
+            {errorMessages.discount && <HelperText>{errorMessages.discount}</HelperText>}
           </FormControl>
         </Box>
+        {errorMessages.general && <HelperText>{errorMessages.general}</HelperText>}
         <Button onClick={handleCreate}>CREATE</Button>
       </Box>
     </Box>
@@ -262,4 +281,3 @@ const HelperText = styled('p')`
     font-size: 0.75rem;
     color: red;
 `;
-
