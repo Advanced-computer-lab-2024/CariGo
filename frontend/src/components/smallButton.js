@@ -1,13 +1,10 @@
-// import * as React from 'react';
-// import Button from '@mui/material/Button';
+import React, { useState, useContext } from 'react';
+import axios from 'axios'; 
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
-
-import * as React from 'react';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
-import Input from '@mui/material/Input'; // Reusing Input components
-
+import Input from '@mui/material/Input'; 
 
 const style = {
   position: 'absolute',
@@ -23,80 +20,122 @@ const style = {
   pb: 3,
 };
 
+const SmallButton = ({ profile, setProfile, setRefreshKey }) => {
+  const [open, setOpen] = useState(false);
+  const [formData, setFormData] = useState({ ...profile });
 
-const SmallButton = (/*{ onClick }*/) => {
-  const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  // Input handlers
-  const handleMobileInput = (event) => {
-    event.target.value = event.target.value.replace(/\D/g, ''); // Only allows digits
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
   };
+
+  const id = localStorage.getItem("id");
+
+  const handleSave = async (e) => {
+    e.preventDefault();
+    try {
+      const token = localStorage.getItem('jwt'); // Fetch token from localStorage
+      if (!token) {
+        throw new Error("No token found. Please log in.");
+      }
+
+      const response = await axios.patch(
+        `http://localhost:4000/cariGo/users/update/${id}`, // Use the user ID from context
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Add token in the headers
+          },
+        }
+      );
+      
+      console.log('Profile updated successfully:', response.data); // Check response
+      setProfile(response.data); // Update the profile state with the new data
+      setRefreshKey((prevKey) => prevKey + 1); // Trigger refresh by updating refreshKey
+      handleClose(); // Close the modal
+    } catch (error) {
+      console.error('Failed to update profile:', error.response ? error.response.data : error.message);
+      alert(`An error occurred while updating your profile. Details: ${error.message}`);
+    }
+  };
+
   return (
     <div>
-    <Button 
-      className="small-button" // Add the class name here
-      variant="contained" 
-      size="small" 
-      // onClick={onClick}
-      onClick={handleOpen}
-      sx={{
-        backgroundColor: '#ff683c',
-        color: '#fff',
-        '&:hover': {
-          backgroundColor: '#577b98', // Change to your desired hover color
-        },
-      }}
-      startIcon={<EditRoundedIcon />} // Add the icon here
-    >
-      Info
-    </Button>
-    <Modal
-    open={open}
-    onClose={handleClose}
-    aria-labelledby="edit-profile-modal-title"
-    aria-describedby="edit-profile-modal-description"
-  >
-    <Box sx={{ ...style, width: 400 }}>
-      <h2 id="edit-profile-modal-title">Edit Profile</h2>
-      <p id="edit-profile-modal-description">Update your details below:</p>
-
-      {/* Input fields for the form */}
-      <Box
-        component="form"
-        sx={{ '& > :not(style)': { m: 1, display: 'block' } }}
-        noValidate
-        autoComplete="off"
+      <Button 
+        variant="contained" 
+        size="small" 
+        onClick={handleOpen}
+        sx={{
+          backgroundColor: '#ff683c',
+          color: '#fff',
+          '&:hover': {
+            backgroundColor: '#577b98',
+          },
+        }}
+        startIcon={<EditRoundedIcon />}
       >
-        <Input
-          placeholder="Years of Experience"
-          type="number"
-          inputProps={{ 'aria-label': 'years of experience' }}
-        />
-        <Input
-          placeholder="Mobile Number"
-          inputProps={{
-            pattern: '[0-9]{11}',
-            title: "Please enter a valid 11-digit mobile number",
-            'aria-label': 'mobile number',
-          }}
-          type="tel"
-          required
-          onInput={handleMobileInput}
-        />
-        <Input
-          placeholder="Previous Work"
-          inputProps={{ 'aria-label': 'previous work' }}
-        />
-
-        <Button variant="contained" type="submit" onClick={handleClose}>
-          Save
-        </Button>
-      </Box>
-    </Box>
-  </Modal>
-  </div>
+        Edit Info
+      </Button>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="edit-profile-modal-title"
+        aria-describedby="edit-profile-modal-description"
+      >
+        <Box sx={style}>
+          <h2 id="edit-profile-modal-title">Edit Profile</h2>
+          <Box
+            component="form"
+            sx={{ '& > :not(style)': { m: 1, display: 'block' } }}
+            noValidate
+            autoComplete="off"
+            onSubmit={handleSave}
+          >
+            <Input
+              placeholder="Email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+            />
+            <Input
+              placeholder="Role"
+              name="role"
+              value={formData.role}
+              onChange={handleChange}
+              required
+            />
+            <Input
+              placeholder="Hotline"
+              name="hotline"
+              value={formData.hotline}
+              onChange={handleChange}
+              required
+            />
+            <Input
+              placeholder="About"
+              name="about"
+              value={formData.about}
+              onChange={handleChange}
+              required
+            />
+            <Input
+              placeholder="Description"
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              required
+            />
+            <Button variant="contained" type="submit">
+              Save
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
+    </div>
   );
 };
 
