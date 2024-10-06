@@ -23,7 +23,7 @@ import { useNavigate } from 'react-router-dom';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-export default function ActivityPost({ id,author, img, start_date, end_date, duration, tags, description, title,location,
+export default function ActivityPostAdvertiser({ id,author, img, start_date, end_date, duration, tags, description, title,location,
     price,category,discount,isOpened, rating}) {
   const [expanded, setExpanded] = React.useState(false);
 

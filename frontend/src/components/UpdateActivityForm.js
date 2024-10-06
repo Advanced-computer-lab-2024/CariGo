@@ -16,66 +16,53 @@ import { useParams } from 'react-router-dom';
 export default function UpdateActivityForm(){
     // const navigate = useNavigate();
 
+    const [formData, setFormData] = useState({
+        title: '',
+        description: '',
+        start_date: '',
+        end_date: '',
+        tags: [],
+        location: '',
+        price: 0,
+        discount: 0
+      });
+
     const navigate = useNavigate();
-
-    const[title,setTitle]= useState('');
-    const[description,setDescription]= useState('');
-    const[start_date,setStart]= useState('');
-    const[end_date,setEnd]= useState('');
-    const[tags,setTags]= useState('');
-    const[location,setLocation]= useState('');
-    const[price,setPrice]= useState(0);
-    const[discount,setDiscount]= useState(0);
-
-    const[error,setError]= useState(null);
    
     const { id } = useParams();
 
-    const handleUpdate = async (e) => {
-
-        e.preventDefault();
-    
-        const activity = {
-            title,
-            description,
-            start_date,
-            end_date,
-            tags,
-            location,
-            price,
-            discount,
-        };
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({
+          ...formData,
+          [name]: value
+        });
+      };
     
         // Ensure the ID is correctly used in the URL.
-        const response = await fetch(`http://localhost:4000/cariGO/activities/updateActivity/${id}`, // Fixed URL
-            {
+        const handleUpdate = async (event) => {
+            event.preventDefault();
+        
+            try {
+              const response = await fetch(`http://localhost:4000/cariGO/activities/updateActivity/${id}`, {
                 method: 'PATCH', // Ensure the method is capitalized (PATCH)
-                body: JSON.stringify(activity),
+                body: JSON.stringify(formData),
                 headers: {
                     'Content-Type': 'application/json',
                 },
+              });
+        
+              if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+              }
+        
+              navigate('/activities'); 
+            } catch (error) {
+              console.error("Error:", error.message);
+              alert("Login failed: " + error.message);
             }
-        );
-    
-        const json = await response.json();
-    
-        if (!response.ok) {
-            setError(json.error);
-        } else { // Use else to check for success
-            // Clear the form fields upon successful update
-            setTitle('');
-            setDescription('');
-            setStart('');
-            setEnd('');
-            setTags('');
-            setLocation('');
-            setPrice(0);
-            setDiscount(0);
-    
-            setError(null);
-            console.log("Activity updated"); // Log the successful update
-            navigate('/activities'); // Redirect after the update
-        }
+
+        
     };
     
 
@@ -104,8 +91,8 @@ export default function UpdateActivityForm(){
         <FormControl defaultValue=""  sx={{marginTop:'20px'} }>
         <Label sx={{marginLeft:"2px"}}>TITLE</Label>
         <StyledInput placeholder="Write your title here" 
-        onChange={(e) => setTitle(e.target.value)}
-        value={title}
+        onChange={handleChange}
+        
         />
         <HelperText />
         </FormControl>
@@ -113,8 +100,8 @@ export default function UpdateActivityForm(){
         <FormControl defaultValue="" >
         <Label sx={{marginLeft:"2px"}}>DESCRIPTION</Label>
         <StyledInput placeholder="brief description of your activity" 
-        onChange={(e) => setDescription(e.target.value)}
-        value={description}
+        onChange={handleChange}
+        
         />
         <HelperText />
         </FormControl>
@@ -122,8 +109,8 @@ export default function UpdateActivityForm(){
         <FormControl defaultValue="" >
         <Label sx={{marginLeft:"2px"}}>start date</Label>
         <StyledInput placeholder="date activity starts" 
-        onChange={(e) => setStart(e.target.value)}
-        value={start_date}
+        onChange={handleChange}
+       
         />
         <HelperText />
         </FormControl>
@@ -131,8 +118,7 @@ export default function UpdateActivityForm(){
         <FormControl defaultValue="" >
         <Label sx={{marginLeft:"2px"}}>end date</Label>
         <StyledInput placeholder="date activity ends" 
-        onChange={(e) => setEnd(e.target.value)}
-        value={end_date}
+        onChange={handleChange}
         />
         <HelperText />
         </FormControl>
@@ -140,8 +126,7 @@ export default function UpdateActivityForm(){
         <FormControl defaultValue="" >
         <Label sx={{marginLeft:"2px"}}>location</Label>
         <StyledInput placeholder="activity location" 
-        onChange={(e) => setLocation(e.target.value)}
-        value={location}
+        onChange={handleChange}
         />
         <HelperText />
         </FormControl>
@@ -155,8 +140,7 @@ export default function UpdateActivityForm(){
         <Label sx={{marginLeft:"2px"}}>price</Label>
         <StyledInput placeholder="enter activity price" 
          type="number"
-        onChange={(e) => setPrice(e.target.value)}
-        value={price}
+         onChange={handleChange}
         />
         <HelperText />
         </FormControl>
@@ -165,8 +149,7 @@ export default function UpdateActivityForm(){
         <Label sx={{marginLeft:"2px"}}>discount</Label>
         <StyledInput placeholder="enter any discounts" 
         type="number"
-        onChange={(e) => setDiscount(e.target.value)}
-        value ={discount}
+        onChange={handleChange}
         />
         <HelperText />
         </FormControl>
