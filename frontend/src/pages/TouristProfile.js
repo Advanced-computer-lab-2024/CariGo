@@ -3,10 +3,10 @@ import axios from 'axios';
 import TouristHeader from '../components/TouristHeader';
 import TouristInfo from '../components/TouristInfo'; 
 import CenteredTabs from '../components/CenteredTabs';
-import SmallButton from '../components/smallButton';
 import './styles/TouristProfile.css'; 
 import headerImage from '../assets/header.png'; 
 import profileImage from '../assets/profile.png';
+import TouristInfoEdit from '../components/TouristInfoEdit';
 
 const TouristProfile = ({ userId }) => {
   const [profile, setProfile] = useState(null);
@@ -74,13 +74,13 @@ const TouristProfile = ({ userId }) => {
           userName={profile.username || 'No username provided'} 
           email={profile.email || 'No email provided'}
           role={profile.role || 'No role assigned'}
-          hotline={profile.hotline || 'No hotline provided'}
-          website={profile.website_link || '#'}
-          about={profile.about || 'No about information available.'}
-          description={profile.description || 'No description available.'}
+          mobile={profile.mobile_number|| 'No mobile number provided'}
+          nationality={profile.nationality|| 'Not available'}
+          job={profile.job || 'No job information available.'}
+          wallet={profile.wallet || 'No balance available.'}
         />
         
-        <SmallButton profile={profile} setProfile={setProfile} setRefreshKey={setRefreshKey} /> 
+        <TouristInfoEdit profile={profile} setProfile={setProfile} setRefreshKey={setRefreshKey} /> 
         <CenteredTabs />
       </div>
     </div>

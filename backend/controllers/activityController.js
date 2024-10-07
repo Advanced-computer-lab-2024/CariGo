@@ -48,7 +48,7 @@ const createActivity = async (req, res) => {
             discount,
             tag: tagDoc._id,
             bookingOpened,
-            category: categoryDoc._id, // Use the category ID
+            Category: categoryDoc._id, // Use the category ID
             author: req.user.id,description,title
         });
 
@@ -63,6 +63,7 @@ const createActivity = async (req, res) => {
 const deleteActivity = async (req, res) => {
     try {
         const { id } = req.params;
+        console.log(id);
         const deletedActivity = await Activity.findByIdAndDelete(id); // Fixed from activityModel to Activity
         if (!deletedActivity) {
             return res.status(404).json({ message: 'Activity not found' });
@@ -88,6 +89,24 @@ const getActivities = async (req, res) => {
         sortBy = 'price.min';
     }
 
+    // Check if the Category value is a category name
+    const categoryName = req.query.Category;
+    if (categoryName) {
+        try {
+            // Fetch the category by name
+            const category = await Category.findOne({ name: categoryName }); // Assuming Category is your model
+            
+            if (!category) {
+                return res.status(404).json({ message: 'Category not found' });
+            }
+
+            // Replace the category name with the category ID in the query
+            req.query.Category = category._id; // Assuming `_id` is the ID field
+        } catch (error) {
+            return res.status(500).json({ message: 'An error occurred while fetching the category', error });
+        }
+    }
+
     try {
         // Initialize APIFeatures with the query and query string
         const features = new APIFeatures(Activity.find({ start_date: { $gt: today } }), req.query)
@@ -106,22 +125,70 @@ const getActivities = async (req, res) => {
     }
 };
 
+
+
+// const getAdvActivities = async (req, res) => {
+//     try {
+//         const id = req.user.id;
+
+//         // Corrected the find method syntax
+//         const activities = await Activity.find({ author: id });
+
+//         if (!activities.length) {
+//             return res.status(404).json({ message: 'Activities not found' });
+//         }
+
+//         res.status(200).json(activities);
+//     } catch (error) {
+//         res.status(500).json({ message: 'Error retrieving activities', error });
+//     }
+// };
 const getAdvActivities = async (req, res) => {
     try {
         const id = req.user.id;
 
-        // Corrected the find method syntax
+        // Fetch activities
         const activities = await Activity.find({ author: id });
 
         if (!activities.length) {
             return res.status(404).json({ message: 'Activities not found' });
         }
 
-        res.status(200).json(activities);
+        // Collect all tag and category IDs from the activities
+        const tagIds = activities.map(activity => activity.tag).filter(tag => tag);
+        const categoryIds = activities.map(activity => activity.Category).filter(category => category);
+
+        // Fetch tags and categories based on the collected IDs
+        const tags = await Tag.find({ _id: { $in: tagIds } });
+        const categories = await Category.find({ _id: { $in: categoryIds } });
+
+        // Create a map for quick lookup
+        const tagMap = {};
+        tags.forEach(tag => {
+            tagMap[tag._id] = tag.title; // Map tag IDs to their titles
+        });
+
+        const categoryMap = {};
+        categories.forEach(category => {
+            categoryMap[category._id] = category.name; // Map category IDs to their names
+        });
+
+        // Replace IDs in activities with corresponding titles/names
+        const formattedActivities = activities.map(activity => ({
+            ...activity._doc, // Spread original activity fields
+            tag: tagMap[activity.tag] || activity.tag, // Replace tag ID with title or keep original if not found
+            Category: categoryMap[activity.Category] || activity.Category // Replace category ID with name or keep original if not found
+        }));
+
+        res.status(200).json(formattedActivities);
     } catch (error) {
-        res.status(500).json({ message: 'Error retrieving activities', error });
+        console.error('Error retrieving activities:', error);
+        res.status(500).json({ message: 'Error retrieving activities', error: error.message });
     }
 };
+
+
+
 
 
 

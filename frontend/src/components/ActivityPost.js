@@ -88,7 +88,7 @@ const navigate = useNavigate();
               
               title={
                 <Typography variant="h5" sx={{ width: '300px', fontWeight: 'bold', fontSize: '24px' }}>
-                  TITLE
+                  {title}
                 </Typography>
               }
             />
@@ -192,7 +192,7 @@ const navigate = useNavigate();
             top: '290px',
           }}
         >
-          DESCRIPTION
+          {description}
         </Typography>
       </CardContent>
 
