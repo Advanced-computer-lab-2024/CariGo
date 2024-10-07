@@ -40,15 +40,18 @@ router.post(
 
 router.get(
   "/readAllItineraries",
-  // authController.restrictTo("Advertiser"),
+  //authController.restrictTo("Advertiser"),
   readAllItineraries
 ); // itineraries
+
 router.get(
   "/readMyItineraries",
   authController.restrictTo("Tour_Guide"),
   readMyItineraries
 ); // itineraries
+
 router.get("/readSingleItinerary/:itineraryId", readSingleItinerary); // itineraries/:id
+
 router.patch(
   "/updateItinerary/:itineraryId",
   authController.restrictTo("Tour_Guide"),

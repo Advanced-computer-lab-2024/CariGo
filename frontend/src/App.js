@@ -2,7 +2,6 @@ import "./styles/App.css";
 import React from "react";
 import AdvertiserProfile from "./AdvertiserProfile"; // Adjust the path based on your structure
 //import './styles/App.css';
-import "./styles/index.css";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import UserViewActivities from "./pages/UserViewActivities";
 import UserViewItineraries from "./pages/UserViewItineraries";
@@ -11,28 +10,17 @@ import LoginPage from "./pages/login";
 import SignUp from "./pages/Signup";
 import { jwtDecode } from "jwt-decode";
 import "./styles/index.css";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import UserViewActivities from "./pages/UserViewActivities";
-import UserViewItineraries from "./pages/UserViewItineraries";
-import Home from "./pages/Home";
-import LoginPage from "./pages/login";
-import SignUp from "./pages/Signup";
-import { jwtDecode } from "jwt-decode";
 import NavBar from "./components/NavBar";
 import ItineraryUpdate from "./components/ItineraryUpdate";
 import ItineraryDetails from "./pages/ItineraryDetails";
 import CreateItineraryForm from "./components/CreateItineraryForm";
 import AllItineraries from "./pages/AllItineraries";
-import UserItinDetails from './pages/UserItinDetails'
-import ItineraryUpdate from "./components/ItineraryUpdate";
-import ItineraryDetails from "./pages/ItineraryDetails";
-import CreateItineraryForm from "./components/CreateItineraryForm";
-import AllItineraries from "./pages/AllItineraries";
-import UserItinDetails from './pages/UserItinDetails'
+import UserItinDetails from './pages/UserItinDetails';
+import CreateActivityForm from "./components/CreateActivityForm";
+import TouristProfile from "./pages/TouristProfile";
 function App() {
   const token = localStorage.getItem("jwt");
-  const token = localStorage.getItem("jwt");
-
+  
   // Decode the token safely
   let userId;
   if (token) {
