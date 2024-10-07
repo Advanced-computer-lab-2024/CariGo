@@ -22,7 +22,7 @@ import Link from '@mui/material/Link';
 import { useNavigate } from 'react-router-dom';
 
 
-export default function ActivityPost({ id,author, img, start_date, end_date, duration, tags, description, title,location,
+export default function ActivityPost({ id,author, img, start_date, end_date, duration, tag, description, title,location,
     price,category,discount,isOpened, rating}) {
   const [expanded, setExpanded] = React.useState(false);
 
@@ -41,7 +41,7 @@ const navigate = useNavigate();
       sx={{
         width: '100%', // Use full width of the container
         maxWidth: '900px', // Set a max width
-        height: '400px',
+        maxHeight: '500px',
         color: '#126782',
         fontSize: '18px',
         display: 'flex',
@@ -88,7 +88,7 @@ const navigate = useNavigate();
               
               title={
                 <Typography variant="h5" sx={{ width: '300px', fontWeight: 'bold', fontSize: '24px' }}>
-                  TITLE
+                  {title}
                 </Typography>
               }
             />
@@ -96,10 +96,10 @@ const navigate = useNavigate();
             {/* Tags below title */}
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginLeft: '15px' }}>
               {
-              tags != null ?
-              tags.map((tag) => (
-                <Chip key={tag} label={tag.title} sx={{backgroundColor :'#126782', color: 'white' }} />
-              )) : ""}
+              tag != null ?
+              
+                (<Chip label={tag} sx={{backgroundColor :'#126782', color: 'white' }} />)
+              : ""}
             </Box>
           </Box>
           
@@ -111,6 +111,14 @@ const navigate = useNavigate();
               marginLeft: '30px',
             }}
           >
+            
+            <Typography>author : {author}</Typography>
+
+            <Typography>
+              category: {category != null ? category:"no specified category"}
+              
+            </Typography>
+
             <Box sx={{display:'flex', }}>
             <StarIcon sx={{scale:'0.9'}}/>
             <Typography sx={{fontSize: '16px',marginTop:'1px'}}>{""+rating+""}</Typography>
@@ -134,16 +142,27 @@ const navigate = useNavigate();
                 <Typography sx={{fontSize: '16px'}}>{category}</Typography>
             <Typography sx={{fontSize: '16px'}}>From: {start_date}</Typography>
             <Typography sx={{fontSize: '16px'}}>To: {end_date}</Typography>
+            <Typography sx={{fontSize: '16px', marginLeft: '30px'}}> {duration}</Typography>
             <Box sx={{ display: 'flex',
                 marginTop: '5px',
                 margoinLeft:'-10px' ,
                 
                 }}>
             <PinDropIcon sx={{marginTop:'0px',}}/>
-            <Typography sx={{marginLeft:'5px'}}> {location}</Typography>
+            <Typography sx={{marginLeft:'5px'}}> 
+
+            {location != null ? (
+              <>
+                lan: {location.lan}<br />
+                lon: {location.lon}
+              </>
+            ) : (
+              'no location specified'
+            )}
+              </Typography>
             </Box>
             
-            <Typography sx={{fontSize: '16px', marginLeft: '30px'}}> {duration}</Typography>
+           
 
             <Box sx={{ display: 'flex',
                 marginTop: '5px',
@@ -153,11 +172,20 @@ const navigate = useNavigate();
             <AttachMoneyIcon />
             <Typography sx={{
                 marginLeft:'5px',
-                textDecoration: discount>0 ? 'line-through' : 'none',
-                color: discount>0 ? '#ff4d4d' : '#126782',
+                //textDecoration: discount>0 ? 'line-through' : 'none',
+                color: '#126782',
+                //discount>0 ? '#ff4d4d' : '#126782',
                 marginRight: '5px',
-            }}> {price != null? price+"" :'no specified price'}</Typography>
-            <Typography sx={{fontSize: '16px'}}> {discount >0?  (price -(price*discount/100)): ''}</Typography>
+            }}> {
+              price != null? 
+              (price.range.max+"-"+price.range.min )
+              :'no specified price'}
+              </Typography>
+
+
+            {/* <Typography sx={{fontSize: '16px'}}> {discount >0?  (price -(price*discount/100)): ''}</Typography> */}
+
+
             <Box sx={{
                 backgroundColor : '#ff4d4d',
                 display: 'flex',
@@ -192,7 +220,7 @@ const navigate = useNavigate();
             top: '290px',
           }}
         >
-          DESCRIPTION
+          {description}
         </Typography>
       </CardContent>
 

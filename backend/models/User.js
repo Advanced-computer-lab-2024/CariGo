@@ -69,6 +69,7 @@ const userSchema = new mongoose.Schema(
         required: [false]
       },
     ],
+    previous_work: [String],
     years_of_experience: {
       type: Number,
       default: 0,
