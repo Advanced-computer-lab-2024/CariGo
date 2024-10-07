@@ -242,15 +242,45 @@ const getAdvActivities = async (req, res) => {
 const updateActivity = async (req, res) => {
     try {
         const { id } = req.params;
-        const updatedActivity = await Activity.findByIdAndUpdate(id, req.body, { new: true }); // Fixed from activityModel to Activity
+        const { tag, category, ...otherFields } = req.body; // Change to lowercase for consistency
+
+        // Check if a tag is provided
+        if (tag) {
+            const foundTag = await Tag.findOne({ title: tag });
+            if (foundTag) {
+                req.body.tag = foundTag._id; // Store the tag ID
+            } else {
+                return res.status(404).json({ message: 'Tag not found' });
+            }
+        }
+
+        // Check if a category is provided
+        if (category) {
+            console.log("Searching for category:", category); // Log the category before search
+            const foundCategory = await Category.findOne({ name: category }); // Use lowercase
+            console.log("Found category:", foundCategory); // Log the found category
+            
+            if (foundCategory) {
+                req.body.Category = foundCategory._id; // Store the category ID
+            } else {
+                return res.status(404).json({ message: 'Category not found' });
+            }
+        }
+
+        // Update the activity
+        const updatedActivity = await Activity.findByIdAndUpdate(id, { ...otherFields, ...req.body }, { new: true });
         if (!updatedActivity) {
             return res.status(404).json({ message: 'Activity not found' });
         }
+
         res.status(200).json(updatedActivity);
     } catch (error) {
         res.status(500).json({ message: 'Error updating Activity', error });
     }
 };
+
+
+
 
 // const getActivities = async (req, res) => {
 //     const today = new Date();

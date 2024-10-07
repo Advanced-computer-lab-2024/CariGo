@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react'; 
 import axios from 'axios'; 
-import TouristHeader from '../components/TouristHeader';
-import TouristInfo from '../components/TouristInfo'; 
-import CenteredTabs from '../components/CenteredTabs';
+import TouristHeader from '../../components/TouristHeader';
+import TouristInfo from '../../components/TouristInfo'; 
+import CenteredTabs from '../../components/CenteredTabs';
 import './styles/TouristProfile.css'; 
-import headerImage from '../assets/header.png'; 
-import profileImage from '../assets/profile.png';
-import TouristInfoEdit from '../components/TouristInfoEdit';
+import headerImage from '../../assets/header.png'; 
+import profileImage from '../../assets/profile.png';
+import TouristInfoEdit from '../../components/TouristInfoEdit';
+import TouristNB from './components/TouristNavBar';
 
 const TouristProfile = ({ userId }) => {
   const [profile, setProfile] = useState(null);
@@ -62,6 +63,7 @@ const TouristProfile = ({ userId }) => {
 
   return (
     <div className="tourist-profile">
+      <TouristNB /> {/* Include the Navbar component */}
       <header className="tourist-header">
         <TouristHeader 
           companyName={profile.companyName || 'CariGo'} 
@@ -74,8 +76,8 @@ const TouristProfile = ({ userId }) => {
           userName={profile.username || 'No username provided'} 
           email={profile.email || 'No email provided'}
           role={profile.role || 'No role assigned'}
-          mobile={profile.mobile_number|| 'No mobile number provided'}
-          nationality={profile.nationality|| 'Not available'}
+          mobile={profile.mobile_number || 'No mobile number provided'}
+          nationality={profile.nationality || 'Not available'}
           job={profile.job || 'No job information available.'}
           wallet={profile.wallet || 'No balance available.'}
         />
@@ -86,5 +88,6 @@ const TouristProfile = ({ userId }) => {
     </div>
   );
 };
+
 
 export default TouristProfile;

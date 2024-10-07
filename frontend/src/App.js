@@ -8,10 +8,16 @@ import UserViewActivities from './pages/UserViewActivities';
 import Home from './pages/Home';
 import LoginPage from './pages/login';
 import { jwtDecode } from 'jwt-decode';
-import NavBar from "./components/NavBar";
 import CreateActivityForm from "./pages/CreateActivityForm";
-import TouristProfile from "./pages/TouristProfile";
+import TouristProfile from "./pages/Tourist/TouristProfile";
 import TouristGuestHome from "./pages/Tourist-Guest/TouristGuestHome";
+import TouristHome from "./pages/Tourist/TouristHome";
+import GuestHome from "./pages/Guest/GuestHome";
+import TouristActivities from './pages/Tourist/TouristActivities.js';
+import GuestActivities from './pages/Guest/GuestActivities.js';
+
+
+
 function App() {
   const token = localStorage.getItem('jwt');
 
@@ -29,11 +35,15 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} /> {/* Default route */}
         <Route path="/login" element={<LoginPage />} />
-        {<Route path="/activities" element={<TouristGuestHome />} /> }
+        {<Route path="/activities" element={<UserViewActivities />} /> }
+        <Route path="/tourist-activities" element={<TouristActivities/>} />
+        <Route path="/guest-activities" element={<GuestActivities/>} />
         <Route path="/createActivity" element={<CreateActivityForm userId={localStorage.getItem("id")} />} /> 
         <Route path="/advertiser" element={<AdvertiserProfile userId={localStorage.getItem("id")} />} />
         <Route path="/tourist" element={<TouristProfile userId={localStorage.getItem("id")} />} />
         <Route path="/tgHome" element={<TouristGuestHome/>} />
+        <Route path="/touristHome" element={<TouristHome/>} />
+        <Route path="/guestHome" element={<GuestHome/>} />
         <Route path="/activities/update/:id" element={<updateActivityForm/>} />
       </Routes>
     

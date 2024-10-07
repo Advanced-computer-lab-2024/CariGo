@@ -1,11 +1,11 @@
 import React from 'react';
-import NavBar from '../../components/NavBarTourist'; // Adjust path if necessary
+import ResponsiveAppBar from './components/TouristNavBar';
 import { Box, Typography } from '@mui/material';
 
-const TouristGuestHome = () => {
+const TouristHome = () => {
     return (
         <div>
-            <NavBar />
+            <ResponsiveAppBar/>
             <Box
                 sx={{
                     width: '100%',
@@ -42,4 +42,4 @@ const TouristGuestHome = () => {
     );
 };
 
-export default TouristGuestHome;
+export default TouristHome;

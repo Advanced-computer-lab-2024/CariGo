@@ -76,26 +76,23 @@ export default function ActivityList() {
       setAnchorEl(null);
     };
 
+
     const handleFilterChange = (e) => {
         const { name, value } = e.target;
         setFilters(prevFilters => ({
             ...prevFilters,
-            [name]: value // Update the corresponding filter in state
+            [name]: value
         }));
-    };
-
-    const handleFilterSubmit = (event) => {
-        event.preventDefault();
     };
 
     const resetFilters = () => {
         setFilters({
-            minPrice: "",
+            price: "",
             category: "",
             rating: "",
             startDate: "",
-           
         });
+        setFilteredActivities(activities); // Reset to all activities
     };
     
     const handleSortChange = (sortValue) => {
@@ -104,17 +101,6 @@ export default function ActivityList() {
     };
 
     
-
-    const [filteredActivities, setFilteredActivities] = useState(activities); // Store filtered results separately
-
-    const handleSearch = () => {
-        const filtered = activities.filter((activity) => {
-            return (activity.title && activity.title.toLowerCase().includes(searchTerm.toLowerCase()))
-                || (activity.tag && activity.tag.toLowerCase().includes(searchTerm.toLowerCase()))
-                || (activity.Category && activity.Category.toLowerCase().includes(searchTerm.toLowerCase()));
-        });
-        setFilteredActivities(filtered); // Update the filtered activities
-    };
 
    
     const StringDate = (date) => {
@@ -147,81 +133,76 @@ export default function ActivityList() {
         }
     }
 
-    useEffect(() => {
+   
+
+
+    
+    const [filteredActivities, setFilteredActivities] = useState(activities); // Store filtered results separately
+
+    const handleSearch = () => {
+        if (!searchTerm.trim()) {
+            // If searchTerm is empty, show all activities
+            setFilteredActivities(activities);
+        } else {
+            const filtered = activities.filter((activity) => {
+                return (activity.title && activity.title.toLowerCase().includes(searchTerm.toLowerCase()))
+                    || (activity.tag && activity.tag.toLowerCase().includes(searchTerm.toLowerCase()))
+                    || (activity.Category && activity.Category.toLowerCase().includes(searchTerm.toLowerCase()));
+            });
+            setFilteredActivities(filtered); // Update the filtered activities
+        }
+    };
+
+
+
+     // Combined useEffect for Fetching Activities with Filters and Sort
+     useEffect(() => {
         const fetchActivities = async () => {
             setLoading(true);
             setError(null);
             try {
                 const queryParams = new URLSearchParams();
-                if (filters.minPrice) queryParams.append('price.min', filters.minPrice);
+                if (filters.price) queryParams.append('price', filters.price);
                 if (filters.category) queryParams.append('Category', filters.category);
                 if (filters.rating) queryParams.append('ratingsAverage', filters.rating);
-                
-                // Include start_date in the query params
                 if (filters.startDate) {
-                    queryParams.append('start_date', filters.startDate); // Only date
+                    const startDateISO = new Date(filters.startDate).toISOString();
+                    queryParams.append('start_date', startDateISO);
                 }
-                // Fetch activities from the updated URL
+                if (sortOption) queryParams.append('sort', sortOption);
+
                 const response = await fetch(`http://localhost:4000/Carigo/Activity/?${queryParams.toString()}`);
-                
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
-                
                 const json = await response.json();
                 console.log("Fetched activities:", json);
                 setActivities(json);
+                setFilteredActivities(json); // Initialize filteredActivities with all activities
             } catch (error) {
                 console.log('Error fetching activities:', error);
                 setError('Failed to fetch activities. Please try again later.');
             } finally {
                 setLoading(false);
             }
+            console.log("fetched activities:",filteredActivities)
         };
 
         fetchActivities();
-    }, [filters]); // Re-fetch activities when filters change
+    }, [filters, sortOption]); // Re-fetch activities when filters or sort option change
 
 
-    
-    useEffect(() => {
-        const fetchActivities = async () => {
-            setLoading(true);
-            setError(null);
-            try {
-                const response = await fetch(`/cariGo/activity?sort=${sortOption}`);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                const json = await response.json();
-                console.log("Fetched activities:", json);
-                setActivities(json);
-            } catch (error) {
-                console.log('Error fetching activities:', error);
-                setError('Failed to fetch activities. Please try again later.');
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchActivities(); // Call the function to fetch activities
-    }, [sortOption]);
-
-   
-
-
-    
+ 
     return (
         <Box sx={{ width: '100vw' }}>
 
             {/* Filter Form */}
-            <form onSubmit={handleFilterSubmit}>
+            <form>
                 <TextField
-                    label="Min Price"
+                    label="Price"
                     variant="outlined"
-                    name="minPrice"
-                    value={filters.minPrice}
+                    name="price"
+                    value={filters.price}
                     onChange={handleFilterChange}
                     type="number"
                     sx={{ mb: 2, mr: 2 }}
@@ -243,6 +224,7 @@ export default function ActivityList() {
                     type="number"
                     sx={{ mb: 2, mr: 2 }}
                 />
+
                 <TextField
                     label="Start Date"
                     variant="outlined"
@@ -252,14 +234,13 @@ export default function ActivityList() {
                     type="date"
                     sx={{ mb: 2, mr: 2 }}
                 />
-              
-                <Button variant="contained" type="submit">
-                    Apply Filters
-                </Button>
-                <Button variant="outlined" onClick={resetFilters} sx={{ ml: 2 }}>
+                <Button variant="contained" onClick={resetFilters} sx={{ ml: 2 }}>
                     Reset Filters
                 </Button>
             </form>
+
+
+            {/* END OF FILTER FORM */}
 
              {/*Search bar*/}
             <Box sx={{display:'flex',}}>
