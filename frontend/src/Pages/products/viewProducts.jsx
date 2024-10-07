@@ -186,8 +186,8 @@ const navigate = useNavigate();
     label="Filter"
     onChange={(event) =>{setAge(event.target.value)}}
   >
-    <MenuItem value="1" onClick={() =>{setFilter("?price=20")}}>Less Than $19</MenuItem>
-          <MenuItem value="2" onClick={() =>{setFilter("?price[gte]=20&price[lte]=59")}}>$19 - $59</MenuItem>
+    <MenuItem value="1" onClick={() =>{setFilter("?price=19")}}>Less Than $19</MenuItem>
+          <MenuItem value="2" onClick={() =>{setFilter("?price[gte]=19&price[lte]=59")}}>$19 - $59</MenuItem>
           <MenuItem value="3" onClick={() =>{setFilter("?price[gte]=59&price[lte]=99")}}>$59 - $99</MenuItem>
           <MenuItem value="4" onClick={() =>{setFilter("?price[gte]=99&price[lte]=149")}}>$99 - $149</MenuItem>
           <MenuItem value="5" onClick={() =>{setFilter("?price[gte]=149")}}>More Than $149</MenuItem>
