@@ -6,12 +6,12 @@ import { Box } from "@mui/material";
 import ItineraryList from "../components/ItirenaryList";
 import CreateActivityForm from "../components/CreateActivityForm";
 import CreateItineraryForm from "../components/CreateItineraryForm";
+import ListOfItineraries from "../components/ListOfItineraries";
 
 const AllItineraries = () => {
   return (
     <div>
       <NavBar />
-        {/* <CreateItineraryForm/> */}
       <Box
         sx={{
           width: "1150px",
@@ -36,7 +36,7 @@ const AllItineraries = () => {
         >
           {" "}
           {/* Enable vertical scrolling only */}
-          <ItineraryList />
+          <ListOfItineraries />
         </Box>
       </Box>
     </div>

@@ -21,7 +21,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import logoImage from '../assets/itinerary.png'; // Correct relative path
 
-export default function ItineraryPost({
+export default function UserItineraryPost({
   id,
   author,
   img,
@@ -69,7 +69,7 @@ export default function ItineraryPost({
 
         alert("Itinerary deleted successfully");
         // Optionally use navigate or a callback to update the parent component
-        navigate('/tour_guide/itineraries'); // Redirect to the itineraries list or any other page
+        navigate('/itineraries'); // Redirect to the itineraries list or any other page
       } catch (error) {
         console.error('Failed to delete itinerary:', error.response ? error.response.data : error.message);
         alert(`An error occurred while deleting the itinerary. Details: ${error.message}`);
@@ -97,7 +97,7 @@ export default function ItineraryPost({
           cursor: 'pointer',
         },
       }}
-      onClick={() => navigate(`/tour_guide/itineraries/${id}`)}
+      onClick={() => navigate(`/user_itineraries/${id}`)}
     >
       <Box sx={{ display: 'flex', flexDirection: 'row', flexGrow: 1 }}>
         <CardMedia

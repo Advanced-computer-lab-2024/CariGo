@@ -1,17 +1,29 @@
 import React from "react";
 // import ReactDOM from "react-dom/client";
 import "../styles/index.css";
-import NavBar from "../components/NavBarTourist";
+import NavBar from "../components/NavBarTourGuide";
 import { Box } from "@mui/material";
 import ItineraryList from "../components/ItirenaryList";
-import CreateActivityForm from "../components/CreateActivityForm";
-import CreateItineraryForm from "../components/CreateItineraryForm";
-
+import { useNavigate } from "react-router-dom";
+// const navigate = useNavigate();
+import { Button } from '@mui/material'; // Using Material-UI for styling
 const UserViewItirenaries = () => {
+    const handleNavigate = () => {
+  navigate("/tour_guide/itineraries/new");
+};
+const navigate = useNavigate();
   return (
     <div>
-      <NavBar />
-        {/* <CreateItineraryForm/> */}
+      <NavBar/>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={handleNavigate}
+        sx={{ margin: "10px" }} // Optional styling
+      >
+        Create new Itinerary
+    </Button>
+      {/* <CreateItineraryForm/> */}
       <Box
         sx={{
           width: "1150px",

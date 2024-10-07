@@ -11,7 +11,6 @@ import { useNavigate } from "react-router-dom";
 import SelectTags from "./SelectTags";
 import ItineraryActivityList from "./ItineraryActivityList";
 import ItineraryTags from "./ItineraryTags";
-
 export default function CreateItineraryForm({ open, handleClose }) {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -138,6 +137,9 @@ export default function CreateItineraryForm({ open, handleClose }) {
     }
   };
 
+  const handleNavigate = () => {
+    navigate(`/tour_guide/itineraries/`);
+  }
   return (
     <Box
       sx={{
@@ -282,7 +284,7 @@ export default function CreateItineraryForm({ open, handleClose }) {
         updateActivity={updateActivity}
         deleteActivity={deleteActivity}
       />
-
+      <div>
       <Button
         variant="contained"
         onClick={handleSubmit}
@@ -297,6 +299,22 @@ export default function CreateItineraryForm({ open, handleClose }) {
       >
         Submit
       </Button>
+      <Button
+        variant="contained"
+        onClick={handleNavigate}
+        sx={{
+          backgroundColor: "#007BFF",
+          color: "#fff",
+          textTransform: "none",
+          borderRadius: 3,
+          padding: "10px 20px",
+          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+        }}
+      >
+        Cancel
+      </Button>
+      </div>
+      
     </Box>
   );
 }

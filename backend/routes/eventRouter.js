@@ -40,7 +40,7 @@ router.post(
 
 router.get(
   "/readAllItineraries",
-  authController.restrictTo("Tour_Guide", "Advertiser"),
+  // authController.restrictTo("Advertiser"),
   readAllItineraries
 ); // itineraries
 router.get(

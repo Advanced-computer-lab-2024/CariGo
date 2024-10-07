@@ -4,10 +4,8 @@ import { Box, Typography, Chip, Avatar } from "@mui/material";
 import PinDropIcon from "@mui/icons-material/PinDrop";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import StarIcon from "@mui/icons-material/Star";
-import ItineraryActivityList from "../components/ItineraryActivityList";
-import NavBar from "../components/NavBarTourGuide";
-import ItineraryUpdate from "../components/ItineraryUpdate"; // Import the edit button
-import ItineraryTags from "../components/ItineraryTags"; // Import the tags component
+import NavBar from "../components/NavBar";
+import UserAcList from "../components/UserAcList"; // Import the new MarkerList component
 import "../components/styles/CompanyInfo.css";
 import logoImage from "../assets/itinerary.png"; // Correct relative path
 import axios from "axios";
@@ -15,11 +13,6 @@ import axios from "axios";
 const ItineraryDetails = () => {
   const { id } = useParams(); // Get the itinerary ID from the URL
   const [itinerary, setItinerary] = useState(null);
-  const [refreshKey, setRefreshKey] = useState(0); // State to trigger refresh on update
-  const [localActivities, setLocalActivities] = useState(null);
-  const [isEditing, setIsEditing] = useState(false);
-  const [activityTrigger, setActivityTrigger] = useState(0);
-  const [selectedTags, setSelectedTags] = useState([]); // State for selected tags
 
   useEffect(() => {
     const fetchItineraryDetails = async () => {
@@ -46,66 +39,12 @@ const ItineraryDetails = () => {
 
         const data = await response.json();
         setItinerary(data);
-        setLocalActivities(data.activities);
-        setSelectedTags(data.tags || []); // Initialize selected tags
-        console.log("gayez", localActivities);
-        if (isEditing) {
-          setIsEditing(false); // Set editing mode to false after update
-          await updateItinerary(data.activities, data.tags); // Update activities and tags
-        }
       } catch (error) {
         console.error("Error fetching itinerary details:", error);
       }
     };
     fetchItineraryDetails();
-  }, [refreshKey, activityTrigger, id]); // Include `id` in dependencies
-
-  // Function to update itinerary activities and tags
-  const updateItinerary = async (activities, tags) => {
-    const token = localStorage.getItem("jwt");
-    await axios.patch(
-      `/cariGo/Event/updateItinerary/${id}`,
-      {
-        activities: activities,
-        tags: tags,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    setActivityTrigger((prev) => prev + 1);
-  };
-
-  const updateActivity = (updatedActivity) => {
-    setLocalActivities((prevActivities) =>
-      prevActivities.map((activity) =>
-        activity._id === updatedActivity._id ? updatedActivity : activity
-      )
-    );
-    setIsEditing(true); // Set editing mode to true
-    setRefreshKey((prev) => prev + 1); // Optionally trigger a refresh if needed
-  };
-
-  const createActivity = async (newActivity) => {
-    setLocalActivities((prevActivities) => [...prevActivities, newActivity]);
-    console.log("3baki", localActivities);
-    await updateItinerary([...localActivities, newActivity], selectedTags); // Update itinerary with new activity
-    setIsEditing(true);
-    setRefreshKey((prev) => prev + 1); // Optionally trigger a refresh if needed
-  };
-
-  const deleteActivity = async (updatedActivities) => {
-    await updateItinerary(updatedActivities, selectedTags); // Update itinerary with deleted activities
-    setRefreshKey((prev) => prev + 1);
-  };
-
-  const handleTagChange = (newTags) => {
-    setSelectedTags(newTags); // Update selected tags
-    setIsEditing(true); // Set editing mode to true
-    updateItinerary(localActivities, newTags); // Update itinerary with new tags
-  };
+  }, [id]); // Include `id` in dependencies
 
   if (!itinerary) {
     return <Typography>Loading...</Typography>;
@@ -141,6 +80,14 @@ const ItineraryDetails = () => {
     return new Date(dateString).toLocaleString(undefined, options);
   };
 
+  // Format activities to include start and end dates in the correct format
+  const formattedActivities = activities.map(activity => ({
+    name: activity.name,
+    description: activity.description,
+    startDate: formatDateTime(activity.start_date),
+    endDate: formatDateTime(activity.end_date),
+  }));
+
   return (
     <div>
       <NavBar />
@@ -169,13 +116,6 @@ const ItineraryDetails = () => {
               sx={{ backgroundColor: "#126782", color: "white", margin: "5px" }}
             />
           ))}
-          {/* Tags component for selecting tags */}
-          <div><Typography
-              variant="body1"
-              sx={{ fontSize: "18px", marginBottom: "5px" }}
-            >
-              <strong>Select Tags:</strong>
-            </Typography><ItineraryTags selectedTags={selectedTags} setSelectedTags={handleTagChange} /></div>
         </Box>
 
         <Box
@@ -190,13 +130,9 @@ const ItineraryDetails = () => {
             marginBottom: "20px",
           }}
         />
+        
         <div className="company-info">
           <Box sx={{ marginBottom: "20px" }}>
-            <ItineraryUpdate
-              itinerary={itinerary}
-              setItinerary={setItinerary}
-              setRefreshKey={setRefreshKey}
-            />
             <Box
               sx={{
                 display: "flex",
@@ -269,15 +205,12 @@ const ItineraryDetails = () => {
               <strong>Accessibility:</strong>{" "}
               {accessibility || "No accessibility info"}
             </Typography>
+            
+            {/* Using MarkerList to display activities */}
             <Typography variant="body1" sx={{ fontSize: "18px" }}>
               <strong>Activities:</strong>
-              <ItineraryActivityList
-                activities={activities}
-                updateActivity={updateActivity}
-                deleteActivity={deleteActivity}
-                createActivity={createActivity}
-              />
             </Typography>
+            <UserAcList activities={formattedActivities} />
           </Box>
         </div>
       </Box>
