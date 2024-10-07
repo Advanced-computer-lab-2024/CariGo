@@ -13,6 +13,8 @@ import { jwtDecode } from 'jwt-decode';
 import NavBar from "./components/NavBar";
 import UserViewVintages from "./pages/UserViewVintages";
 import VintageDetails from "./pages/VintageDetails";
+import TouristViewVintage from "./pages/TouristViewVintage";
+import UserVintageDetails from "./pages/UserVintageDetails";
 
 
 function App() {
@@ -39,6 +41,8 @@ function App() {
         <Route path="/activities/update/:id" element={<updateActivityForm/>} />
         <Route path="/myVintages" element={<UserViewVintages />} />
         <Route path="/vintage/:id" element={<VintageDetails />} />
+        <Route path="/allVintages" element={<TouristViewVintage />} />
+        <Route path="/viewingAllvintage/:id" element={<UserVintageDetails />} />
         {/* Add more routes as needed */}
       </Routes>
     

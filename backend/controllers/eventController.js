@@ -184,7 +184,9 @@ const readAllItineraries = async (req, res) => {
   const validSortFields = ["price", "-createdAt", "ratingsAverage"];
   if (!validSortFields.includes(sort)) {
     return res.status(400).json({
-      message: `Invalid sortBy parameter. Allowed values are: ${validSortFields.join(", ")}`,
+      message: `Invalid sortBy parameter. Allowed values are: ${validSortFields.join(
+        ", "
+      )}`,
     });
   }
 
@@ -207,8 +209,8 @@ const readAllItineraries = async (req, res) => {
       res.status(200).json(itineraries);
     } else {
       // If tagTitle is provided, just sort without filtering
-      const tagIds = await tagModel.find({ title: tagTitle }).select('_id');
-      query = query.where('tags').in(tagIds);
+      const tagIds = await tagModel.find({ title: tagTitle }).select("_id");
+      query = query.where("tags").in(tagIds);
       const itineraries = await query.sort(sort);
 
       if (!itineraries.length) {
@@ -221,9 +223,6 @@ const readAllItineraries = async (req, res) => {
     res.status(500).json({ message: "An error occurred", error });
   }
 };
-
-
-
 
 const deleteItinerary = async (req, res) => {
   const { id } = req.params;
@@ -352,33 +351,45 @@ const readSingleVintage = (req, res) => {
   }
 };
 
- 
-
 const readAllVintage = async (req, res) => {
- 
-    const { tag } = req.query;
-  
-    try {
-      let vintages;
-  
-      if (tag) {
-        // Find all vintages that contain the specified tag in their tags array
-        vintages = await VintageModel.find({ tags: { $in: [tag] } });
-      } else {
-        // If no tag is provided, return all vintages
-        vintages = await VintageModel.find();
-      }
-  
-      if (!vintages.length) {
-        return res.status(404).json({ message: "No vintages found" });
-      }
-  
-      res.status(200).json(vintages);
-    } catch (error) {
-      res.status(500).json({ message: "An error occurred while retrieving vintages", error });
+  const { tag } = req.query;
+
+  try {
+    let vintages;
+
+    if (tag) {
+      // Find all vintages that contain the specified tag in their tags array
+      vintages = await VintageModel.find({ tags: { $in: [tag] } });
+    } else {
+      // If no tag is provided, return all vintages
+      vintages = await VintageModel.find();
     }
+
+    if (!vintages.length) {
+      return res.status(404).json({ message: "No vintages found" });
+    }
+
+    res.status(200).json(vintages);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "An error occurred while retrieving vintages", error });
+  }
 };
 
+const viewAllVintage = async (req, res) => {
+  console.log("in");
+  try {
+    console.log("inside try");
+    const vintages = await VintageModel.find();
+    res.status(200).json(vintages);
+  } catch (error) {
+    console.log("entered catch");
+    res
+      .status(500)
+      .json({ message: "An error occurred while retrieving vintages", error });
+  }
+};
 
 module.exports = {
   createItinerary,
@@ -391,5 +402,7 @@ module.exports = {
   readSingleVintage,
   updateVintage,
   deleteItinerary,
-  deleteVintage,readAllVintage
+  deleteVintage,
+  readAllVintage,
+  viewAllVintage,
 };

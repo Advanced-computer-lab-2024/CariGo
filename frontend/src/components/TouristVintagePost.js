@@ -18,7 +18,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-export default function VintagePost({
+export default function TouristVintagePost({
   author = "Anonymous",
   id,
   name = "No name provided",
@@ -38,7 +38,7 @@ export default function VintagePost({
 }) {
   const navigate = useNavigate();
 
-  const handleDelete = async (event) => {
+  const handleDelete = async (event) => {
     event.stopPropagation();
     const confirmDelete = window.confirm("Are you sure you want to delete this itinerary?");
     if (confirmDelete) {
@@ -57,8 +57,7 @@ export default function VintagePost({
 
         alert("Itinerary deleted successfully");
         // Optionally use navigate or a callback to update the parent component
-        window.location.reload();
-        // console.log("Vintages deleted")
+        navigate('/myVintages'); // Redirect to the itineraries list or any other page
       } catch (error) {
         console.error('Failed to delete itinerary:', error.response ? error.response.data : error.message);
         alert(`An error occurred while deleting the itinerary. Details: ${error.message}`);
@@ -86,7 +85,7 @@ export default function VintagePost({
           cursor: 'pointer',
         },
       }}
-      onClick={() => navigate(`/vintage/${id}`)}
+      onClick={() => navigate(`/viewingAllvintage/${id}`)}
     >
       <Box sx={{ display: 'flex', flexDirection: 'row', flexGrow: 1 }}>
         <CardMedia
@@ -162,15 +161,8 @@ export default function VintagePost({
           <IconButton aria-label="share">
             <ShareIcon />
           </IconButton>
-          <IconButton
-            aria-label="delete"
-            onClick={(event) => handleDelete(event)} // Add the delete handler here
-            sx={{ color: 'red' }} // Optional styling for the delete icon
-          >
-            <DeleteIcon />
-          </IconButton>
         </Box>
       </CardActions>
-    </Card>
-  );
+    </Card>
+  );
 }
