@@ -2,14 +2,22 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Layout } from 'antd';
+import Sider from 'antd/es/layout/Sider';
+import Sidebar from '../Sidebar';
+import { Content, Header } from 'antd/es/layout/layout';
+import TopBar from '../TopBar';
 
 export default function DeleteAccount() {
   const [username, setUsername] = useState('');
-  
+  const token = localStorage.getItem('jwt')
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.delete('http://localhost:4000/Admin/deleteUser', { data: { username } });
+      const response = await axios.post('http://localhost:4000/Admin/deleteUser',{username},{
+        headers:{
+            authorization :`Bearer ${token}`
+    }});
       toast.success(response.data.message); // Show success toast
     } catch (err) {
       toast.error(err.response?.data?.error || 'An error occurred'); // Show error toast
@@ -17,6 +25,17 @@ export default function DeleteAccount() {
   };
 
   return (
+    <Layout style={{ height: '100vh' }}>
+    <Sider width={256} style={{ background: '#001529' }}>
+          <Sidebar />
+        </Sider>
+        <Layout>
+        <Header style={{ background: '#001529', padding: 0 }}>
+            <TopBar/> {/* Top bar added here */}
+            
+          </Header>
+          <ToastContainer />
+          <Content style={{ padding: '20px', overflowY: 'auto' }}>
     <div style={styles.container}>
       <h1 style={styles.title}>Delete Account</h1>
       <form onSubmit={handleSubmit} style={styles.form}>
@@ -35,8 +54,11 @@ export default function DeleteAccount() {
         </div>
         <button type="submit" style={styles.button}>Delete Account</button>
       </form>
-      <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} closeOnClick draggable pauseOnHover />
+      {/* <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} closeOnClick draggable pauseOnHover /> */}
     </div>
+    </Content>
+    </Layout>
+    </Layout>
   );
 }
 

@@ -13,6 +13,12 @@ import {
 } from "@mui/material";
 import { Typography } from '@mui/material';
 import { useNavigate } from "react-router-dom"; // Import useNavigate
+import Sidebar from "./Sidebar";
+import Sider from "antd/es/layout/Sider";
+import { Layout } from "antd";
+import { Content, Header } from "antd/es/layout/layout";
+import TopBar from "./TopBar";
+import { ToastContainer } from "react-toastify";
 
 // STYLED COMPONENTS
 const CardHeader = styled(Box)(() => ({
@@ -69,6 +75,17 @@ export default function EditCategory() {
   };
 
   return (
+    <Layout style={{ height: '100vh' }}>
+      
+    <Sider width={256} style={{ background: '#001529' }}>
+          <Sidebar />
+        </Sider>
+        <Layout>
+        <Header style={{ background: '#001529', padding: 0 }}>
+            <TopBar /> {/* Top bar added here */}
+          </Header>
+          <ToastContainer />
+          <Content style={{ padding: '20px', overflowY: 'auto' }}>
     <Card elevation={3} sx={{ pt: "20px", mb: 3 }}>
       <CardHeader>
         <Title>Edit Category</Title>
@@ -110,6 +127,9 @@ export default function EditCategory() {
         </ProductTable>
       </Box>
     </Card>
+    </Content>
+    </Layout>
+    </Layout>
   );
 }
 

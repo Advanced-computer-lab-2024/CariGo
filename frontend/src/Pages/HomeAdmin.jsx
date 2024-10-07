@@ -3,7 +3,7 @@ import './Home.css';  // If you want to add custom styles
 import { Link } from 'react-router-dom';
 import { UserOutlined, TagOutlined, FolderOutlined, ShoppingOutlined } from '@ant-design/icons'; 
 import UserActivityChart from './UserActivityChart';
-const Home = () => {
+const HomeAdmin = () => {
     return (
       <div className="home-container">
         <header className="home-header">
@@ -15,19 +15,18 @@ const Home = () => {
           <h2>Features</h2>
           <div className="feature-cards">
             {/* Clickable card for Managing Accounts */}
-            <Link to="/manage-accounts" className="card">
+            <Link to="/admin/manage-accounts" className="card">
               <UserOutlined className="card-icon" />
               <h3>Manage Accounts</h3>
               <p>View and manage user accounts.</p>
             </Link>
 
             {/* Clickable card for View Product */}
-            <Link to="/view-product" className="card">
+            <Link to="/admin/view-products" className="card">
               <ShoppingOutlined className="card-icon" /> {/* Use ShoppingOutlined for viewing products */}
-              <h3>View Product</h3>
+              <h3>View Products</h3>
               <p>View and manage products.</p>
             </Link>
-
             {/* Clickable card for Edit Category */}
             <Link to="/edit-category" className="card">
               <FolderOutlined className="card-icon" />
@@ -52,4 +51,4 @@ const Home = () => {
     );
 };
 
-export default Home;
+export default HomeAdmin;

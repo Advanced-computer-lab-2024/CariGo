@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-
+import { Layout } from 'antd';
+import Sider from 'antd/es/layout/Sider';
+import Sidebar from '../Sidebar';
+import { ToastContainer } from "react-toastify";
+import { Content, Header } from 'antd/es/layout/layout';
+import TopBar from '../TopBar';
 export default function UpdateCategory() {
   const [categories, setCategories] = useState([]); // State to hold fetched categories
   const [loading, setLoading] = useState(false); // Loading state
@@ -18,7 +23,10 @@ export default function UpdateCategory() {
   const fetchCategories = async () => {
     setLoading(true); // Start loading
     try {
-      const response = await axios.get("http://localhost:4000/Admin/getCategories"); // Fetch categories from backend
+      const response = await axios.get("http://localhost:4000/Admin/getCategories",{
+        headers:{
+            authorization :`Bearer ${token}`
+    }}); // Fetch categories from backend
       setCategories(response.data); // Set the categories state
     } catch (error) {
       console.error("Error fetching categories:", error);
@@ -34,7 +42,7 @@ export default function UpdateCategory() {
     setNewName(category.name); // Pre-fill with current name
     setNewDescription(category.description); // Pre-fill with current description
   };
-
+  const token = localStorage.getItem('jwt')
   // Function to update the selected category
   const updateCategory = async () => {
     if (!selectedCategory) return;
@@ -43,7 +51,11 @@ export default function UpdateCategory() {
       await axios.put(`http://localhost:4000/Admin/updateCategory/${selectedCategory._id}`, {
         name: newName, // New name entered
         description: newDescription, // New description entered
-      });
+      },
+      {
+        headers:{
+            authorization :`Bearer ${token}`
+    }});
       toast.success("Category updated successfully!"); // Show success message
 
       // After update, clear selected category and refresh the category list
@@ -59,6 +71,17 @@ export default function UpdateCategory() {
   };
 
   return (
+    <Layout style={{ height: '100vh' }}>
+    <Sider width={256} style={{ background: '#001529' }}>
+          <Sidebar />
+        </Sider>
+        <Layout>
+        <Header style={{ background: '#001529', padding: 0 }}>
+            <TopBar /> {/* Top bar added here */}
+            
+          </Header>
+          <ToastContainer />
+          <Content style={{ padding: '20px', overflowY: 'auto' }}>
     <div>
       <h1>Update Categories</h1>
 
@@ -110,5 +133,8 @@ export default function UpdateCategory() {
         </div>
       )}
     </div>
+ </Content>
+ </Layout>
+ </Layout>
   );
 }

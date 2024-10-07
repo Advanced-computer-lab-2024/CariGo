@@ -1,11 +1,14 @@
 // TopBar.jsx
-import React from 'react';
+import React, { useState } from 'react';
 import { Layout } from 'antd';
 import { UserOutlined, MessageOutlined } from '@ant-design/icons'; // Import the icons
 import logo from '../assests/logo.png';
 import { Link } from 'react-router-dom';
+ 
 
 const TopBar = () => {
+  const [username, setUsername] = useState(localStorage.getItem('username'))
+  console.log(localStorage.getItem('username'))
   return (
     <div style={{ 
       backgroundColor: '#001529', 
@@ -17,14 +20,16 @@ const TopBar = () => {
       alignItems: 'center' 
     }}>
       <div style={{ display: 'flex', alignItems: 'center' }}>
-      <Link to="/"> <img 
+      <Link to="/admin"> <img 
           src={logo} 
           alt="CariGo Logo" 
           style={{ height: '50px', marginRight: '10px', marginTop: '20px'}} // Adjust the height as needed
         /></Link>
         <h2 style={{ color: '#fff', margin: '0' }}> <Link to="/">CariGo</Link></h2>
       </div>
+      <p style={{marginLeft:"650px"}}>Hi  {username}</p>
       <div style={{ display: 'flex', alignItems: 'center' }}>
+        
         <UserOutlined 
           style={{ fontSize: '20px', color: '#fff', marginRight: '20px', cursor: 'pointer' }} 
           onClick={() => console.log('Profile clicked')} // Add your click handler

@@ -3,9 +3,9 @@ const Product = require('../models/Product');
 // const User = require('./../models/userModel');
 
 const createProduct = async (req, res) => {
-    const { name, picture, description, price, ratings, quantity} = req.body;
+    const { name, picture, description, price, ratingsAverage, quantity} = req.body;
     try {
-const product = await Product.create({ name, picture, description:description, price,quantity,ratings, author: req.user.id });
+const product = await Product.create({ name, picture, description:description, price,quantity,ratingsAverage, author: req.user.id });
         res.status(200).json(product);
     } catch (error) {
         res.status(400).json({ error: error.message });
@@ -39,7 +39,7 @@ const updateProduct = async (req, res) => {
 };
 const getProducts = async (req, res) => {
     try {
-        console.log(req.query.sort+" "+req.query);
+      //  console.log(req.query.sort+" "+req.query);
         let queryStr = JSON.stringify(req.query);
         queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
         
@@ -48,9 +48,11 @@ const getProducts = async (req, res) => {
        // console.log(queryObj+" "+attributeToBeSorted);
         const attributeToBeSorted = queryObj['sort'];
         if(queryObj['sort']) queryObj['sort'] = undefined  
-        console.log(queryStr+" "+attributeToBeSorted + "   "+ req.params);
-        const products = await Product.find(queryObj).sort(attributeToBeSorted?(attributeToBeSorted):{ createdAt: -1 }); // Fixed from ActivityModel to Activity
+       // console.log(queryStr+" "+attributeToBeSorted + "   "+ req.params);
+        const products = await Product.find(queryObj).sort(attributeToBeSorted?"-ratingsAverage":{ createdAt: -1 }); // Fixed from ActivityModel to Activity
+       //  console.log( products[0].ratingsAverage['avgSoFar'])
         res.status(200).json(products);
+       
     } catch (error) {
         res.status(500).json({ message: 'Error retrieving Products', error });
     }

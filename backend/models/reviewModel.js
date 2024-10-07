@@ -72,8 +72,8 @@ reviewSchema.statics.calcAverageProductRatings = async function(productId) {
       });
     } else {
       await Product.findByIdAndUpdate(productId, {
-        ratingsQuantity: 0,
-        ratingsAverage: 4.5
+       // ratingsQuantity: 0,
+       // ratingsAverage: 4.5
       });
     }
   };

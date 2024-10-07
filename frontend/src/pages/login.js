@@ -11,6 +11,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export default function LoginPage() {
+  localStorage.clear();
+ // console.log(localStorage.getItem('jwt') +"         d")
   const [formData, setFormData] = useState({
     username: '',
     password: ''
@@ -52,10 +54,28 @@ export default function LoginPage() {
       // Store the token in localStorage
       localStorage.setItem('jwt', token);
       localStorage.setItem("id", data.data.user._id);
+     // console.log(formData.username)
+      localStorage.setItem('username',formData.username)
       localStorage.setItem("role", data.data.user.role);
+      const id =  localStorage.getItem("id", data.data.user._id);
       console.log(localStorage.getItem("role"));
-
-      navigate('/'); 
+      switch (localStorage.getItem("role")) {
+        case "Admin":
+          navigate(`/admin`); // Redirect to "View All" page
+          break;
+        case "Advetiser":
+          navigate("/"); // Redirect to "Update" page
+          break;
+        case "Tour_Guide":
+          navigate("/"); // Redirect to "Create" page
+          break;
+        case "Seller":
+          navigate("/delete-categories"); // Redirect to "Delete" page
+          break;
+        default:
+          navigate("/login")
+      }
+     // navigate('/admin'); 
     } catch (error) {
       console.error("Error:", error.message);
       alert("Login failed: " + error.message);
