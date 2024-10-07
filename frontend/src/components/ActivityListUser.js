@@ -316,7 +316,7 @@ export default function ActivityList() {
                             id={activity._id}
                             start_date={StringDate(activity.start_date)}
                             end_date={StringDate(activity.end_date)}
-                            location={activity.location}
+                            location={activity.locations}
                             duration={calculateDuration(activity.start_date, activity.end_date)}
                             price={activity.price}
                             category={activity.Category}
