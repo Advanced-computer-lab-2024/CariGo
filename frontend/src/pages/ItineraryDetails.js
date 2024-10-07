@@ -9,14 +9,16 @@ import NavBar from "../components/NavBar";
 import ItineraryUpdate from "../components/ItineraryUpdate"; // Import the edit button
 import "../components/styles/CompanyInfo.css";
 import logoImage from "../assets/itinerary.png"; // Correct relative path
-import { Link } from "react-router-dom";
-import { Button } from "@mui/material";
+import axios from "axios";
 // import ActivitiesForm from "../components/ActivitiesForm";
 
 const ItineraryDetails = () => {
   const { id } = useParams(); // Get the itinerary ID from the URL
   const [itinerary, setItinerary] = useState(null);
   const [refreshKey, setRefreshKey] = useState(0); // State to trigger refresh on update
+  const [localActivities, setLocalActivities] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [activityTrigger, setActivityTrigger] = useState(0);
 
   useEffect(() => {
     const fetchItineraryDetails = async () => {
@@ -43,13 +45,76 @@ const ItineraryDetails = () => {
 
         const data = await response.json();
         setItinerary(data);
+        setLocalActivities(data.activities);
+        console.log("gayez", localActivities);
+        if (isEditing) {
+          setIsEditing(false); // Set editing mode to false after update
+          const activitiesSent = await axios.patch(
+            `/cariGo/Event/updateItinerary/${id}`,
+            {
+              activities: localActivities,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          setActivityTrigger(activityTrigger + 1);
+        }
       } catch (error) {
         console.error("Error fetching itinerary details:", error);
       }
     };
-
     fetchItineraryDetails();
-  }, [refreshKey]);
+  }, [refreshKey, activityTrigger]);
+  const updateActivity = (updatedActivity) => {
+    setLocalActivities((prevActivities) =>
+      prevActivities.map((activity) =>
+        activity._id === updatedActivity._id ? updatedActivity : activity
+      )
+    );
+    // console.log("3baki",localActivities)
+    setIsEditing(true); // Set editing mode to false after update
+    setRefreshKey((prev) => prev + 1); // Optionally trigger a refresh if needed
+  };
+
+  const createActivity = async (newAvtivity) => {
+    setLocalActivities((prevActivities) => prevActivities.push(newAvtivity));
+    console.log("3baki", localActivities);
+    // console.log("3baki",localActivities)
+    const token = localStorage.getItem("jwt");
+    const activitiesSent = await axios.patch(
+      `/cariGo/Event/updateItinerary/${id}`,
+      {
+        activities: localActivities,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    setIsEditing(true); // Set editing mode to false after update
+
+    setRefreshKey((prev) => prev + 1); // Optionally trigger a refresh if needed
+  };
+
+  const deleteActivity = async (updatedActivities) => {
+    const token = localStorage.getItem("jwt");
+    const activitiesSent = await axios.patch(
+      `/cariGo/Event/updateItinerary/${id}`,
+      {
+        activities: updatedActivities,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    setRefreshKey((prev) => prev + 1);
+  };
 
   if (!itinerary) {
     return <Typography>Loading...</Typography>;
@@ -131,6 +196,11 @@ const ItineraryDetails = () => {
         />
         <div className="company-info">
           <Box sx={{ marginBottom: "20px" }}>
+          <ItineraryUpdate
+                itinerary={itinerary}
+                setItinerary={setItinerary}
+                setRefreshKey={setRefreshKey}
+              />
             <Box
               sx={{
                 display: "flex",
@@ -138,6 +208,7 @@ const ItineraryDetails = () => {
                 marginBottom: "10px",
               }}
             >
+              
               <StarIcon sx={{ color: "#FFD700", marginRight: "5px" }} />
               <Typography variant="body1" sx={{ fontSize: "18px" }}>
                 {ratingsAverage || "No rating"}
@@ -205,15 +276,17 @@ const ItineraryDetails = () => {
             </Typography>
             <Typography variant="body1" sx={{ fontSize: "18px" }}>
               <strong>Activities:</strong>
-              <ItineraryActivityList activities={activities} />
+              <ItineraryActivityList
+                activities={activities}
+                updateActivity={updateActivity}
+                deleteActivity={deleteActivity}
+                createActivity={createActivity}
+              />
+              {/* {localActivities.map(() => {})} */}
             </Typography>
           </Box>
         </div>
-        <ItineraryUpdate
-          itinerary={itinerary}
-          setItinerary={setItinerary}
-          setRefreshKey={setRefreshKey}
-        />
+
         {/* <ActivitiesForm activities={itinerary.activities}/> */}
       </Box>
     </div>
