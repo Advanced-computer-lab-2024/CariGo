@@ -30,37 +30,13 @@ const [expanded, setExpanded] = React.useState(false);
 const handleExpandClick = () => {
   setExpanded(!expanded);
 };
-const token = localStorage.getItem('jwt');
-const handleDelete = async () => {
-  try {
-    console.log(id);
-    const response = await fetch(`http://localhost:4000/Carigo/Activity/deleteActivity/${id}`, {
-      method: 'DELETE',        headers: {
-        Authorization: `Bearer ${token}`,
-       
-      }
-    });
-    
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-
-    // Optionally, handle the success response here (e.g., show a message)
-  } catch (error) {
-    console.error("Error deleting activity:", error);
-    // Handle error, possibly show an error message
-  } finally {
-    // Reload the current page
-   window.location.reload();
-  }
-};
 
 const navigate = useNavigate();
 return (
   // <Link 
-  // to={/activities/${id}} 
+  // to={`/activities/${id}`} 
   // style={{textDecoration:'none'}} 
-  // onClick={() => navigate(/activities/${id})}
+  // onClick={() => navigate(`/activities/${id}`)}
   // >
   <Card
     sx={{
@@ -245,9 +221,9 @@ return (
                   <EditIcon/>
                 </Link>
                 <Link 
-                  to={"#"} 
+                  to={`/activities/`} 
                   style={{textDecoration:'none'}} 
-                 onClick={handleDelete} 
+                  // onClick={() => navigate()}
                   sx={{
                     color: '#126782',
                     '&:hover': {
@@ -298,6 +274,6 @@ return (
         </Box>
       </CardActions>
     </Card>
-    // </Link>
-  );
+    // </Link>
+  );
 }

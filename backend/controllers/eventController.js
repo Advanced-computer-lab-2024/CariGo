@@ -10,6 +10,7 @@ const userModel = require("../models/User");
 const VintageModel = require("../models/Vintage");
 const mongoose = require("mongoose");
 const APIFeatures = require("../utils/apiFeatures");
+const Category = require("../models/Category");
 
 const createItinerary = async (req, res) => {
   const userId = new mongoose.Types.ObjectId(req.body.author); // Convert to ObjectId
@@ -176,53 +177,142 @@ const updateItinerary = async (req, res) => {
       .json({ error: "couldn't update user data, itinerary id invalid" });
   }
 };
+// const readAllItineraries = async (req, res) => {
+//   const sort = req.query.sort || "-createdAt"; // Default to "-createdAt" if no parameter is provided
+//   const tagTitle = req.query.tags; // Get the tag title from query parameters
+
+//   // Validate sortBy parameter
+//   const validSortFields = ["price", "-createdAt", "ratingsAverage"];
+//   if (!validSortFields.includes(sort)) {
+//       return res.status(400).json({
+//           message: `Invalid sortBy parameter. Allowed values are: ${validSortFields.join(", ")}`,
+//       });
+//   }
+
+//   try {
+//       // Initialize the query
+//       let query = itineraryModel.find();
+
+//       // Check if a tag title is provided
+//       if (!tagTitle) {
+//           // Initialize APIFeatures with the query and query string
+//           const features = new APIFeatures(query, req.query).filter();
+
+//           // Apply sorting
+//           const itineraries = await features.query.sort(sort);
+
+//           if (!itineraries.length) {
+//               return res.status(404).json({ message: "No itineraries found" });
+//           }
+
+//           res.status(200).json(itineraries);
+//       } else {
+//           // If tagTitle is provided, filter based on tags
+//           const tagIds = await tagModel.find({ title: tagTitle }).select('_id');
+//           query = query.where('tags').in(tagIds);
+
+//           // Delete the 'tag' key from req.query
+//           delete req.query.tags;
+
+//           // Optionally, initialize APIFeatures with the modified query
+//           const features = new APIFeatures(query, req.query).filter();
+
+//           // Apply sorting
+//           const itineraries = await features.query.sort(sort);
+
+//           if (!itineraries.length) {
+//               return res.status(404).json({ message: "No itineraries found" });
+//           }
+
+//           res.status(200).json(itineraries);
+//       }
+//   } catch (error) {
+//       res.status(500).json({ message: "An error occurred", error });
+//   }
+// };
+
+
 const readAllItineraries = async (req, res) => {
   const sort = req.query.sort || "-createdAt"; // Default to "-createdAt" if no parameter is provided
-  const tagTitle = req.query.tag; // Get the tag title from query parameters
+  const tagTitle = req.query.tags; 
+  // Get the tag title from query parameters
 
-  // Validate sortBy parameter
+  // Validate sort parameter
   const validSortFields = ["price", "-createdAt", "ratingsAverage"];
   if (!validSortFields.includes(sort)) {
-    return res.status(400).json({
-      message: `Invalid sortBy parameter. Allowed values are: ${validSortFields.join(
-        ", "
-      )}`,
-    });
+      return res.status(400).json({
+          message: `Invalid sortBy parameter. Allowed values are: ${validSortFields.join(", ")}`,
+      });
   }
 
   try {
-    // Initialize the query
-    let query = itineraryModel.find();
+      // Initialize the query
+      let query = itineraryModel.find();
 
-    // Skip filtering if a tag title is provided
-    if (!tagTitle) {
-      // Initialize APIFeatures with the query and query string
-      const features = new APIFeatures(query, req.query).filter();
+      // Check if a tag title is provided
+      let itineraries = []; // Declare itineraries with let
+      if (!tagTitle) {
+          // Initialize APIFeatures with the query and query string
+          const features = new APIFeatures(query, req.query).filter();
 
-      // Apply sorting
-      const itineraries = await features.query.sort(sort);
+          // Apply sorting
+          itineraries = await features.query.sort(sort);
+      } else {
+          // If tagTitle is provided, filter based on tags
+          const tagIds = await tagModel.find({ title: tagTitle }).select('_id');
+          console.log(tagIds);
+          query = query.where('tags').in(tagIds);
 
-      if (!itineraries.length) {
-        return res.status(404).json({ message: "No itineraries found" });
+          // Delete the 'tags' key from req.query
+          delete req.query.tags;
+
+          // Optionally, initialize APIFeatures with the modified query
+          const features = new APIFeatures(query, req.query).filter();
+
+          // Apply sorting
+          itineraries = await features.query.sort(sort);
       }
 
-      res.status(200).json(itineraries);
-    } else {
-      // If tagTitle is provided, just sort without filtering
-      const tagIds = await tagModel.find({ title: tagTitle }).select("_id");
-      query = query.where("tags").in(tagIds);
-      const itineraries = await query.sort(sort);
-
       if (!itineraries.length) {
-        return res.status(404).json({ message: "No itineraries found" });
+          return res.status(404).json({ message: "No itineraries found" });
       }
 
-      res.status(200).json(itineraries);
-    }
+      // Collect all tag IDs and category IDs from the itineraries
+      const allTagIds = itineraries.flatMap(itinerary => itinerary.tags || []);
+      // const allCategoryIds = [...new Set(itineraries.map(itinerary => itinerary.category))]; // Unique category IDs
+      
+      // Fetch tags and categories
+      const tags = await tagModel.find({ _id: { $in: allTagIds } });
+      // const categories = await Category.find({ _id: { $in: allCategoryIds } });
+
+      // Create maps for quick lookup
+      const tagMap = {};
+      tags.forEach(tag => {
+          tagMap[tag._id] = tag.title; // Map tag IDs to their titles
+      });
+
+      // const categoryMap = {};
+      // categories.forEach(category => {
+      //     categoryMap[category._id] = category.name; // Map category IDs to their names
+      // });
+
+      // Replace tag IDs and category ID in itineraries with corresponding titles/names
+      const formattedItineraries = itineraries.map(itinerary => ({
+          ...itinerary._doc, // Spread original itinerary fields
+          tags: itinerary.tags.map(tagId => tagMap[tagId] || tagId), // Replace tag IDs with titles
+          // category: categoryMap[itinerary.category] || itinerary.category // Replace category ID with name
+      }));
+
+      return res.status(200).json(formattedItineraries);
   } catch (error) {
-    res.status(500).json({ message: "An error occurred", error });
+      res.status(500).json({ message: "An error occurred", error });
   }
 };
+
+
+
+
+
 
 const deleteItinerary = async (req, res) => {
   const { id } = req.params;
@@ -351,45 +441,33 @@ const readSingleVintage = (req, res) => {
   }
 };
 
+ 
+
 const readAllVintage = async (req, res) => {
-  const { tag } = req.query;
-
-  try {
-    let vintages;
-
-    if (tag) {
-      // Find all vintages that contain the specified tag in their tags array
-      vintages = await VintageModel.find({ tags: { $in: [tag] } });
-    } else {
-      // If no tag is provided, return all vintages
-      vintages = await VintageModel.find();
+ 
+    const { tag } = req.query;
+  
+    try {
+      let vintages;
+  
+      if (tag) {
+        // Find all vintages that contain the specified tag in their tags array
+        vintages = await VintageModel.find({ tags: { $in: [tag] } });
+      } else {
+        // If no tag is provided, return all vintages
+        vintages = await VintageModel.find();
+      }
+  
+      if (!vintages.length) {
+        return res.status(404).json({ message: "No vintages found" });
+      }
+  
+      res.status(200).json(vintages);
+    } catch (error) {
+      res.status(500).json({ message: "An error occurred while retrieving vintages", error });
     }
-
-    if (!vintages.length) {
-      return res.status(404).json({ message: "No vintages found" });
-    }
-
-    res.status(200).json(vintages);
-  } catch (error) {
-    res
-      .status(500)
-      .json({ message: "An error occurred while retrieving vintages", error });
-  }
 };
 
-const viewAllVintage = async (req, res) => {
-  console.log("in");
-  try {
-    console.log("inside try");
-    const vintages = await VintageModel.find();
-    res.status(200).json(vintages);
-  } catch (error) {
-    console.log("entered catch");
-    res
-      .status(500)
-      .json({ message: "An error occurred while retrieving vintages", error });
-  }
-};
 
 module.exports = {
   createItinerary,
@@ -402,7 +480,5 @@ module.exports = {
   readSingleVintage,
   updateVintage,
   deleteItinerary,
-  deleteVintage,
-  readAllVintage,
-  viewAllVintage,
+  deleteVintage,readAllVintage
 };

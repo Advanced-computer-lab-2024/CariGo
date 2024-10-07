@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import ImageModal from './ImageModal'; // Modal to display images
-import SmallButton from './smallButton'; // Button component
-import './styles/ProfileHeader.css'; // Styles for ProfileHeader
+import './styles/TouristHeader.css';
 
 const ProfileHeader = ({ companyName, logo, coverImage }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -18,20 +17,22 @@ const ProfileHeader = ({ companyName, logo, coverImage }) => {
   };
 
   return (
-    <div className="profile-header">
+    <div className="tourist-header">
       <img 
         className="cover-image" 
         src={coverImage} 
         alt={`${companyName} cover`} 
         onClick={() => openModal(coverImage)}
       />
-      <div className="profile-details">
+      <div className="tourist-details">
         <img 
           className="logo" 
           src={logo} 
           alt={`${companyName} logo`} 
           onClick={() => openModal(logo)}
         />
+        
+        {/* SmallButton Component */}
       </div>
       <ImageModal 
         isOpen={isModalOpen} 
