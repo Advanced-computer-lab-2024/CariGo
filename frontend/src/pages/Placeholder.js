@@ -1,255 +1,279 @@
-import React, { useState, useEffect } from 'react';
-import ActivityPost from "./ActivityPost.js";
-import { Grid, Box, TextField, Button, CircularProgress, Typography, MenuItem } from '@mui/material';
+import * as React from 'react';
+import { styled } from '@mui/material/styles';
+import Card from '@mui/material/Card';
+import CardHeader from '@mui/material/CardHeader';
+import CardMedia from '@mui/material/CardMedia';
+import CardContent from '@mui/material/CardContent';
+import CardActions from '@mui/material/CardActions';
+import Avatar from '@mui/material/Avatar';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import { red } from '@mui/material/colors';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import ShareIcon from '@mui/icons-material/Share';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { Box } from '@mui/material';
+import { Chip } from '@mui/material';
+import PinDropIcon from '@mui/icons-material/PinDrop';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import SellIcon from '@mui/icons-material/Sell';
+import StarIcon from '@mui/icons-material/Star';
+import Link from '@mui/material/Link';
+import { useNavigate } from 'react-router-dom';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 
-export default function ActivityList() {
-    const [activities, setActivities] = useState([]);
-    const [filters, setFilters] = useState({
-        minPrice: "",
-        category: "",
-        rating: "",
-        startDate: "",
-       
-    });
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
-    const [sortOption, setSortOption] = useState('');
-    const [anchorEl, setAnchorEl] = React.useState(null);
-    
-    const open = Boolean(anchorEl);
-    const handleClick = (event) => {
-      setAnchorEl(event.currentTarget);
-    };
-    const handleClose = () => {
-      setAnchorEl(null);
-    };
+export default function ActivityPost({ id,author, img, start_date, end_date, duration, tag, description, title,location,
+  price,category,discount,isOpened, rating}) {
+const [expanded, setExpanded] = React.useState(false);
 
-    const handleFilterChange = (e) => {
-        const { name, value } = e.target;
-        setFilters(prevFilters => ({
-            ...prevFilters,
-            [name]: value // Update the corresponding filter in state
-        }));
-    };
+const handleExpandClick = () => {
+  setExpanded(!expanded);
+};
 
-    const handleFilterSubmit = (event) => {
-        event.preventDefault();
-    };
-
-    const resetFilters = () => {
-        setFilters({
-            minPrice: "",
-            category: "",
-            rating: "",
-            startDate: "",
-           
-        });
-    };
-    
-    const handleSortChange = (sortValue) => {
-      setSortOption(sortValue);  // Set the selected sort option
-      handleClose();  // Close the menu
-    };
-
-
-
-
-    const StringDate = (date) => {
-        const d = new Date(date);
-        const day = String(d.getDate()).padStart(2, '0');
-        const month = String(d.getMonth() + 1).padStart(2, '0');
-        const year = d.getFullYear();
-        return `${day}/${month}/${year}`;
-    };
-
-    const calculateDuration=(date1,date2)=>{
-        const start = new Date(date1);
-        const end = new Date(date2);
-        
-        // Calculate differences
-        const years = end.getFullYear() - start.getFullYear();
-        const months = end.getMonth() - start.getMonth() + (years * 12);
-        const days = Math.floor((end - start) / (1000 * 60 * 60 * 24));
-        const weeks = Math.floor(days / 7);
+const navigate = useNavigate();
+return (
+  // <Link 
+  // to={`/activities/${id}`} 
+  // style={{textDecoration:'none'}} 
+  // onClick={() => navigate(`/activities/${id}`)}
+  // >
+  <Card
+    sx={{
+      width: '100%', // Use full width of the container
+      maxWidth: '900px', // Set a max width
+      maxHeight: '500px',
+      color: '#126782',
+      fontSize: '18px',
+      display: 'flex',
+      flexDirection: 'column',
+      borderRadius: '10px',
+      position: 'relative',
+      margin: '20px',
+      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', // Box shadow all around
+      transition: 'transform 0.3s ease', // Transition effect for size change
+      '&:hover': {
+        transform: 'scale(1.02)', // Scale up the card on hover
+        cursor: 'pointer', // Change cursor to pointer
+      },
+    }}
+  >
+    <Box sx={{ display: 'flex', flexDirection: 'row', flexGrow: 1 }}>
       
-        // Determine the largest unit
-        if (years > 0) {
-          return `${years} year${years > 1 ? 's' : ''}`;
-        } else if (months > 0) {
-          return `${months} month${months > 1 ? 's' : ''}`;
-        } else if (weeks > 0) {
-          return `${weeks} week${weeks > 1 ? 's' : ''}`;
-        } else {
-          return `${days} day${days > 1 ? 's' : ''}`;
-        }
-    }
-
-    useEffect(() => {
-        const fetchActivities = async () => {
-            setLoading(true);
-            setError(null);
-            try {
-                const queryParams = new URLSearchParams();
-                if (filters.minPrice) queryParams.append('price.min', filters.minPrice);
-                if (filters.category) queryParams.append('Category', filters.category);
-                if (filters.rating) queryParams.append('ratingsAverage', filters.rating);
-                
-                // Include start_date in the query params
-                if (filters.startDate) {
-                    queryParams.append('start_date', filters.startDate); // Only date
-                }
-                // Fetch activities from the updated URL
-                const response = await fetch(`http://localhost:4000/Carigo/Activity/?${queryParams.toString()}`);
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                const json = await response.json();
-                console.log("Fetched activities:", json);
-                setActivities(json);
-            } catch (error) {
-                console.log('Error fetching activities:', error);
-                setError('Failed to fetch activities. Please try again later.');
-            } finally {
-                setLoading(false);
+      <CardMedia
+        component="img"
+        image={img || "/0ae1e586-0d84-43c3-92d4-924c13c01059.jpeg"}
+        alt={title}
+        sx={{
+          width: '500px',
+          height: '250px',
+          margin: '2px',
+          borderRadius: '10px',
+          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+        }}
+      />
+      
+      <Box sx={{ display: 'flex', flexDirection: 'column' ,}}>
+        <Box
+          sx={{
+            width: '400px',
+            padding: '10px',
+            display: 'flex',
+            flexDirection: 'column',
+            overflow: 'overflow',
+            
+          }}
+        >
+          <CardHeader
+            avatar={<Avatar sx={{ bgcolor: red[500] }}>R</Avatar>}
+            
+            title={
+              <Typography variant="h5" sx={{ width: '300px', fontWeight: 'bold', fontSize: '24px' }}>
+                {title}
+              </Typography>
             }
-        };
+          />
 
-        fetchActivities();
-    }, [filters]); // Re-fetch activities when filters change
-
-
-    
-    useEffect(() => {
-        // Fetch activities from the backend API
-        const fetchActivities = async () => {
-            try {
-                const response = await fetch(`/cariGo/activity?sort=${sortOption}`);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const json = await response.json();
-                console.log("Fetched activities:", json);
-                setActivities(json); // Set activities if response is okay
-            } catch (error) {
-                console.log('Error fetching activities:', error);
-            }
-        };
-
-        fetchActivities(); // Call the function to fetch activities
-    }, [sortOption]);
-
-    
-    return (
-        <Box sx={{ width: '100vw' }}>
-
-            {/* Filter Form */}
-            <form onSubmit={handleFilterSubmit}>
-                <TextField
-                    label="Min Price"
-                    variant="outlined"
-                    name="minPrice"
-                    value={filters.minPrice}
-                    onChange={handleFilterChange}
-                    type="number"
-                    sx={{ mb: 2, mr: 2 }}
-                />
-                <TextField
-                    label="Category"
-                    variant="outlined"
-                    name="category"
-                    value={filters.category}
-                    onChange={handleFilterChange}
-                    sx={{ mb: 2, mr: 2 }}
-                />
-                <TextField
-                    label="Rating"
-                    variant="outlined"
-                    name="rating"
-                    value={filters.rating}
-                    onChange={handleFilterChange}
-                    type="number"
-                    sx={{ mb: 2, mr: 2 }}
-                />
-                <TextField
-                    label="Start Date"
-                    variant="outlined"
-                    name="startDate"
-                    value={filters.startDate}
-                    onChange={handleFilterChange}
-                    type="date"
-                    sx={{ mb: 2, mr: 2 }}
-                />
-              
-                <Button variant="contained" type="submit">
-                    Apply Filters
-                </Button>
-                <Button variant="outlined" onClick={resetFilters} sx={{ ml: 2 }}>
-                    Reset Filters
-                </Button>
-            </form>
-
-
-            {/*Sort Button*/}
-
-            <div>
-            <Button
-                id="basic-button"
-                aria-controls={open ? 'basic-menu' : undefined}
-                aria-haspopup="true"
-                aria-expanded={open ? 'true' : undefined}
-                onClick={handleClick}
-                sx={{backgroundColor:"#ff4d4d" , color: "white", marginLeft: "50px",marginTop: "30px",}}
-            >
-                Sort By
-            </Button>
-            <Menu
-                id="basic-menu"
-                anchorEl={anchorEl}
-                open={open}
-                onClose={handleClose}
-                MenuListProps={{
-                'aria-labelledby': 'basic-button',
-                }}
-                sx={{width: "200px", }}
-                onChange={handleSortChange}
-            >
-                <MenuItem onClick={() => handleSortChange('price')}>Price</MenuItem>
-                <MenuItem onClick={() => handleSortChange('ratingsAverage')}>Review</MenuItem>
-                <MenuItem onClick={() => handleSortChange('-createdAt')}>creation date</MenuItem>
-            </Menu>
-            </div>
-
-            {/* Loading State */}
-            {loading && <CircularProgress />}
-
-            {/* Error Message */}
-            {error && <Typography color="error">{error}</Typography>}
-
-            {/* Activity List */}
-            <Grid container spacing={2} sx={{ display: 'flex', flexDirection: 'column' }}>
-                {activities.map((activity) => (
-                    <Grid item key={activity._id} size={4}>
-                        <ActivityPost
-                            id={activity._id}
-                            start_date={StringDate(activity.start_date)}
-                            end_date={StringDate(activity.end_date)}
-                            location={activity.location}
-                            duration={calculateDuration(activity.start_date,activity.end_date)}
-                            price={activity.price}
-                            category={activity.category}
-                            rating={activity.ratingsAverage}
-                            discount={activity.discount}
-                            isOpened={activity.isOpened ? "open" : "closed"}
-                            title={activity.title}
-                            tags={activity.tags}
-                            description={activity.description}
-                            img={activity.img}
-                        />
-                    </Grid>
-                ))}
-            </Grid>
+          {/* Tags below title */}
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginLeft: '15px' }}>
+            {
+            tag != null ?
+            
+              (<Chip label={tag} sx={{backgroundColor :'#126782', color: 'white' }} />)
+            : ""}
+          </Box>
         </Box>
-    );
+        
+        {/* Data Stuff */}
+        <Box
+          sx={{
+            display: 'flex',
+            flexFlow: 'column',
+            marginLeft: '30px',
+          }}
+        >
+          
+          <Typography>author : {author}</Typography>
+
+          <Typography>
+            category: {category != null ? category:"no specified category"}
+            
+          </Typography>
+
+          <Box sx={{display:'flex', }}>
+          <StarIcon sx={{scale:'0.9'}}/>
+          <Typography sx={{fontSize: '16px',marginTop:'1px'}}>{""+rating+""}</Typography>
+          </Box>
+          <Box sx={{
+              fontSize: '16px',
+              backgroundColor: isOpened === 'open' ? '#70db70' : '#ff4d4d',
+              color: 'white', 
+              //padding: '2px 0px',
+              display: 'inline-block',
+              borderRadius: '4px' ,
+              width: isOpened === 'open' ? '50px' : '60px',
+              }}>
+          <Typography sx={{
+              marginLeft: '6px',
+              marginBottom: '2px',
+              }}>
+              {isOpened || "status"}
+              </Typography>
+              </Box>
+              <Typography sx={{fontSize: '16px'}}>{category}</Typography>
+          <Typography sx={{fontSize: '16px'}}>From: {start_date}</Typography>
+          <Typography sx={{fontSize: '16px'}}>To: {end_date}</Typography>
+          <Typography sx={{fontSize: '16px', marginLeft: '30px'}}> {duration}</Typography>
+          <Box sx={{ display: 'flex',
+              marginTop: '5px',
+              margoinLeft:'-10px' ,
+              
+              }}>
+          <PinDropIcon sx={{marginTop:'0px',}}/>
+          <Typography sx={{marginLeft:'5px'}}> 
+
+          {location != null ? (
+            <>
+              lan: {location.lan}<br />
+              lon: {location.lon}
+            </>
+          ) : (
+            'no location specified'
+          )}
+            </Typography>
+          </Box>
+          
+         
+
+          <Box sx={{ display: 'flex',
+              marginTop: '5px',
+              margoinLeft:'-10px' ,
+              
+              }}>
+          <AttachMoneyIcon />
+          <Typography sx={{
+              marginLeft:'5px',
+              //textDecoration: discount>0 ? 'line-through' : 'none',
+              color: '#126782',
+              //discount>0 ? '#ff4d4d' : '#126782',
+              marginRight: '5px',
+          }}> {
+            price != null? 
+            (price.range.max+"-"+price.range.min )
+            :'no specified price'}
+            </Typography>
+
+
+          {/* <Typography sx={{fontSize: '16px'}}> {discount >0?  (price -(price*discount/100)): ''}</Typography> */}
+
+
+          <Box sx={{
+              backgroundColor : '#ff4d4d',
+              display: 'flex',
+              marginLeft: '5px',
+              borderRadius: '5px',
+              padding: '0px',
+              }}>
+                
+          <Typography sx={{marginLeft:'5px', color: "white"}}> {"-"+discount+"%" || ''}</Typography>
+          <SellIcon  sx={{scale: '0.7', color: 'white', marginTop:'2px',marginLeft:'-2px',
+              //do smth about display
+          }}/>
+          </Box>
+          </Box>
+           
+          </Box>
+          <Box sx={{display: "flex" ,
+            marginLeft:'300px',
+            marginTop:'55px',
+            gap:'15px',
+            }}>
+                <Link 
+                  to={`/activities/update/${id}`} 
+                  style={{textDecoration:'none'}} 
+                  onClick={() => navigate(`/activities/update/${id}`)}
+                  sx={{
+                    color: '#126782',
+                    '&:hover': {
+                      cursor: 'pointer',
+                    }}}
+                >
+                  <EditIcon/>
+                </Link>
+                <Link 
+                  to={`/activities/`} 
+                  style={{textDecoration:'none'}} 
+                  // onClick={() => navigate()}
+                  sx={{
+                    color: '#126782',
+                    '&:hover': {
+                      cursor: 'pointer',
+                    }}}
+                >
+                  <DeleteIcon/>
+                  </Link>
+            </Box>
+        </Box>
+      </Box>
+
+      {/* Description */}
+      <CardContent sx={{ flexGrow: 1 }}>
+        <Typography
+          variant="body2"
+          sx={{
+            color: 'text.secondary',
+            marginTop: '-10px',
+            marginLeft: '-5px',
+            flexWrap: 'wrap',
+            fontSize: '16px',
+            width: '460px',
+            position: 'absolute',
+            top: '290px',
+          }}
+        >
+          {description}
+        </Typography>
+      </CardContent>
+
+      {/* Card actions */}
+      <CardActions disableSpacing>
+        <Box sx={{ position: 'absolute', bottom: '2px', left: '2px' }}>
+          <IconButton aria-label="add to favorites">
+            <FavoriteIcon />
+          </IconButton>
+          <IconButton aria-label="share">
+            <ShareIcon />
+          </IconButton>
+          <IconButton
+            onClick={handleExpandClick}
+            aria-expanded={expanded}
+            aria-label="show more"
+          >
+            {/* <ExpandMoreIcon /> */}
+          </IconButton>
+        </Box>
+      </CardActions>
+    </Card>
+    // </Link>
+  );
 }

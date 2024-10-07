@@ -54,6 +54,8 @@ export default function LoginPage() {
       localStorage.setItem("role", data.data.user.role);
       console.log(localStorage.getItem("role"));
 
+
+      //redirect based on role
       if(data.data.user.role === "Advertiser"){
         navigate('/advertiser'); 
       }

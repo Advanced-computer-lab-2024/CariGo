@@ -40,19 +40,17 @@ export default function SelectTags({ tag = '', setTags }) {
   }, []);
 
   const handleChange = (event) => {
-    const {
-      target: { value },
-    } = event;
-    setTags(value); // Set the single selected tag
+    const selectedTag = event.target.value;
+    setTags(selectedTag); // Set the single selected tag
   };
 
   return (
     <div>
-      <FormControl sx={{ marginTop: '-18px', width: 300, height: 50, marginLeft: '-40px' }}>
+      <FormControl sx={{ marginTop: '-18px', width: 300, height: 50, marginLeft: '-40px',backgroundColor:'white' }}>
         <InputLabel id="demo-single-checkbox-label"
           sx={{ fontSize: '14px', marginLeft: '40px', marginTop: '2px' }}
         >
-          Tag
+         Tag 
         </InputLabel>
         <Select
           sx={{ scale: '0.65', borderRadius: '10px', marginLeft: '-15px' }}
@@ -60,7 +58,7 @@ export default function SelectTags({ tag = '', setTags }) {
           id="demo-single-checkbox"
           value={tag}
           onChange={handleChange}
-          input={<OutlinedInput label="Tag" />}
+          input={<OutlinedInput  />}
           renderValue={(selected) => selected || 'Select a tag'}
           MenuProps={MenuProps}
         >
@@ -71,11 +69,11 @@ export default function SelectTags({ tag = '', setTags }) {
                 maxWidth: '150px',
                 color: '#126782',
                 paddingLeft: '0px',
-                marginRight: "-20px",
+                marginRight: "0px",
+                backgroundColor: 'white',
               }}
             >
-              <Checkbox checked={tag === name} />
-              <ListItemText primary={name} />
+              {name}
             </MenuItem>
           ))}
         </Select>

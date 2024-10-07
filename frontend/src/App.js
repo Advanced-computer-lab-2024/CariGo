@@ -11,6 +11,7 @@ import { jwtDecode } from 'jwt-decode';
 import NavBar from "./components/NavBar";
 import CreateActivityForm from "./pages/CreateActivityForm";
 import TouristProfile from "./pages/TouristProfile";
+import UpdateActivityForm from "./components/UpdateActivityForm";
 function App() {
   const token = localStorage.getItem('jwt');
 

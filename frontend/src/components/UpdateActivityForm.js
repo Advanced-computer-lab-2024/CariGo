@@ -71,7 +71,7 @@ export default function UpdateActivityForm(){
           }
       
             try {
-              const response = await fetch(`http://localhost:4000/cariGO/Activity/updateActivity/:${id}`, {
+              const response = await fetch(`http://localhost:4000/cariGO/Activity/updateActivity/${id}`, {
                 method: 'PATCH', // Ensure the method is capitalized (PATCH)
                 body: JSON.stringify(activity),
                 headers: {
