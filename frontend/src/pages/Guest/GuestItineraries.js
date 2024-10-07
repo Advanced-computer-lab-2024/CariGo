@@ -2,7 +2,7 @@ import React from "react";
 import  { useState, useEffect } from 'react';
 // import ReactDOM from "react-dom/client";
 import "../../styles/index.css";
-import TouristNB from "./components/TouristNavBar"
+import GuestNB from "./components/GuestNB"
 import { Box } from "@mui/material";
 import { Grid,Menu, TextField, Button, CircularProgress, Typography, MenuItem } from '@mui/material';
 import { styled, alpha } from '@mui/material/styles';
@@ -54,7 +54,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-const TouristItineraries = () => {
+const GuestItineraries = () => {
 
     const [itineraries, setItineraries] = useState([]);
     const [filters, setFilters] = useState({
@@ -221,7 +221,7 @@ useEffect(() => {
   return (
     
     <div>
-      <TouristNB/>
+      <GuestNB/>
        {/* Filter Form */}
        <form>
                 <TextField
@@ -364,4 +364,4 @@ useEffect(() => {
   );
 };
 
-export default TouristItineraries;
+export default GuestItineraries;

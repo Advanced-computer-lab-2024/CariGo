@@ -9,6 +9,8 @@ import CreateItineraryForm from "./components/CreateItineraryForm";
 import AllItineraries from "./pages/AllItineraries";
 import UserItinDetails from "./pages/UserItinDetails";
 import TourGuideProfile from "./pages/TourGuideProfile";
+import  TouristItineraries from "./pages/Tourist/TouristItineraries";
+import  GuestItineraries from "./pages/Guest/GuestItineraries";
 
 import './styles/index.css';
 import { BrowserRouter as Router,Route,Routes } from 'react-router-dom';
@@ -68,6 +70,8 @@ function App() {
       <Route path="/user_itineraries/:id" element={<UserItinDetails />} />
         {<Route path="/activities" element={<UserViewActivities />} /> }
         <Route path="/tourist-activities" element={<TouristActivities/>} />
+        <Route path="/tourist-itineraries" element={< TouristItineraries/>} />
+        <Route path="/guest-itineraries" element={<GuestItineraries/>} />
         <Route path="/guest-activities" element={<GuestActivities/>} />
         <Route path="/createActivity" element={<CreateActivityForm userId={localStorage.getItem("id")} />} /> 
         <Route path="/SignUp" element={<SignUp />} />
