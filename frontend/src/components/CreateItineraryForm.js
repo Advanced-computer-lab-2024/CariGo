@@ -129,7 +129,7 @@ export default function CreateItineraryForm({ open, handleClose }) {
         );
       } else {
         console.log("Itinerary created successfully:", json);
-        navigate("/itineraries");
+        navigate(`/tour_guide/itineraries/`);
       }
     } catch (error) {
       console.error("Failed to create itinerary:", error);
