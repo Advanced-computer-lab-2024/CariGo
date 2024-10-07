@@ -11,7 +11,8 @@ import LoginPage from './pages/login';
 import SignUp from './pages/Signup';
 import { jwtDecode } from 'jwt-decode';
 import NavBar from "./components/NavBar";
-
+import UserViewVintages from "./pages/UserViewVintages";
+import VintageDetails from "./pages/VintageDetails";
 
 
 function App() {
@@ -36,6 +37,8 @@ function App() {
         <Route path="/advertiser" element={<AdvertiserProfile userId={localStorage.getItem("id")} />} />
         {/* <Route path="/activities/:id" element={<ActivityDetail/>} /> */}
         <Route path="/activities/update/:id" element={<updateActivityForm/>} />
+        <Route path="/myVintages" element={<UserViewVintages />} />
+        <Route path="/vintage/:id" element={<VintageDetails />} />
         {/* Add more routes as needed */}
       </Routes>
     
