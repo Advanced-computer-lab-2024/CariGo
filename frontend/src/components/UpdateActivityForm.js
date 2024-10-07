@@ -9,310 +9,271 @@ import SelectTags from "./SelectTags";
 import SelectCategory from "./SelectCategory";
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
+import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
 
 
 
 
 export default function UpdateActivityForm(){
+    const {id} = useParams();
     // const navigate = useNavigate();
 
-    const [formData, setFormData] = useState({
-        title: '',
-        description: '',
-        start_date: '',
-        end_date: '',
-        tags: [],
-        location: '',
-        price: 0,
-        discount: 0
-      });
+    const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
+    const [tag, setTags] = useState('');
+    const [category, setCategory] = useState('');
+    const [lon, setLon] = useState('');
+    const [lan, setLan] = useState('');
+    const [minPrice, setMinPrice] = useState(0);
+    const [maxPrice, setMaxPrice] = useState(0);
+    const [discount, setDiscount] = useState(0);
+    const [errorMessages, setErrorMessages] = useState({});
 
     const navigate = useNavigate();
    
-    const { id } = useParams();
+    
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({
-          ...formData,
-          [name]: value
-        });
-      };
+    // const handleChange = (e) => {
+    //     const { name, value } = e.target;
+    //     setFormData({
+    //       ...formData,
+    //       [name]: value
+    //     });
+    //   };
     
         // Ensure the ID is correctly used in the URL.
-        const handleUpdate = async (event) => {
-            event.preventDefault();
+
         
+        const handleUpdate = async (e) => {
+          const activity = {};
+
+          if (title) activity.title = title;
+          if (description) activity.description = description;
+          if (startDate) activity.start_date = startDate.format('YYYY-MM-DD');
+          if (endDate) activity.end_date = endDate.format('YYYY-MM-DD');
+          if (tag) activity.tag = tag;
+          if (lon) activity.lon = lon;
+          if (lan) activity.lan = lan;
+          if (minPrice) activity.minPrice = parseFloat(minPrice);
+          if (maxPrice) activity.maxPrice = parseFloat(maxPrice);
+          if (discount) activity.discount = parseFloat(discount);
+          if (category) activity.category = category;
+        
+          const token = localStorage.getItem('jwt');
+
+          if (!token) {
+            setErrorMessages({ general: "No token found. Please log in." });
+            return;
+          }
+      
             try {
-              const response = await fetch(`http://localhost:4000/cariGO/activities/updateActivity/${id}`, {
+              const response = await fetch(`http://localhost:4000/cariGO/Activity/updateActivity/${id}`, {
                 method: 'PATCH', // Ensure the method is capitalized (PATCH)
-                body: JSON.stringify(formData),
+                body: JSON.stringify(activity),
                 headers: {
-                    'Content-Type': 'application/json',
+                  Authorization: `Bearer ${token}`,
+                  'Content-Type': 'application/json',
+                  // 'Access-Control-Allow-Methods':'GET, POST, PATCH, PUT, DELETE, OPTIONS',
                 },
+              
               });
         
               if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
               }
+
+
+              // Reset fields
+              setTitle('');
+              setDescription('');
+              setStartDate(null);
+              setEndDate(null);
+              setTags('');
+              setLon('');
+              setLan('');
+              setMinPrice(0);
+              setMaxPrice(0);
+              setDiscount(0);
+              setErrorMessages({});
+              console.log("Activity updated");
         
-              navigate('/activities'); 
+              navigate('/advertiser'); 
             } catch (error) {
               console.error("Error:", error.message);
-              alert("Login failed: " + error.message);
-            }
-
-        
+              //alert("Login failed: " + error.message);
+            }  
     };
-    
 
-    return(
-        <Box  
-        
+    return (
+      <Box
         sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            width:'560px',
-            //maxHeight: '100vh',
-            padding: '10px',
-            color: '#ff4d4d',
-            borderRadius: '15px',
-            boxShadow: '0px 1px 3px rgba(0, 0, 0, 0.1)',
-            gap:'5px',
-            margin:'20px',
-            border: '2px solid #126782',
-            paddingLeft:'30px',  
+          display: 'flex',
+          flexDirection: 'column',
+          width: '560px',
+          padding: '10px',
+          color: '#ff4d4d',
+          borderRadius: '15px',
+          boxShadow: '0px 1px 3px rgba(0, 0, 0, 0.1)',
+          gap: '5px',
+          margin: '20px',
+          border: '2px solid #126782',
+          paddingLeft: '30px',
         }}>
-        <Box sx={{marginLeft:'50px'}}>
-        <h3 sx={{color:'#ff4d4d', }}>UPDATE ACTIVITY</h3>
-        {/*----FIELDS BOX---------------*/}
-
-        <Box sx={{width:'100%',padding:'5px',paddingBottom:'20px'}}>
-        <FormControl defaultValue=""  sx={{marginTop:'20px'} }>
-        <Label sx={{marginLeft:"2px"}}>TITLE</Label>
-        <StyledInput placeholder="Write your title here" 
-        onChange={handleChange}
-        
-        />
-        <HelperText />
-        </FormControl>
-
-        <FormControl defaultValue="" >
-        <Label sx={{marginLeft:"2px"}}>DESCRIPTION</Label>
-        <StyledInput placeholder="brief description of your activity" 
-        onChange={handleChange}
-        
-        />
-        <HelperText />
-        </FormControl>
-
-        <FormControl defaultValue="" >
-        <Label sx={{marginLeft:"2px"}}>start date</Label>
-        <StyledInput placeholder="date activity starts" 
-        onChange={handleChange}
-       
-        />
-        <HelperText />
-        </FormControl>
-
-        <FormControl defaultValue="" >
-        <Label sx={{marginLeft:"2px"}}>end date</Label>
-        <StyledInput placeholder="date activity ends" 
-        onChange={handleChange}
-        />
-        <HelperText />
-        </FormControl>
-
-        <FormControl defaultValue="" >
-        <Label sx={{marginLeft:"2px"}}>location</Label>
-        <StyledInput placeholder="activity location" 
-        onChange={handleChange}
-        />
-        <HelperText />
-        </FormControl>
-
-        <Label sx={{marginLeft:"10px"}}>Tags</Label>
-        <SelectTags />
-        <Label sx={{marginLeft:"10px"}}>Category</Label>
-        <SelectCategory />
-
-        <FormControl defaultValue="" >
-        <Label sx={{marginLeft:"2px"}}>price</Label>
-        <StyledInput placeholder="enter activity price" 
-         type="number"
-         onChange={handleChange}
-        />
-        <HelperText />
-        </FormControl>
-
-        <FormControl defaultValue="" >
-        <Label sx={{marginLeft:"2px"}}>discount</Label>
-        <StyledInput placeholder="enter any discounts" 
-        type="number"
-        onChange={handleChange}
-        />
-        <HelperText />
-        </FormControl>
-
-
-        </Box>
-        <Button sx={{ marginLeft:'350px',marginBottom:'20px',}}
-         onClick={handleUpdate} 
-        >UPDATE</Button>
-        
-        </Box>
-        </Box>
-
-    );
-}
-
-const StyledInput = styled(Input)(
-    ({ theme }) => `
+        <Box sx={{ marginLeft: '50px' }}>
+          <h3 style={{ color: '#ff4d4d' }}>CREATE A NEW ACTIVITY</h3>
+          <Box sx={{ width: '100%', padding: '5px', paddingBottom: '20px' }}>
+            <FormControl  sx={{ marginTop: '20px' }}>
+              <Label>TITLE</Label>
+              <StyledInput
+                placeholder="Write your title here"
+                onChange={(e) => setTitle(e.target.value)}
+              value={title}
+              />
+              {errorMessages.title && <HelperText>{errorMessages.title}</HelperText>}
+            </FormControl>
   
-    .${inputClasses.input} {
+            <FormControl >
+              <Label>DESCRIPTION</Label>
+              <StyledInput
+                placeholder="Brief description of your activity"
+                onChange={(e) => setDescription(e.target.value)}
+                value={description}
+              />
+              {errorMessages.description && <HelperText>{errorMessages.description}</HelperText>}
+            </FormControl>
+  
+            <FormControl >
+              <Label>START DATE</Label>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  value={startDate}
+                  onChange={(newValue) => setStartDate(newValue)}
+                  renderInput={(params) => <StyledInput {...params} />}
+                />
+              </LocalizationProvider>
+              {errorMessages.startDate && <HelperText>{errorMessages.startDate}</HelperText>}
+            </FormControl>
+  
+            <FormControl >
+              <Label>END DATE</Label>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  value={endDate}
+                  onChange={(newValue) => setEndDate(newValue)}
+                  renderInput={(params) => <StyledInput {...params} />}
+                />
+              </LocalizationProvider>
+              {errorMessages.endDate && <HelperText>{errorMessages.endDate}</HelperText>}
+            </FormControl>
+  
+            <FormControl >
+              <Label>LON</Label>
+              <StyledInput
+                placeholder="Activity longitude"
+                onChange={(e) => setLon(e.target.value)}
+                value={lon}
+              />
+              {errorMessages.lon && <HelperText>{errorMessages.lon}</HelperText>}
+            </FormControl>
+            <FormControl >
+              <Label>LAN</Label>
+              <StyledInput
+                placeholder="Activity latitude"
+                onChange={(e) => setLan(e.target.value)}
+                value={lan}
+              />
+              {errorMessages.lan && <HelperText>{errorMessages.lan}</HelperText>}
+            </FormControl>
+  
+            <FormControl >
+              <Label>Tags</Label>
+              <SelectTags tags={tag} setTags={setTags} />
+              {errorMessages.tag && <HelperText>{errorMessages.tag}</HelperText>}
+            </FormControl>
+  
+            <FormControl >
+              <Label>Category</Label>
+              <SelectCategory tags={category} setTags={setCategory} />
+              {errorMessages.category && <HelperText>{errorMessages.category}</HelperText>}
+            </FormControl>
+  
+            <FormControl >
+              <Label>Minimum Price</Label>
+              <StyledInput
+                placeholder="Enter minimum activity price"
+                type="number"
+                onChange={(e) => setMinPrice(e.target.value)}
+                value={minPrice}
+              />
+              {errorMessages.minPrice && <HelperText>{errorMessages.minPrice}</HelperText>}
+            </FormControl>
+  
+            <FormControl required>
+              <Label>Maximum Price</Label>
+              <StyledInput
+                placeholder="Enter maximum activity price"
+                type="number"
+                onChange={(e) => setMaxPrice(e.target.value)}
+                value={maxPrice}
+              />
+              {errorMessages.maxPrice && <HelperText>{errorMessages.maxPrice}</HelperText>}
+            </FormControl>
+  
+            <FormControl>
+              <Label>DISCOUNT</Label>
+              <StyledInput
+                placeholder="Enter any discounts"
+                type="number"
+                onChange={(e) => setDiscount(e.target.value)}
+                value={discount}
+              />
+              {errorMessages.discount && <HelperText>{errorMessages.discount}</HelperText>}
+            </FormControl>
+          </Box>
+          {errorMessages.general && <HelperText>{errorMessages.general}</HelperText>}
+          <Button onClick={handleUpdate}>UPDATE</Button>
+        </Box>
+      </Box>
+    );
+  }
+  
+  // Styled components
+  const StyledInput = styled('input')(({ theme }) => `
       width: 400px;
-      font-family: 'IBM Plex Sans', sans-serif;
-      font-size: 0.875rem;
-      font-weight: 400;
-      line-height: 1.5;
       padding: 8px 12px;
       border-radius: 8px;
-      color: ${theme.palette.mode === 'dark' ? grey[300] : grey[900]};
-      background: ${theme.palette.mode === 'dark' ? grey[900] : '#fff'};
-      border: 1px solid ${theme.palette.mode === 'dark' ? grey[700] : grey[200]};
-      box-shadow: 0px 2px 2px ${theme.palette.mode === 'dark' ? grey[900] : grey[50]};
-  
-      &:hover {
-        border-color: ${blue[400]};
-      }
-  
+      border: 1px solid ${theme.palette.mode === 'dark' ? '#6B7A90' : '#B0B8C4'};
+      background: ${theme.palette.mode === 'dark' ? '#303740' : '#fff'};
+      color: ${theme.palette.mode === 'dark' ? '#C7D0DD' : '#1C2025'};
       &:focus {
-        outline: 0;
-        border-color: ${blue[400]};
-        box-shadow: 0 0 0 3px ${theme.palette.mode === 'dark' ? blue[600] : blue[200]};
+          outline: 0;
+          border-color: #3399FF;
       }
-    }
-  `,
-  );
+  `);
   
-const Button = styled(BaseButton)(
-    ({ theme }) => `
-    font-family: 'IBM Plex Sans', sans-serif;
-    font-weight: 600;
-    font-size: 0.875rem;
-    line-height: 1.5;
-    background-color: ${'#ff4d4d'};
-    padding: 6px 8px;
-    border-radius: 8px;
-    color: white;
-    transition: all 150ms ease;
-    cursor: pointer;
-    border: 1px solid #ff4d4d;
-    box-shadow: 0 2px 1px ${
-      theme.palette.mode === 'dark' ? 'rgba(0, 0, 0, 0.5)' : 'rgba(45, 45, 60, 0.2)'
-    }, inset 0 1.5px 1px ${'#ff3333'}, inset 0 -2px 1px ${'#ff3333'};
-  
-    &:hover {
-      background-color: #ff3333;
-    }
-  
-    &:active {
-      background-color: #ff3333;
-      box-shadow: none;
-      transform: scale(0.99);
-    }
-  
-    &:focus-visible {
-      box-shadow: 0 0 0 4px #ff3333;
-      outline: none;
-    }
-  
-    &.base--disabled {
-      background-color: ${theme.palette.mode === 'dark' ? grey[700] : grey[200]};
-      color: ${theme.palette.mode === 'dark' ? grey[200] : grey[700]};
-      border: 0;
-      cursor: default;
-      box-shadow: none;
-      transform: scale(1);
-    }
-  `,
-  );
-
-  const Label = styled(({ children, className }) => {
-    const formControlContext = useFormControlContext();
-    const [dirty, setDirty] = React.useState(false);
-  
-    React.useEffect(() => {
-      if (formControlContext?.filled) {
-        setDirty(true);
+  const Button = styled(BaseButton)(({ theme }) => `
+      background-color: #ff4d4d;
+      color: white;
+      padding: 6px 8px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 150ms ease;
+      &:hover {
+          background-color: #ff3333;
       }
-    }, [formControlContext]);
+  `);
   
-    if (formControlContext === undefined) {
-      return <p>{children}</p>;
-    }
+  const Label = styled('label')`
+      font-size: 0.875rem;
+      margin-bottom: 4px;
+      display: block;
+  `;
   
-    const { error, required, filled } = formControlContext;
-    const showRequiredError = dirty && required && !filled;
-  
-    return (
-      <p className={clsx(className, error || showRequiredError ? 'invalid' : '')}>
-        {children}
-        {required ? ' *' : ''}
-      </p>
-    );
-  })`
-    font-family: 'IBM Plex Sans', sans-serif;
-    font-size: 0.875rem;
-    margin-bottom: 4px;
-  
-    &.invalid {
+  const HelperText = styled('p')`
+      font-size: 0.75rem;
       color: red;
-    }
   `;
-  
-  const HelperText = styled((props) => {
-    const formControlContext = useFormControlContext();
-    const [dirty, setDirty] = React.useState(false);
-  
-    React.useEffect(() => {
-      if (formControlContext?.filled) {
-        setDirty(true);
-      }
-    }, [formControlContext]);
-  
-    if (formControlContext === undefined) {
-      return null;
-    }
-  
-    const { required, filled } = formControlContext;
-    const showRequiredError = dirty && required && !filled;
-  
-    return showRequiredError ? <p {...props}>This field is required.</p> : null;
-  })`
-    font-family: 'IBM Plex Sans', sans-serif;
-    font-size: 0.875rem;
-  `;
-
-  
-const blue = {
-    100: '#DAECFF',
-    200: '#b6daff',
-    400: '#3399FF',
-    500: '#007FFF',
-    600: '#0072E5',
-    900: '#003A75',
-  };
-  
-  const grey = {
-    50: '#F3F6F9',
-    100: '#E5EAF2',
-    200: '#DAE2ED',
-    300: '#C7D0DD',
-    400: '#B0B8C4',
-    500: '#9DA8B7',
-    600: '#6B7A90',
-    700: '#434D5B',
-    800: '#303740',
-    900: '#1C2025',
-  };

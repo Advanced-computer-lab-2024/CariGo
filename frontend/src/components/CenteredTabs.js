@@ -9,6 +9,7 @@ import { jwtDecode } from "jwt-decode";
 
 // Example Components for the tabs
 
+
 import CompanyInfo from './CompanyInfo'; // Replace with actual path
 
 export default function CenteredTabs() {
@@ -20,6 +21,7 @@ export default function CenteredTabs() {
 
   return (
     <Box sx={{ width: '100%', bgcolor: 'background.paper' }}>
+      {/* Tab Navigation */}
       {/* Tab Navigation */}
       <Tabs
         value={value}

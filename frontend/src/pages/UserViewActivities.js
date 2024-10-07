@@ -5,10 +5,16 @@ import App from '../App';
 import NavBar from '../components/NavBarTourist';
 import ActivityList from '../components/ActivityListUser';
 import { Box } from '@mui/material';
+import Button from '@mui/material/Button';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import { useState } from 'react';
 
 
 
 export default function UserViewActivities (){
+
+
   return(
     <div>
     <NavBar/>
@@ -32,7 +38,7 @@ export default function UserViewActivities (){
       '&::-webkit-scrollbar': {display: 'none',},
       }}> {/* Enable vertical scrolling only */}
 
-     <ActivityList /> 
+     <ActivityList  /> 
 
   </Box>
   </Box>

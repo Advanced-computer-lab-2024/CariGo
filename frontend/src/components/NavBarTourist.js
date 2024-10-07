@@ -142,11 +142,23 @@ function ResponsiveAppBar() {
             </Button>
           </Box>
 
+          {/* <Search>
+            <SearchIconWrapper>
+              <SearchIcon />
+            </SearchIconWrapper>
+            <StyledInputBase
+              placeholder="Search…"
+              inputProps={{ 'aria-label': 'search' }}
+            />
+          </Search> */}
+
           {/* User Settings Menu */}
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="User Avatar" src="/static/images/avatar/2.jpg" />
+                <Avatar alt="User Avatar" 
+                //src="/static/images/avatar/2.jpg" 
+                />
               </IconButton>
             </Tooltip>
             <Menu

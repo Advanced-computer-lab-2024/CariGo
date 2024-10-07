@@ -135,12 +135,39 @@ const getActivities = async (req, res) => {
         const activities = await features.query.sort(sortBy);
 
         if (!activities.length) {
-            return res.status(404).json({ message: 'No upcoming activities found' });
+            return res.status(404).json({ message: 'Activities not found' });
         }
 
-        res.status(200).json(activities);
+        // Collect all tag and category IDs from the activities
+        const tagIds = activities.map(activity => activity.tag).filter(tag => tag);
+        const categoryIds = activities.map(activity => activity.Category).filter(category => category);
+
+        // Fetch tags and categories based on the collected IDs
+        const tags = await Tag.find({ _id: { $in: tagIds } });
+        const categories = await Category.find({ _id: { $in: categoryIds } });
+
+        // Create a map for quick lookup
+        const tagMap = {};
+        tags.forEach(tag => {
+            tagMap[tag._id] = tag.title; // Map tag IDs to their titles
+        });
+
+        const categoryMap = {};
+        categories.forEach(category => {
+            categoryMap[category._id] = category.name; // Map category IDs to their names
+        });
+
+        // Replace IDs in activities with corresponding titles/names
+        const formattedActivities = activities.map(activity => ({
+            ...activity._doc, // Spread original activity fields
+            tag: tagMap[activity.tag] || activity.tag, // Replace tag ID with title or keep original if not found
+            Category: categoryMap[activity.Category] || activity.Category // Replace category ID with name or keep original if not found
+        }));
+
+        res.status(200).json(formattedActivities);
     } catch (error) {
-        res.status(500).json({ message: 'An error occurred', error });
+        console.error('Error retrieving activities:', error);
+        res.status(500).json({ message: 'Error retrieving activities', error: error.message });
     }
 };
 
