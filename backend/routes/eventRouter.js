@@ -15,8 +15,9 @@ const {
 const authController = require("../controllers/authController");
 const router = express.Router();
 
+
 // middleware for authentication
-router.use(authController.protect);
+// router.use(authController.protect);
 
 // POST a new itinerary, vintage, and product, and create an activity if needed.
 router.post(
@@ -34,7 +35,19 @@ router.post(
   authController.restrictTo("Seller", "Admin"),
   createProduct
 );
+
+router.get(
+  "/readMyItineraries",
+  authController.restrictTo("Tour_Guide"),
+  readMyItineraries
+); // itineraries
+
 // router.post('/createActivity', createActivity);
+router.get(
+  "/viewAllVintage",
+  authController.protect,
+  viewAllVintage
+);
 
 router.get(
   "/readAllItineraries",

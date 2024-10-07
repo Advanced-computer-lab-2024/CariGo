@@ -1,7 +1,15 @@
 import "./styles/App.css";
 import React from "react";
 import AdvertiserProfile from "./AdvertiserProfile"; // Adjust the path based on your structure
-//import './styles/App.css';
+
+import UserViewItineraries from "./pages/UserViewItineraries";
+import ItineraryUpdate from "./components/ItineraryUpdate";
+import ItineraryDetails from "./pages/ItineraryDetails";
+import CreateItineraryForm from "./components/CreateItineraryForm";
+import AllItineraries from "./pages/AllItineraries";
+import UserItinDetails from "./pages/UserItinDetails";
+import TourGuideProfile from "./pages/TourGuideProfile";
+
 import './styles/index.css';
 import { BrowserRouter as Router,Route,Routes } from 'react-router-dom';
 import UserViewActivities from './pages/UserViewActivities';
@@ -24,8 +32,9 @@ import TouristViewVintage from "./pages/TouristViewVintage";
 import UserVintageDetails from "./pages/UserVintageDetails";
 
 
+
 function App() {
-  const token = localStorage.getItem('jwt');
+  const token = localStorage.getItem("jwt");
 
   // Decode the token safely
   let userId;
@@ -34,13 +43,29 @@ function App() {
       const decoded = jwtDecode(token);
       userId = decoded.id; // Assuming the id is in the decoded token
     } catch (error) {
-      console.error('Failed to decode token:', error);
+      console.error("Failed to decode token:", error);
     }
   }
   return (
-      <Routes>
+    <Routes>
         <Route path="/" element={<Home />} /> {/* Default route */}
         <Route path="/login" element={<LoginPage />} />
+      <Route
+        path="tour_guide/profile"
+        element={<TourGuideProfile userId={localStorage.getItem("id")} />}
+      />
+      <Route path="tour_guide/itineraries" element={<UserViewItineraries />} />
+      <Route path="tour_guide/itineraries/:id" element={<ItineraryDetails />} />
+      <Route
+        path="tour_guide/itineraries/new"
+        element={<CreateItineraryForm />}
+      />
+      <Route
+        path="tour_guid/itineraries/:id/edit"
+        element={<ItineraryUpdate />}
+      />
+      <Route path="/user_itineraries" element={<AllItineraries />} />
+      <Route path="/user_itineraries/:id" element={<UserItinDetails />} />
         {<Route path="/activities" element={<UserViewActivities />} /> }
         <Route path="/tourist-activities" element={<TouristActivities/>} />
         <Route path="/guest-activities" element={<GuestActivities/>} />
@@ -58,7 +83,6 @@ function App() {
         <Route path="/viewingAllvintage/:id" element={<UserVintageDetails />} />
         {/* Add more routes as needed */}
       </Routes>
-    
   );
 }
 
