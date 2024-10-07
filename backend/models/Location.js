@@ -3,15 +3,19 @@ const mongoose = require("mongoose");
 const schema = mongoose.Schema;
 
 const locationSchema = new schema({
-  longitude: {
-    type: String,
+  longitude:  {type: String,
+    default:""
   },
-  latitude: {
-    type: String,
+  latitude:  {type: String,
+    default:""
   },
   nation: {
-    country: String,
-    city: String,
+    country: {type: String,
+      default:""
+    },
+    city:  {type: String,
+      default:""
+    },
   },
 });
 

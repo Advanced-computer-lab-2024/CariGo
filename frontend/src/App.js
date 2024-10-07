@@ -6,7 +6,9 @@ import './styles/index.css';
 import { BrowserRouter as Router,Route,Routes } from 'react-router-dom';
 import UserViewActivities from './pages/UserViewActivities';
 import Home from './pages/Home';
+
 import LoginPage from './pages/login';
+import SignUp from './pages/Signup';
 import { jwtDecode } from 'jwt-decode';
 import CreateActivityForm from "./pages/CreateActivityForm";
 import TouristProfile from "./pages/Tourist/TouristProfile";
@@ -15,7 +17,11 @@ import TouristHome from "./pages/Tourist/TouristHome";
 import GuestHome from "./pages/Guest/GuestHome";
 import TouristActivities from './pages/Tourist/TouristActivities.js';
 import GuestActivities from './pages/Guest/GuestActivities.js';
-
+import NavBar from "./components/NavBar";
+import UserViewVintages from "./pages/UserViewVintages";
+import VintageDetails from "./pages/VintageDetails";
+import TouristViewVintage from "./pages/TouristViewVintage";
+import UserVintageDetails from "./pages/UserVintageDetails";
 
 
 function App() {
@@ -39,12 +45,18 @@ function App() {
         <Route path="/tourist-activities" element={<TouristActivities/>} />
         <Route path="/guest-activities" element={<GuestActivities/>} />
         <Route path="/createActivity" element={<CreateActivityForm userId={localStorage.getItem("id")} />} /> 
+        <Route path="/SignUp" element={<SignUp />} />
         <Route path="/advertiser" element={<AdvertiserProfile userId={localStorage.getItem("id")} />} />
         <Route path="/tourist" element={<TouristProfile userId={localStorage.getItem("id")} />} />
         <Route path="/tgHome" element={<TouristGuestHome/>} />
         <Route path="/touristHome" element={<TouristHome/>} />
         <Route path="/guestHome" element={<GuestHome/>} />
         <Route path="/activities/update/:id" element={<updateActivityForm/>} />
+        <Route path="/myVintages" element={<UserViewVintages />} />
+        <Route path="/vintage/:id" element={<VintageDetails />} />
+        <Route path="/allVintages" element={<TouristViewVintage />} />
+        <Route path="/viewingAllvintage/:id" element={<UserVintageDetails />} />
+        {/* Add more routes as needed */}
       </Routes>
     
   );
