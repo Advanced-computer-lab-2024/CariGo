@@ -1,7 +1,53 @@
 import React, { useState, useEffect } from 'react';
 import ActivityPost from "./ActivityPost.js";
 import { Grid, Box,Menu, TextField, Button, CircularProgress, Typography, MenuItem } from '@mui/material';
+import { styled, alpha } from '@mui/material/styles';
+import SearchIcon from '@mui/icons-material/Search';
+import InputBase from '@mui/material/InputBase';
 
+
+const Search = styled('div')(({ theme }) => ({
+  position: 'relative',
+  borderRadius: theme.shape.borderRadius,
+//   borderWidth: "2px",
+//   borderColor:"#126782",
+  backgroundColor: alpha(theme.palette.common.white, 0.15),
+  '&:hover': {
+    backgroundColor: alpha(theme.palette.common.white, 0.25),
+  },
+  marginRight: theme.spacing(2),
+  marginLeft: 0,
+  width: '100%',
+  [theme.breakpoints.up('sm')]: {
+    marginLeft: theme.spacing(3),
+    width: 'auto',
+  },
+}));
+
+
+const SearchIconWrapper = styled('div')(({ theme }) => ({
+  padding: theme.spacing(0, 2),
+  height: '100%',
+  position: 'absolute',
+  pointerEvents: 'none',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+}));
+
+const StyledInputBase = styled(InputBase)(({ theme }) => ({
+  color: 'inherit',
+  '& .MuiInputBase-input': {
+    padding: theme.spacing(1, 1, 1, 0),
+    // vertical padding + font size from searchIcon
+    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+    transition: theme.transitions.create('width'),
+    width: '100%',
+    [theme.breakpoints.up('md')]: {
+      width: '20ch',
+    },
+  },
+}));
 
 
 
@@ -18,6 +64,9 @@ export default function ActivityList() {
     const [error, setError] = useState(null);
     const [sortOption, setSortOption] = useState('');
     const [anchorEl, setAnchorEl] = React.useState(null);
+
+    const [searchTerm, setSearchTerm] = useState('');
+   
     
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
@@ -54,9 +103,20 @@ export default function ActivityList() {
       handleClose();  // Close the menu
     };
 
+    
 
+    const [filteredActivities, setFilteredActivities] = useState(activities); // Store filtered results separately
 
+    const handleSearch = () => {
+        const filtered = activities.filter((activity) => {
+            return (activity.title && activity.title.toLowerCase().includes(searchTerm.toLowerCase()))
+                || (activity.tag && activity.tag.toLowerCase().includes(searchTerm.toLowerCase()))
+                || (activity.Category && activity.Category.toLowerCase().includes(searchTerm.toLowerCase()));
+        });
+        setFilteredActivities(filtered); // Update the filtered activities
+    };
 
+   
     const StringDate = (date) => {
         const d = new Date(date);
         const day = String(d.getDate()).padStart(2, '0');
@@ -143,6 +203,9 @@ export default function ActivityList() {
         fetchActivities(); // Call the function to fetch activities
     }, [sortOption]);
 
+   
+
+
     
     return (
         <Box sx={{ width: '100vw' }}>
@@ -193,6 +256,20 @@ export default function ActivityList() {
                 </Button>
             </form>
 
+             {/*Search bar*/}
+            <Box sx={{display:'flex',}}>
+            <Search>
+            <SearchIconWrapper>
+              <SearchIcon />
+            </SearchIconWrapper>
+            <StyledInputBase
+            placeholder="Search…"
+            inputProps={{ 'aria-label': 'search' }}
+            onChange={(e) => setSearchTerm(e.target.value)} // Capture search input
+            />
+          </Search>
+          <Button variant="contained" label="search" onClick={handleSearch} sx={{ ml: 2 }}>search</Button>
+          </Box>
 
             {/*Sort Button*/}
 
@@ -231,28 +308,32 @@ export default function ActivityList() {
             {error && <Typography color="error">{error}</Typography>}
 
             {/* Activity List */}
-            <Grid container spacing={2} sx={{ display: 'flex', flexDirection: 'column' }}>
-                {activities.map((activity) => (
-                    <Grid item key={activity._id} size={4}>
+            {filteredActivities.length > 0 ? (
+            <Grid container spacing={2}>
+                {filteredActivities.map((activity) => (
+                    <Grid item key={activity._id}>
                         <ActivityPost
                             id={activity._id}
                             start_date={StringDate(activity.start_date)}
                             end_date={StringDate(activity.end_date)}
                             location={activity.location}
-                            duration={calculateDuration(activity.start_date,activity.end_date)}
+                            duration={calculateDuration(activity.start_date, activity.end_date)}
                             price={activity.price}
-                            category={activity.category}
+                            category={activity.Category}
                             rating={activity.ratingsAverage}
                             discount={activity.discount}
-                            isOpened={activity.isOpened ? "open" : "closed"}
+                            isOpened={activity.isOpened ? 'open' : 'closed'}
                             title={activity.title}
-                            tags={activity.tags}
+                            tag={activity.tag}
                             description={activity.description}
                             img={activity.img}
                         />
                     </Grid>
-                ))}
-            </Grid>
+                        ))}
+                    </Grid>
+                    ) : (
+                    <Typography>No activities found.</Typography>
+            )}
         </Box>
     );
 }
