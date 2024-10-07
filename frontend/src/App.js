@@ -11,6 +11,9 @@ import UserItinDetails from "./pages/UserItinDetails";
 import TourGuideProfile from "./pages/TourGuideProfile";
 import  TouristItineraries from "./pages/Tourist/TouristItineraries";
 import  GuestItineraries from "./pages/Guest/GuestItineraries";
+import  GuestViewVintage from "./pages/Guest/GuestPlaces";
+import  TouristVintage from "./pages/Tourist/TouristPlaces";
+
 
 import './styles/index.css';
 import { BrowserRouter as Router,Route,Routes } from 'react-router-dom';
@@ -85,6 +88,8 @@ function App() {
         <Route path="/vintage/:id" element={<VintageDetails />} />
         <Route path="/allVintages" element={<TouristViewVintage />} />
         <Route path="/viewingAllvintage/:id" element={<UserVintageDetails />} />
+        <Route path="/guest-places" element={<GuestViewVintage/>} />
+        <Route path="/tourist-places" element={<TouristViewVintage />} />
         {/* Add more routes as needed */}
       </Routes>
   );
