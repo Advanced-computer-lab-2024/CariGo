@@ -56,14 +56,15 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-const TouristVintage = () => {
+const TouristViewVintage = () => {
   const [vintages, setVintages] = useState([]);
   const [filteredVintages, setFilteredVintages] = useState([]); // For filtered vintages
   const [errorMessage, setErrorMessage] = useState(""); // State to store error messages
-  const [filters, setFilters] = useState({ tags: "" }); // Filter by tag
+  const [filters, setFilters] = useState({ tag: "" }); // Filter by tag
   const [searchTerm, setSearchTerm] = useState(""); // For search
   const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [selectedTag, setSelectedTag] = useState(""); // For search
 
 
   const handleFilterChange = (e) => {
@@ -77,7 +78,7 @@ const TouristVintage = () => {
 const resetFilters = () => {
   setFilters({
       
-      tags: "",
+      tag: "",
       
   });
   setFilteredVintages(vintages); // Reset to all activities
@@ -97,6 +98,19 @@ const handleSearch = () => {
       setFilteredVintages(filtered); // Update the filtered activities
   }
 };
+
+const filteredVin = vintages.filter(
+  (vintage) =>
+    (selectedTag
+      ? vintage.tags.some((tag) => tag.includes( selectedTag))
+      : true) &&
+    ((vintage.name &&
+      vintage.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      
+      vintage.tags.some((tag) =>
+        tag.toLowerCase().includes(searchTerm.toLowerCase())
+    ))
+  );
 
      // Fetch vintages
   useEffect(() => {
@@ -187,7 +201,8 @@ const handleSearch = () => {
                     variant="outlined"
                     name="tags"
                     value={filters.tags}
-                    onChange={handleFilterChange}
+                    onChange={(e) => setSelectedTag(e.target.value)}
+                    //onChange={handleFilterChange}
                     sx={{ mb: 2, mr: 2 }}
                 />
 
@@ -221,8 +236,8 @@ const handleSearch = () => {
                 <p style={{ color: 'red', textAlign: 'center' }}>{errorMessage}</p> // Display error message if any
             ) : (
                 <Grid container spacing={0} sx={{ display: 'flex', flexDirection: 'column', width: '100vw' }}>
-                    {filteredVintages.length > 0 ? (
-                        filteredVintages.map((vintage, index) => (
+                    {filteredVin.length > 0 ? (
+                        filteredVin.map((vintage, index) => (
                             <Grid item key={index} sx={{ display: 'flex', justifyContent: 'left' }}>
                                 <TouristVintagePost
                                     id={vintage._id || 'N/A'} // Safely handle missing _id
@@ -269,4 +284,4 @@ const handleSearch = () => {
   );
 };
 
-export default TouristVintage;
+export default TouristViewVintage;
