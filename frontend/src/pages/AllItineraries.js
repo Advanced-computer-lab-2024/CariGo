@@ -7,7 +7,7 @@ import ItineraryList from "../components/ItirenaryList";
 import CreateActivityForm from "../components/CreateActivityForm";
 import CreateItineraryForm from "../components/CreateItineraryForm";
 
-const UserViewItirenaries = () => {
+const AllItineraries = () => {
   return (
     <div>
       <NavBar />
@@ -43,4 +43,4 @@ const UserViewItirenaries = () => {
   );
 };
 
-export default UserViewItirenaries;
+export default AllItineraries;

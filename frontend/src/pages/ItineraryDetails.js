@@ -7,10 +7,10 @@ import StarIcon from "@mui/icons-material/Star";
 import ItineraryActivityList from "../components/ItineraryActivityList";
 import NavBar from "../components/NavBar";
 import ItineraryUpdate from "../components/ItineraryUpdate"; // Import the edit button
+import ItineraryTags from "../components/ItineraryTags"; // Import the tags component
 import "../components/styles/CompanyInfo.css";
 import logoImage from "../assets/itinerary.png"; // Correct relative path
 import axios from "axios";
-// import ActivitiesForm from "../components/ActivitiesForm";
 
 const ItineraryDetails = () => {
   const { id } = useParams(); // Get the itinerary ID from the URL
@@ -19,6 +19,7 @@ const ItineraryDetails = () => {
   const [localActivities, setLocalActivities] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [activityTrigger, setActivityTrigger] = useState(0);
+  const [selectedTags, setSelectedTags] = useState([]); // State for selected tags
 
   useEffect(() => {
     const fetchItineraryDetails = async () => {
@@ -46,74 +47,64 @@ const ItineraryDetails = () => {
         const data = await response.json();
         setItinerary(data);
         setLocalActivities(data.activities);
+        setSelectedTags(data.tags || []); // Initialize selected tags
         console.log("gayez", localActivities);
         if (isEditing) {
           setIsEditing(false); // Set editing mode to false after update
-          const activitiesSent = await axios.patch(
-            `/cariGo/Event/updateItinerary/${id}`,
-            {
-              activities: localActivities,
-            },
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-          setActivityTrigger(activityTrigger + 1);
+          await updateItinerary(data.activities, data.tags); // Update activities and tags
         }
       } catch (error) {
         console.error("Error fetching itinerary details:", error);
       }
     };
     fetchItineraryDetails();
-  }, [refreshKey, activityTrigger]);
+  }, [refreshKey, activityTrigger, id]); // Include `id` in dependencies
+
+  // Function to update itinerary activities and tags
+  const updateItinerary = async (activities, tags) => {
+    const token = localStorage.getItem("jwt");
+    await axios.patch(
+      `/cariGo/Event/updateItinerary/${id}`,
+      {
+        activities: activities,
+        tags: tags,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    setActivityTrigger((prev) => prev + 1);
+  };
+
   const updateActivity = (updatedActivity) => {
     setLocalActivities((prevActivities) =>
       prevActivities.map((activity) =>
         activity._id === updatedActivity._id ? updatedActivity : activity
       )
     );
-    // console.log("3baki",localActivities)
-    setIsEditing(true); // Set editing mode to false after update
+    setIsEditing(true); // Set editing mode to true
     setRefreshKey((prev) => prev + 1); // Optionally trigger a refresh if needed
   };
 
-  const createActivity = async (newAvtivity) => {
-    setLocalActivities((prevActivities) => prevActivities.push(newAvtivity));
+  const createActivity = async (newActivity) => {
+    setLocalActivities((prevActivities) => [...prevActivities, newActivity]);
     console.log("3baki", localActivities);
-    // console.log("3baki",localActivities)
-    const token = localStorage.getItem("jwt");
-    const activitiesSent = await axios.patch(
-      `/cariGo/Event/updateItinerary/${id}`,
-      {
-        activities: localActivities,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    setIsEditing(true); // Set editing mode to false after update
-
+    await updateItinerary([...localActivities, newActivity], selectedTags); // Update itinerary with new activity
+    setIsEditing(true);
     setRefreshKey((prev) => prev + 1); // Optionally trigger a refresh if needed
   };
 
   const deleteActivity = async (updatedActivities) => {
-    const token = localStorage.getItem("jwt");
-    const activitiesSent = await axios.patch(
-      `/cariGo/Event/updateItinerary/${id}`,
-      {
-        activities: updatedActivities,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    await updateItinerary(updatedActivities, selectedTags); // Update itinerary with deleted activities
     setRefreshKey((prev) => prev + 1);
+  };
+
+  const handleTagChange = (newTags) => {
+    setSelectedTags(newTags); // Update selected tags
+    setIsEditing(true); // Set editing mode to true
+    updateItinerary(localActivities, newTags); // Update itinerary with new tags
   };
 
   if (!itinerary) {
@@ -178,8 +169,13 @@ const ItineraryDetails = () => {
               sx={{ backgroundColor: "#126782", color: "white", margin: "5px" }}
             />
           ))}
-          {/* Edit Itinerary Button */}
-          {/* <EditItineraryButton itinerary={itinerary} setItinerary={setItinerary} setRefreshKey={setRefreshKey} /> */}
+          {/* Tags component for selecting tags */}
+          <div><Typography
+              variant="body1"
+              sx={{ fontSize: "18px", marginBottom: "5px" }}
+            >
+              <strong>Select Tags:</strong>
+            </Typography><ItineraryTags selectedTags={selectedTags} setSelectedTags={handleTagChange} /></div>
         </Box>
 
         <Box
@@ -196,11 +192,11 @@ const ItineraryDetails = () => {
         />
         <div className="company-info">
           <Box sx={{ marginBottom: "20px" }}>
-          <ItineraryUpdate
-                itinerary={itinerary}
-                setItinerary={setItinerary}
-                setRefreshKey={setRefreshKey}
-              />
+            <ItineraryUpdate
+              itinerary={itinerary}
+              setItinerary={setItinerary}
+              setRefreshKey={setRefreshKey}
+            />
             <Box
               sx={{
                 display: "flex",
@@ -208,7 +204,6 @@ const ItineraryDetails = () => {
                 marginBottom: "10px",
               }}
             >
-              
               <StarIcon sx={{ color: "#FFD700", marginRight: "5px" }} />
               <Typography variant="body1" sx={{ fontSize: "18px" }}>
                 {ratingsAverage || "No rating"}
@@ -282,12 +277,9 @@ const ItineraryDetails = () => {
                 deleteActivity={deleteActivity}
                 createActivity={createActivity}
               />
-              {/* {localActivities.map(() => {})} */}
             </Typography>
           </Box>
         </div>
-
-        {/* <ActivitiesForm activities={itinerary.activities}/> */}
       </Box>
     </div>
   );

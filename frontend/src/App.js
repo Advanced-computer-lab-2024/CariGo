@@ -7,13 +7,13 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import UserViewActivities from "./pages/UserViewActivities";
 import UserViewItineraries from "./pages/UserViewItineraries";
 import Home from "./pages/Home";
-
 import LoginPage from "./pages/login";
 import SignUp from "./pages/Signup";
 import { jwtDecode } from "jwt-decode";
 import NavBar from "./components/NavBar";
 import ItineraryUpdate from "./components/ItineraryUpdate";
 import ItineraryDetails from "./pages/ItineraryDetails";
+import CreateItineraryForm from "./components/CreateItineraryForm";
 
 function App() {
   const token = localStorage.getItem("jwt");
@@ -33,6 +33,7 @@ function App() {
       <Route path="/" element={<Home />} /> {/* Default route */}
       <Route path="/itineraries" element={<UserViewItineraries />} />
       <Route path="/itineraries/:id" element={<ItineraryDetails />} />
+      <Route path="/itineraries/new" element={<CreateItineraryForm />} />
       <Route path="/itineraries/:id/edit" element={<ItineraryUpdate />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/SignUp" element={<SignUp />} />

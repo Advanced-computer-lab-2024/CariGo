@@ -15,6 +15,7 @@ const createItinerary = async (req, res) => {
   const userId = new mongoose.Types.ObjectId(req.body.author); // Convert to ObjectId
   const userType = await userModel.findOne({ _id: userId }); // Project only 'roles' field
   console.log(userType);
+  console.log("Ana gowa");
   if (!userType) {
     return res.status(404).json({ message: "user not found" });
   }
@@ -22,7 +23,9 @@ const createItinerary = async (req, res) => {
   console.log(role);
   if (role == "tour_guide") {
     const authorId = new mongoose.Types.ObjectId(req.body.author); // Convert to ObjectId
+    console.log("creating")
     const {
+      title,
       activities,
       language,
       price,
@@ -40,6 +43,7 @@ const createItinerary = async (req, res) => {
     try {
       const itinerary = await itineraryModel.create({
         author: authorId, // Use the ObjectId for author
+        title,
         activities,
         language,
         price,
