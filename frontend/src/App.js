@@ -15,7 +15,8 @@ import ItineraryUpdate from "./components/ItineraryUpdate";
 import ItineraryDetails from "./pages/ItineraryDetails";
 import CreateItineraryForm from "./components/CreateItineraryForm";
 import AllItineraries from "./pages/AllItineraries";
-import UserItinDetails from './pages/UserItinDetails'
+import UserItinDetails from "./pages/UserItinDetails";
+import TourGuideProfile from "./pages/TourGuideProfile";
 function App() {
   const token = localStorage.getItem("jwt");
 
@@ -32,10 +33,20 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<Home />} /> {/* Default route */}
+      <Route
+        path="tour_guide/profile"
+        element={<TourGuideProfile userId={localStorage.getItem("id")} />}
+      />
       <Route path="tour_guide/itineraries" element={<UserViewItineraries />} />
       <Route path="tour_guide/itineraries/:id" element={<ItineraryDetails />} />
-      <Route path="tour_guide/itineraries/new" element={<CreateItineraryForm />} />
-      <Route path="tour_guid/itineraries/:id/edit" element={<ItineraryUpdate />} />
+      <Route
+        path="tour_guide/itineraries/new"
+        element={<CreateItineraryForm />}
+      />
+      <Route
+        path="tour_guid/itineraries/:id/edit"
+        element={<ItineraryUpdate />}
+      />
       <Route path="/user_itineraries" element={<AllItineraries />} />
       <Route path="/user_itineraries/:id" element={<UserItinDetails />} />
       <Route path="/login" element={<LoginPage />} />
