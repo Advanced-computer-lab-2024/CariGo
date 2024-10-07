@@ -38,7 +38,8 @@ router.post(
 
 router.get(
   "/readAllItineraries",
-  authController.restrictTo("Tour_Guide","Advertiser"),
+
+ // authController.restrictTo("Tour_Guide","Advertiser"),
   readAllItineraries
 ); // itineraries
 router.get("/readSingleItinerary/:itineraryId", readSingleItinerary); // itineraries/:id
