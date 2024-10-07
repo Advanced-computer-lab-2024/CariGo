@@ -55,6 +55,9 @@ const roleSchemas = {
     }),
   }),
   Tour_Guide: Joi.object({
+    mobile_number: Joi.string().required().messages({
+      "any.required": "Mobile number is a required field for Tourist role.📱",
+    }),
     years_of_experience: Joi.number().required().messages({
       "number.base": "Years of experience must be a number. 🔢",
       "any.required": "Years of experience is a required field for Tour Guide role.🔢",
