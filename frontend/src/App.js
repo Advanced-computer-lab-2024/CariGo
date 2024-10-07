@@ -106,8 +106,6 @@ function App() {
         <Route path="/guest-activities" element={<GuestActivities/>} />
         <Route path="/createActivity" element={<CreateActivityForm userId={localStorage.getItem("id")} />} /> 
         <Route path="/SignUp" element={<SignUp />} />
-        <Route element={< ProtectedRoute/>}>
-        <Route path="/admin" element={<Dashboard/> } />
         <Route path="/advertiser" element={<AdvertiserProfile userId={localStorage.getItem("id")} />} />
         <Route path="/tourist" element={<TouristProfile userId={localStorage.getItem("id")} />} />
         <Route path="/tgHome" element={<TouristGuestHome/>} />
@@ -118,6 +116,28 @@ function App() {
         <Route path="/vintage/:id" element={<VintageDetails />} />
         <Route path="/allVintages" element={<TouristViewVintage />} />
         <Route path="/viewingAllvintage/:id" element={<UserVintageDetails />} />
+        <Route element={< ProtectedRoute/>}>
+        <Route path="/admin" element={<Dashboard/> } />
+        <Route path="/admin/manage-accounts" element={<ManageAccounts />} />
+              <Route path="/edit-category" element={<EditCategory />} />
+              <Route path="/edit-tag" element={<EditTag />} />
+              <Route path="/view-categories" element={<ViewCategories />} />
+              <Route path="/update-categories" element={<UpdateCategories />} />
+              <Route path="/create-categories" element={<CreateCategories />} />
+              <Route path="/delete-categories" element={<DeleteCategories />} />
+              <Route path="/view-tags" element={<ViewTags />} />
+              <Route path="/admin/manage-products" element={<ManageProducts />} />
+              <Route path="/admin/manage-products/AddProduct" element={<AddProduct/>} />
+              <Route path="/admin/manage-products/product-Details/:id" element={<ProductDetails/>} />
+              <Route path="/update-tag" element={<UpdateTag />} />
+              <Route path='/admin/view-products' element={<ViewProducts/>}/>
+              <Route path="/create-tag" element={<CreateTag />} />
+              <Route path="/delete-tag" element={<DeleteTag />} />
+              <Route path="/add-admin" element={<AddAdmin />} />
+              <Route path="/add-governor" element={<AddGovernor />} />
+              <Route path="/delete-User" element={<DeleteUser />} /> 
+       
+        </Route>
         {/* Add more routes as needed */}
       </Routes>
       </Router>
