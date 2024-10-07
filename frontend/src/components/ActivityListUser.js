@@ -5,7 +5,7 @@ import { Grid, Box, TextField, Button, CircularProgress, Typography, MenuItem } 
 export default function ActivityList() {
     const [activities, setActivities] = useState([]);
     const [filters, setFilters] = useState({
-        minPrice: "",
+        price: "",
         category: "",
         rating: "",
         startDate: "",
@@ -20,7 +20,7 @@ export default function ActivityList() {
             setError(null);
             try {
                 const queryParams = new URLSearchParams();
-                if (filters.minPrice) queryParams.append('price.min', filters.minPrice);
+                if (filters.price) queryParams.append('price', filters.price);
                 if (filters.category) queryParams.append('Category', filters.category);
                 if (filters.rating) queryParams.append('ratingsAverage', filters.rating);
                 
@@ -67,7 +67,7 @@ export default function ActivityList() {
 
     const resetFilters = () => {
         setFilters({
-            minPrice: "",
+            price: "",
             category: "",
             rating: "",
             startDate: "",
@@ -88,10 +88,10 @@ export default function ActivityList() {
             {/* Filter Form */}
             <form onSubmit={handleFilterSubmit}>
                 <TextField
-                    label="Min Price"
+                    label="Price"
                     variant="outlined"
-                    name="minPrice"
-                    value={filters.minPrice}
+                    name="price"
+                    value={filters.price}
                     onChange={handleFilterChange}
                     type="number"
                     sx={{ mb: 2, mr: 2 }}

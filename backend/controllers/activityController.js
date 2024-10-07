@@ -84,33 +84,52 @@ const getActivities = async (req, res) => {
         return res.status(400).json({ message: `Invalid sortBy parameter. Allowed values are: ${validSortFields.join(", ")}` });
     }
 
-    // Change sortBy to "price.min" if it is "price"
+    // Change sortBy to "price.range.min" if it is "price"
     if (sortBy === 'price') {
-        sortBy = 'price.min';
+        sortBy = 'price.range.min';
     }
 
-    // Check if the Category value is a category name
     const categoryName = req.query.Category;
+
     if (categoryName) {
         try {
-            // Fetch the category by name
-            const category = await Category.findOne({ name: categoryName }); // Assuming Category is your model
-            
+            const category = await Category.findOne({ name: categoryName });
             if (!category) {
                 return res.status(404).json({ message: 'Category not found' });
             }
-
-            // Replace the category name with the category ID in the query
-            req.query.Category = category._id; // Assuming `_id` is the ID field
+            req.query.Category = category._id; // Replace the category name with the category ID
         } catch (error) {
             return res.status(500).json({ message: 'An error occurred while fetching the category', error });
         }
     }
 
+    // Check if the price parameter is provided
+    const priceParam = req.query.price ? parseFloat(req.query.price) : null;
+
+    // Initialize the query with base conditions
+    const query = Activity.find({ start_date: { $gte: today } });
+
+    // Add category filter if it exists
+    if (req.query.Category) {
+        query.where({ Category: req.query.Category });
+    }
+
+    // If price parameter is provided, filter activities based on price range
+    console.log(priceParam);
+    if (priceParam !== null) {
+        query.where({
+            $and: [
+                { 'price.range.min': { $lte: priceParam } }, // Price is greater than or equal to min
+                { 'price.range.max': { $gte: priceParam } }, // Price is less than or equal to max
+            ],
+        });
+        // Remove price parameter from req.query
+        delete req.query.price;
+    }
+
     try {
         // Initialize APIFeatures with the query and query string
-        const features = new APIFeatures(Activity.find({ start_date: { $gt: today } }), req.query)
-            .filter();
+        const features = new APIFeatures(query, req.query).filter();
 
         // Apply sorting
         const activities = await features.query.sort(sortBy);
@@ -124,6 +143,7 @@ const getActivities = async (req, res) => {
         res.status(500).json({ message: 'An error occurred', error });
     }
 };
+
 
 
 
