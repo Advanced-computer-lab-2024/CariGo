@@ -73,7 +73,7 @@ export default function LoginPage() {
           navigate("/delete-categories"); // Redirect to "Delete" page
           break;
         default:
-          navigate("/login")
+          navigate("/")
       }
      // navigate('/admin'); 
     } catch (error) {

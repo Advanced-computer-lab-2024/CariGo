@@ -41,6 +41,7 @@ import AddProduct from "./pages/products/AddPrduct.jsx";
 import ProductDetails from "./pages/products/productDetails.jsx";
 import { useNavigate } from "react-router-dom";
 import ProtectedRoute from "./AuthAdmin.js";
+
 function App() {
   const token = localStorage.getItem('jwt');
  // const navigate = useNavigate();
@@ -70,6 +71,11 @@ function App() {
         <Route path="/admin" element={<Dashboard/> } />
         <Route path="/activities" element={<UserViewActivities />} /> 
         <Route path="/advertiser" element={<AdvertiserProfile userId={localStorage.getItem("id")} />} />
+        {/* <Route path="/activities/update/:id" element={<updateActivityForm/>} />
+        <Route path="/myVintages" element={<UserViewVintages />} />
+        <Route path="/vintage/:id" element={<VintageDetails />} />
+        <Route path="/allVintages" element={<TouristViewVintage />} />
+        <Route path="/viewingAllvintage/:id" element={<UserVintageDetails />} /> */}
               {/* <Route path="/" element={<Home />} /> */}
               <Route path="/admin/manage-accounts" element={<ManageAccounts />} />
               <Route path="/edit-category" element={<EditCategory />} />
