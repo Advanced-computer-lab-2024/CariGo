@@ -49,12 +49,12 @@ function TouristNB() {
 
   const loadItinerary = () => {
     handleCloseNavMenu();
-    navigate('/itinerary');
+    navigate('/Tourist-itineraries');
   };
 
   const loadHistoricalPlaces = () => {
     handleCloseNavMenu();
-    navigate('/historical-places');
+    navigate('/tourist-places');
   };
 
   const loadProfile = () => {
