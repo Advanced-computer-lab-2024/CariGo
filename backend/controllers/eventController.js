@@ -178,49 +178,58 @@ const updateItinerary = async (req, res) => {
 };
 const readAllItineraries = async (req, res) => {
   const sort = req.query.sort || "-createdAt"; // Default to "-createdAt" if no parameter is provided
-  const tagTitle = req.query.tag; // Get the tag title from query parameters
+  const tagTitle = req.query.tags; // Get the tag title from query parameters
 
   // Validate sortBy parameter
   const validSortFields = ["price", "-createdAt", "ratingsAverage"];
   if (!validSortFields.includes(sort)) {
-    return res.status(400).json({
-      message: `Invalid sortBy parameter. Allowed values are: ${validSortFields.join(", ")}`,
-    });
+      return res.status(400).json({
+          message: `Invalid sortBy parameter. Allowed values are: ${validSortFields.join(", ")}`,
+      });
   }
 
   try {
-    // Initialize the query
-    let query = itineraryModel.find();
+      // Initialize the query
+      let query = itineraryModel.find();
 
-    // Skip filtering if a tag title is provided
-    if (!tagTitle) {
-      // Initialize APIFeatures with the query and query string
-      const features = new APIFeatures(query, req.query).filter();
+      // Check if a tag title is provided
+      if (!tagTitle) {
+          // Initialize APIFeatures with the query and query string
+          const features = new APIFeatures(query, req.query).filter();
 
-      // Apply sorting
-      const itineraries = await features.query.sort(sort);
+          // Apply sorting
+          const itineraries = await features.query.sort(sort);
 
-      if (!itineraries.length) {
-        return res.status(404).json({ message: "No itineraries found" });
+          if (!itineraries.length) {
+              return res.status(404).json({ message: "No itineraries found" });
+          }
+
+          res.status(200).json(itineraries);
+      } else {
+          // If tagTitle is provided, filter based on tags
+          const tagIds = await tagModel.find({ title: tagTitle }).select('_id');
+          query = query.where('tags').in(tagIds);
+
+          // Delete the 'tag' key from req.query
+          delete req.query.tags;
+
+          // Optionally, initialize APIFeatures with the modified query
+          const features = new APIFeatures(query, req.query).filter();
+
+          // Apply sorting
+          const itineraries = await features.query.sort(sort);
+
+          if (!itineraries.length) {
+              return res.status(404).json({ message: "No itineraries found" });
+          }
+
+          res.status(200).json(itineraries);
       }
-
-      res.status(200).json(itineraries);
-    } else {
-      // If tagTitle is provided, just sort without filtering
-      const tagIds = await tagModel.find({ title: tagTitle }).select('_id');
-      query = query.where('tags').in(tagIds);
-      const itineraries = await query.sort(sort);
-
-      if (!itineraries.length) {
-        return res.status(404).json({ message: "No itineraries found" });
-      }
-
-      res.status(200).json(itineraries);
-    }
   } catch (error) {
-    res.status(500).json({ message: "An error occurred", error });
+      res.status(500).json({ message: "An error occurred", error });
   }
 };
+
 
 
 

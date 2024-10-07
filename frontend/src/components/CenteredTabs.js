@@ -2,9 +2,12 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
+import ActivityPostAdvList from './ActivityPostAdvList';
+import ActivityPostAdvertiser from './ActivityPostAdvertiser';
+import { jwtDecode } from "jwt-decode";
 
 // Example Components for the tabs
-import ActivityPostAdvertiser from './ActivityPostAdvertiser'; // Replace with actual path
+
 import CompanyInfo from './CompanyInfo'; // Replace with actual path
 
 export default function CenteredTabs() {
@@ -43,7 +46,7 @@ export default function CenteredTabs() {
       {/* Conditional Rendering Based on the Tab Selection */}
       <Box sx={{ padding: 3 }}>
         {value === 0 && <CompanyInfo />}  {/* Render Company Info in Tab 1 */}
-        {value === 1 && <ActivityPostAdvertiser />}  {/* Render Activity Post in Tab 2 */}
+        {value === 1 && <ActivityPostAdvList />}  {/* Render Activity Post in Tab 2 */}
         {value === 2 && <div>Settings Component</div>}  {/* Placeholder for Settings in Tab 3 */}
       </Box>
     </Box>

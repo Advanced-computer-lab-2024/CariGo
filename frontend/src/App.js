@@ -10,6 +10,7 @@ import LoginPage from './pages/login';
 import { jwtDecode } from 'jwt-decode';
 import NavBar from "./components/NavBar";
 import CreateActivityForm from "./pages/CreateActivityForm";
+import ActivityPostAdvList from "./components/ActivityPostAdvList";
 function App() {
   const token = localStorage.getItem('jwt');
 
@@ -26,6 +27,7 @@ function App() {
   return (
       <Routes>
         <Route path="/" element={<Home />} /> {/* Default route */}
+        <Route path="/advactList" element={<ActivityPostAdvList />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/activities" element={<UserViewActivities />} /> 
         <Route path="/createActivity" element={<CreateActivityForm />} /> 
