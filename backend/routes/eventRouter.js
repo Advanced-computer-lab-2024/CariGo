@@ -10,15 +10,14 @@ const {
   readSingleVintage,
   updateVintage,
   deleteItinerary,
-  deleteVintage,
-  readAllVintage,
-  readMyItineraries,
+  deleteVintage,readAllVintage
 } = require("../controllers/eventController");
 const authController = require("../controllers/authController");
 const router = express.Router();
 
+
 // middleware for authentication
-router.use(authController.protect);
+// router.use(authController.protect);
 
 // POST a new itinerary, vintage, and product, and create an activity if needed.
 router.post(
@@ -36,17 +35,25 @@ router.post(
   authController.restrictTo("Seller", "Admin"),
   createProduct
 );
-// router.post('/createActivity', createActivity);
 
-router.get(
-  "/readAllItineraries",
-  // authController.restrictTo("Advertiser"),
-  readAllItineraries
-); // itineraries
 router.get(
   "/readMyItineraries",
   authController.restrictTo("Tour_Guide"),
   readMyItineraries
+); // itineraries
+
+// router.post('/createActivity', createActivity);
+router.get(
+  "/viewAllVintage",
+  authController.protect,
+  viewAllVintage
+);
+
+router.get(
+  "/readAllItineraries",
+
+ // authController.restrictTo("Tour_Guide","Advertiser"),
+  readAllItineraries
 ); // itineraries
 router.get("/readSingleItinerary/:itineraryId", readSingleItinerary); // itineraries/:id
 router.patch(

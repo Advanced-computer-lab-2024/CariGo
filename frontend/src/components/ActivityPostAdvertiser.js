@@ -23,165 +23,219 @@ import { useNavigate } from 'react-router-dom';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-export default function ActivityPostAdvertiser({ id,author, img, start_date, end_date, duration, tags, description, title,location,
-    price,category,discount,isOpened, rating}) {
-  const [expanded, setExpanded] = React.useState(false);
+export default function ActivityPost({ id,author, img, start_date, end_date, duration, tag, description, title,location,
+  price,category,discount,isOpened, rating}) {
+const [expanded, setExpanded] = React.useState(false);
 
-  const handleExpandClick = () => {
-    setExpanded(!expanded);
-  };
+const handleExpandClick = () => {
+  setExpanded(!expanded);
+};
+const token = localStorage.getItem('jwt');
+const handleDelete = async () => {
+  try {
+    console.log(id);
+    const response = await fetch(`http://localhost:4000/Carigo/Activity/deleteActivity/${id}`, {
+      method: 'DELETE',        headers: {
+        Authorization: `Bearer ${token}`,
+       
+      }
+    });
+    
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    // Optionally, handle the success response here (e.g., show a message)
+  } catch (error) {
+    console.error("Error deleting activity:", error);
+    // Handle error, possibly show an error message
+  } finally {
+    // Reload the current page
+   window.location.reload();
+  }
+};
 
 const navigate = useNavigate();
-  return (
-    // <Link 
-    // to={`/activities/${id}`} 
-    // style={{textDecoration:'none'}} 
-    // onClick={() => navigate(`/activities/${id}`)}
-    // >
-    <Card
-      sx={{
-        width: '100%', // Use full width of the container
-        maxWidth: '900px', // Set a max width
-        height: '400px',
-        color: '#126782',
-        fontSize: '18px',
-        display: 'flex',
-        flexDirection: 'column',
-        borderRadius: '10px',
-        position: 'relative',
-        margin: '20px',
-        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', // Box shadow all around
-        transition: 'transform 0.3s ease', // Transition effect for size change
-        '&:hover': {
-          transform: 'scale(1.02)', // Scale up the card on hover
-           // Change cursor to pointer
-        },
-      }}
-    >
-      <Box sx={{ display: 'flex', flexDirection: 'row', flexGrow: 1 }}>
-        
-        <CardMedia
-          component="img"
-          image={img || "/0ae1e586-0d84-43c3-92d4-924c13c01059.jpeg"}
-          alt={title}
+return (
+  // <Link 
+  // to={/activities/${id}} 
+  // style={{textDecoration:'none'}} 
+  // onClick={() => navigate(/activities/${id})}
+  // >
+  <Card
+    sx={{
+      width: '100%', // Use full width of the container
+      maxWidth: '900px', // Set a max width
+      maxHeight: '500px',
+      color: '#126782',
+      fontSize: '18px',
+      display: 'flex',
+      flexDirection: 'column',
+      borderRadius: '10px',
+      position: 'relative',
+      margin: '20px',
+      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', // Box shadow all around
+      transition: 'transform 0.3s ease', // Transition effect for size change
+      '&:hover': {
+        transform: 'scale(1.02)', // Scale up the card on hover
+        cursor: 'pointer', // Change cursor to pointer
+      },
+    }}
+  >
+    <Box sx={{ display: 'flex', flexDirection: 'row', flexGrow: 1 }}>
+      
+      <CardMedia
+        component="img"
+        image={img || "/0ae1e586-0d84-43c3-92d4-924c13c01059.jpeg"}
+        alt={title}
+        sx={{
+          width: '500px',
+          height: '250px',
+          margin: '2px',
+          borderRadius: '10px',
+          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+        }}
+      />
+      
+      <Box sx={{ display: 'flex', flexDirection: 'column' ,}}>
+        <Box
           sx={{
-            width: '500px',
-            height: '250px',
-            margin: '2px',
-            borderRadius: '10px',
-            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+            width: '400px',
+            padding: '10px',
+            display: 'flex',
+            flexDirection: 'column',
+            overflow: 'overflow',
+            
           }}
-        />
-        
-        <Box sx={{ display: 'flex', flexDirection: 'column' ,}}>
-          <Box
-            sx={{
-              width: '400px',
-              padding: '10px',
-              display: 'flex',
-              flexDirection: 'column',
-              overflow: 'overflow',
-              
-            }}
-          >
-            <CardHeader
-              // avatar={<Avatar sx={{ bgcolor: red[500] }}>R</Avatar>}
-              
-              title={
-                <Typography variant="h5" sx={{ width: '300px', fontWeight: 'bold', fontSize: '24px' }}>
-                  TITLE
-                </Typography>
-              }
-            />
+        >
+          <CardHeader
+            avatar={<Avatar sx={{ bgcolor: red[500] }}>R</Avatar>}
+            
+            title={
+              <Typography variant="h5" sx={{ width: '300px', fontWeight: 'bold', fontSize: '24px' }}>
+                {title}
+              </Typography>
+            }
+          />
 
-            {/* Tags below title */}
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginLeft: '15px' }}>
-              {/* {tags.map((tag) => (
-                <Chip key={tag} label={tag} sx={{backgroundColor :'#126782', color: 'white' }} />
-              )) || "tags"} */}
-            </Box>
+          {/* Tags below title */}
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginLeft: '15px' }}>
+            {
+            tag != null ?
+            
+              (<Chip label={tag} sx={{backgroundColor :'#126782', color: 'white' }} />)
+            : ""}
+          </Box>
+        </Box>
+        
+        {/* Data Stuff */}
+        <Box
+          sx={{
+            display: 'flex',
+            flexFlow: 'column',
+            marginLeft: '30px',
+          }}
+        >
+          
+          <Typography>author : {author}</Typography>
+
+          <Typography>
+            category: {category != null ? category:"no specified category"}
+            
+          </Typography>
+
+          <Box sx={{display:'flex', }}>
+          <StarIcon sx={{scale:'0.9'}}/>
+          <Typography sx={{fontSize: '16px',marginTop:'1px'}}>{""+rating+""}</Typography>
+          </Box>
+          <Box sx={{
+              fontSize: '16px',
+              backgroundColor: isOpened === 'open' ? '#70db70' : '#ff4d4d',
+              color: 'white', 
+              //padding: '2px 0px',
+              display: 'inline-block',
+              borderRadius: '4px' ,
+              width: isOpened === 'open' ? '50px' : '60px',
+              }}>
+          <Typography sx={{
+              marginLeft: '6px',
+              marginBottom: '2px',
+              }}>
+              {isOpened || "status"}
+              </Typography>
+              </Box>
+              <Typography sx={{fontSize: '16px'}}>{category}</Typography>
+          <Typography sx={{fontSize: '16px'}}>From: {start_date}</Typography>
+          <Typography sx={{fontSize: '16px'}}>To: {end_date}</Typography>
+          <Typography sx={{fontSize: '16px', marginLeft: '30px'}}> {duration}</Typography>
+          <Box sx={{ display: 'flex',
+              marginTop: '5px',
+              margoinLeft:'-10px' ,
+              
+              }}>
+          <PinDropIcon sx={{marginTop:'0px',}}/>
+          <Typography sx={{marginLeft:'5px'}}> 
+
+          {location != null ? (
+            <>
+              lan: {location.lan}<br />
+              lon: {location.lon}
+            </>
+          ) : (
+            'no location specified'
+          )}
+            </Typography>
           </Box>
           
-          {/* Data Stuff */}
-          <Box
-            sx={{
-              display: 'flex',
-              flexFlow: 'column',
-              marginLeft: '30px',
-            }}
-          >
-            <Box sx={{display:'flex', }}>
-            <StarIcon sx={{scale:'0.9'}}/>
-            <Typography sx={{fontSize: '16px',marginTop:'1px'}}>{""+rating+""}</Typography>
-            </Box>
-            <Box sx={{
-                fontSize: '16px',
-                backgroundColor: isOpened === 'open' ? '#70db70' : '#ff4d4d',
-                color: 'white', 
-                //padding: '2px 0px',
-                display: 'inline-block',
-                borderRadius: '4px' ,
-                width: isOpened === 'open' ? '50px' : '60px',
-                }}>
-            <Typography sx={{
-                marginLeft: '6px',
-                marginBottom: '2px',
-                }}>
-                {isOpened || "status"}
-                </Typography>
-                </Box>
-                <Typography sx={{fontSize: '16px'}}>{category}</Typography>
-            <Typography sx={{fontSize: '16px'}}>From: {start_date}</Typography>
-            <Typography sx={{fontSize: '16px'}}>To: {end_date}</Typography>
-            <Box sx={{ display: 'flex',
-                marginTop: '5px',
-                margoinLeft:'-10px' ,
-                
-                }}>
-            <PinDropIcon sx={{marginTop:'0px',}}/>
-            <Typography sx={{marginLeft:'5px'}}> {location}</Typography>
-            </Box>
-            
-            <Typography sx={{fontSize: '16px', marginLeft: '30px'}}> {duration}</Typography>
+         
 
-            <Box sx={{ display: 'flex',
-                marginTop: '5px',
-                margoinLeft:'-10px' ,
+          <Box sx={{ display: 'flex',
+              marginTop: '5px',
+              margoinLeft:'-10px' ,
+              
+              }}>
+          <AttachMoneyIcon />
+          <Typography sx={{
+              marginLeft:'5px',
+              //textDecoration: discount>0 ? 'line-through' : 'none',
+              color: '#126782',
+              //discount>0 ? '#ff4d4d' : '#126782',
+              marginRight: '5px',
+          }}> {
+            price != null? 
+            (price.range.max+"-"+price.range.min )
+            :'no specified price'}
+            </Typography>
+
+
+          {/* <Typography sx={{fontSize: '16px'}}> {discount >0?  (price -(price*discount/100)): ''}</Typography> */}
+
+
+          <Box sx={{
+              backgroundColor : '#ff4d4d',
+              display: 'flex',
+              marginLeft: '5px',
+              borderRadius: '5px',
+              padding: '0px',
+              }}>
                 
-                }}>
-            <AttachMoneyIcon />
-            <Typography sx={{
-                marginLeft:'5px',
-                textDecoration: discount>0 ? 'line-through' : 'none',
-                color: discount>0 ? '#ff4d4d' : '#126782',
-                marginRight: '5px',
-            }}> {""+price+"" || 'no specified price'}</Typography>
-            <Typography sx={{fontSize: '16px'}}> {discount >0?  (price -(price*discount/100)): ''}</Typography>
-            <Box sx={{
-                backgroundColor : '#ff4d4d',
-                display: 'flex',
-                marginLeft: '5px',
-                borderRadius: '5px',
-                padding: '0px',
-                }}>
-                  
-            <Typography sx={{marginLeft:'5px', color: "white"}}> {"-"+discount+"%" || ''}</Typography>
-            <SellIcon  sx={{scale: '0.7', color: 'white', marginTop:'2px',marginLeft:'-2px',
-                //do smth about display
-            }}/>
-            </Box>
-            </Box>
+          <Typography sx={{marginLeft:'5px', color: "white"}}> {"-"+discount+"%" || ''}</Typography>
+          <SellIcon  sx={{scale: '0.7', color: 'white', marginTop:'2px',marginLeft:'-2px',
+              //do smth about display
+          }}/>
+          </Box>
+          </Box>
            
           </Box>
           <Box sx={{display: "flex" ,
             marginLeft:'300px',
-            marginTop:'100px',
+            marginTop:'55px',
             gap:'15px',
             }}>
                 <Link 
                   to={`/activities/update/${id}`} 
                   style={{textDecoration:'none'}} 
-                  onClick={() => navigate(`/activities/${id}`)}
+                  onClick={() => navigate(`/activities/update/${id}`)}
                   sx={{
                     color: '#126782',
                     '&:hover': {
@@ -191,9 +245,9 @@ const navigate = useNavigate();
                   <EditIcon/>
                 </Link>
                 <Link 
-                  to={`/activities/`} 
+                  to={"#"} 
                   style={{textDecoration:'none'}} 
-                  // onClick={() => navigate()}
+                 onClick={handleDelete} 
                   sx={{
                     color: '#126782',
                     '&:hover': {
@@ -221,7 +275,7 @@ const navigate = useNavigate();
             top: '290px',
           }}
         >
-          DESCRIPTION
+          {description}
         </Typography>
       </CardContent>
 
@@ -244,6 +298,6 @@ const navigate = useNavigate();
         </Box>
       </CardActions>
     </Card>
-    // </Link>
-  );
+    // </Link>
+  );
 }
