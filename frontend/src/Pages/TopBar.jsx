@@ -4,9 +4,15 @@ import { Layout } from 'antd';
 import { UserOutlined, MessageOutlined } from '@ant-design/icons'; // Import the icons
 import logo from '../assests/logo.png';
 import { Link } from 'react-router-dom';
- 
+import { useNavigate } from 'react-router-dom';
 
 const TopBar = () => {
+   const navigate  = useNavigate()
+  const handleLogout = () =>{
+    localStorage.clear();
+    navigate("/")
+    
+  }
   const [username, setUsername] = useState(localStorage.getItem('username'))
   console.log(localStorage.getItem('username'))
   return (
@@ -32,7 +38,7 @@ const TopBar = () => {
         
         <UserOutlined 
           style={{ fontSize: '20px', color: '#fff', marginRight: '20px', cursor: 'pointer' }} 
-          onClick={() => console.log('Profile clicked')} // Add your click handler
+          onClick={handleLogout} // Add your click handler
         />
         <MessageOutlined 
           style={{ fontSize: '20px', color: '#fff', cursor: 'pointer' }} 
