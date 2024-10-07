@@ -10,9 +10,8 @@ const {
   readSingleVintage,
   updateVintage,
   deleteItinerary,
-  deleteVintage,
-  readAllVintage,
-  readMyItineraries,
+  deleteVintage,readAllVintage,
+  viewAllVintage
 } = require("../controllers/eventController");
 const authController = require("../controllers/authController");
 const router = express.Router();
@@ -68,5 +67,11 @@ router.get("/readAllVintage", readAllVintage);
 router.get("/readSingleVintage/:vintageId", readSingleVintage);
 router.patch("/updateVintage/:vintageId", updateVintage);
 router.delete("/deleteVintage/:id", deleteVintage);
+
+router.get(
+  "/viewAllVintage",
+  authController.protect,
+  viewAllVintage
+);
 
 module.exports = router;
