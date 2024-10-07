@@ -51,15 +51,9 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 
 
-export default function ActivityList() {
+export default function ActivityListSort() {
     const [activities, setActivities] = useState([]);
-    const [filters, setFilters] = useState({
-        minPrice: "",
-        category: "",
-        rating: "",
-        startDate: "",
-       
-    });
+   
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [sortOption, setSortOption] = useState('');
@@ -77,24 +71,6 @@ export default function ActivityList() {
     };
 
 
-    const handleFilterChange = (e) => {
-        const { name, value } = e.target;
-        setFilters(prevFilters => ({
-            ...prevFilters,
-            [name]: value
-        }));
-    };
-
-    const resetFilters = () => {
-        setFilters({
-            price: "",
-            category: "",
-            rating: "",
-            startDate: "",
-        });
-        setFilteredActivities(activities); // Reset to all activities
-    };
-    
     const handleSortChange = (sortValue) => {
       setSortOption(sortValue);  // Set the selected sort option
       handleClose();  // Close the menu
@@ -162,13 +138,6 @@ export default function ActivityList() {
             setError(null);
             try {
                 const queryParams = new URLSearchParams();
-                if (filters.price) queryParams.append('price', filters.price);
-                if (filters.category) queryParams.append('Category', filters.category);
-                if (filters.rating) queryParams.append('ratingsAverage', filters.rating);
-                if (filters.startDate) {
-                    const startDateISO = new Date(filters.startDate).toISOString();
-                    queryParams.append('start_date', startDateISO);
-                }
                 if (sortOption) queryParams.append('sort', sortOption);
 
                 const response = await fetch(`http://localhost:4000/Carigo/Activity/?${queryParams.toString()}`);
@@ -185,62 +154,16 @@ export default function ActivityList() {
             } finally {
                 setLoading(false);
             }
-            console.log("fetched activities:",filteredActivities)
         };
 
         fetchActivities();
-    }, [filters, sortOption]); // Re-fetch activities when filters or sort option change
+    }, [ sortOption]); // Re-fetch activities when filters or sort option change
 
 
  
     return (
         <Box sx={{ width: '100vw' }}>
 
-            {/* Filter Form */}
-            <form>
-                <TextField
-                    label="Price"
-                    variant="outlined"
-                    name="price"
-                    value={filters.price}
-                    onChange={handleFilterChange}
-                    type="number"
-                    sx={{ mb: 2, mr: 2 }}
-                />
-                <TextField
-                    label="Category"
-                    variant="outlined"
-                    name="category"
-                    value={filters.category}
-                    onChange={handleFilterChange}
-                    sx={{ mb: 2, mr: 2 }}
-                />
-                <TextField
-                    label="Rating"
-                    variant="outlined"
-                    name="rating"
-                    value={filters.rating}
-                    onChange={handleFilterChange}
-                    type="number"
-                    sx={{ mb: 2, mr: 2 }}
-                />
-
-                <TextField
-                    label="Start Date"
-                    variant="outlined"
-                    name="startDate"
-                    value={filters.startDate}
-                    onChange={handleFilterChange}
-                    type="date"
-                    sx={{ mb: 2, mr: 2 }}
-                />
-                <Button variant="contained" onClick={resetFilters} sx={{ ml: 2 }}>
-                    Reset Filters
-                </Button>
-            </form>
-
-
-            {/* END OF FILTER FORM */}
 
              {/*Search bar*/}
             <Box sx={{display:'flex',}}>

@@ -9,6 +9,7 @@ import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { useState } from 'react';
+import ActivityListSort from "../components/ActivityListSort";
 
 
 
@@ -38,7 +39,7 @@ export default function UserViewActivities (){
       '&::-webkit-scrollbar': {display: 'none',},
       }}> {/* Enable vertical scrolling only */}
 
-     <ActivityList  /> 
+     < ActivityList /> 
 
   </Box>
   </Box>

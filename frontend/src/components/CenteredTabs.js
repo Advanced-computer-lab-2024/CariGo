@@ -42,9 +42,6 @@ export default function CenteredTabs() {
         <Tab label="Company Info" />
         <Tab label="Activity Post" />
         <Tab label="Settings" />
-        <Tab label="Company Info" />
-        <Tab label="Activity Post" />
-        <Tab label="Settings" />
       </Tabs>
 
       {/* Conditional Rendering Based on the Tab Selection */}
