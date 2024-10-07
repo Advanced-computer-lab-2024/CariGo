@@ -10,13 +10,27 @@ import Home from "./pages/Home";
 import LoginPage from "./pages/login";
 import SignUp from "./pages/Signup";
 import { jwtDecode } from "jwt-decode";
+import "./styles/index.css";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import UserViewActivities from "./pages/UserViewActivities";
+import UserViewItineraries from "./pages/UserViewItineraries";
+import Home from "./pages/Home";
+import LoginPage from "./pages/login";
+import SignUp from "./pages/Signup";
+import { jwtDecode } from "jwt-decode";
 import NavBar from "./components/NavBar";
 import ItineraryUpdate from "./components/ItineraryUpdate";
 import ItineraryDetails from "./pages/ItineraryDetails";
 import CreateItineraryForm from "./components/CreateItineraryForm";
 import AllItineraries from "./pages/AllItineraries";
 import UserItinDetails from './pages/UserItinDetails'
+import ItineraryUpdate from "./components/ItineraryUpdate";
+import ItineraryDetails from "./pages/ItineraryDetails";
+import CreateItineraryForm from "./components/CreateItineraryForm";
+import AllItineraries from "./pages/AllItineraries";
+import UserItinDetails from './pages/UserItinDetails'
 function App() {
+  const token = localStorage.getItem("jwt");
   const token = localStorage.getItem("jwt");
 
   // Decode the token safely
@@ -26,6 +40,7 @@ function App() {
       const decoded = jwtDecode(token);
       userId = decoded.id; // Assuming the id is in the decoded token
     } catch (error) {
+      console.error("Failed to decode token:", error);
       console.error("Failed to decode token:", error);
     }
   }
@@ -58,3 +73,4 @@ function App() {
 }
 
 export default App;
+

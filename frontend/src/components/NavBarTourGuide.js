@@ -52,7 +52,7 @@ function ResponsiveAppBar() {
   // Handle navigation
   const loadItineraries = () => {
     handleCloseNavMenu(); // Close menu on navigation
-    navigate("/user_itineraries"); // Navigate to activities
+    navigate("/tour_guide/itineraries"); // Navigate to activities
   };
 
   return (

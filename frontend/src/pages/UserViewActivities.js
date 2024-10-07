@@ -11,8 +11,6 @@ import MenuItem from '@mui/material/MenuItem';
 import { useState } from 'react';
 import ActivityListSort from "../components/ActivityListSort";
 
-
-
 export default function UserViewActivities (){
 
 
