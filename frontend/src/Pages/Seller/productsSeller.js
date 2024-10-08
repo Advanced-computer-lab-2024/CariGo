@@ -44,7 +44,7 @@ export default function ViewProductsSeller() {
   const [products, setProducts] = useState([]); // State to hold fetched categories
   const [loading, setLoading] = useState(false); // Loading state
   const { palette } = useTheme();
-  const [filter, setFilter] = useState("?quantity[gte]=1");
+  const [filter, setFilter] = useState(`?author=${localStorage.getItem('id')}&quantity[gte]=1`);
   const [sort, setSort] = useState("");
   const bgError = palette.error.main;
   const bgPrimary = palette.success.main;
@@ -53,9 +53,9 @@ export default function ViewProductsSeller() {
   const fetchProducts = async () => {
     setLoading(true); // Start loading
     try {
-        const id = localStorage.getItem('id');
+        const author = localStorage.getItem('id');
         console.log(filter +" ffffffffffffff")
-      const response = await axios.get(`http://localhost:4000/cariGo/products/getSellersProducts/${id}`,
+      const response = await axios.get(`http://localhost:4000/cariGo/products/${filter}`,
         {
             key1: 2,
             key2: 3,
@@ -160,7 +160,7 @@ const navigate = useNavigate();
     navigate(`/Seller/products/addProduct`);
   }
   const handleRequest = () =>{
-    setFilter(`?name=${final}`)
+    setFilter(`?author=${localStorage.getItem('id')}&name=${final}`)
     console.log(final)
   }
   return (
@@ -189,10 +189,10 @@ const navigate = useNavigate();
     onChange={(event) =>{setAge(event.target.value)}}
   >
     <MenuItem value="1" onClick={() =>{setFilter("?price=19")}}>Less Than $19</MenuItem>
-          <MenuItem value="2" onClick={() =>{setFilter("?price[gte]=19&price[lte]=59")}}>$19 - $59</MenuItem>
-          <MenuItem value="3" onClick={() =>{setFilter("?price[gte]=59&price[lte]=99")}}>$59 - $99</MenuItem>
-          <MenuItem value="4" onClick={() =>{setFilter("?price[gte]=99&price[lte]=149")}}>$99 - $149</MenuItem>
-          <MenuItem value="5" onClick={() =>{setFilter("?price[gte]=149")}}>More Than $149</MenuItem>
+          <MenuItem value="2" onClick={() =>{setFilter(`?author=${localStorage.getItem('id')}&price[gte]=19&price[lte]=59`)}}>$19 - $59</MenuItem>
+          <MenuItem value="3" onClick={() =>{setFilter(`?author=${localStorage.getItem('id')}&price[gte]=59&price[lte]=99`)}}>$59 - $99</MenuItem>
+          <MenuItem value="4" onClick={() =>{setFilter(`?author=${localStorage.getItem('id')}&price[gte]=99&price[lte]=149`)}}>$99 - $149</MenuItem>
+          <MenuItem value="5" onClick={() =>{setFilter(`?author=${localStorage.getItem('id')}&price[gte]=149`)}}>More Than $149</MenuItem>
   </Select>
 </FormControl>
         {/* <Select size="small" defaultValue="this_month">
@@ -206,7 +206,7 @@ const navigate = useNavigate();
 
         </Select> */}
         <Tooltip title="Sort By Rating" placement="top">
-              <IconButton onClick={() => setFilter("?sort=ratingsAverage['avgSoFar']")}>
+              <IconButton onClick={() => setFilter(`?author=${localStorage.getItem('id')}&sort=ratingsAverage['avgSoFar']`)}>
                 <SortIcon />
               </IconButton>
             </Tooltip>

@@ -39,14 +39,16 @@ const updateProduct = async (req, res) => {
 };
 const getProducts = async (req, res) => {
     try {
-      //  console.log(req.query.sort+" "+req.query);
+      // console.log(req.query);
         let queryStr = JSON.stringify(req.query);
         queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
         
         const queryObj = JSON.parse(queryStr);
-      //  console.log(2);
-       // console.log(queryObj+" "+attributeToBeSorted);
+        
+       //console.log(queryObj+" "+attributeToBeSorted);
+     //  console.log(2);
         const attributeToBeSorted = queryObj['sort'];
+        
         if(queryObj['sort']) queryObj['sort'] = undefined  
        // console.log(queryStr+" "+attributeToBeSorted + "   "+ req.params);
         const products = await Product.find(queryObj).sort(attributeToBeSorted?"-ratingsAverage":{ createdAt: -1 }); // Fixed from ActivityModel to Activity
@@ -91,4 +93,4 @@ const getProduct = async (req, res) => {
     }
 };
 
-module.exports = { createProduct, getProducts,getSellersProducts, getProduct, deleteProduct, updateProduct };
+module.exports = { createProduct, getProducts,getSellersProducts, getProduct, deleteProduct, updateProduct };   
