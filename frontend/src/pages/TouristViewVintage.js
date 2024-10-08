@@ -6,6 +6,7 @@ import { styled, alpha } from '@mui/material/styles';
 import SearchIcon from '@mui/icons-material/Search';
 import InputBase from '@mui/material/InputBase';
 import TouristVintagePost from "../components/TouristVintagePost";
+import TouristNB from "./Tourist/components/TouristNavBar";
 //import vintage from "../../../backend/models/Vintage";
 //import vintage from "../../../backend/models/Vintage";
 
@@ -176,7 +177,7 @@ const filteredVin = vintages.filter(
 
   return (
     <div>
-      <NavBar />
+      <TouristNB/>
 
 
         {/*Search bar*/}
@@ -285,3 +286,4 @@ const filteredVin = vintages.filter(
 };
 
 export default TouristViewVintage;
+

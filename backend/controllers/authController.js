@@ -150,10 +150,12 @@ exports.login = catchAsync(async (req, res, next) => {
 exports.protect = catchAsync(async (req, res, next) => {
   //Check if token exists and get it
   let token;
+  //console.log(req.headers)
   if (
     req.headers.authorization &&
     req.headers.authorization.startsWith("Bearer")
   ) {
+    console.log("entered")
     token = req.headers.authorization.split(" ")[1];
   }
 

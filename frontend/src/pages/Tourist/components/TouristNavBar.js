@@ -16,7 +16,7 @@ import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 
 
-const pages = ['Activities', 'Itinerary', 'Historical Places'];
+const pages = ['Activities', 'Itinerary', 'Historical Places',"Products"];
 const settings = ['My Profile', 'Logout']; // Updated settings
 
 function TouristNB() {
@@ -54,7 +54,9 @@ function TouristNB() {
 
   const loadHistoricalPlaces = () => {
     handleCloseNavMenu();
-    navigate('/tourist-places');
+
+    navigate('/allVintages');
+
   };
 
   const loadProfile = () => {
@@ -67,6 +69,11 @@ function TouristNB() {
     // Add your logout logic here
     navigate('/login'); // Example navigation after logout
   };
+  const loadProducts = () =>{
+    handleCloseUserMenu();
+    // Add your logout logic here
+    navigate('/Tourist/Products')
+  }
 
   return (
     <AppBar position="static" sx={{ backgroundColor: '#004c74' }}>
@@ -148,6 +155,12 @@ function TouristNB() {
               sx={{ my: 2, color: 'white', display: 'block' }}
             >
               {pages[2]}
+            </Button>
+            <Button
+              onClick={loadProducts}
+              sx={{ my: 2, color: 'white', display: 'block' }}
+            >
+              {pages[3]}
             </Button>
           </Box>
 

@@ -11,6 +11,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export default function LoginPage() {
+  localStorage.clear();
+ // console.log(localStorage.getItem('jwt') +"         d")
   const [formData, setFormData] = useState({
     username: '',
     password: ''
@@ -48,23 +50,40 @@ export default function LoginPage() {
       console.log("Login successful", data);
       
       const token = data.token;
-
+   console.log(token);
       // Store the token in localStorage
       localStorage.setItem('jwt', token);
       localStorage.setItem("id", data.data.user._id);
+     // console.log(formData.username)
+      localStorage.setItem('username',formData.username)
       localStorage.setItem("role", data.data.user.role);
-      console.log(localStorage.getItem("role"));
 
-       //redirect based on role
-       if(data.data.user.role === "Advertiser"){
-        navigate('/advertiser'); 
+      const id =  localStorage.getItem("id", data.data.user._id);
+      console.log(id);
+      switch (localStorage.getItem("role")) {
+        case "Admin":
+          navigate(`/admin`); // Redirect to "View All" page
+          break;
+        case "Advetiser":
+          navigate("/advertiser"); // Redirect to "Update" page
+          break;
+          case "Tourist":
+          navigate("/Tourist"); // Redirect to "Update" page
+          break;
+          case "Toursim_Governor":
+          navigate("/myVintages"); // Redirect to "Update" page
+          break;
+        case "Tour_Guide":
+           navigate('/tour_guide/itineraries');// Redirect to "Create" page
+          break;
+        case "Seller":
+          navigate("/Seller"); // Redirect to "Delete" page
+          break;  
+        default:
+          navigate("/")
+
       }
-      else if(data.data.user.role === "Tour_Guide"){
-        navigate('/tour_guide/itineraries');
-      }
-      else{
-        navigate('/'); 
-      }
+     // navigate('/admin'); 
     } catch (error) {
       console.error("Error:", error.message);
       alert("Login failed: " + error.message);
