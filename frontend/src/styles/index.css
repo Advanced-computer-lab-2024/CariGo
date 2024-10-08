@@ -1,0 +1,160 @@
+
+body {
+  /* background-image: url('../../public/ca353eb3-2c2e-4c9a-bcea-615f80995fd2.jpeg'); //Path to your image */
+    background-size: cover; /* Cover the entire viewport */
+    background-position: center; /* Center the image */
+    background-repeat: no-repeat; /* Prevent tiling */
+    height: 100vh; /* Full height of the viewport */
+    
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* position: relative;  */
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* navbar{
+
+} */
+
+
+.brief{
+  
+  /* background-color: antiquewhite; */
+  width:40%;
+  margin-left: 50%;
+  margin-top: -30%;
+}
+
+.tags{
+  /* background-color: aqua; */
+  margin-top: -10%;
+  margin-bottom: 20px; 
+  margin-left:10px;
+  height:100px;
+  display: flex;          /* Use flexbox layout */
+  flex-wrap: wrap;        /* Allow tags to wrap to the next line */
+  gap: 5px;
+                 /* Optional: add some space between the tags */
+}
+
+.tags .tag{
+  background-color: rgba(47, 94, 93, 0.549);
+  padding: 2px 4px;
+  margin:0px;
+ 
+  border-radius: 5px;
+  color:white;
+  align-items: center;
+  border-radius: 2px;
+  font-size: 12px ;
+  font-weight: 600;
+  height:18px;
+
+}
+
+.card-container{
+ 
+  display: flex;
+  /* justify-content: center; */
+  flex-wrap: wrap;
+  /* margin-top: 20px;  */
+}
+.card{
+  position: center;
+  width: 40vw;
+  height: 350px;
+  margin-right: 15vw;
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+  margin: 10px ;
+  color: white;
+}
+.card img{
+  scale: 1;
+  width: 300px;
+  height: 200px;
+  border-radius: 8px;
+  
+}
+.card-content{
+  padding: 3px;
+}
+.card-content h3{  /* title */
+   
+  font-size: 28px;
+  margin-left:10px;
+  color: rgb(7, 65, 75);
+  margin-top: 8px; 
+}
+.card-content p{
+  /* background-color: aquamarine; */
+  color: #666;
+  font-size: 18px;
+  margin-left:2%;
+  margin-top:40px;
+  height: 120px;
+}
+.card a{
+  text-decoration: none;
+}
+/* Add this to your existing CSS */
+.card:hover {
+  transform: scale(1.02); /* Increase the scale factor for a stronger effect */
+  transition: transform 0.3s ease; /* Add a smooth transition effect */
+}
+
+
+/* NAVIGATION BAR CSS */
+
+header div.container{
+  display: flex;
+  margin: 10px;
+  width : 90vw;
+  height: 80px;
+  background-color: rgb(7, 65, 75);
+  color: white;
+  padding :5px;
+  border-radius: 3px;
+  box-shadow: 2px;
+}
+
+
+
+.nav_links{
+  position: relative;
+  
+}
+
+.nav_links nav{
+  position: absolute;
+  top: 5%; /* Move down 50% from the top */
+  left: 5%;
+  text-align: right;
+  margin-top:25px;
+  margin-right :  200px;
+}
+
+nav a{
+  color: white;
+  font-size: 16px bold;
+  text-decoration: none;
+  padding: 0px;
+  margin: 20px;
+  top: 50px;
+  transition: transform 0.3s ease;
+}
+
+nav a:hover{
+  transform: scale(1.1); 
+    font-weight: 600;
+}
