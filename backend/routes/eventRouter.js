@@ -8,6 +8,8 @@ const {
   updateItinerary,
   readAllVintages,
   readSingleVintage,
+  readMyItineraries,
+  viewAllVintage,
   updateVintage,
   deleteItinerary,
   deleteVintage,readAllVintage
