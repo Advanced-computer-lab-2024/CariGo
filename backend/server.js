@@ -15,7 +15,7 @@ const cors = require('cors');
 
 
 // Apply CORS middleware
-app.use(cors);
+// app.use(cors);
 
 
 
