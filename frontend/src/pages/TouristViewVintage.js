@@ -2,13 +2,14 @@ import React from "react";
 // import ReactDOM from "react-dom/client";
 import "../styles/index.css";
 import NavBar from "../components/NavBarTourist";
+import TouristNB from "./Tourist/components/TouristNavBar";
 import { Box } from "@mui/material";
 import ViewAllVintages from "../components/ViewAllVintages";
 
 const TouristViewVintage = () => {
   return (
     <div>
-      <NavBar />
+      <TouristNB/>
 
       <Box
         sx={{

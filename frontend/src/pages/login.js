@@ -48,9 +48,9 @@ export default function LoginPage() {
 
       const data = await response.json();
       console.log("Login successful", data);
-
+      
       const token = data.token;
-
+   console.log(token);
       // Store the token in localStorage
       localStorage.setItem('jwt', token);
       localStorage.setItem("id", data.data.user._id);
@@ -58,7 +58,7 @@ export default function LoginPage() {
       localStorage.setItem('username',formData.username)
       localStorage.setItem("role", data.data.user.role);
       const id =  localStorage.getItem("id", data.data.user._id);
-      console.log(localStorage.getItem("role"));
+      console.log(id);
       switch (localStorage.getItem("role")) {
         case "Admin":
           navigate(`/admin`); // Redirect to "View All" page
@@ -66,12 +66,18 @@ export default function LoginPage() {
         case "Advetiser":
           navigate("/"); // Redirect to "Update" page
           break;
+          case "Tourist":
+          navigate("/Tourist"); // Redirect to "Update" page
+          break;
+          case "Toursim_Governor":
+          navigate("/myVintages"); // Redirect to "Update" page
+          break;
         case "Tour_Guide":
           navigate("/"); // Redirect to "Create" page
           break;
         case "Seller":
-          navigate("/delete-categories"); // Redirect to "Delete" page
-          break;
+          navigate("/Seller"); // Redirect to "Delete" page
+          break;  
         default:
           navigate("/")
       }

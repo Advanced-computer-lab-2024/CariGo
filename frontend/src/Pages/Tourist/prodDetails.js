@@ -3,7 +3,7 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Button, TextField,Paper} from '@mui/material';
-
+import TouristNB from './components/TouristNavBar';
 import { styled } from '@mui/material';
 import { Edit } from "@mui/icons-material";
 import {
@@ -37,7 +37,7 @@ const FormContainer = styled(Paper)(({ theme }) => ({
     backgroundColor: '#f5f5f5',
   }));
   
-  export default function EditProduct() {
+  export default function ViewProductTourist() {
   const {id} = useParams()
   const navigate=useNavigate()
     const [data, setData] = useState([]); // State to hold fetched tags
@@ -94,12 +94,10 @@ const FormContainer = styled(Paper)(({ theme }) => ({
     return (
         <Layout style={{ height: '100vh' }}>
       
-        <Sider width={256} style={{ background: '#001529' }}>
-              <Sidebar />
-            </Sider>
+        
             <Layout>
             <Header style={{ background: '#001529', padding: 0 }}>
-                <TopBar /> {/* Top bar added here */}
+                <TouristNB/>{/* Top bar added here */}
               </Header>
               <ToastContainer />
               <Content style={{ padding: '20px', overflowY: 'auto' }}>
@@ -113,6 +111,7 @@ const FormContainer = styled(Paper)(({ theme }) => ({
             value={data.name || ""}
             onChange={handleChange}
             required
+            disabled
             fullWidth
             margin="normal"
           />
@@ -124,6 +123,7 @@ const FormContainer = styled(Paper)(({ theme }) => ({
             onChange={handleChange}
             required
             fullWidth
+            disabled
             margin="normal"
           />
         
@@ -134,6 +134,7 @@ const FormContainer = styled(Paper)(({ theme }) => ({
             value={data.quantity || ""}
             onChange={handleChange}
             required
+            disabled
             fullWidth
             margin="normal"
           />
@@ -144,13 +145,12 @@ const FormContainer = styled(Paper)(({ theme }) => ({
             onChange={handleChange}
             required
             fullWidth
+            disabled
             margin="normal"
             multiline
             rows={4}
           />
-          <Button type="submit" variant="contained" color="primary" style={{ marginTop: '16px' }}>
-            Update Product
-          </Button>
+          
         </form>
         {/* <ToastContainer position="top-right" autoClose={1000} hideProgressBar={false} closeOnClick draggable pauseOnHover /> */}
       </FormContainer>

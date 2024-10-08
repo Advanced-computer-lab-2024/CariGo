@@ -25,6 +25,8 @@ import { Layout } from "antd";
 import { Content, Header } from "antd/es/layout/layout";
 import TopBar from "../TopBar";
 import { useEffect } from 'react';
+
+    
 const FormContainer = styled(Paper)(({ theme }) => ({
     padding: theme.spacing(3),
     display: 'flex',
@@ -37,7 +39,7 @@ const FormContainer = styled(Paper)(({ theme }) => ({
     backgroundColor: '#f5f5f5',
   }));
   
-  export default function EditProduct() {
+  export default function EditProductD() {
   const {id} = useParams()
   const navigate=useNavigate()
     const [data, setData] = useState([]); // State to hold fetched tags
@@ -74,7 +76,10 @@ const FormContainer = styled(Paper)(({ theme }) => ({
   //     return () => clearTimeout(timer);
   // }, [navigate]);
   
+   const handle = () =>{
+    navigate('/Seller')
    
+   }
     const handleSubmit = async (e) => {
       e.preventDefault();
         try {
@@ -94,12 +99,10 @@ const FormContainer = styled(Paper)(({ theme }) => ({
     return (
         <Layout style={{ height: '100vh' }}>
       
-        <Sider width={256} style={{ background: '#001529' }}>
-              <Sidebar />
-            </Sider>
+       
             <Layout>
             <Header style={{ background: '#001529', padding: 0 }}>
-                <TopBar /> {/* Top bar added here */}
+                {/* Top bar added here */}
               </Header>
               <ToastContainer />
               <Content style={{ padding: '20px', overflowY: 'auto' }}>
@@ -151,7 +154,11 @@ const FormContainer = styled(Paper)(({ theme }) => ({
           <Button type="submit" variant="contained" color="primary" style={{ marginTop: '16px' }}>
             Update Product
           </Button>
+         
         </form>
+        <Button type="submit" variant="contained" color="primary" style={{ marginTop: '16px' }} onClick={handle}>
+            Back
+          </Button>
         {/* <ToastContainer position="top-right" autoClose={1000} hideProgressBar={false} closeOnClick draggable pauseOnHover /> */}
       </FormContainer>
       </Content>

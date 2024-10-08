@@ -44,7 +44,7 @@ import { jwtDecode } from 'jwt-decode';
 import CreateActivityForm from "./pages/CreateActivityForm";
 import TouristProfile from "./pages/Tourist/TouristProfile";
 import TouristGuestHome from "./pages/Tourist-Guest/TouristGuestHome";
-import TouristHome from "./pages/Tourist/TouristHome";
+import ViewProductsTourist from "./pages/Tourist/TouristProducts.js";
 import GuestHome from "./pages/Guest/GuestHome";
 import TouristActivities from './pages/Tourist/TouristActivities.js';
 import GuestActivities from './pages/Guest/GuestActivities.js';
@@ -60,7 +60,12 @@ import AddProduct from "./pages/products/AddPrduct.jsx";
 import ProductDetails from "./pages/products/productDetails.jsx";
 import { useNavigate } from "react-router-dom";
 import ProtectedRoute from "./AuthAdmin.js";
-
+import SellerProfile from "./pages/Seller/SellerProfile.js";
+import ViewProductsSeller from "./pages/Seller/productsSeller.js";
+import TouristHome from "./pages/Tourist/TouristHome";
+import ViewProductTourist from "./pages/Tourist/prodDetails.js";
+import EditProductD from "./pages/Seller/prodD.js";
+import AddProductSeller from "./pages/Seller/addP.js";
 function App() {
   const token = localStorage.getItem("jwt");
  // const navigate = useNavigate();
@@ -90,7 +95,10 @@ function App() {
         element={<TourGuideProfile userId={localStorage.getItem("id")} />}
       />
       <Route path="tour_guide/itineraries" element={<UserViewItineraries />} />
+      
       <Route path="tour_guide/itineraries/:id" element={<ItineraryDetails />} />
+      <Route path="/Tourist/Products" element={<ViewProductsTourist />} />
+      <Route path="/Tourist/Products/ViewProduct/:id" element={<ViewProductTourist />} />
       <Route
         path="tour_guide/itineraries/new"
         element={<CreateItineraryForm />}
@@ -99,8 +107,13 @@ function App() {
         path="tour_guid/itineraries/:id/edit"
         element={<ItineraryUpdate />}
       />
+      <Route path="/Tourist" element={<TouristHome />} />
       <Route path="/user_itineraries" element={<AllItineraries />} />
       <Route path="/user_itineraries/:id" element={<UserItinDetails />} />
+      <Route path="/Seller" element={<SellerProfile />} />
+      <Route path="/Seller/products" element={<ViewProductsSeller />} />
+      <Route path="/Seller/products/:id" element={<EditProductD />} />
+      <Route path="/Seller/products/addProduct" element={<AddProductSeller />} />
         {<Route path="/activities" element={<UserViewActivities />} /> }
         <Route path="/tourist-activities" element={<TouristActivities/>} />
         <Route path="/guest-activities" element={<GuestActivities/>} />

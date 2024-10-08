@@ -1,9 +1,8 @@
-import TouristNB from "./components/TouristNavBar.js"
 import React, { useState, useEffect } from "react"; // Import useEffect
 import axios from "axios";
 import clsx from 'clsx'
 import SelectChangeEvent, { Pagination } from "@mui/material"
-import SearchBar from "../../pages/products/SearchBar/SearchBar.jsx"
+import SearchBar from "../../pages/products/SearchBar/SearchBar"
 import RefreshIcon from '@mui/icons-material/Refresh';
 import AddIcon from '@mui/icons-material/Add';
 
@@ -41,7 +40,7 @@ import { ToastContainer } from "react-toastify";
 import { Navigate, useLocation } from "react-router-dom";
 import { ArrowRightAlt, Edit } from "@mui/icons-material";
 import SearchIcon from '@mui/icons-material/Search';
-export default function ViewProductsTourist() {
+export default function ViewProductsSeller() {
   const [products, setProducts] = useState([]); // State to hold fetched categories
   const [loading, setLoading] = useState(false); // Loading state
   const { palette } = useTheme();
@@ -54,8 +53,15 @@ export default function ViewProductsTourist() {
   const fetchProducts = async () => {
     setLoading(true); // Start loading
     try {
+        const id = localStorage.getItem('id');
         console.log(filter +" ffffffffffffff")
-      const response = await axios.get(`http://localhost:4000/cariGo/products/${filter}`); // Fetch from backend
+      const response = await axios.get(`http://localhost:4000/cariGo/products/getSellersProducts/${id}`,
+        {
+            key1: 2,
+            key2: 3,
+            // other parameters
+          }
+      ); // Fetch from backend
      // console.log(response.data); // Log the response data
       setProducts(response.data); // Set the categories state
     } catch (error) {
@@ -146,12 +152,12 @@ const navigate = useNavigate();
   const handleDetatils = (id) =>{
 
     // Navigating to a page with the id in the URL
-    navigate(`/Tourist/Products/ViewProduct/${id}`);
+    navigate(`/Seller/products/${id}`);
      
           
   }
   const handleAdd = () =>{
-    navigate(`/admin/manage-products/AddProduct`);
+    navigate(`/Seller/products/addProduct`);
   }
   const handleRequest = () =>{
     setFilter(`?name=${final}`)
@@ -159,22 +165,19 @@ const navigate = useNavigate();
   }
   return (
     <Layout style={{ height: '100vh' }}>
-    
+   
         <Layout>
-        <Header style={{ background: '#001529', padding: 0 }}>
-            <TouristNB/> {/* Top bar added here */}
-            
-          </Header>
-          
+       
+         
           <Content style={{ padding: '20px', overflowY: 'auto' }}>
       {loading && <p>Loading categories...</p>}
      
     <Card elevation={3} sx={{ pt: "20px", mb: 3 }}>
         
       <SearchBar placeholder="Search By Name" onChange={(event) =>handleChange(event.target.value)} onClick={handleRequest}/>
-      
+    
       <CardHeader>
-        <Title> Products</Title>
+        <Title>Top Rating Products</Title>
         <div style={{display:Flex}}>
         <FormControl fullWidth size="small"  style={{paddingRight:4}} >
   <InputLabel id="demo-simple-select-label">Filter</InputLabel>
@@ -207,7 +210,11 @@ const navigate = useNavigate();
                 <SortIcon />
               </IconButton>
             </Tooltip>
-           
+            <Tooltip title="Add" placement="top">
+              <IconButton onClick={handleAdd}>
+                <AddIcon />
+              </IconButton>
+            </Tooltip>
             </div>
         
     
