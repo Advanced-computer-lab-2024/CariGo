@@ -13,6 +13,7 @@ import  TouristItineraries from "./pages/Tourist/TouristItineraries";
 import  GuestItineraries from "./pages/Guest/GuestItineraries";
 import  GuestViewVintage from "./pages/Guest/GuestPlaces";
 import  TouristVintage from "./pages/Tourist/TouristPlaces";
+import UpdateActivityForm from "./components/UpdateActivityForm.js";
 
 
 import './styles/index.css';
@@ -83,7 +84,7 @@ function App() {
         <Route path="/tgHome" element={<TouristGuestHome/>} />
         <Route path="/touristHome" element={<TouristHome/>} />
         <Route path="/guestHome" element={<GuestHome/>} />
-        <Route path="/activities/update/:id" element={<updateActivityForm/>} />
+        <Route path="/activities/update/:id" element={<UpdateActivityForm/>} />
         <Route path="/myVintages" element={<UserViewVintages />} />
         <Route path="/vintage/:id" element={<VintageDetails />} />
         <Route path="/allVintages" element={<TouristViewVintage />} />
