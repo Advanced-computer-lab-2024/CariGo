@@ -210,4 +210,3 @@ const createCategory = async (req, res) => {
     }
   };
 module.exports = { addAdmin, deleteUser, addTourismGovernor, createCategory, getCategories, updateCategory, deleteCategory, createTag, getTags, updateTag, deleteTag};
-
