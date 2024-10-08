@@ -4,7 +4,7 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import ActivityPostAdvList from './ActivityPostAdvList';
 import ActivityPostAdvertiser from './ActivityPostAdvertiser';
-import CreateActivityForm from '../pages/CreateActivityForm';
+import CreateActivityForm from '../Pages/CreateActivityForm';
 import { jwtDecode } from "jwt-decode";
 
 // Example Components for the tabs

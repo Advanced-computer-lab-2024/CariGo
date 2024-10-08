@@ -3,75 +3,74 @@ import "./styles/App.css";
 
 import AdvertiserProfile from "./AdvertiserProfile"; // Adjust the path based on your structure
 
-import UserViewItineraries from "./pages/UserViewItineraries";
+import UserViewItineraries from "./Pages/UserViewItineraries";
 import ItineraryUpdate from "./components/ItineraryUpdate";
-import ItineraryDetails from "./pages/ItineraryDetails";
+import ItineraryDetails from "./Pages/ItineraryDetails";
 import CreateItineraryForm from "./components/CreateItineraryForm";
-import AllItineraries from "./pages/AllItineraries";
-import UserItinDetails from "./pages/UserItinDetails";
-import TourGuideProfile from "./pages/TourGuideProfile";
-import  TouristItineraries from "./pages/Tourist/TouristItineraries";
-import  GuestItineraries from "./pages/Guest/GuestItineraries";
-import  GuestViewVintage from "./pages/Guest/GuestPlaces";
-import  TouristVintage from "./pages/Tourist/TouristPlaces";
-import CreateVintageForm from "./pages/CreateVintageForm.js";
-import SellerProfile from "./pages/SellerProfile.js";
+import AllItineraries from "./Pages/AllItineraries";
+import UserItinDetails from "./Pages/UserItinDetails";
+import TourGuideProfile from "./Pages/TourGuideProfile";
+import  TouristItineraries from "./Pages/Tourist/TouristItineraries";
+import  GuestItineraries from "./Pages/Guest/GuestItineraries";
+import  GuestViewVintage from "./Pages/Guest/GuestPlaces";
+import  TouristVintage from "./Pages/Tourist/TouristPlaces";
+import CreateVintageForm from "./Pages/CreateVintageForm.js";
 
 import './styles/index.css';
 
-import UserViewActivities from './pages/UserViewActivities';
-import AdminHome from './pages/Home';
+import UserViewActivities from './Pages/UserViewActivities';
+import AdminHome from './Pages/Home';
 import React, { lazy, Suspense } from 'react'; // Keep this line
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom'; // Combined imports from react-router-dom
 import Loadable from '@loadable/component'; // Keep other necessary imports
-import Home from './pages/Home.js';  // Ensure this import is case-sensitive
+import Home from './Pages/Home.js';  // Ensure this import is case-sensitive
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Sidebar from './pages/Sidebar';
-import TopBar from './pages/TopBar';
+import Sidebar from './Pages/Sidebar';
+import TopBar from './Pages/TopBar';
 import { Layout } from 'antd';
-import ManageAccounts from './pages/ManageAccounts.jsx'; // Import your new component
-import EditCategory from './pages/EditCategory';
-import EditTag from './pages/EditTag';
-import ViewCategories from './pages/category/viewCategories';
-import UpdateCategories from './pages/category/updateCategory.jsx';
-import CreateCategories from './pages/category/createCategory';
-import DeleteCategories from './pages/category/deleteCategory';
-import ViewTags from './pages/tags/viewTags';
-import UpdateTag from './pages/tags/updateTag';
-import CreateTag from './pages/tags/createTag';
-import DeleteTag from './pages/tags/deleteTag';
-import AddAdmin from './pages/accounts/addAdmin';
-import AddGovernor from './pages/accounts/addGovernor';
-import DeleteUser from './pages/accounts/deleteUser';
-import LoginPage from './pages/login.js';
-import SignUp from './pages/Signup';
+import ManageAccounts from './Pages/ManageAccounts.jsx'; // Import your new component
+import EditCategory from './Pages/EditCategory';
+import EditTag from './Pages/EditTag';
+import ViewCategories from './Pages/category/viewCategories';
+import UpdateCategories from './Pages/category/updateCategory.jsx';
+import CreateCategories from './Pages/category/createCategory';
+import DeleteCategories from './Pages/category/deleteCategory';
+import ViewTags from './Pages/tags/viewTags';
+import UpdateTag from './Pages/tags/updateTag';
+import CreateTag from './Pages/tags/createTag';
+import DeleteTag from './Pages/tags/deleteTag';
+import AddAdmin from './Pages/accounts/addAdmin';
+import AddGovernor from './Pages/accounts/addGovernor';
+import DeleteUser from './Pages/accounts/deleteUser';
+import LoginPage from './Pages/login.js';
+import SignUp from './Pages/Signup';
 import { jwtDecode } from 'jwt-decode';
-import CreateActivityForm from "./pages/CreateActivityForm";
-import TouristProfile from "./pages/Tourist/TouristProfile";
-import TouristGuestHome from "./pages/Tourist-Guest/TouristGuestHome";
-import ViewProductsTourist from "./pages/Tourist/TouristProducts.js";
-import GuestHome from "./pages/Guest/GuestHome";
-import TouristActivities from './pages/Tourist/TouristActivities.js';
-import GuestActivities from './pages/Guest/GuestActivities.js';
+import CreateActivityForm from "./Pages/CreateActivityForm.js";
+import TouristProfile from "./Pages/Tourist/TouristProfile";
+import TouristGuestHome from "./Pages/Tourist-Guest/TouristGuestHome";
+import ViewProductsTourist from "./Pages/Tourist/TouristProducts.js";
+import GuestHome from "./Pages/Guest/GuestHome";
+import TouristActivities from './Pages/Tourist/TouristActivities.js';
+import GuestActivities from './Pages/Guest/GuestActivities.js';
 import NavBar from "./components/NavBar";
-import UserViewVintages from "./pages/UserViewVintages";
-import VintageDetails from "./pages/VintageDetails";
-import TouristViewVintage from "./pages/TouristViewVintage";
-import UserVintageDetails from "./pages/UserVintageDetails";
-import Dashboard from "./pages/Dashboard";
-import ViewProducts from "./pages/products/viewProducts.jsx";
-import ManageProducts from "./pages/products/ManageProducts.jsx";
-import AddProduct from "./pages/products/AddPrduct.jsx";
-import ProductDetails from "./pages/products/productDetails.jsx";
+import UserViewVintages from "./Pages/UserViewVintages";
+import VintageDetails from "./Pages/VintageDetails";
+import TouristViewVintage from "./Pages/TouristViewVintage";
+import UserVintageDetails from "./Pages/UserVintageDetails";
+import Dashboard from "./Pages/Dashboard";
+import ViewProducts from "./Pages/products/viewProducts.jsx";
+import ManageProducts from "./Pages/products/ManageProducts.jsx";
+import AddProduct from "./Pages/products/AddPrduct.jsx";
+import ProductDetails from "./Pages/products/productDetails.jsx";
 import { useNavigate } from "react-router-dom";
 import ProtectedRoute from "./AuthAdmin.js";
-import SellerProfile from "./pages/Seller/SellerProfile.js";
-import ViewProductsSeller from "./pages/Seller/productsSeller.js";
-import TouristHome from "./pages/Tourist/TouristHome";
-import ViewProductTourist from "./pages/Tourist/prodDetails.js";
-import EditProductD from "./pages/Seller/prodD.js";
-import AddProductSeller from "./pages/Seller/addP.js";
+import SellerProfile from "./Pages/Seller/SellerProfile.js";
+import ViewProductsSeller from "./Pages/Seller/productsSeller.js";
+import TouristHome from "./Pages/Tourist/TouristHome";
+import ViewProductTourist from "./Pages/Tourist/prodDetails.js";
+import EditProductD from "./Pages/Seller/prodD.js";
+import AddProductSeller from "./Pages/Seller/addP.js";
 import UpdateActivityForm from "./components/UpdateActivityForm.js";
 
 function App() {

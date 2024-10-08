@@ -2,7 +2,7 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import CT_Itinerary from "../pages/CT_Itinerary"
+import CT_Itinerary from "../Pages/CT_Itinerary"
 
 // Example Components for the tabs
 
