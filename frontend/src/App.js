@@ -14,7 +14,8 @@ import  TouristItineraries from "./pages/Tourist/TouristItineraries";
 import  GuestItineraries from "./pages/Guest/GuestItineraries";
 import  GuestViewVintage from "./pages/Guest/GuestPlaces";
 import  TouristVintage from "./pages/Tourist/TouristPlaces";
-
+import CreateVintageForm from "./pages/CreateVintageForm.js";
+import SellerProfile from "./pages/SellerProfile.js";
 
 import './styles/index.css';
 
@@ -163,6 +164,9 @@ function App() {
 
         <Route path="/guest-places" element={<GuestViewVintage/>} />
         <Route path="/tourist-places" element={<TouristViewVintage />} />
+        <Route path="/createVintage" element={<CreateVintageForm />} />
+        <Route path="/sellerProfile" element={<SellerProfile userId={localStorage.getItem("id")} />} />
+
 
         {/* Add more routes as needed */}
       </Routes>
