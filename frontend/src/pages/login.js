@@ -46,7 +46,7 @@ export default function LoginPage() {
 
       const data = await response.json();
       console.log("Login successful", data);
-
+      
       const token = data.token;
 
       // Store the token in localStorage
@@ -58,6 +58,9 @@ export default function LoginPage() {
        //redirect based on role
        if(data.data.user.role === "Advertiser"){
         navigate('/advertiser'); 
+      }
+      else if(data.data.user.role === "Tour_Guide"){
+        navigate('/tour_guide/itineraries');
       }
       else{
         navigate('/'); 
