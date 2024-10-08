@@ -12,6 +12,8 @@ const mongoose = require("mongoose");
 const APIFeatures = require("../utils/apiFeatures");
 const Category = require("../models/Category");
 
+
+
 const createItinerary = async (req, res) => {
   const userId = new mongoose.Types.ObjectId(req.body.author); // Convert to ObjectId
   const userType = await userModel.findOne({ _id: userId }); // Project only 'roles' field
@@ -388,6 +390,7 @@ const readSingleItinerary = (req, res) => {
     console.log("inside the the read");
     itineraryModel
       .findOne({ _id: new mongoose.Types.ObjectId(req.params.itineraryId) })
+      .populate("tags")
       .sort({ createdAt: -1 })
       .then((result) => {
         res.status(201).json(result);

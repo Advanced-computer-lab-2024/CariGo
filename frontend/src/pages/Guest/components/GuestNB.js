@@ -49,12 +49,12 @@ function GuestNB() {
 
   const loadItinerary = () => {
     handleCloseNavMenu();
-    navigate('/itinerary');
+    navigate('/guest-itineraries');
   };
 
   const loadHistoricalPlaces = () => {
     handleCloseNavMenu();
-    navigate('/historical-places');
+    navigate('/guest-places');
   };
 
   

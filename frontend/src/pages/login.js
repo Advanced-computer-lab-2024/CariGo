@@ -57,6 +57,7 @@ export default function LoginPage() {
      // console.log(formData.username)
       localStorage.setItem('username',formData.username)
       localStorage.setItem("role", data.data.user.role);
+
       const id =  localStorage.getItem("id", data.data.user._id);
       console.log(id);
       switch (localStorage.getItem("role")) {
@@ -64,7 +65,7 @@ export default function LoginPage() {
           navigate(`/admin`); // Redirect to "View All" page
           break;
         case "Advetiser":
-          navigate("/"); // Redirect to "Update" page
+          navigate("/advertiser"); // Redirect to "Update" page
           break;
           case "Tourist":
           navigate("/Tourist"); // Redirect to "Update" page
@@ -73,13 +74,14 @@ export default function LoginPage() {
           navigate("/myVintages"); // Redirect to "Update" page
           break;
         case "Tour_Guide":
-          navigate("/"); // Redirect to "Create" page
+           navigate('/tour_guide/itineraries');// Redirect to "Create" page
           break;
         case "Seller":
           navigate("/Seller"); // Redirect to "Delete" page
           break;  
         default:
           navigate("/")
+
       }
      // navigate('/admin'); 
     } catch (error) {

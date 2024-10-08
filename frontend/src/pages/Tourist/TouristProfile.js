@@ -83,7 +83,7 @@ const TouristProfile = ({ userId }) => {
         />
         
         <TouristInfoEdit profile={profile} setProfile={setProfile} setRefreshKey={setRefreshKey} /> 
-        <CenteredTabs />
+        
       </div>
     </div>
   );

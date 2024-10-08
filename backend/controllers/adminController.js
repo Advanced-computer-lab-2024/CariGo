@@ -211,6 +211,7 @@ const createCategory = async (req, res) => {
       res.status(400).json({ error: error.message });
     }
   };
+
   const getUser = async (req, res) => {
    // const { id } = req.params;
    const{ username} = req.body

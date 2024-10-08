@@ -10,6 +10,11 @@ import CreateItineraryForm from "./components/CreateItineraryForm";
 import AllItineraries from "./pages/AllItineraries";
 import UserItinDetails from "./pages/UserItinDetails";
 import TourGuideProfile from "./pages/TourGuideProfile";
+import  TouristItineraries from "./pages/Tourist/TouristItineraries";
+import  GuestItineraries from "./pages/Guest/GuestItineraries";
+import  GuestViewVintage from "./pages/Guest/GuestPlaces";
+import  TouristVintage from "./pages/Tourist/TouristPlaces";
+
 
 import './styles/index.css';
 
@@ -66,6 +71,8 @@ import TouristHome from "./pages/Tourist/TouristHome";
 import ViewProductTourist from "./pages/Tourist/prodDetails.js";
 import EditProductD from "./pages/Seller/prodD.js";
 import AddProductSeller from "./pages/Seller/addP.js";
+import UpdateActivityForm from "./components/UpdateActivityForm.js";
+
 function App() {
   const token = localStorage.getItem("jwt");
  // const navigate = useNavigate();
@@ -116,6 +123,8 @@ function App() {
       <Route path="/Seller/products/addProduct" element={<AddProductSeller />} />
         {<Route path="/activities" element={<UserViewActivities />} /> }
         <Route path="/tourist-activities" element={<TouristActivities/>} />
+        <Route path="/tourist-itineraries" element={< TouristItineraries/>} />
+        <Route path="/guest-itineraries" element={<GuestItineraries/>} />
         <Route path="/guest-activities" element={<GuestActivities/>} />
         <Route path="/createActivity" element={<CreateActivityForm userId={localStorage.getItem("id")} />} /> 
         <Route path="/SignUp" element={<SignUp />} />
@@ -124,7 +133,7 @@ function App() {
         <Route path="/tgHome" element={<TouristGuestHome/>} />
         <Route path="/touristHome" element={<TouristHome/>} />
         <Route path="/guestHome" element={<GuestHome/>} />
-        <Route path="/activities/update/:id" element={<updateActivityForm/>} />
+        <Route path="/activities/update/:id" element={<UpdateActivityForm/>} />
         <Route path="/myVintages" element={<UserViewVintages />} />
         <Route path="/vintage/:id" element={<VintageDetails />} />
         <Route path="/allVintages" element={<TouristViewVintage />} />
@@ -151,6 +160,10 @@ function App() {
               <Route path="/delete-User" element={<DeleteUser />} /> 
        
         </Route>
+
+        <Route path="/guest-places" element={<GuestViewVintage/>} />
+        <Route path="/tourist-places" element={<TouristViewVintage />} />
+
         {/* Add more routes as needed */}
       </Routes>
       </Router>

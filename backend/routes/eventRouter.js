@@ -13,13 +13,14 @@ const {
   updateVintage,
   deleteItinerary,
   deleteVintage,readAllVintage
+  ,readMyItineraries, viewAllVintage,
 } = require("../controllers/eventController");
 const authController = require("../controllers/authController");
 const router = express.Router();
 
 
 // middleware for authentication
-// router.use(authController.protect);
+router.use(authController.protect);
 
 // POST a new itinerary, vintage, and product, and create an activity if needed.
 router.post(
