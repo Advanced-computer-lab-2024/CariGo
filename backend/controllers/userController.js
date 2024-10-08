@@ -29,7 +29,7 @@ const getUser = async (req, res) => {
 
 const updateUserData = (req, res) => {
   const update = req.body; 
-  console.log(update);
+  console.log(update +"  llllllll");
 
   if (mongoose.Types.ObjectId.isValid(req.params.userId)) {
     console.log("inside the update");
