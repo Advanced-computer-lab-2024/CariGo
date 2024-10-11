@@ -1,7 +1,5 @@
 # CariGo
 
-##test
--test webhook
 ## Contributors
 
 - **Mohamed Abdulbaki** - mohamed.abdulbaki@student.guc.edu.eg
