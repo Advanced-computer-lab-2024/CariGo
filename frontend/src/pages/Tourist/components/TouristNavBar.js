@@ -61,7 +61,7 @@ function TouristNB() {
 
   const loadProfile = () => {
     handleCloseUserMenu();
-    navigate('/tourist');
+    navigate('/tourist-profile');
   };
 
   const handleLogout = () => {

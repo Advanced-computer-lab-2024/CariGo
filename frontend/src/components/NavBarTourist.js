@@ -56,6 +56,10 @@ function ResponsiveAppBar() {
     navigate("/user_itineraries"); // Navigate to activities
   };
 
+  const loadVintages = () => {
+    handleCloseNavMenu(); // Close menu on navigation
+    navigate("/guest-places"); // Navigate to activities
+  };
   return (
     <AppBar position="static" sx={{ backgroundColor: "#004c74" }}>
       {" "}
@@ -143,7 +147,7 @@ function ResponsiveAppBar() {
             </Button>
 
             <Button
-              onClick={handleCloseNavMenu}
+              onClick={loadVintages}
               sx={{ my: 2, color: "white", display: "block" }}
             >
               {pages[2]}

@@ -126,10 +126,11 @@ function App() {
         <Route path="/tourist-itineraries" element={< TouristItineraries/>} />
         <Route path="/guest-itineraries" element={<GuestItineraries/>} />
         <Route path="/guest-activities" element={<GuestActivities/>} />
+        {/* <Route path="/guest-places" element={<GuestViewVintage/>} /> */}
         <Route path="/createActivity" element={<CreateActivityForm userId={localStorage.getItem("id")} />} /> 
         <Route path="/SignUp" element={<SignUp />} />
         <Route path="/advertiser" element={<AdvertiserProfile userId={localStorage.getItem("id")} />} />
-        <Route path="/tourist" element={<TouristProfile userId={localStorage.getItem("id")} />} />
+        <Route path="/tourist-profile" element={<TouristProfile userId={localStorage.getItem("id")} />} />
         <Route path="/tgHome" element={<TouristGuestHome/>} />
         <Route path="/touristHome" element={<TouristHome/>} />
         <Route path="/guestHome" element={<GuestHome/>} />

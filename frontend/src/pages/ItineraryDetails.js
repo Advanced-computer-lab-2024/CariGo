@@ -64,7 +64,7 @@ const ItineraryDetails = () => {
   const updateItinerary = async (activities, tags) => {
     const token = localStorage.getItem("jwt");
     await axios.patch(
-      `/cariGo/Event/updateItinerary/${id}`,
+      `http://localhost:4000/cariGo/Event/updateItinerary/${id}`,
       {
         activities: activities,
         tags: tags,
