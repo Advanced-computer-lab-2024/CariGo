@@ -11,6 +11,8 @@ import coverImage from "../assets/cover.jpg";
 import logoImage from "../assets/travel.jpg";
 import NavBar from "../components/NavBarTourGuide";
 import CT_TourGuide from "../components/CT_TourGuide";
+import { jwtDecode } from "jwt-decode";
+
 const TourGuideProfile = ({ userId }) => {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -20,18 +22,20 @@ const TourGuideProfile = ({ userId }) => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const id = localStorage.getItem("id");
+        // const id = localStorage.getItem("id");
         console.log("Fetching profile for userId:", userId); // Debugging log
 
+
         const token = localStorage.getItem("jwt"); // or sessionStorage.getItem('jwt')
-        console.log("Token:", token); // Add token logging to verify
+        const id = jwtDecode(token).id;
+        console.log("Token:", id); // Add token logging to verify
 
         if (!token) {
           throw new Error("No token found. Please log in.");
         }
 
         const response = await axios.get(
-          `http://localhost:4000/cariGo/users/${userId}`,
+          `http://localhost:4000/cariGo/users/${id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

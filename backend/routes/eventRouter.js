@@ -18,6 +18,13 @@ const authController = require("../controllers/authController");
 const router = express.Router();
 
 
+router.get(
+  "/readAllItineraries",
+
+ // authController.restrictTo("Tour_Guide","Advertiser"),
+  readAllItineraries
+); // itineraries
+
 // middleware for authentication
 router.use(authController.protect);
 
@@ -51,12 +58,6 @@ router.get(
   viewAllVintage
 );
 
-router.get(
-  "/readAllItineraries",
-
- // authController.restrictTo("Tour_Guide","Advertiser"),
-  readAllItineraries
-); // itineraries
 router.get("/readSingleItinerary/:itineraryId", readSingleItinerary); // itineraries/:id
 router.patch(
   "/updateItinerary/:itineraryId",

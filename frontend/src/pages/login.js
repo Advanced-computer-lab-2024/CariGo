@@ -60,27 +60,27 @@ export default function LoginPage() {
 
       const id =  localStorage.getItem("id", data.data.user._id);
       console.log(id);
-      switch (localStorage.getItem("role")) {
-        case "Admin":
+      switch (localStorage.getItem("role").toLocaleLowerCase()) {
+        case "admin":
           navigate(`/admin`); // Redirect to "View All" page
           break;
-        case "Advetiser":
+        case "advertiser":
           navigate("/advertiser"); // Redirect to "Update" page
           break;
-          case "Tourist":
+          case "tourist":
           navigate("/Tourist"); // Redirect to "Update" page
           break;
-          case "Toursim_Governor":
+          case "toursim_governor":
           navigate("/myVintages"); // Redirect to "Update" page
           break;
-        case "Tour_Guide":
+        case "tour_guide":
            navigate('/tour_guide/itineraries');// Redirect to "Create" page
           break;
-        case "Seller":
+        case "seller":
           navigate("/Seller"); // Redirect to "Delete" page
           break;  
         default:
-          navigate("/")
+          navigate("/tgHome")
 
       }
      // navigate('/admin'); 

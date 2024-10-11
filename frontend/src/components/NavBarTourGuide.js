@@ -15,8 +15,8 @@ import logoImage from "../assets/cropped_image.png";
 import { useNavigate } from "react-router-dom";
 
 // Updated pages without "Activities"
-const pages = ["Itineraries", "Historical places"];
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
+const pages = ["Itineraries"];
+const settings = ["Profile", "Logout"];
 
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -156,6 +156,11 @@ function ResponsiveAppBar() {
                     handleCloseUserMenu();
                     if (setting === "Profile") {
                       navigate("/tour_guide/profile");
+                    }else if (setting === "Logout") {
+                      localStorage.removeItem("id");
+                      localStorage.removeItem("token");
+                      localStorage.removeItem("role");
+                      navigate("/login"); // Example navigation after logout
                     }
                   }}
                 >
