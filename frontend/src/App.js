@@ -4,7 +4,7 @@ import AdvertiserProfile from "./AdvertiserProfile"; // Adjust the path based on
 //import './styles/App.css';
 import './styles/index.css';
 import { BrowserRouter as Router,Route,Routes } from 'react-router-dom';
-import UserViewActivities from './pages/UserViewActivities';
+import UserViewActivities from './Pages/UserViewActivities';
 import Home from './pages/Home';
 
 import LoginPage from './pages/login';

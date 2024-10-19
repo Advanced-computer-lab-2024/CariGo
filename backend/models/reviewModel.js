@@ -1,21 +1,22 @@
 const mongoose = require('mongoose');
 const Product = require('./Product');
 const Activity = require('./Activity');
+const Itinerary = require('./Itinerary');
+const TourGuide = require('./User');
 
 const reviewSchema = new mongoose.Schema(
     {
         review: {
             type: String,
-            required: [true, 'Review can not be empty!']
         },
         rating: {
             type: Number,
             min: 1,
-            max: 5
+            max: 5,
         },
         createdAt: {
             type: Date,
-            default: Date.now
+            default: Date.now,
         },
         product: {
             type: mongoose.Schema.ObjectId,
@@ -25,110 +26,91 @@ const reviewSchema = new mongoose.Schema(
             type: mongoose.Schema.ObjectId,
             ref: 'Activity',
         },
+        itinerary: {
+            type: mongoose.Schema.ObjectId,
+            ref: 'Itinerary',
+        },
+        tourGuide: {
+            type: mongoose.Schema.ObjectId,
+            ref: 'User',
+        },
         user: {
             type: mongoose.Schema.ObjectId,
             ref: 'User',
-            required: [true, 'Review must belong to a User.']
-        }
-    },{
+            required: [true, 'Review must belong to a User.'],
+        },
+    },
+    {
         toJSON: { virtuals: true },
-        toObject: { virtuals: true }
-    });
-
+        toObject: { virtuals: true },
+    }
+);
 
 ////////////////// MiddleWare //////////////////
 
-reviewSchema.index({ product: 1, user: 1 }, { unique: true });
-reviewSchema.index({ activity: 1, user: 1 }, { unique: true });
-
-
-reviewSchema.pre(/^find/, function(next){
-
-    this.populate({
-        path: 'user',
-        select: 'username'
-    })
-    next()
+// Create unique indexes for each pair of reference and user
+['product', 'activity', 'itinerary', 'tourGuide'].forEach((ref) => {
+    reviewSchema.index({ [ref]: 1, user: 1 }, { unique: true });
 });
 
-reviewSchema.statics.calcAverageProductRatings = async function(productId) {
-    const stats = await this.aggregate([
-      {
-        $match: { product: productId }
-      },
-      {
-        $group: {
-          _id: '$product',
-          nRating: { $sum: 1 },
-          avgRating: { $avg: '$rating' }
-        }
-      }
-    ]);
-  
-    if (stats.length > 0) {
-      await Product.findByIdAndUpdate(productId, {
-        ratingsQuantity: stats[0].nRating,
-        ratingsAverage: stats[0].avgRating
-      });
-    } else {
-      await Product.findByIdAndUpdate(productId, {
-        ratingsQuantity: 0,
-        ratingsAverage: 4.5
-      });
-    }
-  };
-  
-
-  
-  reviewSchema.statics.calcAverageActivityRatings = async function(activityId) {
-    const stats = await this.aggregate([
-      {
-        $match: { activity: activityId }
-      },
-      {
-        $group: {
-          _id: '$activity',
-          nRating: { $sum: 1 },
-          avgRating: { $avg: '$rating' }
-        }
-      }
-    ]);
-  
-    if (stats.length > 0) {
-      await Activity.findByIdAndUpdate(activityId, {
-        ratingsQuantity: stats[0].nRating,
-        ratingsAverage: stats[0].avgRating
-      });
-    } else {
-      await Activity.findByIdAndUpdate(activityId, {
-        ratingsQuantity: 0,
-        ratingsAverage: 4.5
-      });
-    }
-  };
-  
-  reviewSchema.post('save', function() {
-    this.constructor.calcAverageProductRatings(this.product);
-    this.constructor.calcAverageActivityRatings(this.activity);
-
-  });
-
-  // findByIdAndUpdate
-  // findByIdAndDelete
-  reviewSchema.pre(/^findOneAnd/, async function(next) {
-    this.r = await this.model.findOne(this.getQuery());
-    // console.log(this.r);
+// Populate user field when retrieving reviews
+reviewSchema.pre(/^find/, function (next) {
+    this.populate({
+        path: 'user',
+        select: 'username',
+    });
     next();
-  });
-  
-  reviewSchema.post(/^findOneAnd/, async function() {
-    // await this.findOne(); does NOT work here, query has already executed
-    await this.r.constructor.calcAverageProductRatings(this.r.product);
-    await this.r.constructor.calcAverageActivityRatings(this.r.activity);
+});
 
-  });
-  
-  const Review = mongoose.model('Review', reviewSchema);
-  
-  module.exports = Review;
-  
+// Generic function to calculate average ratings
+async function calcAverageRatings(model, refField, refId) {
+    const stats = await Review.aggregate([
+        { $match: { [refField]: refId } },
+        {
+            $group: {
+                _id: `$${refField}`,
+                nRating: { $sum: 1 },
+                avgRating: { $avg: '$rating' },
+            },
+        },
+    ]);
+
+    if (stats.length > 0) {
+        await model.findByIdAndUpdate(refId, {
+            ratingsQuantity: stats[0].nRating,
+            ratingsAverage: stats[0].avgRating,
+        });
+    } else {
+        await model.findByIdAndUpdate(refId, {
+            ratingsQuantity: 0,
+            ratingsAverage: 4.5,
+        });
+    }
+}
+
+// Middleware to update average ratings after saving a review
+reviewSchema.post('save', function () {
+    if (this.product) calcAverageRatings(Product, 'product', this.product);
+    if (this.activity) calcAverageRatings(Activity, 'activity', this.activity);
+    if (this.itinerary) calcAverageRatings(Itinerary, 'itinerary', this.itinerary);
+    if (this.tourGuide) calcAverageRatings(TourGuide, 'tourGuide', this.tourGuide);
+});
+
+// Middleware to update average ratings after updating or deleting a review
+reviewSchema.pre(/^findOneAnd/, async function (next) {
+    this.r = await this.model.findOne(this.getQuery());
+    next();
+});
+
+reviewSchema.post(/^findOneAnd/, async function () {
+    if (this.r) {
+        if (this.r.product) await calcAverageRatings(Product, 'product', this.r.product);
+        if (this.r.activity) await calcAverageRatings(Activity, 'activity', this.r.activity);
+        if (this.r.itinerary) await calcAverageRatings(Itinerary, 'itinerary', this.r.itinerary);
+        if (this.r.tourGuide) await calcAverageRatings(TourGuide, 'tourGuide', this.r.tourGuide);
+    }
+});
+
+const Review = mongoose.model('Review', reviewSchema);
+
+module.exports = Review;
