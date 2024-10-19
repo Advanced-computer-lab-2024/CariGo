@@ -9,4 +9,4 @@ const PreferenceTagSchema = new schema({
 });
 
 const tag = mongoose.model("Tag", PreferenceTagSchema);
-module.exports = tag;
+module.exports = tag;

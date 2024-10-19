@@ -150,10 +150,12 @@ exports.login = catchAsync(async (req, res, next) => {
 exports.protect = catchAsync(async (req, res, next) => {
   //Check if token exists and get it
   let token;
+  //console.log(req.headers)
   if (
     req.headers.authorization &&
     req.headers.authorization.startsWith("Bearer")
   ) {
+    console.log("entered")
     token = req.headers.authorization.split(" ")[1];
   }
 
@@ -232,8 +234,10 @@ exports.AcceptAdvertiser = catchAsync(async (req, res, next) => {
 });
 
 exports.restrictTo = (...roles) => {
+
   return (req, res, next) => {
     console.log(req.user.role)
+    console.log("verifying role");
     if (!roles.includes(req.user.role)) {
 
       return next(

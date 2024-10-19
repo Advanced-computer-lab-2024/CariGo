@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react'; 
 import axios from 'axios'; 
-import TouristHeader from '../components/TouristHeader';
-import TouristInfo from '../components/TouristInfo'; 
-import CenteredTabs from '../components/CenteredTabs';
-import SmallButton from '../components/smallButton';
+import TouristHeader from '../../components/TouristHeader';
+import TouristInfo from '../../components/TouristInfo'; 
+import CenteredTabs from '../../components/CenteredTabs';
 import './styles/TouristProfile.css'; 
-import headerImage from '../assets/header.png'; 
-import profileImage from '../assets/profile.png';
+import headerImage from '../../assets/header.png'; 
+import profileImage from '../../assets/profile.png';
+import TouristInfoEdit from '../../components/TouristInfoEdit';
+import TouristNB from './components/TouristNavBar';
+import {jwtDecode} from "jwt-decode";
 
 const TouristProfile = ({ userId }) => {
   const [profile, setProfile] = useState(null);
@@ -16,17 +18,19 @@ const TouristProfile = ({ userId }) => {
 
   useEffect(() => {
     const fetchProfile = async () => {
+
       try {
         console.log('Fetching profile for userId:', userId); 
         
-        const token = localStorage.getItem('jwt');
-        console.log('Token:', token); 
+        const token = localStorage.getItem("jwt"); // or sessionStorage.getItem('jwt')
+        const id = jwtDecode(token).id;
+        console.log("Token:", id); // Add token logging to verify
         
         if (!token) {
           throw new Error("No token found. Please log in.");
         }
   
-        const response = await axios.get(`http://localhost:4000/cariGo/users/${userId}`, {
+        const response = await axios.get(`http://localhost:4000/cariGo/users/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -62,6 +66,7 @@ const TouristProfile = ({ userId }) => {
 
   return (
     <div className="tourist-profile">
+      <TouristNB /> {/* Include the Navbar component */}
       <header className="tourist-header">
         <TouristHeader 
           companyName={profile.companyName || 'CariGo'} 
@@ -74,17 +79,18 @@ const TouristProfile = ({ userId }) => {
           userName={profile.username || 'No username provided'} 
           email={profile.email || 'No email provided'}
           role={profile.role || 'No role assigned'}
-          hotline={profile.hotline || 'No hotline provided'}
-          website={profile.website_link || '#'}
-          about={profile.about || 'No about information available.'}
-          description={profile.description || 'No description available.'}
+          mobile={profile.mobile_number || 'No mobile number provided'}
+          nationality={profile.nationality || 'Not available'}
+          job={profile.job || 'No job information available.'}
+          wallet={profile.wallet || 'No balance available.'}
         />
         
-        <SmallButton profile={profile} setProfile={setProfile} setRefreshKey={setRefreshKey} /> 
-        <CenteredTabs />
+        <TouristInfoEdit profile={profile} setProfile={setProfile} setRefreshKey={setRefreshKey} /> 
+        
       </div>
     </div>
   );
 };
+
 
 export default TouristProfile;

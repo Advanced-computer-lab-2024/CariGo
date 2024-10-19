@@ -11,6 +11,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export default function LoginPage() {
+  localStorage.clear();
+ // console.log(localStorage.getItem('jwt') +"         d")
   const [formData, setFormData] = useState({
     username: '',
     password: ''
@@ -46,16 +48,42 @@ export default function LoginPage() {
 
       const data = await response.json();
       console.log("Login successful", data);
-
+      
       const token = data.token;
-
+   console.log(token);
       // Store the token in localStorage
       localStorage.setItem('jwt', token);
       localStorage.setItem("id", data.data.user._id);
+     // console.log(formData.username)
+      localStorage.setItem('username',formData.username)
       localStorage.setItem("role", data.data.user.role);
-      console.log(localStorage.getItem("role"));
 
-      navigate('/'); 
+      const id =  localStorage.getItem("id", data.data.user._id);
+      console.log(id);
+      switch (localStorage.getItem("role").toLocaleLowerCase()) {
+        case "admin":
+          navigate(`/admin`); // Redirect to "View All" page
+          break;
+        case "advertiser":
+          navigate("/advertiser"); // Redirect to "Update" page
+          break;
+          case "tourist":
+          navigate("/Tourist"); // Redirect to "Update" page
+          break;
+          case "toursim_governor":
+          navigate("/myVintages"); // Redirect to "Update" page
+          break;
+        case "tour_guide":
+           navigate('/tour_guide/itineraries');// Redirect to "Create" page
+          break;
+        case "seller":
+          navigate("/Seller"); // Redirect to "Delete" page
+          break;  
+        default:
+          navigate("/tgHome")
+
+      }
+     // navigate('/admin'); 
     } catch (error) {
       console.error("Error:", error.message);
       alert("Login failed: " + error.message);

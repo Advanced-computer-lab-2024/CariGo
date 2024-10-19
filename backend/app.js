@@ -8,6 +8,7 @@ const userRouter = require("./routes/userRouter.js");
 const advertiserRouter = require("./routes/avertiserRouter.js");
 const activityRouter = require("./routes/activityRouter.js");
 const eventRouter = require("./routes/eventRouter.js");
+const reviewRouter = require("./routes/reviewRoutes.js")
 
 const cors = require("cors");
 
@@ -18,6 +19,7 @@ const productRouter = require("./routes/productRouter.js");
 const experienceRouter = require("./routes/experienceRouter");
 
 const app = express();
+
 
 
 // LIMIT REQUESTS FROM SAME API
@@ -50,7 +52,7 @@ app.use(xss());
 app.use("/cariGo/users", userRouter);
 app.use("/cariGo/advertiser", advertiserRouter);
 app.use("/cariGo/activity", activityRouter);
-
+app.use("/cariGo/review", reviewRouter);
 app.use("/Event", eventRouter)
 app.use("/Admin",adminRouter);
 app.use("/cariGo/products",productRouter)

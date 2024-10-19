@@ -1,16 +1,16 @@
 import React from 'react';
 import './styles/TouristInfo.css'; // Assuming you have some styles for the component
 
-const TouristInfo = ({ userName, email, role, hotline, website, about, description }) => {
+const TouristInfo = ({ userName, email, role, mobile,nationality, job, wallet }) => {
   return (
     <div className="tourist-info">
       <h2>{userName}</h2>
       <p><strong>Email:</strong> {email}</p>
       <p><strong>Role:</strong> {role}</p>
-      <p><strong>Hotline:</strong> {hotline}</p>
-      <p><strong>Website:</strong> <a href={website}>{website}</a></p>
-      <p><strong>About:</strong> {about}</p>
-      <p><strong>Description:</strong> {description}</p>
+      <p><strong>Mobile:</strong> {mobile}</p>
+      <p><strong>nationality:</strong> {nationality}</p>
+      <p><strong>job:</strong> {job}</p>
+      <p><strong>wallet:</strong> {wallet}</p>
     </div>
   );
 };

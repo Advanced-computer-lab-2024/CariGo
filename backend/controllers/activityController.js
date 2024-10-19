@@ -48,7 +48,7 @@ const createActivity = async (req, res) => {
             discount,
             tag: tagDoc._id,
             bookingOpened,
-            category: categoryDoc._id, // Use the category ID
+            Category: categoryDoc._id, // Use the category ID
             author: req.user.id,description,title
         });
 
@@ -63,6 +63,7 @@ const createActivity = async (req, res) => {
 const deleteActivity = async (req, res) => {
     try {
         const { id } = req.params;
+        console.log(id);
         const deletedActivity = await Activity.findByIdAndDelete(id); // Fixed from activityModel to Activity
         if (!deletedActivity) {
             return res.status(404).json({ message: 'Activity not found' });
@@ -83,60 +84,203 @@ const getActivities = async (req, res) => {
         return res.status(400).json({ message: `Invalid sortBy parameter. Allowed values are: ${validSortFields.join(", ")}` });
     }
 
-    // Change sortBy to "price.min" if it is "price"
+    // Change sortBy to "price.range.min" if it is "price"
     if (sortBy === 'price') {
-        sortBy = 'price.min';
+        sortBy = 'price.range.min';
+    }
+
+    const categoryName = req.query.Category;
+
+    if (categoryName) {
+        try {
+            const category = await Category.findOne({ name: categoryName });
+            if (!category) {
+                return res.status(404).json({ message: 'Category not found' });
+            }
+            req.query.Category = category._id; // Replace the category name with the category ID
+        } catch (error) {
+            return res.status(500).json({ message: 'An error occurred while fetching the category', error });
+        }
+    }
+
+    // Check if the price parameter is provided
+    const priceParam = req.query.price ? parseFloat(req.query.price) : null;
+
+    // Initialize the query with base conditions
+    const query = Activity.find({ start_date: { $gte: today } });
+
+    // Add category filter if it exists
+    if (req.query.Category) {
+        query.where({ Category: req.query.Category });
+    }
+
+    // If price parameter is provided, filter activities based on price range
+    console.log(priceParam);
+    if (priceParam !== null) {
+        query.where({
+            $and: [
+                { 'price.range.min': { $lte: priceParam } }, // Price is greater than or equal to min
+                { 'price.range.max': { $gte: priceParam } }, // Price is less than or equal to max
+            ],
+        });
+        // Remove price parameter from req.query
+        delete req.query.price;
     }
 
     try {
         // Initialize APIFeatures with the query and query string
-        const features = new APIFeatures(Activity.find({ start_date: { $gt: today } }), req.query)
-            .filter();
+        const features = new APIFeatures(query, req.query).filter();
 
         // Apply sorting
         const activities = await features.query.sort(sortBy);
 
         if (!activities.length) {
-            return res.status(404).json({ message: 'No upcoming activities found' });
+            return res.status(404).json({ message: 'Activities not found' });
         }
 
-        res.status(200).json(activities);
+        // Collect all tag and category IDs from the activities
+        const tagIds = activities.map(activity => activity.tag).filter(tag => tag);
+        const categoryIds = activities.map(activity => activity.Category).filter(category => category);
+
+        // Fetch tags and categories based on the collected IDs
+        const tags = await Tag.find({ _id: { $in: tagIds } });
+        const categories = await Category.find({ _id: { $in: categoryIds } });
+
+        // Create a map for quick lookup
+        const tagMap = {};
+        tags.forEach(tag => {
+            tagMap[tag._id] = tag.title; // Map tag IDs to their titles
+        });
+
+        const categoryMap = {};
+        categories.forEach(category => {
+            categoryMap[category._id] = category.name; // Map category IDs to their names
+        });
+
+        // Replace IDs in activities with corresponding titles/names
+        const formattedActivities = activities.map(activity => ({
+            ...activity._doc, // Spread original activity fields
+            tag: tagMap[activity.tag] || activity.tag, // Replace tag ID with title or keep original if not found
+            Category: categoryMap[activity.Category] || activity.Category // Replace category ID with name or keep original if not found
+        }));
+
+        res.status(200).json(formattedActivities);
     } catch (error) {
-        res.status(500).json({ message: 'An error occurred', error });
+        console.error('Error retrieving activities:', error);
+        res.status(500).json({ message: 'Error retrieving activities', error: error.message });
     }
 };
 
+
+
+
+// const getAdvActivities = async (req, res) => {
+//     try {
+//         const id = req.user.id;
+
+//         // Corrected the find method syntax
+//         const activities = await Activity.find({ author: id });
+
+//         if (!activities.length) {
+//             return res.status(404).json({ message: 'Activities not found' });
+//         }
+
+//         res.status(200).json(activities);
+//     } catch (error) {
+//         res.status(500).json({ message: 'Error retrieving activities', error });
+//     }
+// };
 const getAdvActivities = async (req, res) => {
     try {
         const id = req.user.id;
 
-        // Corrected the find method syntax
+        // Fetch activities
         const activities = await Activity.find({ author: id });
 
         if (!activities.length) {
             return res.status(404).json({ message: 'Activities not found' });
         }
 
-        res.status(200).json(activities);
+        // Collect all tag and category IDs from the activities
+        const tagIds = activities.map(activity => activity.tag).filter(tag => tag);
+        const categoryIds = activities.map(activity => activity.Category).filter(category => category);
+
+        // Fetch tags and categories based on the collected IDs
+        const tags = await Tag.find({ _id: { $in: tagIds } });
+        const categories = await Category.find({ _id: { $in: categoryIds } });
+
+        // Create a map for quick lookup
+        const tagMap = {};
+        tags.forEach(tag => {
+            tagMap[tag._id] = tag.title; // Map tag IDs to their titles
+        });
+
+        const categoryMap = {};
+        categories.forEach(category => {
+            categoryMap[category._id] = category.name; // Map category IDs to their names
+        });
+
+        // Replace IDs in activities with corresponding titles/names
+        const formattedActivities = activities.map(activity => ({
+            ...activity._doc, // Spread original activity fields
+            tag: tagMap[activity.tag] || activity.tag, // Replace tag ID with title or keep original if not found
+            Category: categoryMap[activity.Category] || activity.Category // Replace category ID with name or keep original if not found
+        }));
+
+        res.status(200).json(formattedActivities);
     } catch (error) {
-        res.status(500).json({ message: 'Error retrieving activities', error });
+        console.error('Error retrieving activities:', error);
+        res.status(500).json({ message: 'Error retrieving activities', error: error.message });
     }
 };
+
+
+
 
 
 
 const updateActivity = async (req, res) => {
     try {
         const { id } = req.params;
-        const updatedActivity = await Activity.findByIdAndUpdate(id, req.body, { new: true }); // Fixed from activityModel to Activity
+        const { tag, category, ...otherFields } = req.body; // Change to lowercase for consistency
+
+        // Check if a tag is provided
+        if (tag) {
+            const foundTag = await Tag.findOne({ title: tag });
+            if (foundTag) {
+                req.body.tag = foundTag._id; // Store the tag ID
+            } else {
+                return res.status(404).json({ message: 'Tag not found' });
+            }
+        }
+
+        // Check if a category is provided
+        if (category) {
+            console.log("Searching for category:", category); // Log the category before search
+            const foundCategory = await Category.findOne({ name: category }); // Use lowercase
+            console.log("Found category:", foundCategory); // Log the found category
+            
+            if (foundCategory) {
+                req.body.Category = foundCategory._id; // Store the category ID
+            } else {
+                return res.status(404).json({ message: 'Category not found' });
+            }
+        }
+
+        // Update the activity
+        const updatedActivity = await Activity.findByIdAndUpdate(id, { ...otherFields, ...req.body }, { new: true });
         if (!updatedActivity) {
             return res.status(404).json({ message: 'Activity not found' });
         }
+
         res.status(200).json(updatedActivity);
     } catch (error) {
         res.status(500).json({ message: 'Error updating Activity', error });
     }
 };
+
+
+
 
 // const getActivities = async (req, res) => {
 //     const today = new Date();

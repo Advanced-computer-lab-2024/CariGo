@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { FormControl } from '@mui/base/FormControl';
 import { styled } from '@mui/material/styles';
-import { Box } from '@mui/material';
+import { Box, Dialog, DialogTitle, DialogContent, DialogActions, Button as MuiButton } from '@mui/material';
 import { Button as BaseButton } from '@mui/base/Button';
 import SelectTags from "../components/SelectTags";
 import SelectCategory from "../components/SelectCategory";
@@ -25,6 +25,7 @@ export default function CreateActivityForm() {
   const [maxPrice, setMaxPrice] = useState(0);
   const [discount, setDiscount] = useState(0);
   const [errorMessages, setErrorMessages] = useState({});
+  const [openDialog, setOpenDialog] = useState(false); // State to manage dialog visibility
 
   const validateFields = () => {
     const errors = {};
@@ -84,7 +85,6 @@ export default function CreateActivityForm() {
           'Content-Type': 'application/json',
         },
       });
-      console.log(activity);
 
       const json = await response.json();
 
@@ -105,8 +105,10 @@ export default function CreateActivityForm() {
       setMaxPrice(0);
       setDiscount(0);
       setErrorMessages({});
-      console.log("Activity created");
-      navigate('/activities');
+      
+      // Open the success dialog
+      setOpenDialog(true);
+      
     } catch (err) {
       setErrorMessages({ general: "Failed to create activity. Please try again." });
       console.error(err);
@@ -242,6 +244,25 @@ export default function CreateActivityForm() {
         {errorMessages.general && <HelperText>{errorMessages.general}</HelperText>}
         <Button onClick={handleCreate}>CREATE</Button>
       </Box>
+
+      {/* Success Dialog */}
+      <Dialog
+        open={openDialog}
+        onClose={() => setOpenDialog(false)}
+      >
+        <DialogTitle>Activity Created Successfully</DialogTitle>
+        <DialogContent>
+          Your activity has been successfully created!
+        </DialogContent>
+        <DialogActions>
+          <MuiButton onClick={() => {
+            setOpenDialog(false);
+            navigate('/advertiser'); // Navigate to the advertiser page after closing the dialog
+          }} color="primary">
+            OK
+          </MuiButton>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

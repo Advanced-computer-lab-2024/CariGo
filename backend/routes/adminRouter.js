@@ -10,22 +10,28 @@ const {
     createTag,
     getTags,
     updateTag,
-    deleteTag
+    deleteTag,
+    getUser
 } = require("../controllers/adminController");
-
+const authController = require("../controllers/authController");
 const router = express.Router();
 
-router.post("/addAdmin", addAdmin);
-router.delete("/deleteUser", deleteUser);
+router.get("/getTags", getTags); 
+router.get("/getCategories", getCategories); 
+
+router.use(authController.protect);
+router.post("/addAdmin",addAdmin);
+//router.delete("/deleteUser",deleteUser);
+router.post("/deleteUser",getUser);
 router.post("/addTourismGovernor", addTourismGovernor);
 
 router.post("/createCategory", createCategory);
-router.get("/getCategories", getCategories); 
+
 router.put("/updateCategory/:id", updateCategory); 
 router.delete("/deleteCategory/:id", deleteCategory);
 
 router.post("/createTag", createTag);
-router.get("/getTags", getTags); 
+
 router.put("/updateTag/:id", updateTag); 
 router.delete("/deleteTag/:id", deleteTag);
 

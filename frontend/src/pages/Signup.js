@@ -105,7 +105,7 @@ function SignUp() {
       console.log(token);
     } catch (error) {
       console.error("Error:", error.message); // Log the error in console
-      alert("signup failed: " + error.message); // Show alert to the user
+      alert("signup failed: " + error.message); // Show alert to the user
     }
     
   };

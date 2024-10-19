@@ -13,7 +13,10 @@ const app = require("./app");
 
 const cors = require('cors');
 
-app.use(cors());
+
+// Apply CORS middleware
+// app.use(cors);
+
 
 
 // const DB = process.env.DATABASE;
