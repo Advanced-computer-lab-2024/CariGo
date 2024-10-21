@@ -14,6 +14,7 @@ import MenuItem from "@mui/material/MenuItem";
 import logoImage from "../assets/cropped_image.png"; // Correct relative path
 import { useNavigate } from "react-router-dom";
 
+
 const pages = ["Activities", "Iteneraries", "Historical places"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
@@ -54,6 +55,13 @@ function ResponsiveAppBar() {
     handleCloseNavMenu(); // Close menu on navigation
     navigate("/user_itineraries"); // Navigate to activities
   };
+
+    // Handle navigation
+    const loadVintages = () => {
+      handleCloseNavMenu(); // Close menu on navigation
+      navigate("/allVintages"); // Navigate to activities
+    };
+  
 
   return (
     <AppBar position="static" sx={{ backgroundColor: "#004c74" }}>
@@ -120,7 +128,7 @@ function ResponsiveAppBar() {
                 <Typography sx={{ textAlign: "center" }}>{pages[1]}</Typography>
               </MenuItem>
 
-              <MenuItem onClick={handleCloseNavMenu}>
+              <MenuItem onClick={loadVintages}>
                 <Typography sx={{ textAlign: "center" }}>{pages[2]}</Typography>
               </MenuItem>
             </Menu>
@@ -143,7 +151,7 @@ function ResponsiveAppBar() {
             </Button>
 
             <Button
-              onClick={handleCloseNavMenu}
+              onClick={loadVintages}
               sx={{ my: 2, color: "white", display: "block" }}
             >
               {pages[2]}

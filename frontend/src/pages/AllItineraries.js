@@ -218,7 +218,7 @@ useEffect(() => {
   }
 
   setFilteredActivities(updatedActivities); // Update filtered activities
-}, [filters, searchTerm, sortOption]); // Run this effect when any of these change
+}, [, filters, searchTerm, sortOption]); // Run this effect when any of these change
   
 
 

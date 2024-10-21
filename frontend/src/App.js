@@ -8,7 +8,8 @@ import UserViewItineraries from "./pages/UserViewItineraries";
 import Home from "./pages/Home";
 import LoginPage from "./pages/login";
 import SignUp from "./pages/Signup";
-import { jwtDecode } from "jwt-decode";
+import {jwtDecode} from "jwt-decode";
+
 import "./styles/index.css";
 import NavBar from "./components/NavBar";
 import ItineraryUpdate from "./components/ItineraryUpdate";
@@ -18,6 +19,12 @@ import AllItineraries from "./pages/AllItineraries";
 import UserItinDetails from './pages/UserItinDetails';
 import CreateActivityForm from "./components/CreateActivityForm";
 import TouristProfile from "./pages/TouristProfile";
+import UserViewVintages from "./pages/UserViewVintages";
+import VintageDetails from "./pages/VintageDetails";
+import UserVintageDetails from "./pages/UserVintageDetails";
+import TouristViewVintage from "./pages/TouristViewVintage";
+import UpdateActivityForm from "./components/UpdateActivityForm";
+
 function App() {
   const token = localStorage.getItem("jwt");
   
@@ -49,12 +56,16 @@ function App() {
         element={<AdvertiserProfile userId={localStorage.getItem("id")} />}
       />
       {/* <Route path="/activities/:id" element={<ActivityDetail/>} /> */}
-      <Route path="/activities/update/:id" element={<updateActivityForm />} />
+      <Route path="/activities/update/:id" element={<UpdateActivityForm />} />
       <Route path="/" element={<Home />} /> {/* Default route */}
       <Route path="/activities" element={<UserViewActivities />} /> 
       <Route path="/createActivity" element={<CreateActivityForm userId={localStorage.getItem("id")} />} /> 
       <Route path="/advertiser" element={<AdvertiserProfile userId={localStorage.getItem("id")} />} />
       <Route path="/tourist" element={<TouristProfile userId={localStorage.getItem("id")} />} />
+      <Route path="/myVintages" element={<UserViewVintages />} />
+        <Route path="/vintage/:id" element={<VintageDetails />} />
+        <Route path="/allVintages" element={<TouristViewVintage />} />
+        <Route path="/viewingAllvintage/:id" element={<UserVintageDetails />} />
       {/* Add more routes as needed */}
     </Routes>
   );
