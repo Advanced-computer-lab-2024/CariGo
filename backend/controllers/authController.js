@@ -2,8 +2,7 @@ const crypto = require("crypto");
 const { promisify } = require("util");
 const jwt = require("jsonwebtoken");
 const catchAsync = require("./../utils/catchAsync");
-
-// const sendEmail = require("./../utils/email");
+const sendEmail = require("./../utils/email");
 
 const User = require("./../models/User");
 const AppError = require("./../utils/appError");
@@ -150,10 +149,12 @@ exports.login = catchAsync(async (req, res, next) => {
 exports.protect = catchAsync(async (req, res, next) => {
   //Check if token exists and get it
   let token;
+  //console.log(req.headers)
   if (
     req.headers.authorization &&
     req.headers.authorization.startsWith("Bearer")
   ) {
+    // console.log("entered")
     token = req.headers.authorization.split(" ")[1];
   }
 
@@ -190,6 +191,8 @@ exports.protect = catchAsync(async (req, res, next) => {
 
   next();
 });
+
+
 
 exports.isActive = catchAsync(async (req, res, next) => {
   if (req.user.verified === false && req.user.role === "Advertiser") {
@@ -246,51 +249,52 @@ exports.restrictTo = (...roles) => {
   };
 };
 
-// exports.forgotPassword = catchAsync(async (req, res, next) => {
-//   // Get user based on POSTed email
-//   const user = await User.findOne({ email: req.body.email });
+exports.forgotPassword = catchAsync(async (req, res, next) => {
+  // Get user based on POSTed email
+  const user = await User.findOne({ email: req.body.email });
 
-//   // if email does not exist
-//   if (!user) {
-//     return next(new AppError("There is no user with email address 📧❌", 404));
-//   }
+  // if email does not exist
+  if (!user) {
+    return next(new AppError("There is no user with email address 📧❌", 404));
+  }
 
-//   // Generate the random token for reset
-//   const resetToken = user.createPasswordResetToken();
+  // Generate the random token for reset
+  const resetToken = user.createPasswordResetToken();
 
-//   //because we only modified it not saved it
-//   //because no name ..etc that are required, then close validations
-//   await user.save({ validateBeforeSave: false });
+  //because we only modified it not saved it
+  //because no name ..etc that are required, then close validations
+  await user.save({ validateBeforeSave: false });
 
-//   // Send token to user's email
-//   const resetURL = `${req.protocol}://${req.get(
-//     "host"
-//   )}/marketAPI/v1/users/resetPassword/${resetToken}`;
+  // Send token to user's email
+  const resetURL = `${req.protocol}://${req.get(
+    "host"
+  )}/cariGo/users/resetPassword/${resetToken}`;
 
-//   const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL} 🔑.\nIf you didn't forget your password, please ignore this email!`;
+  const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL} 🔑.\nIf you didn't forget your password, please ignore this email!`;
 
-//   try {
-//     await sendEmail({
-//       email: user.email,
-//       subject: "Your password reset token (valid for 10 min) 🔑🕑",
-//       message,
-//     });
+  try {
+    await sendEmail({
+      email: user.email,
+      subject: "Your password reset token (valid for 10 min) 🔑🕑",
+      message,
+    });
 
-//     res.status(200).json({
-//       status: "success",
-//       message: "Token sent to email!",
-//     });
-//   } catch (err) {
-//     user.passwordResetToken = undefined;
-//     user.passwordResetExpires = undefined;
-//     await user.save({ validateBeforeSave: false });
+    res.status(200).json({
+      status: "success",
+      message: "Token sent to email!",
+    });
+  } catch (err) {
+    user.passwordResetToken = undefined;
+    user.passwordResetExpires = undefined;
+    await user.save({ validateBeforeSave: false });
 
-//     return next(
-//       new AppError("There was an error sending the email. Try again later! ❌"),
-//       500
-//     );
-//   }
-// });
+    return next(
+      new AppError("There was an error sending the email. Try again later! ❌"),
+      500
+    );
+  }
+});
+
 
 exports.resetPassword = catchAsync(async (req, res, next) => {
   // get user by token
@@ -323,21 +327,45 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   createSendToken(user, 200, res);
 });
 
-exports.updatePassword = catchAsync(async (req, res, next) => {
-  //Get user from collection
-  const user = await User.findById(req.user.id).select("+password");
+exports.changePassword = catchAsync(async (req, res, next) => {
+  // 1) Get user from collection
+  const user = await User.findById(req.user.id).select('+password');
 
-  //check if Posted password is correct
-  if (!(await user.correctPassword(req.body.passwordCurrent, user.password))) {
-    return next(new AppError("Your current password is wrong. 🔑❌", 401));
+  if (!user) {
+    return next(new AppError('User not found', 404));
   }
 
-  //if all is good, update password
+  // console.log(req.body)
+
+  // 2) Check if POSTed current password is correct
+  if (!req.body.currentPassword) {
+    return next(new AppError('Please provide your current password', 400));
+  }
+
+  if (!user.password) {
+    return next(new AppError('Current user password not found', 500));
+  }
+
+  const isCorrect = await user.correctPassword(req.body.currentPassword, user.password);
+
+  if (!isCorrect) {
+    return next(new AppError('Your current password is incorrect', 401));
+  }
+
+  // 3) If so, update password
+  if (!req.body.password || !req.body.passwordConfirm) {
+    return next(new AppError('Please provide new password and password confirmation', 400));
+  }
+
   user.password = req.body.password;
   user.passwordConfirm = req.body.passwordConfirm;
-  await user.save();
-  //User.findbyIdAndUpdate Won't work for the validation and pre middleware!
 
-  //log user in, send jwt
-  createSendToken(user, 200, res);
+  try {
+    await user.save();
+    // 4) Log user in, send JWT
+    createSendToken(user, 200, res);
+  } catch (error) {
+    console.error('Error saving new password:', error);
+    return next(new AppError('Error updating password. Please try again.', 500));
+  }
 });

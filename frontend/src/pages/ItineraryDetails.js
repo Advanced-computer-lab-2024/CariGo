@@ -51,20 +51,20 @@ const ItineraryDetails = () => {
         console.log("gayez", localActivities);
         if (isEditing) {
           setIsEditing(false); // Set editing mode to false after update
-          await updateItinerary(data.activities, data.tags); // Update activities and tags
+          await updateItinerary(localActivities, data.tags); // Update activities and tags
         }
       } catch (error) {
         console.error("Error fetching itinerary details:", error);
       }
     };
     fetchItineraryDetails();
-  }, [refreshKey, activityTrigger, id]); // Include `id` in dependencies
+  }, [refreshKey, activityTrigger]); // Include `id` in dependencies
 
   // Function to update itinerary activities and tags
   const updateItinerary = async (activities, tags) => {
     const token = localStorage.getItem("jwt");
     await axios.patch(
-      `/cariGo/Event/updateItinerary/${id}`,
+      `http://localhost:4000/cariGo/Event/updateItinerary/${id}`,
       {
         activities: activities,
         tags: tags,
@@ -85,6 +85,8 @@ const ItineraryDetails = () => {
       )
     );
     setIsEditing(true); // Set editing mode to true
+    setIsEditing(true);
+    // updateItinerary(localActivities, selectedTags);
     setRefreshKey((prev) => prev + 1); // Optionally trigger a refresh if needed
   };
 
@@ -170,12 +172,18 @@ const ItineraryDetails = () => {
             />
           ))}
           {/* Tags component for selecting tags */}
-          <div><Typography
+          <div>
+            <Typography
               variant="body1"
               sx={{ fontSize: "18px", marginBottom: "5px" }}
             >
               <strong>Select Tags:</strong>
-            </Typography><ItineraryTags selectedTags={selectedTags} setSelectedTags={handleTagChange} /></div>
+            </Typography>
+            <ItineraryTags
+              selectedTags={selectedTags}
+              setSelectedTags={handleTagChange}
+            />
+          </div>
         </Box>
 
         <Box

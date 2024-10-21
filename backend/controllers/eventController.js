@@ -12,6 +12,8 @@ const mongoose = require("mongoose");
 const APIFeatures = require("../utils/apiFeatures");
 const Category = require("../models/Category");
 
+
+
 const createItinerary = async (req, res) => {
   const userId = new mongoose.Types.ObjectId(req.body.author); // Convert to ObjectId
   const userType = await userModel.findOne({ _id: userId }); // Project only 'roles' field
@@ -310,7 +312,25 @@ const readAllItineraries = async (req, res) => {
 };
 
 
-
+const readMyItineraries = async (req, res) => {
+  const { id } = req.query;
+  try {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "not a valid Id" });
+    }
+    const itineraries = await itineraryModel
+      .find({ author: id })
+      .populate("tags")
+      .sort({
+        createdAt: -1,
+      });
+    return res.status(200).json(itineraries);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "couldn't get the itinerary data, itinerary id invalid" });
+  }
+};
 
 
 
@@ -443,6 +463,20 @@ const readSingleVintage = (req, res) => {
 
  
 
+const viewAllVintage = async (req, res) => {
+  console.log("in");
+  try {
+    console.log("inside try");
+    const vintages = await VintageModel.find();
+    res.status(200).json(vintages);
+  } catch (error) {
+    console.log("entered catch");
+    res
+      .status(500)
+      .json({ message: "An error occurred while retrieving vintages", error });
+  }
+};
+
 const readAllVintage = async (req, res) => {
  
     const { tag } = req.query;
@@ -480,5 +514,5 @@ module.exports = {
   readSingleVintage,
   updateVintage,
   deleteItinerary,
-  deleteVintage,readAllVintage
+  deleteVintage, readAllVintage, readMyItineraries, viewAllVintage
 };

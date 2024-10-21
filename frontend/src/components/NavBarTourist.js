@@ -1,22 +1,22 @@
-import * as React from "react";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
-import Menu from "@mui/material/Menu";
-import MenuIcon from "@mui/icons-material/Menu";
-import Container from "@mui/material/Container";
-import Avatar from "@mui/material/Avatar"; // Import Avatar for the round image
-import Button from "@mui/material/Button";
-import Tooltip from "@mui/material/Tooltip";
-import MenuItem from "@mui/material/MenuItem";
-import logoImage from "../assets/cropped_image.png"; // Correct relative path
-import { useNavigate } from "react-router-dom";
+import * as React from 'react';
+import AppBar from '@mui/material/AppBar';
+import Box from '@mui/material/Box';
+import Toolbar from '@mui/material/Toolbar';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import Menu from '@mui/material/Menu';
+import MenuIcon from '@mui/icons-material/Menu';
+import Container from '@mui/material/Container';
+import Avatar from '@mui/material/Avatar'; // Import Avatar for the round image
+import Button from '@mui/material/Button';
+import Tooltip from '@mui/material/Tooltip';
+import MenuItem from '@mui/material/MenuItem';
+import logoImage from '../assets/cropped_image.png'; // Correct relative path
+import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
-
-const pages = ["Activities", "Iteneraries", "Historical places"];
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
+const pages = ['Activities', 'Iteneraries', 'Historical places'];
+const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null); // Nav menu anchor
@@ -56,13 +56,10 @@ function ResponsiveAppBar() {
     navigate("/user_itineraries"); // Navigate to activities
   };
 
-    // Handle navigation
-    const loadVintages = () => {
-      handleCloseNavMenu(); // Close menu on navigation
-      navigate("/allVintages"); // Navigate to activities
-    };
-  
-
+  const loadVintages = () => {
+    handleCloseNavMenu(); // Close menu on navigation
+    navigate("/guest-places"); // Navigate to activities
+  };
   return (
     <AppBar position="static" sx={{ backgroundColor: "#004c74" }}>
       {" "}
@@ -74,11 +71,11 @@ function ResponsiveAppBar() {
             src={logoImage} // Set the source of your logo image here
             sx={{ width: 40, height: 40, mr: 2 }} // Adjust size as needed
           />
-          <Typography
+         <Typography
             variant="h6"
             noWrap
-            component="a"
-            href="#app-bar-with-responsive-menu"
+            component={Link} // Use Link instead of 'a' for client-side navigation
+            to="/tgHome" // Redirect to the home page
             sx={{
               mr: 2,
               display: { xs: "none", md: "flex" },
@@ -91,7 +88,6 @@ function ResponsiveAppBar() {
           >
             CariGO
           </Typography>
-
           {/* Mobile Menu */}
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton

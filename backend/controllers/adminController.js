@@ -2,6 +2,9 @@ const { Admin } = require('mongodb');
 const userModel = require('../models/User');
 const categoryModel = require('../models/Category');
 const tagModel = require('../models/Tag');
+const catchAsync = require("../utils/catchAsync"); 
+const User = require('../models/User');
+
 
 const { default: mongoose } = require('mongoose');
 const bcrypt = require("bcrypt");
@@ -39,9 +42,10 @@ const addAdmin = async (req, res) => {
 
 const deleteUser = async (req, res) => {
     const { username } = req.body;
-
+   // console.log(req)
     try {
         const user = await userModel.findOne({ username });
+        
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
         }
@@ -57,7 +61,7 @@ const addTourismGovernor = async (req, res) => {
     const { username, password, passwordConfirm, email, about } = req.body;
 
     try {
-        console.log(req.body); // Log the incoming data
+        console.log(req.body+"  governer"); // Log the incoming data
 
         const existingUser = await userModel.findOne({ username });
         if (existingUser) {
@@ -175,12 +179,13 @@ const createCategory = async (req, res) => {
 
   const updateTag = async (req, res) => {
     const { id } = req.params;
-    const {type} = req.body;
-  
+    const {title} = req.body;
+    //console.log(req.body)
+     //  console.log(type+" update Tag "+id)
     try {
       const updatedTag = await tagModel.findByIdAndUpdate(
         id,
-        {type},
+        {title},
         { new: true, runValidators: true }
       );
   
@@ -209,5 +214,86 @@ const createCategory = async (req, res) => {
       res.status(400).json({ error: error.message });
     }
   };
-module.exports = { addAdmin, deleteUser, addTourismGovernor, createCategory, getCategories, updateCategory, deleteCategory, createTag, getTags, updateTag, deleteTag};
 
+  const getUser = async (req, res) => {
+   // const { id } = req.params;
+   const{ username} = req.body
+   //console.log(req.body)
+   try {
+    const user = await userModel.findOne({ username });
+    
+    if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+    }
+
+    await userModel.deleteOne({ username });
+    res.status(200).json({ message: 'User deleted successfully' });
+} catch (error) {
+    res.status(400).json({ error: error.message });
+}
+};
+
+
+
+const getPendingDocuments = catchAsync(async (req, res, next) => {
+  const users = await User.find({
+    role: { $in: ['Tour_Guide', 'Advertiser', 'Seller'] },
+    documentApprovalStatus: 'Pending'
+  }).select('name role idDocument certificates taxationRegistryCard');
+
+  res.status(200).json({
+    status: 'success',
+    results: users.length,
+    data: { users }
+  });
+});
+
+const approveDocument = catchAsync(async (req, res, next) => {
+  const user = await User.findByIdAndUpdate(req.params.userId, {
+    documentApprovalStatus: 'Approved'
+  }, { new: true });
+
+  if (!user) {
+    return next(new AppError('No user found with that ID 👤', 404));
+  }
+
+  res.status(200).json({
+    status: 'success',
+    data: { user }
+  });
+});
+
+const rejectDocument = catchAsync(async (req, res, next) => {
+  const user = await User.findByIdAndUpdate(req.params.userId, {
+    documentApprovalStatus: 'Rejected'
+  }, { new: true });
+
+  if (!user) {
+    return next(new AppError('No user found with that ID👤', 404));
+  }
+
+  res.status(200).json({
+    status: 'success',
+    data: { user }
+  });
+});
+
+
+
+module.exports = {
+  addAdmin,
+  getUser,
+  deleteUser,
+  addTourismGovernor,
+  createCategory,
+  getCategories,
+  updateCategory,
+  deleteCategory,
+  createTag,
+  getTags,
+  updateTag,
+  deleteTag,
+  getPendingDocuments,
+  approveDocument,
+  rejectDocument
+};
