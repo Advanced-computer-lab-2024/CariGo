@@ -2,6 +2,9 @@ const { Admin } = require('mongodb');
 const userModel = require('../models/User');
 const categoryModel = require('../models/Category');
 const tagModel = require('../models/Tag');
+const catchAsync = require("../utils/catchAsync"); 
+const User = require('../models/User');
+
 
 const { default: mongoose } = require('mongoose');
 const bcrypt = require("bcrypt");
@@ -229,5 +232,68 @@ const createCategory = async (req, res) => {
     res.status(400).json({ error: error.message });
 }
 };
-module.exports = { addAdmin,getUser, deleteUser, addTourismGovernor, createCategory, getCategories, updateCategory, deleteCategory, createTag, getTags, updateTag, deleteTag};
 
+
+
+const getPendingDocuments = catchAsync(async (req, res, next) => {
+  const users = await User.find({
+    role: { $in: ['Tour_Guide', 'Advertiser', 'Seller'] },
+    documentApprovalStatus: 'Pending'
+  }).select('name role idDocument certificates taxationRegistryCard');
+
+  res.status(200).json({
+    status: 'success',
+    results: users.length,
+    data: { users }
+  });
+});
+
+const approveDocument = catchAsync(async (req, res, next) => {
+  const user = await User.findByIdAndUpdate(req.params.userId, {
+    documentApprovalStatus: 'Approved'
+  }, { new: true });
+
+  if (!user) {
+    return next(new AppError('No user found with that ID 👤', 404));
+  }
+
+  res.status(200).json({
+    status: 'success',
+    data: { user }
+  });
+});
+
+const rejectDocument = catchAsync(async (req, res, next) => {
+  const user = await User.findByIdAndUpdate(req.params.userId, {
+    documentApprovalStatus: 'Rejected'
+  }, { new: true });
+
+  if (!user) {
+    return next(new AppError('No user found with that ID👤', 404));
+  }
+
+  res.status(200).json({
+    status: 'success',
+    data: { user }
+  });
+});
+
+
+
+module.exports = {
+  addAdmin,
+  getUser,
+  deleteUser,
+  addTourismGovernor,
+  createCategory,
+  getCategories,
+  updateCategory,
+  deleteCategory,
+  createTag,
+  getTags,
+  updateTag,
+  deleteTag,
+  getPendingDocuments,
+  approveDocument,
+  rejectDocument
+};

@@ -3,47 +3,42 @@ const ratingSchema = require("./Rating");
 const reviewSchema = require("./Review");
 const schema = mongoose.Schema;
 
-const productSchema = new schema(
+const productSchema = new mongoose.Schema(
   {
     author: {
       type: mongoose.Schema.ObjectId,
-      ref: "User", // Refers to the 'User' model
+      ref: "User",
     },
     name: {
       type: String,
-      required: true, // Make it required if it's necessary
+      required: true,
     },
-    picture: {
-      type: String, // You can specify a URL or file path for the picture
+    mainImage: {
+      type: String, // The main image path
+      // required: true,
     },
+    images: [String], // Array to hold other image paths
     price: {
       type: Number,
-      default: 0.0, // Default price is 0.0
+      default: 0.0,
     },
     description: {
       type: String,
     },
-    ratingsAverage: { 
-      avgSoFar: {type:Number, 
-        default:2.5}
-        ,
-      contributers:{type:Number, default:0
-      }
-    },
-    // ratingsAverage: {
-    //   type: Number,
-    //   default: 4.5,
-    //   min: [1, "Rating must be above 1.0"],
-    //   max: [5, "Rating must be below 5.0"],
-    //   set: val => Math.round(val * 10) / 10 //rounding ratings
-    // },
-    // ratingsQuantity: {
-    //   type: Number,
-    //   default: 0
-    // },
     quantity: {
       type: Number,
-      required: true, // Make it required if necessary
+      required: true,
+    },
+    ratingsAverage: {
+      type: Number,
+      default: 4.5,
+      min: [1, "Rating must be above 1.0"],
+      max: [5, "Rating must be below 5.0"],
+      set: val => Math.round(val * 10) / 10,
+    },
+    ratingsQuantity: {
+      type: Number,
+      default: 0,
     },
   },
   { timestamps: true }
@@ -51,4 +46,4 @@ const productSchema = new schema(
 
 const Product = mongoose.model("Product", productSchema);
 
-module.exports = Product; // Exporting the Product model
+module.exports = Product;

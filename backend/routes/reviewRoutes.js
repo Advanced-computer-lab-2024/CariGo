@@ -28,6 +28,26 @@ router
     reviewController.createReview
   );
 
+  router.route("/itinerary/:id").get(reviewController.getAllItineraryReviews);
+
+router
+  .route("/itinerary")
+  .post(
+    authcontroller.restrictTo("Tourist"),
+    reviewController.setItineraryUserIds,
+    reviewController.createReview
+  );
+
+  router.route("/tourGuide/:id").get(reviewController.getAllTourGuideReviews);
+
+router
+  .route("/tourGuide")
+  .post(
+    authcontroller.restrictTo("Tourist"),
+    reviewController.setTourGuideUserIds,
+    reviewController.createReview
+  );
+
 router
   .route("/:id")
   .get(reviewController.getReview)

@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
+const crypto = require('crypto');
+
 
 const experienceSchema = require("./Experience");
 const activitySchema = require("./Activity");
@@ -66,7 +68,7 @@ const userSchema = new mongoose.Schema(
         type: mongoose.Schema.ObjectId,
         ref: "Experience", // References the 'Rating' model
         default: [],
-        required: [false]
+        required: [false],
       },
     ],
     previous_work: [String],
@@ -122,6 +124,19 @@ const userSchema = new mongoose.Schema(
     passwordChangedAt: Date,
     passwordResetToken: String,
     passwordResetExpires: Date,
+    photo: String,
+    idDocument: String,
+    documentApprovalStatus: {
+      type: String,
+      enum: ["Pending", "Approved", "Rejected"],
+      default: "Pending",
+    },
+    certificates: {
+      type: [String], // Array of paths to certificates (for Tour Guide)
+    },
+    taxationRegistryCard: {
+      type: String, // Path to the taxation registry card (for Advertisers/Sellers)
+    },
   },
   { timestamps: true }
 );
@@ -174,17 +189,15 @@ userSchema.methods.changedPasswordAfter = async function (JWTTimestamp) {
   return false;
 };
 
-userSchema.methods.createPasswordResetToken = function () {
-  const resetToken = crypto.randomBytes(32).toString("hex");
+userSchema.methods.createPasswordResetToken = function() {
+  const resetToken = crypto.randomBytes(32).toString('hex');
 
   this.passwordResetToken = crypto
-    .createHash("sha256")
+    .createHash('sha256')
     .update(resetToken)
-    .digest("hex");
+    .digest('hex');
 
-  console.log({ resetToken }, this.passwordResetToken);
-
-  this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
+  this.passwordResetExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
 
   return resetToken;
 };

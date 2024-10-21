@@ -1,7 +1,6 @@
  const catchAsync = require('./../utils/catchAsync');
 const Review = require("./../models/reviewModel");
 const factory = require("./handlerFactory");
-const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
 
 // Generic Middleware to set entity and user IDs
@@ -10,6 +9,7 @@ exports.setEntityUserIds = (entityName) => (req, res, next) => {
   if (!req.body.user) req.body.user = req.user.id;
   next();
 };
+
 
 // Generic Handler to get all reviews for any entity
 exports.getAllReviewsForEntity = (entityName) =>
@@ -45,6 +45,29 @@ exports.getAllTourGuideReviews = exports.getAllReviewsForEntity('tourGuide');
 
 // CRUD operations using factory handlers
 exports.getReview = factory.getOne(Review);
-exports.createReview = factory.createOne(Review);
+
+exports.createReview = catchAsync(async (req, res, next) => { 
+  // if(req.body.product){
+    
+  // }
+  // else if(req.body.activity){
+
+  // }
+  // else if(req.body.itinerary){
+
+  // }
+  // else (req.body.tourGuide){
+
+  // }
+  const doc = await Review.create(req.body);
+
+  res.status(201).json({
+    status: 'success',
+    data: {
+      data: doc
+    } 
+  });
+
+});
 exports.deleteReview = factory.deleteOne(Review);
 exports.updateReview = factory.updateOne(Review);
