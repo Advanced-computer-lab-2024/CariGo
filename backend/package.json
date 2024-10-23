@@ -12,6 +12,7 @@
   "description": "",
   "dependencies": {
     "@mui/x-date-pickers": "^7.19.0",
+    "amadeus": "^11.0.0",
     "backend": "file:",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
