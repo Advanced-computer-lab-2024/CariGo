@@ -1,8 +1,27 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+// import React, { useState } from "react";
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Slide from '@mui/material/Slide';
+import Checkbox from '@mui/material/Checkbox'; // Add Checkbox component
+import FormControlLabel from '@mui/material/FormControlLabel'; // Label for the checkbox
 
 import React, { useState } from "react";
 
 function SignUp() {
+  //not sure if this should be put outside or not
+  const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+  });
+
+  
+  const [openDialog, setOpenDialog] = useState(false);
+  const [agreeTerms, setAgreeTerms] = useState(false);
+
   const [formData, setFormData] = useState({
     username: "", // Change from 'email' to 'username'
     password: "",
@@ -28,6 +47,21 @@ function SignUp() {
       [name]: value,
     });
   };
+  const handleClickOpenDialog = () => {
+    setOpenDialog(true);
+  };
+  
+  const handleCloseDialog = (e) => {
+    e.preventDefault();
+    setOpenDialog(false);
+  };
+  
+  const handleAgree = (e) => {
+    e.preventDefault();
+    setOpenDialog(false);
+    handleSubmitSignUp(); // Call the signup submission function
+  };
+  
 
   const handleSubmitSignUp = async (event) => {
     event.preventDefault();
@@ -242,8 +276,14 @@ function SignUp() {
             </>
            
           )}
-          <button type="submit">register</button>
+          <FormControlLabel
+            control={<Checkbox checked={agreeTerms} onChange={() => setAgreeTerms(!agreeTerms)} />}
+            label="I agree to the Terms and Conditions"
+          />
+          <Button variant="outlined" onClick={handleSubmitSignUp} disabled={!agreeTerms}>register</Button>
         </form>
+        
+
       </div>
     </div>
   );
