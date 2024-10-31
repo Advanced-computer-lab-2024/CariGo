@@ -100,23 +100,6 @@ export default function UserViewActivities (){
   
   const [filteredActivities, setFilteredActivities] = useState(activities); // Store filtered results separately
 
-  const [searchTerm, setSearchTerm] = useState('');
-  
-  const handleSearch = () => {
-      if (!searchTerm.trim()) {
-          // If searchTerm is empty, show all activities
-          setFilteredActivities(activities);
-      } else {
-          const filtered = activities.filter((activity) => {
-              return (activity.title && activity.title.toLowerCase().includes(searchTerm.toLowerCase()))
-                  || (activity.tag && activity.tag.toLowerCase().includes(searchTerm.toLowerCase()))
-                  || (activity.Category && activity.Category.toLowerCase().includes(searchTerm.toLowerCase()));
-          });
-          setFilteredActivities(filtered); // Update the filtered activities
-      }
-  };
-
-
    // Combined useEffect for Fetching Activities with Filters and Sort
    useEffect(() => {
       const fetchActivities = async () => {
@@ -151,6 +134,22 @@ export default function UserViewActivities (){
       fetchActivities();
   }, [filters, sortOption ]); // Re-fetch activities when filters or sort option change
 
+  //handlign searching
+  const [searchTerm, setSearchTerm] = useState('');
+  
+  const handleSearch = () => {
+      if (!searchTerm.trim()) {
+          // If searchTerm is empty, show all activities
+          setFilteredActivities(filteredActivities);
+      } else {
+          const filtered = activities.filter((activity) => {
+              return (activity.title && activity.title.toLowerCase().includes(searchTerm.toLowerCase()))
+                  || (activity.tag && activity.tag.toLowerCase().includes(searchTerm.toLowerCase()))
+                  || (activity.Category && activity.Category.toLowerCase().includes(searchTerm.toLowerCase()));
+          });
+          setFilteredActivities(filtered); // Update the filtered activities
+      }
+  };
 
   return(
     <div>
