@@ -72,7 +72,8 @@ import ViewProductTourist from "./Pages/Tourist/prodDetails.js";
 import EditProductD from "./Pages/Seller/prodD.js";
 import AddProductSeller from "./Pages/Seller/addP.js";
 import UpdateActivityForm from "./components/UpdateActivityForm.js";
-
+import ComplaintsList from './Pages/ComplaintsList';
+import ComplaintDetails from './Pages/ComplaintDetails';
 function App() {
   const token = localStorage.getItem("jwt");
  // const navigate = useNavigate();
@@ -159,6 +160,8 @@ function App() {
               <Route path="/add-admin" element={<AddAdmin />} />
               <Route path="/add-governor" element={<AddGovernor />} />
               <Route path="/delete-User" element={<DeleteUser />} /> 
+              <Route path="/complaints" element={<ComplaintsList />} />
+              <Route path="/complaints/:id" element={<ComplaintDetails />} />
        
         </Route>
 
