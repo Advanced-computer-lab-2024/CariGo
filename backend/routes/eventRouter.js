@@ -12,7 +12,10 @@ const {
   viewAllVintage,
   updateVintage,
   deleteItinerary,
-  deleteVintage,readAllVintage
+  deleteVintage,
+  readAllVintage,
+  shareItinerary,
+  shareVintage
 } = require("../controllers/eventController");
 const authController = require("../controllers/authController");
 const router = express.Router();
@@ -75,5 +78,8 @@ router.get("/readAllVintage", readAllVintage);
 router.get("/readSingleVintage/:vintageId", readSingleVintage);
 router.patch("/updateVintage/:vintageId", updateVintage);
 router.delete("/deleteVintage/:id", deleteVintage);
+
+router.get("/shareItinerary/:id", shareItinerary);
+router.get("/shareVintage/:id", shareVintage);
 
 module.exports = router;

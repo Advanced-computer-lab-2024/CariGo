@@ -3,6 +3,9 @@ const Category = require('../models/Category');
 const Tag = require('../models/Tag');
 const APIFeatures = require('../utils/apiFeatures');
 // const User = require('./../models/userModel');
+const activityModel = require("../models/Activity");
+// const CategoryModel = require("../models/Category");
+const mongoose = require("mongoose");
 
 const createActivity = async (req, res) => {
     
@@ -347,7 +350,29 @@ const sortActivities = async (req, res) => {
     }
 };
 
+const shareActivity = async (req,res) => {
+    const {id}  = req.params;
+    console.log(id);
+    if(mongoose.Types.ObjectId.isValid(id)){
+      // activityModel
+      //   .findOne({ _id: new mongoose.Types.ObjectId(id)},{ link: 1, _id: 0 })
+      //   .then((result) => {
+      //     res.status(200).json(result);
+      //   })
+      //   .catch((error) => {
+      //     res.status(500).json({ error: "couldn't get itinerary data" });
+      //   });
+      const result = `http://localhost:3000/tourist-activities/${id}`;
+      res.status(200).json(result);
+    }
+    else {
+      res
+        .status(404)
+        .json({ error: "couldn't get the activity data, activity id invalid" });
+    }
+  }
+  
 
 
 
-module.exports = { createActivity, getActivities, getActivity, deleteActivity, updateActivity, sortActivities,getAdvActivities };
+module.exports = { createActivity, getActivities, getActivity, deleteActivity, updateActivity, sortActivities,getAdvActivities,shareActivity };

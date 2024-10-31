@@ -33,6 +33,10 @@ const vintageSchema = new schema({
     opening: String,
     closing: String,
   },
+  link:{
+      type:String,
+      default: "",
+    }
 });
 const vintage = mongoose.model("Vintage", vintageSchema);
 module.exports = vintage;
