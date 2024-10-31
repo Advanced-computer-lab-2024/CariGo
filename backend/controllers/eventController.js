@@ -507,6 +507,51 @@ const readAllVintage = async (req, res) => {
 };
 
 
+const shareItinerary = async (req,res) => {
+  const {id}  = req.params;
+  console.log(id);
+  if(mongoose.Types.ObjectId.isValid(id)){
+    // activityModel
+    //   .findOne({ _id: new mongoose.Types.ObjectId(id)},{ link: 1, _id: 0 })
+    //   .then((result) => {
+    //     res.status(200).json(result);
+    //   })
+    //   .catch((error) => {
+    //     res.status(500).json({ error: "couldn't get itinerary data" });
+    //   });
+    const result = `http://localhost:3000/Tourist-itineraries/${id}`;
+    res.status(200).json(result);
+  }
+  else {
+    res
+      .status(404)
+      .json({ error: "couldn't get the activity data, activity id invalid" });
+  }
+}
+
+const shareVintage = async (req,res) => {
+  const {id}  = req.params;
+  console.log(id);
+  if(mongoose.Types.ObjectId.isValid(id)){
+    // activityModel
+    //   .findOne({ _id: new mongoose.Types.ObjectId(id)},{ link: 1, _id: 0 })
+    //   .then((result) => {
+    //     res.status(200).json(result);
+    //   })
+    //   .catch((error) => {
+    //     res.status(500).json({ error: "couldn't get itinerary data" });
+    //   });
+    const result = `http://localhost:3000/allVintages/${id}`;
+    res.status(200).json(result);
+  }
+  else {
+    res
+      .status(404)
+      .json({ error: "couldn't get the activity data, activity id invalid" });
+  }
+}
+
+
 module.exports = {
   createItinerary,
   createvintage,
@@ -518,5 +563,7 @@ module.exports = {
   readSingleVintage,
   updateVintage,
   deleteItinerary,
-  deleteVintage, readAllVintage, readMyItineraries, viewAllVintage
+  deleteVintage, readAllVintage, readMyItineraries, viewAllVintage,
+  shareItinerary,
+  shareVintage
 };

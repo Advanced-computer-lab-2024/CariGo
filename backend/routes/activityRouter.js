@@ -25,7 +25,7 @@ router.delete('/deleteActivity/:id', [authController.protect ,authController.res
 
 router.get('/sortActivityByPrice',activityController.sortActivities);
 
-
+router.get('/shareActivity/:id',activityController.shareActivity);
 
 
 module.exports = router;

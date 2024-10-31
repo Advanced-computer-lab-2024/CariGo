@@ -32,7 +32,7 @@ const vintageSchema = new schema({
   opening_hours: {
     opening: String,
     closing: String,
-  },
+  }
 });
 const vintage = mongoose.model("Vintage", vintageSchema);
 module.exports = vintage;
