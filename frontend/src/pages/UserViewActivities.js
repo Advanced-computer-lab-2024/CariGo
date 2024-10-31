@@ -1,67 +1,29 @@
-import React from 'react';
 import ReactDOM from 'react-dom/client';
 import '../styles/index.css';
 import App from '../App';
 import NavBar from '../components/NavBarTourist';
 import ActivityList from '../components/ActivityListUser';
-import { Box } from '@mui/material';
-import Button from '@mui/material/Button';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import { useState } from 'react';
-import ActivityListSort from "../components/ActivityListSort";
-import { styled, alpha } from '@mui/material/styles';
+import React, { useState,useEffect } from 'react';
+import {Box , Button, Menu, MenuItem, styled, alpha,InputBase, TextField,Typography ,CircularProgress} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import InputBase from '@mui/material/InputBase';
-
-
-const Search = styled('div')(({ theme }) => ({
-  position: 'relative',
-  borderRadius: theme.shape.borderRadius,
-//   borderWidth: "2px",
-//   borderColor:"#126782",
-  backgroundColor: alpha(theme.palette.common.white, 0.15),
-  '&:hover': {
-    backgroundColor: alpha(theme.palette.common.white, 0.25),
-  },
-  marginRight: theme.spacing(2),
-  marginLeft: 0,
-  width: '100%',
-  [theme.breakpoints.up('sm')]: {
-    marginLeft: theme.spacing(3),
-    width: 'auto',
-  },
-}));
-
-
-const SearchIconWrapper = styled('div')(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: '100%',
-  position: 'absolute',
-  pointerEvents: 'none',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: 'inherit',
-  '& .MuiInputBase-input': {
-    padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create('width'),
-    width: '100%',
-    [theme.breakpoints.up('md')]: {
-      width: '20ch',
-    },
-  },
-}));
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
 
 
 export default function UserViewActivities (){
 
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
   const [activities, setActivities] = useState([]);
+
+//to show user typed in values
+  const [filterInputValues, setFilterInputValues] = useState({
+      minPrice: "",
+      category: "",
+      rating: "",
+      startDate: "",
+  });
+  //for actual filtering
   const [filters, setFilters] = useState({
       minPrice: "",
       category: "",
@@ -69,29 +31,41 @@ export default function UserViewActivities (){
       startDate: "",
      
   });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [sortOption, setSortOption] = useState('');
-  const [anchorEl, setAnchorEl] = React.useState(null);
-
-  const [searchTerm, setSearchTerm] = useState('');
- 
   
-  const open = Boolean(anchorEl);
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
+  //handles filter menu opening and closing
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+  const handleFilterClick = (event) => {
+    if (isFilterOpen) {
+      handleFilterClose();
+    } else {
+      setAnchorEl(event.currentTarget);
+      setIsFilterOpen(true);
+    }
   };
-  const handleClose = () => {
+
+  const handleFilterClose = () => {
     setAnchorEl(null);
+    setIsFilterOpen(false);
   };
 
 
+  // handles if filter value changes
   const handleFilterChange = (e) => {
       const { name, value } = e.target;
-      setFilters(prevFilters => ({
+      setFilterInputValues(prevFilters => ({
           ...prevFilters,
           [name]: value
       }));
+      
+  };
+
+  const handleFilter = () => {
+    // Perform filter action using the `filters` object
+    setFilters(filterInputValues);
+    console.log('Filters applied:', filters);
+    handleFilterClose();
   };
 
   const resetFilters = () => {
@@ -103,15 +77,31 @@ export default function UserViewActivities (){
       });
       setFilteredActivities(activities); // Reset to all activities
   };
+
+//handling sort
+  const [anchorE2, setAnchorE2] = useState(null);
+  const [sortOption, setSortOption] = useState('');
   
+  const handleSortClick = (event) => {
+      setAnchorE2(event.currentTarget);
+     
+  };
+
+  const handleSortClose = () => {
+    setAnchorE2(null);
+    
+  };
+
   const handleSortChange = (sortValue) => {
     setSortOption(sortValue);  // Set the selected sort option
-    handleClose();  // Close the menu
+    handleSortClose();  // Close the menu
   };
 
   
   const [filteredActivities, setFilteredActivities] = useState(activities); // Store filtered results separately
 
+  const [searchTerm, setSearchTerm] = useState('');
+  
   const handleSearch = () => {
       if (!searchTerm.trim()) {
           // If searchTerm is empty, show all activities
@@ -127,26 +117,9 @@ export default function UserViewActivities (){
   };
 
 
-  // const filteredAct = activities.filter(
-  //   (activity) =>
-  //     (selectedTag
-  //       ? activity.tags.some((tag) => tag.title.includes( selectedTag))
-  //       : true) &&
-  //     ((activity.name &&
-  //       activity.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        
-  //       activity.tags.some((tag) =>
-  //         tag.toLowerCase().includes(searchTerm.toLowerCase())
-  //     ))
-  //   );
-
-
-
    // Combined useEffect for Fetching Activities with Filters and Sort
    useEffect(() => {
       const fetchActivities = async () => {
-          setLoading(true);
-          setError(null);
           try {
               const queryParams = new URLSearchParams();
               if (filters.price) queryParams.append('price', filters.price);
@@ -176,9 +149,7 @@ export default function UserViewActivities (){
       };
 
       fetchActivities();
-  }, [filters, sortOption]); // Re-fetch activities when filters or sort option change
-
-
+  }, [filters, sortOption ]); // Re-fetch activities when filters or sort option change
 
 
   return(
@@ -191,16 +162,63 @@ export default function UserViewActivities (){
       margin: '0 auto', 
       padding:'20px',
       height: '80vh', // Set a fixed height for the scrolling area
-      overflow: 'auto', // Enable scrolling
+       
       '&::-webkit-scrollbar': {
       display: 'none', // Hides the scrollbar for WebKit browsers (Chrome, Safari)
     },
-      //backgroundColor : "aquamarine" ,
       }}>
 
-        
-            {/* Filter Form */}
+            {/*Search bar*/}
             <form>
+              <TextField
+                id="search-bar"
+                className="text"
+                onInput={(e) => {
+                  setSearchTerm(e.target.value);
+                }}
+                variant="outlined"
+                placeholder="Search..."
+                size="small"
+              />
+              <IconButton type="submit" aria-label="search">
+                <SearchIcon style={{ fill: "#ff4d4d" }}  onClick={handleSearch}/>
+              </IconButton>
+            </form>
+            {/*End of Search bar*/}
+
+              <Box sx={{display:'flex',
+               flexDirection: anchorEl ? 'column' : 'row' ,
+                marginTop: '30px',marginLeft :'120px',}}> {/* for filter and sort next to each other*/}
+              {/*Filter menu*/}
+              <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                
+                }}
+                
+              >
+              <FilterAltIcon
+              onClick={handleFilterClick}
+              sx={{
+                color : "gray",
+              }}
+            >
+            </FilterAltIcon>
+            {Boolean(anchorEl) && ( // Conditional rendering based on anchorEl
+              <Box
+                sx={{
+                  //padding: '20px',
+                  paddingTop:'10px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  borderRadius: '20px',
+                  backgroundColor: 'white', 
+                  borderColor: '1px solid #ff4d4d', 
+                  width: '900px',
+                }}
+              >
+              <Box sx={{display:'flex'}}>
                 <TextField
                     label="Price"
                     variant="outlined"
@@ -208,7 +226,7 @@ export default function UserViewActivities (){
                     value={filters.price}
                     onChange={handleFilterChange}
                     type="number"
-                    sx={{ mb: 2, mr: 2 }}
+                    sx={{ mb: 2, mr: 2 , marginLeft :'10px',}}
                 />
                 <TextField
                     label="Category"
@@ -229,7 +247,7 @@ export default function UserViewActivities (){
                 />
 
                 <TextField
-                    label="Start Date"
+                    //label="Start Date"
                     variant="outlined"
                     name="startDate"
                     value={filters.startDate}
@@ -237,47 +255,38 @@ export default function UserViewActivities (){
                     type="date"
                     sx={{ mb: 2, mr: 2 }}
                 />
-                <Button variant="contained" onClick={resetFilters} sx={{ ml: 2 }}>
-                    Reset Filters
+                </Box>
+                <Box sx={{display:'flex',}}>
+                <Button variant="contained" onClick={handleFilter} sx={{ ml: 2 , backgroundColor: '#ff4d4d' , width : '50px',}}>
+                    Filter
                 </Button>
-            </form>
-
-
-            {/* END OF FILTER FORM */}
-
-             {/*Search bar*/}
-            <Box sx={{display:'flex',}}>
-            <Search>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-            placeholder="Search…"
-            inputProps={{ 'aria-label': 'search' }}
-            onChange={(e) => setSearchTerm(e.target.value)} // Capture search input
-            />
-          </Search>
-          <Button variant="contained" label="search" onClick={handleSearch} sx={{ ml: 2 }}>search</Button>
-          </Box>
+                <Button variant="contained" onClick={resetFilters} sx={{ ml: 2 ,backgroundColor: '#ff4d4d',width : '50px'}}>
+                    Reset 
+                </Button>
+                </Box>
+                </Box>
+                )}
+            </Box>
+            {/* END OF FILTER MENU */}
 
             {/*Sort Button*/}
 
-            <div>
+            <Box sx={{marginLeft : anchorEl? '800px':'770px'}}>
             <Button
                 id="basic-button"
-                aria-controls={open ? 'basic-menu' : undefined}
+                aria-controls={Boolean(anchorE2) ? 'basic-menu' : undefined}
                 aria-haspopup="true"
-                aria-expanded={open ? 'true' : undefined}
-                onClick={handleClick}
-                sx={{backgroundColor:"#ff4d4d" , color: "white", marginLeft: "50px",marginTop: "30px",}}
+                aria-expanded={Boolean(anchorE2) ? 'true' : undefined}
+                onClick={handleSortClick}
+                sx={{backgroundColor:"#ff4d4d" , color: "white",}}
             >
                 Sort By
             </Button>
             <Menu
                 id="basic-menu"
-                anchorEl={anchorEl}
-                open={open}
-                onClose={handleClose}
+                anchorEl={anchorE2}
+                open={Boolean(anchorE2)}
+                onClose={handleSortClose}
                 MenuListProps={{
                 'aria-labelledby': 'basic-button',
                 }}
@@ -288,8 +297,9 @@ export default function UserViewActivities (){
                 <MenuItem onClick={() => handleSortChange('ratingsAverage')}>Review</MenuItem>
                 <MenuItem onClick={() => handleSortChange('-createdAt')}>creation date</MenuItem>
             </Menu>
-            </div>
-
+            </Box>
+            {/*END OF SORT */}
+            </Box>
             {/* Loading State */}
             {loading && <CircularProgress />}
 
@@ -301,12 +311,16 @@ export default function UserViewActivities (){
       height: '100%',
       marginLeft: '100px',
       width: '100%',
+      display: "flex",
+      flexDirection: "column",
+      gap: "15px",
+      overflowX: 'hidden',
       '&::-webkit-scrollbar': {display: 'none',},
       }}> {/* Enable vertical scrolling only */}
 
-     < ActivityList  filteredActivities/> 
+      <ActivityList fetchedActivities={filteredActivities} />
 
-  </Box>
+      </Box>
   </Box>
   </div>
   

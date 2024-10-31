@@ -4,23 +4,23 @@ import Loadable from '@loadable/component'; // Keep other necessary imports
 import Home from './HomeAdmin.jsx';  // Ensure this import is case-sensitive
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Sidebar from './Sidebar';
-import TopBar from './TopBar';
+import Sidebar from './Sidebar.jsx';
+import TopBar from './TopBar.jsx';
 import { Layout } from 'antd';
 import ManageAccounts from './ManageAccounts.jsx'; // Import your new component
-import EditCategory from './EditCategory';
-import EditTag from './EditTag';
-import ViewCategories from './category/viewCategories';
-import UpdateCategories from './category/updateCategory';
-import CreateCategories from './category/createCategory';
-import DeleteCategories from './category/deleteCategory';
-import ViewTags from './tags/viewTags';
-import UpdateTag from './tags/updateTag';
-import CreateTag from './tags/createTag';
-import DeleteTag from './tags/deleteTag';
-import AddAdmin from './accounts/addAdmin';
-import AddGovernor from './accounts/addGovernor';
-import DeleteUser from './accounts/deleteUser';
+import EditCategory from './EditCategory.jsx';
+import EditTag from './EditTag.jsx';
+import ViewCategories from './category/viewCategories.jsx';
+import UpdateCategories from './category/updateCategory.jsx';
+import CreateCategories from './category/createCategory.jsx';
+import DeleteCategories from './category/deleteCategory.jsx';
+import ViewTags from './tags/viewTags.jsx';
+import UpdateTag from './tags/updateTag.jsx';
+import CreateTag from './tags/createTag.jsx';
+import DeleteTag from './tags/deleteTag.jsx';
+import AddAdmin from './accounts/addAdmin.jsx';
+import AddGovernor from './accounts/addGovernor.jsx';
+import DeleteUser from './accounts/deleteUser.jsx';
 import ViewProducts from './products/viewProducts.jsx';
 const { Header, Sider, Content } = Layout;
 const Dashboard= () => {
