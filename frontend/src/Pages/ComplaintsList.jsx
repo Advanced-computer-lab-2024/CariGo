@@ -46,10 +46,11 @@ const ComplaintsList = () => {
     {
       title: 'Date',
       dataIndex: 'date',
+      sorter: (a, b) => new Date(a.date) - new Date(b.date),
+      defaultSortOrder: 'descend', // Optional: set a default sort order
     },
   ];
   
-
   return (
     <div>
       <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between' }}>
