@@ -3,62 +3,62 @@ import "./styles/App.css";
 
 import AdvertiserProfile from "./AdvertiserProfile"; // Adjust the path based on your structure
 
-import UserViewItineraries from "./Pages/UserViewItineraries";
+import UserViewItineraries from "./Pages/UserViewItineraries.js";
 import ItineraryUpdate from "./components/ItineraryUpdate";
-import ItineraryDetails from "./Pages/ItineraryDetails";
+import ItineraryDetails from "./Pages/ItineraryDetails.js";
 import CreateItineraryForm from "./components/CreateItineraryForm";
-import AllItineraries from "./Pages/AllItineraries";
-import UserItinDetails from "./Pages/UserItinDetails";
-import TourGuideProfile from "./Pages/TourGuideProfile";
-import  TouristItineraries from "./Pages/Tourist/TouristItineraries";
-import  GuestItineraries from "./Pages/Guest/GuestItineraries";
-import  GuestViewVintage from "./Pages/Guest/GuestPlaces";
-import  TouristVintage from "./Pages/Tourist/TouristPlaces";
+import AllItineraries from "./Pages/AllItineraries.js";
+import UserItinDetails from "./Pages/UserItinDetails.js";
+import TourGuideProfile from "./Pages/TourGuideProfile.js";
+import  TouristItineraries from "./Pages/Tourist/TouristItineraries.js";
+import  GuestItineraries from "./Pages/Guest/GuestItineraries.js";
+import  GuestViewVintage from "./Pages/Guest/GuestPlaces.js";
+import  TouristVintage from "./Pages/Tourist/TouristPlaces.js";
 import CreateVintageForm from "./Pages/CreateVintageForm.js";
 
 import './styles/index.css';
 
-import UserViewActivities from './Pages/UserViewActivities';
-import AdminHome from './Pages/Home';
+import UserViewActivities from "./Pages/Tourist/TouristActivities.js";
+import AdminHome from './Pages/Home.js';
 import React, { lazy, Suspense } from 'react'; // Keep this line
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom'; // Combined imports from react-router-dom
 import Loadable from '@loadable/component'; // Keep other necessary imports
 import Home from './Pages/Home.js';  // Ensure this import is case-sensitive
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Sidebar from './Pages/Sidebar';
-import TopBar from './Pages/TopBar';
+import Sidebar from './Pages/Sidebar.jsx';
+import TopBar from './Pages/TopBar.jsx';
 import { Layout } from 'antd';
 import ManageAccounts from './Pages/ManageAccounts.jsx'; // Import your new component
-import EditCategory from './Pages/EditCategory';
-import EditTag from './Pages/EditTag';
-import ViewCategories from './Pages/category/viewCategories';
+import EditCategory from './Pages/EditCategory.jsx';
+import EditTag from './Pages/EditTag.jsx';
+import ViewCategories from './Pages/category/viewCategories.jsx';
 import UpdateCategories from './Pages/category/updateCategory.jsx';
-import CreateCategories from './Pages/category/createCategory';
-import DeleteCategories from './Pages/category/deleteCategory';
-import ViewTags from './Pages/tags/viewTags';
-import UpdateTag from './Pages/tags/updateTag';
-import CreateTag from './Pages/tags/createTag';
-import DeleteTag from './Pages/tags/deleteTag';
-import AddAdmin from './Pages/accounts/addAdmin';
-import AddGovernor from './Pages/accounts/addGovernor';
-import DeleteUser from './Pages/accounts/deleteUser';
+import CreateCategories from './Pages/category/createCategory.jsx';
+import DeleteCategories from './Pages/category/deleteCategory.jsx';
+import ViewTags from './Pages/tags/viewTags.jsx';
+import UpdateTag from './Pages/tags/updateTag.jsx';
+import CreateTag from './Pages/tags/createTag.jsx';
+import DeleteTag from './Pages/tags/deleteTag.jsx';
+import AddAdmin from './Pages/accounts/addAdmin.jsx';
+import AddGovernor from './Pages/accounts/addGovernor.jsx';
+import DeleteUser from './Pages/accounts/deleteUser.jsx';
 import LoginPage from './Pages/login.js';
-import SignUp from './Pages/Signup';
+import SignUp from './Pages/Signup.js';
 import { jwtDecode } from 'jwt-decode';
 import CreateActivityForm from "./Pages/CreateActivityForm.js";
-import TouristProfile from "./Pages/Tourist/TouristProfile";
-import TouristGuestHome from "./Pages/Tourist-Guest/TouristGuestHome";
+import TouristProfile from "./Pages/Tourist/TouristProfile.js";
+import TouristGuestHome from "./Pages/Tourist-Guest/TouristGuestHome.js";
 import ViewProductsTourist from "./Pages/Tourist/TouristProducts.js";
-import GuestHome from "./Pages/Guest/GuestHome";
+import GuestHome from "./Pages/Guest/GuestHome.js";
 import TouristActivities from './Pages/Tourist/TouristActivities.js';
 import GuestActivities from './Pages/Guest/GuestActivities.js';
 import NavBar from "./components/NavBar";
-import UserViewVintages from "./Pages/UserViewVintages";
-import VintageDetails from "./Pages/VintageDetails";
-import TouristViewVintage from "./Pages/TouristViewVintage";
-import UserVintageDetails from "./Pages/UserVintageDetails";
-import Dashboard from "./Pages/Dashboard";
+import UserViewVintages from "./Pages/UserViewVintages.js";
+import VintageDetails from "./Pages/VintageDetails.js";
+import TouristViewVintage from "./Pages/TouristViewVintage.js";
+import UserVintageDetails from "./Pages/UserVintageDetails.js";
+import Dashboard from "./Pages/Dashboard.jsx";
 import ViewProducts from "./Pages/products/viewProducts.jsx";
 import ManageProducts from "./Pages/products/ManageProducts.jsx";
 import AddProduct from "./Pages/products/AddPrduct.jsx";
@@ -67,13 +67,17 @@ import { useNavigate } from "react-router-dom";
 import ProtectedRoute from "./AuthAdmin.js";
 import SellerProfile from "./Pages/Seller/SellerProfile.js";
 import ViewProductsSeller from "./Pages/Seller/productsSeller.js";
-import TouristHome from "./Pages/Tourist/TouristHome";
+import TouristHome from "./Pages/Tourist/TouristHome.js";
 import ViewProductTourist from "./Pages/Tourist/prodDetails.js";
 import EditProductD from "./Pages/Seller/prodD.js";
 import AddProductSeller from "./Pages/Seller/addP.js";
 import UpdateActivityForm from "./components/UpdateActivityForm.js";
 import ComplaintsList from './Pages/ComplaintsList';
 import ComplaintDetails from './Pages/ComplaintDetails';
+import InactiveItineraries from "./Pages/itineraries/InactiveItineraries.js";
+import TouristHistory from "./Pages/Tourist/TouristHistory.js";
+
+
 function App() {
   const token = localStorage.getItem("jwt");
  // const navigate = useNavigate();
@@ -84,6 +88,7 @@ function App() {
       const decoded = jwtDecode(token);
       userId = decoded.id; // Assuming the id is in the decoded token
     } catch (error) {
+      console.error("Failed to decode token:", error);
       console.error("Failed to decode token:", error);
     }
   }
@@ -103,7 +108,7 @@ function App() {
         element={<TourGuideProfile userId={localStorage.getItem("id")} />}
       />
       <Route path="tour_guide/itineraries" element={<UserViewItineraries />} />
-      
+      <Route path="tour_guide/inactive_itineraries" element={<InactiveItineraries />} />
       <Route path="tour_guide/itineraries/:id" element={<ItineraryDetails />} />
       <Route path="/Tourist/Products" element={<ViewProductsTourist />} />
       <Route path="/Tourist/Products/ViewProduct/:id" element={<ViewProductTourist />} />
@@ -127,6 +132,7 @@ function App() {
         <Route path="/tourist-itineraries" element={< TouristItineraries/>} />
         <Route path="/guest-itineraries" element={<GuestItineraries/>} />
         <Route path="/guest-activities" element={<GuestActivities/>} />
+        <Route path="/Tourist-History" element={<TouristHistory />} />
         {/* <Route path="/guest-places" element={<GuestViewVintage/>} /> */}
         <Route path="/createActivity" element={<CreateActivityForm userId={localStorage.getItem("id")} />} /> 
         <Route path="/SignUp" element={<SignUp />} />
@@ -179,3 +185,4 @@ function App() {
 }
 
 export default App;
+

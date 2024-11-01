@@ -10,6 +10,10 @@ const itinerarySchema = new schema(
     title:{
       type: String,
     },
+    category: {
+      type: mongoose.Schema.ObjectId,
+      ref: "Category"
+    },
     activities: [
       {
         name: String,
@@ -60,6 +64,10 @@ const itinerarySchema = new schema(
         },
       ],
       default: [],
+    },
+    isActive: {
+      type: Boolean,
+      default: true,
     },
   },
   { timestamps: true }

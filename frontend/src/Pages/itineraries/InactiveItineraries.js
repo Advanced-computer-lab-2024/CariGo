@@ -1,16 +1,28 @@
 import React from "react";
 // import ReactDOM from "react-dom/client";
-import "../styles/index.css";
-import NavBar from "../components/NavBarTourist";
+import "../../styles/index.css";
+import NavBar from "../../components/NavBarTourGuide";
 import { Box } from "@mui/material";
-import VintageList from "../components/VintageList";
-
-const UserViewVintages = () => {
-  
+import InactiveList from "./InactiveList";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@mui/material"; // Using Material-UI for styling
+const InactiveItirenaries = () => {
+  const handleNavigate = () => {
+    navigate("/tour_guide/itineraries/new");
+  };
+  const navigate = useNavigate();
   return (
     <div>
       <NavBar />
-
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={handleNavigate}
+        sx={{ margin: "10px" }} // Optional styling
+      >
+        Create new Itinerary
+      </Button>
+      {/* <CreateItineraryForm/> */}
       <Box
         sx={{
           width: "1150px",
@@ -35,11 +47,11 @@ const UserViewVintages = () => {
         >
           {" "}
           {/* Enable vertical scrolling only */}
-          <VintageList />
+          <InactiveList />
         </Box>
       </Box>
     </div>
   );
 };
 
-export default UserViewVintages;
+export default InactiveItirenaries;

@@ -2,6 +2,8 @@ const express = require("express");
 const touristController = require("./../controllers/touristController");
 const authController = require("./../controllers/authController");
 // const joinController = require("./../controllers/joiController");
+const complaintController = require('../controllers/complaintsController');
+
 
 const router = express.Router();
 
@@ -12,18 +14,24 @@ const router = express.Router();
 // router.use(authController.protect);
 
 // router.patch("/updateMyPassword", authController.updatePassword);
+router.use(authController.protect);
 
-router.get(
-  "/MyAccount",
-  touristController.getMe,
-  touristController.getTourist
-);
+router.get("/MyAccount", touristController.getMe, touristController.getTourist);
 router.patch("/updateMe", touristController.updateMe);
 router.delete("/deleteMe", touristController.deleteMe);
 
+router.post(
+  "/fileComplaint",
+  authController.restrictTo("Tourist"),
+  complaintController.fileComplaint
+);
+router.get(
+  "/myComplaints",
+  authController.restrictTo("Tourist"),
+  complaintController.getMyComplaints
+);
 
 //// After this is all is restricted to admin: ////
-router.use(authController.protect);
 router.use(authController.restrictTo("Admin"));
 
 router.route("/").get(touristController.updateMe);
@@ -33,6 +41,7 @@ router
   .get(touristController.getTourist)
   .patch(touristController.updateTourist)
   .delete(touristController.deleteTourist);
+
 
 
 module.exports = router;

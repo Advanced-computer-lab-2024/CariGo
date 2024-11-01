@@ -1,54 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import TouristVintagePost from './TouristVintagePost';
-import { Grid } from '@mui/material';
+import ActivityPost from "./ActivityPost.js";
+import { Box, Typography } from '@mui/material';
+import TouristVintagePost from './TouristVintagePost.js';
 
-const ViewAllVintages = () => {
-    const [vintages, setVintages] = useState([]);
-    const [errorMessage, setErrorMessage] = useState(''); // State to store error messages
 
-    useEffect(() => {
-        const fetchVintages = async () => {
-            try {
-                const token = localStorage.getItem('jwt');
-                const userId = localStorage.getItem('id');
-                
-                if (!token) {
-                    throw new Error('No token found. Please log in.');
-                }
-                
-                const response = await fetch(`http://localhost:4000/Event/readAllVintage`, { 
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                const json = await response.json();
-                setVintages(json);
-            } catch (error) {
-                console.log('Error fetching vintages:', error);
-                setErrorMessage(error.message); // Set error message in case of failure
-            }
-        };
-
-        fetchVintages();
-    }, []);
-
+export default function ActivityList({fetchedVintages}) {
+    
     return (
-        <>
-            {errorMessage ? (
-                <p style={{ color: 'red', textAlign: 'center' }}>{errorMessage}</p> // Display error message if any
-            ) : (
-                <Grid container spacing={0} sx={{ display: 'flex', flexDirection: 'column', width: '100vw' }}>
-                    {vintages.length > 0 ? (
-                        vintages.map((vintage, index) => (
-                            <Grid item key={index} sx={{ display: 'flex', justifyContent: 'left' }}>
-                                <TouristVintagePost
+        <Box sx={{ width: '100vw' }}>
+           
+            {/* Activity List */}
+            {fetchedVintages.length > 0 ? (
+            <Box>
+                {fetchedVintages.map((vintage) => (
+                    <Box item key={vintage._id}>
+                        <TouristVintagePost
                                     id={vintage._id || 'N/A'} // Safely handle missing _id
                                     name={vintage.name || 'No name provided'} // Handle missing name
                                     description={vintage.description || 'No description available'} // Handle missing description
@@ -79,15 +45,12 @@ const ViewAllVintages = () => {
                                         closing: 'Not specified',
                                     }} // Handle missing opening_hours safely
                                 />
-                            </Grid>
-                        ))
+                    </Box>
+                        ))}
+                    </Box>
                     ) : (
-                        <p>No vintage posts available.</p> // Display a message if no vintages are found
-                    )}
-                </Grid>
+                    <Typography>No historical places found.</Typography>
             )}
-        </>
+        </Box>
     );
-};
-
-export default ViewAllVintages;
+}

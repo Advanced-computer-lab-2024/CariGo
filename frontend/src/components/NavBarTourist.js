@@ -58,7 +58,7 @@ function ResponsiveAppBar() {
 
   const loadVintages = () => {
     handleCloseNavMenu(); // Close menu on navigation
-    navigate("/guest-places"); // Navigate to activities
+    navigate("/allVintages"); // Navigate to activities
   };
   return (
     <AppBar position="static" sx={{ backgroundColor: "#004c74" }}>
@@ -124,7 +124,7 @@ function ResponsiveAppBar() {
                 <Typography sx={{ textAlign: "center" }}>{pages[1]}</Typography>
               </MenuItem>
 
-              <MenuItem onClick={handleCloseNavMenu}>
+              <MenuItem onClick={loadVintages}>
                 <Typography sx={{ textAlign: "center" }}>{pages[2]}</Typography>
               </MenuItem>
             </Menu>
@@ -154,23 +154,11 @@ function ResponsiveAppBar() {
             </Button>
           </Box>
 
-          {/* <Search>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-              placeholder="Search…"
-              inputProps={{ 'aria-label': 'search' }}
-            />
-          </Search> */}
-
           {/* User Settings Menu */}
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="User Avatar" 
-                //src="/static/images/avatar/2.jpg" 
-                />
+                <Avatar alt="User Avatar" src="/static/images/avatar/2.jpg" />
               </IconButton>
             </Tooltip>
             <Menu
