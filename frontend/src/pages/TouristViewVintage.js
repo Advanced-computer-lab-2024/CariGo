@@ -6,7 +6,9 @@ import { styled, alpha } from '@mui/material/styles';
 import SearchIcon from '@mui/icons-material/Search';
 import InputBase from '@mui/material/InputBase';
 import TouristVintagePost from "../components/TouristVintagePost";
-import TouristNB from "./Tourist/components/TouristNavBar";
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import VintageListTourist from "../components/VintageListTourist";
+//import TouristNB from "./Tourist/components/TouristNavBar";
 //import vintage from "../../../backend/models/Vintage";
 //import vintage from "../../../backend/models/Vintage";
 
@@ -58,128 +60,167 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 const TouristViewVintage = () => {
-  const [vintages, setVintages] = useState([]);
-  const [filteredVintages, setFilteredVintages] = useState([]); // For filtered vintages
-  const [errorMessage, setErrorMessage] = useState(""); // State to store error messages
-  const [filters, setFilters] = useState({ tag: "" }); // Filter by tag
-  const [searchTerm, setSearchTerm] = useState(""); // For search
   const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
-    const [selectedTag, setSelectedTag] = useState(""); // For search
+  const [error, setError] = useState(null);
+
+  const [vintages, setVintages] = useState([]);
 
 
+  //handles filter menu opening and closing
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+  //to show user typed in values
+  const [filterInputValues, setFilterInputValues] = useState({
+    minPrice: "",
+    category: "",
+    rating: "",
+    startDate: "",
+});
+//for actual filtering
+const [filters, setFilters] = useState({
+    tag: "" 
+});
+
+  const handleFilterClick = (event) => {
+    if (isFilterOpen) {
+      handleFilterClose();
+    } else {
+      setAnchorEl(event.currentTarget);
+      setIsFilterOpen(true);
+    }
+  };
+
+  const handleFilterClose = () => {
+    setAnchorEl(null);
+    setIsFilterOpen(false);
+  };
+
+
+  // handles if filter value changes
   const handleFilterChange = (e) => {
-    const { name, value } = e.target;
-    setFilters(prevFilters => ({
-        ...prevFilters,
-        [name]: value
-    }));
-};
-
-const resetFilters = () => {
-  setFilters({
+      const { name, value } = e.target;
+      setFilterInputValues(prevFilters => ({
+          ...prevFilters,
+          [name]: value
+      }));
       
-      tag: "",
-      
-  });
-  setFilteredVintages(vintages); // Reset to all activities
-};
+  };
 
+  const handleFilter = () => {
+    // Perform filter action using the `filters` object
+    setFilters(filterInputValues);
+    console.log('Filters applied:', filters);
+    handleFilterClose();
+  };
+
+  const resetFilters = () => {
+      setFilters({
+        tag: "",
+      });
+      setfilteredVintages(vintages); // Reset to all activities
+  };
+
+
+  const [filteredVintages, setfilteredVintages] = useState(vintages);
+ 
+  const [errorMessage, setErrorMessage] = useState(""); // State to store error messages
+ 
+  const [searchTerm, setSearchTerm] = useState(""); // For search
+ 
+  //const [selectedTag, setSelectedTag] = useState(""); // For search
+
+     // Fetch vintages
+     useEffect(() => {
+      const fetchAndProcessVintages = async () => {
+        setLoading(true);
+        setErrorMessage("");
+        try {
+          const token = localStorage.getItem("jwt"); // Retrieve the token
+          const queryParams = new URLSearchParams();
+          if (filters.tags) queryParams.append("tag", filters.tags);
+  
+          const response = await fetch(
+            `http://localhost:4000/Event/readAllVintage/?${queryParams.toString()}`,
+            {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${token}`, // Add token to headers
+                "Content-Type": "application/json",
+              },
+            }
+          );
+  
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+  
+          const json = await response.json();
+          const vintagesArray = Array.isArray(json) ? json : [];
+          setVintages(vintagesArray);
+          setfilteredVintages(vintagesArray); // Initialize filteredVintages with all vintages
+  
+        } catch (error) {
+          console.log("Error fetching vintages:", error);
+          setErrorMessage("Failed to fetch vintages. Please try again later.");
+        } finally {
+          setLoading(false);
+        }
+      };
+  
+      fetchAndProcessVintages();
+    }, [filters]); // Run effect when filters change
+  
 
 const handleSearch = () => {
   if (!searchTerm.trim()) {
       // If searchTerm is empty, show all activities
-      setFilteredVintages(vintages);
+      setfilteredVintages(vintages);
   } else {
       const filtered = vintages.filter((vintage) => {
           return (vintage.title && vintage.title.toLowerCase().includes(searchTerm.toLowerCase()))
               || (vintage.tag && vintage.tag.toLowerCase().includes(searchTerm.toLowerCase()))
               
       });
-      setFilteredVintages(filtered); // Update the filtered activities
+      setfilteredVintages(filtered); // Update the filtered activities
   }
 };
 
-const filteredVin = vintages.filter(
-  (vintage) =>
-    (selectedTag
-      ? vintage.tags.some((tag) => tag.includes( selectedTag))
-      : true) &&
-    ((vintage.name &&
-      vintage.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+// const filteredVin = vintages.filter(
+//   (vintage) =>
+//     (selectedTag
+//       ? vintage.tags.some((tag) => tag.includes( selectedTag))
+//       : true) &&
+//     ((vintage.name &&
+//       vintage.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
       
-      vintage.tags.some((tag) =>
-        tag.toLowerCase().includes(searchTerm.toLowerCase())
-    ))
-  );
+//       vintage.tags.some((tag) =>
+//         tag.toLowerCase().includes(searchTerm.toLowerCase())
+//     ))
+//   );
 
-     // Fetch vintages
-  useEffect(() => {
-    const fetchAndProcessVintages = async () => {
-      setLoading(true);
-      setErrorMessage("");
-      try {
-        const token = localStorage.getItem("jwt"); // Retrieve the token
-        const queryParams = new URLSearchParams();
-        if (filters.tags) queryParams.append("tag", filters.tags);
 
-        const response = await fetch(
-          `http://localhost:4000/Event/readAllVintage/?${queryParams.toString()}`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`, // Add token to headers
-              "Content-Type": "application/json",
-            },
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const json = await response.json();
-        const vintagesArray = Array.isArray(json) ? json : [];
-        setVintages(vintagesArray);
-        setFilteredVintages(vintagesArray); // Initialize filteredVintages with all vintages
-
-      } catch (error) {
-        console.log("Error fetching vintages:", error);
-        setErrorMessage("Failed to fetch vintages. Please try again later.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchAndProcessVintages();
-  }, [filters]); // Run effect when filters change
-
-  // Filter on search term change
-  useEffect(() => {
-    if (!searchTerm.trim()) {
-      setFilteredVintages(vintages); // If no search term, show all vintages
-    } else {
-      const filtered = vintages.filter((vintage) => {
-        return (
-          (vintage.name && vintage.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
-          (vintage.tags && vintage.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase())))
-        );
-      });
-      setFilteredVintages(filtered); // Update the filtered vintages based on the search term
-    }
-  }, [searchTerm, ]); // Run effect when searchTerm or vintages change
+//   // Filter on search term change
+//   useEffect(() => {
+//     if (!searchTerm.trim()) {
+//       setFilteredVintages(vintages); // If no search term, show all vintages
+//     } else {
+//       const filtered = vintages.filter((vintage) => {
+//         return (
+//           (vintage.name && vintage.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+//           (vintage.tags && vintage.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase())))
+//         );
+//       });
+//       setFilteredVintages(filtered); // Update the filtered vintages based on the search term
+//     }
+//   }, [searchTerm, ]); // Run effect when searchTerm or vintages change
         
           
 
 
-      
-
-
   return (
     <div>
-      <TouristNB/>
-
-
+      <NavBar/>
         {/*Search bar*/}
         <Box sx={{display:'flex',}}>
             <Search>
@@ -195,91 +236,69 @@ const filteredVin = vintages.filter(
           <Button variant="contained" label="search" onClick={handleSearch} sx={{ ml: 2 }}>search</Button>
           </Box>
 
-
-          {/* Filter by Tag */}
-          <TextField
-                    label="tags"
-                    variant="outlined"
-                    name="tags"
-                    value={filters.tags}
-                    onChange={(e) => setSelectedTag(e.target.value)}
-                    //onChange={handleFilterChange}
-                    sx={{ mb: 2, mr: 2 }}
-                />
-
-      <Box
-        sx={{
-          width: "1150px",
-          overflow: "hidden",
-          margin: "0 auto",
-          padding: "20px",
-          height: "80vh", // Set a fixed height for the scrolling area
-          overflow: "auto", // Enable scrolling
-          "&::-webkit-scrollbar": {
-            display: "none", // Hides the scrollbar for WebKit browsers (Chrome, Safari)
-          },
-          //backgroundColor : "aquamarine" ,
-        }}
-      >
-
+        {/*Filter menu*/}
         <Box
-          sx={{
-            height: "100%",
-            marginLeft: "100px",
-            width: "100%",
-            "&::-webkit-scrollbar": { display: "none" },
-          }}
-        >
-          {" "}
-          {/* Enable vertical scrolling only */}
-          <>
-            {errorMessage ? (
-                <p style={{ color: 'red', textAlign: 'center' }}>{errorMessage}</p> // Display error message if any
-            ) : (
-                <Grid container spacing={0} sx={{ display: 'flex', flexDirection: 'column', width: '100vw' }}>
-                    {filteredVin.length > 0 ? (
-                        filteredVin.map((vintage, index) => (
-                            <Grid item key={index} sx={{ display: 'flex', justifyContent: 'left' }}>
-                                <TouristVintagePost
-                                    id={vintage._id || 'N/A'} // Safely handle missing _id
-                                    name={vintage.name || 'No name provided'} // Handle missing name
-                                    description={vintage.description || 'No description available'} // Handle missing description
-                                    pictures={vintage.pictures || []} // Handle missing pictures with an empty array
-                                    location={vintage.location ? {
-                                        longitude: vintage.location.longitude || 0, // Default longitude
-                                        latitude: vintage.location.latitude || 0,   // Default latitude
-                                        nation: {
-                                            country: vintage.location.country || 'Unknown country',
-                                            city: vintage.location.city || 'Unknown city',
-                                        }
-                                    } : null} // Handle missing location by setting it to null
-                                    ticket_price={vintage.ticket_price ? {
-                                        foreigner: vintage.ticket_price.foreigner || 'Not specified',
-                                        native: vintage.ticket_price.native || 'Not specified',
-                                        student: vintage.ticket_price.student || 'Not specified',
-                                    } : {
-                                        foreigner: 'Not specified',
-                                        native: 'Not specified',
-                                        student: 'Not specified',
-                                    }} // Handle missing ticket_price safely
-                                    tags={vintage.tags || []} // Default tags to an empty array if missing
-                                    opening_hours={vintage.opening_hours ? {
-                                        opening: vintage.opening_hours.opening || 'Not specified',
-                                        closing: vintage.opening_hours.closing || 'Not specified',
-                                    } : {
-                                        opening: 'Not specified',
-                                        closing: 'Not specified',
-                                    }} // Handle missing opening_hours safely
-                                />
-                            </Grid>
-                        ))
-                    ) : (
-                        <p>No vintage posts available.</p> // Display a message if no vintages are found
-                    )}
-                </Grid>
-            )}
-        </>
-        </Box>
+            sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            }}   
+           >
+           <FilterAltIcon
+              onClick={handleFilterClick}
+              sx={{
+                color : "gray",
+              }}
+            >
+            </FilterAltIcon>
+            {Boolean(anchorEl) && ( // Conditional rendering based on anchorEl
+              <Box
+                sx={{
+                  //padding: '20px',
+                  paddingTop:'10px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  borderRadius: '20px',
+                  backgroundColor: 'white', 
+                  borderColor: '1px solid #ff4d4d', 
+                  width: '900px',
+                }}
+              >
+              <Box sx={{display:'flex'}}>
+               
+             <TextField
+                label="tag"
+                variant="outlined"
+                name="tag"
+                value={filters.category}
+                onChange={handleFilterChange}
+               sx={{ mb: 2, mr: 2 }}
+            />
+          </Box>
+          <Box sx={{display:'flex',}}>
+          <Button variant="contained" onClick={handleFilter} sx={{ ml: 2 , backgroundColor: '#ff4d4d' , width : '50px',}}>
+              Filter
+          </Button>
+          <Button variant="contained" onClick={resetFilters} sx={{ ml: 2 ,backgroundColor: '#ff4d4d',width : '50px'}}>
+               Reset 
+           </Button>
+           </Box>
+          </Box>
+           )}
+      </Box>
+      {/* END OF FILTER MENU */}
+
+     <Box sx={{ 
+        height: '100%',
+        marginLeft: '100px',
+        width: '100%',
+        display: "flex",
+        flexDirection: "column",
+        gap: "15px",
+        overflowX: 'hidden',
+        '&::-webkit-scrollbar': {display: 'none',},
+        }}> {/* Enable vertical scrolling only */}
+
+        <VintageListTourist fetchedVintages={filteredVintages} />
       </Box>
     </div>
   );
