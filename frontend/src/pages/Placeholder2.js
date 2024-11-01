@@ -58,27 +58,20 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 const TouristViewVintage = () => {
   const [vintages, setVintages] = useState([]);
-  const [filteredVintages, setFilteredVintages] = useState(vintages); // For filtered vintages
+  const [filteredVintages, setFilteredVintages] = useState([]); // For filtered vintages
   const [errorMessage, setErrorMessage] = useState(""); // State to store error messages
   const [filters, setFilters] = useState({ tags: "" }); // Filter by tag
   const [searchTerm, setSearchTerm] = useState(""); // For search
-  
-
   const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
 
-const handleFilterChange = (e) => {
-  const { name, value } = e.target;
-  setFilters(prevFilters => ({
-    ...prevFilters,
-    [name]: value
-  }));
-
-  // Reset filtered vintages to all if tags filter is empty
-   if (name === "tags" && !value) {
-     setFilteredVintages(vintages); // Show all vintages if tags filter is cleared
-   }
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters(prevFilters => ({
+        ...prevFilters,
+        [name]: value
+    }));
 };
 
 const resetFilters = () => {
@@ -98,72 +91,74 @@ const handleSearch = () => {
   } else {
       const filtered = vintages.filter((vintage) => {
           return (vintage.title && vintage.title.toLowerCase().includes(searchTerm.toLowerCase()))
-              || (vintage.tags && vintage.tags.some(tag=> tag.title.includes(searchTerm)))
+              || (vintage.tag && vintage.tag.toLowerCase().includes(searchTerm.toLowerCase()))
               
       });
       setFilteredVintages(filtered); // Update the filtered activities
   }
 };
 
+     // Fetch vintages
+  useEffect(() => {
+    const fetchAndProcessVintages = async () => {
+      setLoading(true);
+      setErrorMessage("");
+      try {
+        const token = localStorage.getItem("jwt"); // Retrieve the token
+        const queryParams = new URLSearchParams();
+        if (filters.tags) queryParams.append("tag", filters.tags);
 
+        const response = await fetch(
+          `http://localhost:4000/Event/readAllVintage/?${queryParams.toString()}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`, // Add token to headers
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
-useEffect(() => {
-  const fetchAndProcessVintages = async () => {
-    setLoading(true);
-    setErrorMessage("");
-    try {
-      const token = localStorage.getItem("jwt"); // Retrieve the token
-      const queryParams = new URLSearchParams();
-      if (filters.tags) queryParams.append("tag", filters.tags);
-
-      const response = await fetch(
-        `http://localhost:4000/Event/readAllVintage/?${queryParams.toString()}`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`, // Add token to headers
-            "Content-Type": "application/json",
-          },
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
-      );
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const json = await response.json();
+        const vintagesArray = Array.isArray(json) ? json : [];
+        setVintages(vintagesArray);
+        setFilteredVintages(vintagesArray); // Initialize filteredVintages with all vintages
+
+      } catch (error) {
+        console.log("Error fetching vintages:", error);
+        setErrorMessage("Failed to fetch vintages. Please try again later.");
+      } finally {
+        setLoading(false);
       }
+    };
 
-      const json = await response.json();
-      const vintagesArray = Array.isArray(json) ? json : [];
-      console.log("Fetched vintages:", vintagesArray);
-      setVintages(vintagesArray);
-      setFilteredVintages(vintagesArray)
+    fetchAndProcessVintages();
+  }, [filters]); // Run effect when filters change
 
-      const filteredVintages=vintages.filter((vintage) => ((vintage.name &&
-        vintage.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        vintage.tags.some((tag) =>
-          tag.toLowerCase().includes(searchTerm.toLowerCase())
-    )))
-      
-      // // Filter the fetched vintages based on the current search term
-      // const filtered = vintagesArray.filter((vintage) => {
-      //   const matchesName = vintage.name && vintage.name.toLowerCase().includes(searchTerm.toLowerCase());
-      //   const matchesTags = vintage.tags && vintage.tags.some(tag => tag.includes(searchTerm));
-      //   return matchesName || matchesTags; // Check if either condition is met
-      // });
-
-      setFilteredVintages(filteredVintages); // Update the filtered vintages
-
-    } catch (error) {
-      console.log("Error fetching vintages:", error);
-      setErrorMessage("Failed to fetch vintages. Please try again later.");
-    } finally {
-      setLoading(false);
+  // Filter on search term change
+  useEffect(() => {
+    if (!searchTerm.trim()) {
+      setFilteredVintages(vintages); // If no search term, show all vintages
+    } else {
+      const filtered = vintages.filter((vintage) => {
+        return (
+          (vintage.name && vintage.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+          (vintage.tags && vintage.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase())))
+        );
+      });
+      setFilteredVintages(filtered); // Update the filtered vintages based on the search term
     }
-  };
+  }, [searchTerm, ]); // Run effect when searchTerm or vintages change
+        
+          
 
-  fetchAndProcessVintages();
-}, [filters, searchTerm]); // Run effect when filters or searchTerm change
 
-  
+      
+
 
   return (
     <div>
@@ -171,16 +166,20 @@ useEffect(() => {
 
 
         {/*Search bar*/}
+        <Box sx={{display:'flex',}}>
+            <Search>
+            <SearchIconWrapper>
+              <SearchIcon />
+            </SearchIconWrapper>
+            <StyledInputBase
+            placeholder="Search…"
+            inputProps={{ 'aria-label': 'search' }}
+            onChange={(e) => setSearchTerm(e.target.value)} // Capture search input
+            />
+          </Search>
+          <Button variant="contained" label="search" onClick={handleSearch} sx={{ ml: 2 }}>search</Button>
+          </Box>
 
-        <div className="mb-6">
-        <input
-          type="text"
-          placeholder="Search by name, location, or tag..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="mb-4 p-2 border border-slate-700 rounded-md w-[600px] mx-auto block"
-        />
-      </div>
 
           {/* Filter by Tag */}
           <TextField

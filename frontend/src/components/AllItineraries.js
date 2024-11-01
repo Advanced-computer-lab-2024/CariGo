@@ -3,14 +3,15 @@ import React from "react";
 import "../styles/index.css";
 import NavBar from "../components/NavBarTourist";
 import { Box } from "@mui/material";
-import VintageList from "../components/VintageList";
+import ItineraryList from "../components/ItirenaryList";
+import CreateActivityForm from "../components/CreateActivityForm";
+import CreateItineraryForm from "../components/CreateItineraryForm";
+import ListOfItineraries from "../components/ListOfItineraries";
 
-const UserViewVintages = () => {
-  
+const AllItineraries = () => {
   return (
     <div>
       <NavBar />
-
       <Box
         sx={{
           width: "1150px",
@@ -35,11 +36,11 @@ const UserViewVintages = () => {
         >
           {" "}
           {/* Enable vertical scrolling only */}
-          <VintageList />
+          <ListOfItineraries />
         </Box>
       </Box>
     </div>
   );
 };
 
-export default UserViewVintages;
+export default AllItineraries;

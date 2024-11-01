@@ -18,7 +18,6 @@ const createItinerary = async (req, res) => {
   const userId = new mongoose.Types.ObjectId(req.body.author); // Convert to ObjectId
   const userType = await userModel.findOne({ _id: userId }); // Project only 'roles' field
   console.log(userType);
-  console.log("Ana gowa");
   if (!userType) {
     return res.status(404).json({ message: "user not found" });
   }
@@ -26,9 +25,7 @@ const createItinerary = async (req, res) => {
   console.log(role);
   if (role == "tour_guide") {
     const authorId = new mongoose.Types.ObjectId(req.body.author); // Convert to ObjectId
-    console.log("creating")
     const {
-      title,
       activities,
       language,
       price,
@@ -47,7 +44,6 @@ const createItinerary = async (req, res) => {
     try {
       const itinerary = await itineraryModel.create({
         author: authorId, // Use the ObjectId for author
-        title,
         activities,
         language,
         price,
@@ -163,23 +159,22 @@ const updateItinerary = async (req, res) => {
 
   if (mongoose.Types.ObjectId.isValid(req.params.itineraryId)) {
     console.log("inside the update");
+    const itinerary = await itineraryModel.findById(id);
 
-    try {
-      const itinerary = await itineraryModel.findById(req.params.itineraryId);
-
-      if (!itinerary) {
-        return res.status(404).json({ error: "Itinerary not found" });
-      }
-
-      const result = await itineraryModel.updateOne(
+    if (!itinerary) {
+      return res.status(404).json({ error: "Itinerary not found" });
+    }
+    itineraryModel
+      .updateOne(
         { _id: new mongoose.Types.ObjectId(req.params.itineraryId) },
         { $set: update }
-      );
-
-      res.status(201).json(result);
-    } catch (error) {
-      res.status(500).json({ error: "couldn't update itinerary data" });
-    }
+      )
+      .then((result) => {
+        res.status(201).json(result);
+      })
+      .catch((error) => {
+        res.status(500).json({ error: "couldn't update itinerary data" });
+      });
   } else {
     res
       .status(500)
@@ -392,7 +387,6 @@ const readSingleItinerary = (req, res) => {
     console.log("inside the the read");
     itineraryModel
       .findOne({ _id: new mongoose.Types.ObjectId(req.params.itineraryId) })
-      .populate("tags")
       .sort({ createdAt: -1 })
       .then((result) => {
         res.status(201).json(result);
@@ -468,6 +462,8 @@ const readSingleVintage = (req, res) => {
       .json({ error: "couldn't get historical place data, id invalid" });
   }
 };
+
+ 
 
 const viewAllVintage = async (req, res) => {
   console.log("in");
