@@ -42,6 +42,7 @@ const createItinerary = async (req, res) => {
       start_date,
       end_date,
       accessibility,
+      category
     } = req.body;
     try {
       const itinerary = await itineraryModel.create({
@@ -60,6 +61,7 @@ const createItinerary = async (req, res) => {
         start_date,
         end_date,
         accessibility,
+        category,
       });
       res.status(200).json(itinerary);
     } catch (error) {
