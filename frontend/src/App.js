@@ -75,6 +75,8 @@ import UpdateActivityForm from "./components/UpdateActivityForm.js";
 import ComplaintsList from './Pages/ComplaintsList';
 import ComplaintDetails from './Pages/ComplaintDetails';
 import InactiveItineraries from "./Pages/itineraries/InactiveItineraries.js"
+import AdminViewEvents from "./Pages/AdminViewEvents.js"
+import AdminViewItineraries from "./Pages/AdminViewItineraries.js"
 function App() {
   const token = localStorage.getItem("jwt");
  // const navigate = useNavigate();
@@ -163,7 +165,8 @@ function App() {
               <Route path="/delete-User" element={<DeleteUser />} /> 
               <Route path="/complaints" element={<ComplaintsList />} />
               <Route path="/complaints/:id" element={<ComplaintDetails />} />
-       
+              <Route path="/admin-view-events" element={<AdminViewEvents />} />
+              <Route path="/admin-view-events/itineraries" element={<AdminViewItineraries />} />
         </Route>
 
         <Route path="/guest-places" element={<GuestViewVintage/>} />

@@ -124,7 +124,7 @@ function ResponsiveAppBar() {
                 <Typography sx={{ textAlign: "center" }}>{pages[1]}</Typography>
               </MenuItem>
 
-              <MenuItem onClick={handleCloseNavMenu}>
+              <MenuItem onClick={loadVintages}>
                 <Typography sx={{ textAlign: "center" }}>{pages[2]}</Typography>
               </MenuItem>
             </Menu>

@@ -23,11 +23,12 @@ const router = express.Router();
 
 router.get(
   "/readAllItineraries",
-
- // authController.restrictTo("Tour_Guide","Advertiser"),
   readAllItineraries
 ); // itineraries
 
+router.get("/readSingleItinerary/:itineraryId", readSingleItinerary); // itineraries/:id
+router.get("/readSingleVintage/:vintageId", readSingleVintage);
+router.get("/readAllVintage", readAllVintage);
 // middleware for authentication
 router.use(authController.protect);
 
@@ -61,7 +62,6 @@ router.get(
   viewAllVintage
 );
 
-router.get("/readSingleItinerary/:itineraryId", readSingleItinerary); // itineraries/:id
 router.patch(
   "/updateItinerary/:itineraryId",
   authController.restrictTo("Tour_Guide"),
@@ -74,8 +74,6 @@ router.delete(
 );
 
 router.get("/readAllVintages", readAllVintages);
-router.get("/readAllVintage", readAllVintage);
-router.get("/readSingleVintage/:vintageId", readSingleVintage);
 router.patch("/updateVintage/:vintageId", updateVintage);
 router.delete("/deleteVintage/:id", deleteVintage);
 
