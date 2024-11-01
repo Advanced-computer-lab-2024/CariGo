@@ -78,6 +78,8 @@ import InactiveItineraries from "./Pages/itineraries/InactiveItineraries.js"
 import AdminViewEvents from "./Pages/AdminViewEvents.js"
 import AdminViewItineraries from "./Pages/AdminViewItineraries.js"
 import TouristHistory from "./Pages/Tourist/TouristHistory.js";
+import FlightBooking from './Pages/FlightBooking.jsx';
+import FlightDetailsPage from "./Pages/FlightDetailsCard.jsx";
 function App() {
   const token = localStorage.getItem("jwt");
  // const navigate = useNavigate();
