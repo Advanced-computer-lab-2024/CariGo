@@ -74,6 +74,8 @@ import AddProductSeller from "./Pages/Seller/addP.js";
 import UpdateActivityForm from "./components/UpdateActivityForm.js";
 import ComplaintsList from './Pages/ComplaintsList';
 import ComplaintDetails from './Pages/ComplaintDetails';
+import FlightBooking from './Pages/FlightBooking.jsx';
+import FlightDetailsPage from "./Pages/FlightDetailsCard.jsx";
 function App() {
   const token = localStorage.getItem("jwt");
  // const navigate = useNavigate();
@@ -168,6 +170,8 @@ function App() {
         <Route path="/guest-places" element={<GuestViewVintage/>} />
         <Route path="/tourist-places" element={<TouristViewVintage />} />
         <Route path="/createVintage" element={<CreateVintageForm />} />
+        <Route path="/flight" element={<FlightBooking/>} />
+        <Route path="/flight-details/:id" element={<FlightDetailsPage/>} />
         <Route path="/sellerProfile" element={<SellerProfile userId={localStorage.getItem("id")} />} />
 
 
