@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import ItineraryPost from "./ItineraryPost";
+import ItineraryPost from "../../components/ItineraryPost";
 import { Grid } from '@mui/material';
 // import itineraryImg from '../assets/itinerary.jpeg'
 
-const ItineraryList = () => {
+const InactiveList = () => {
     const [itineraries, setItineraries] = useState([]);
 
     useEffect(() => {
@@ -28,7 +28,7 @@ const ItineraryList = () => {
                 }
 
                 const json = await response.json();
-                setItineraries(json.filter(itinerary => itinerary.isActive === true));
+                setItineraries(json.filter(itinerary => itinerary.isActive === false));
             } catch (error) {
                 console.log('Error fetching itineraries:', error);
             }
@@ -40,7 +40,7 @@ const ItineraryList = () => {
     return (
         <Grid container spacing={0} sx={{ display: 'flex', flexDirection: 'column', width: '100vw' }}>
             {itineraries.map((itinerary, index) => (
-                <Grid item key={index} sx={{ display: 'flex', justifyContent: 'left' }}>
+                <Grid item key={index} sx={{ display: 'flex', justifyContent: 'left' }}> 
                     <ItineraryPost
                         id={itinerary._id}
                         title={itinerary.title}
@@ -62,4 +62,4 @@ const ItineraryList = () => {
     );
 };
 
-export default ItineraryList;
+export default InactiveList;

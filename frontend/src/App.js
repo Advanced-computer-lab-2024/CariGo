@@ -74,6 +74,7 @@ import AddProductSeller from "./Pages/Seller/addP.js";
 import UpdateActivityForm from "./components/UpdateActivityForm.js";
 import ComplaintsList from './Pages/ComplaintsList';
 import ComplaintDetails from './Pages/ComplaintDetails';
+import InactiveItineraries from "./Pages/itineraries/InactiveItineraries.js"
 function App() {
   const token = localStorage.getItem("jwt");
  // const navigate = useNavigate();
@@ -103,7 +104,7 @@ function App() {
         element={<TourGuideProfile userId={localStorage.getItem("id")} />}
       />
       <Route path="tour_guide/itineraries" element={<UserViewItineraries />} />
-      
+      <Route path="tour_guide/inactive_itineraries" element={<InactiveItineraries />} />
       <Route path="tour_guide/itineraries/:id" element={<ItineraryDetails />} />
       <Route path="/Tourist/Products" element={<ViewProductsTourist />} />
       <Route path="/Tourist/Products/ViewProduct/:id" element={<ViewProductTourist />} />
