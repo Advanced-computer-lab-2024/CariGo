@@ -12,14 +12,13 @@ import { red } from '@mui/material/colors';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import ShareIcon from '@mui/icons-material/Share';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Box } from '@mui/material';
-import { Chip } from '@mui/material';
+import { Box, Chip, Snackbar } from '@mui/material';
 import PinDropIcon from '@mui/icons-material/PinDrop';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import StarIcon from '@mui/icons-material/Star';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import logoImage from '../assets/itinerary.png'; // Correct relative path
+import logoImage from '../assets/itinerary.png';
 
 export default function UserItineraryPost({
   id,
@@ -37,8 +36,9 @@ export default function UserItineraryPost({
   accessibility,
 }) {
   const navigate = useNavigate();
+  const [snackbarOpen, setSnackbarOpen] = React.useState(false);
+  const [snackbarMessage, setSnackbarMessage] = React.useState('');
 
-  // Format the date and time
   const formatDateTime = (dateString) => {
     const options = {
       year: 'numeric',
@@ -51,7 +51,8 @@ export default function UserItineraryPost({
     return new Date(dateString).toLocaleString(undefined, options);
   };
 
-  const handleDelete = async () => {
+  const handleDelete = async (e) => {
+    e.stopPropagation();
     const confirmDelete = window.confirm("Are you sure you want to delete this itinerary?");
     if (confirmDelete) {
       try {
@@ -60,21 +61,65 @@ export default function UserItineraryPost({
           throw new Error("No token found. Please log in.");
         }
 
-        // Assuming you have the correct API endpoint to delete an itinerary
         await axios.delete(`/cariGo/Event/itineraries/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
 
-        alert("Itinerary deleted successfully");
-        // Optionally use navigate or a callback to update the parent component
-        navigate('/itineraries'); // Redirect to the itineraries list or any other page
+        setSnackbarMessage("Itinerary deleted successfully");
+        setSnackbarOpen(true);
+        navigate('/itineraries');
       } catch (error) {
         console.error('Failed to delete itinerary:', error.response ? error.response.data : error.message);
-        alert(`An error occurred while deleting the itinerary. Details: ${error.message}`);
+        setSnackbarMessage(`An error occurred while deleting the itinerary. Details: ${error.message}`);
+        setSnackbarOpen(true);
       }
     }
+  };
+
+  const handleShare = async (e) => {
+    e.stopPropagation();
+    try {
+      const token = localStorage.getItem('jwt');
+      if (!token) {
+        throw new Error("No token found. Please log in.");
+      }
+
+      const response = await axios.get(`/cariGo/Event/shareItinerary/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const shareLink = response.data;
+
+      if (navigator.share) {
+        await navigator.share({
+          title: 'Check out this itinerary!',
+          text: 'I found this great itinerary on CariGo',
+          url: shareLink,
+        });
+      } else {
+        await navigator.clipboard.writeText(shareLink);
+        setSnackbarMessage('Link copied to clipboard!');
+        setSnackbarOpen(true);
+      }
+    } catch (error) {
+      console.error('Error sharing itinerary:', error);
+      if (error.response && error.response.status === 401) {
+        setSnackbarMessage('You need to be logged in to share this itinerary. Please log in and try again.');
+      } else {
+        setSnackbarMessage('Failed to share itinerary. Please try again later.');
+      }
+      setSnackbarOpen(true);
+    }
+  };
+
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackbarOpen(false);
   };
 
   return (
@@ -167,18 +212,28 @@ export default function UserItineraryPost({
           <IconButton aria-label="add to favorites">
             <FavoriteIcon />
           </IconButton>
-          <IconButton aria-label="share">
+          <IconButton aria-label="share" onClick={handleShare}>
             <ShareIcon />
           </IconButton>
           <IconButton
             aria-label="delete"
-            onClick={handleDelete} // Add the delete handler here
-            sx={{ color: 'red' }} // Optional styling for the delete icon
+            onClick={handleDelete}
+            sx={{ color: 'red' }}
           >
             <DeleteIcon />
           </IconButton>
         </Box>
       </CardActions>
+      <Snackbar
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+        message={snackbarMessage}
+      />
     </Card>
   );
 }
