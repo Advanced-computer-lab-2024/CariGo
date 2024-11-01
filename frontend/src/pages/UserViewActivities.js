@@ -4,7 +4,7 @@ import App from '../App';
 import NavBar from '../components/NavBarTourist';
 import ActivityList from '../components/ActivityListUser';
 import React, { useState,useEffect } from 'react';
-import {Box , Button, Menu, MenuItem, styled, alpha,InputBase, TextField,Typography ,CircularProgress} from '@mui/material';
+import {Box , Button, Menu, MenuItem, TextField,Typography ,CircularProgress} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 

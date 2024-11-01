@@ -18,7 +18,7 @@ import CreateVintageForm from "./Pages/CreateVintageForm.js";
 
 import './styles/index.css';
 
-import UserViewActivities from "./Pages/Guest/GuestActivities.js";
+import UserViewActivities from "./Pages/Tourist/TouristActivities.js";
 import AdminHome from './Pages/Home.js';
 import React, { lazy, Suspense } from 'react'; // Keep this line
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom'; // Combined imports from react-router-dom
