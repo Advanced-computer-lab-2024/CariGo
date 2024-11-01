@@ -25,6 +25,9 @@ router.delete('/deleteActivity/:id', [authController.protect ,authController.res
 
 router.get('/sortActivityByPrice',activityController.sortActivities);
 
+router.get('/shareActivity/:id',activityController.shareActivity);
+
+router.post('/BookActivity/:ActivityId',[authController.protect,authController.restrictTo("Tourist")],activityController.BookActivity);
 
 
 

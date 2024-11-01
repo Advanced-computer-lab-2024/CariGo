@@ -23,7 +23,7 @@ import logoImage from '../assets/itinerary.png'; // Correct relative path
 
 export default function ItineraryPost({
   id,
-  author,
+  title,
   img,
   start_date,
   end_date,
@@ -115,10 +115,10 @@ export default function ItineraryPost({
 
         <Box sx={{ display: 'flex', flexDirection: 'column', width: '400px', padding: '10px' }}>
           <CardHeader
-            avatar={<Avatar sx={{ bgcolor: red[500] }}>{author?.charAt(0) || 'A'}</Avatar>}
+            avatar={<Avatar sx={{ bgcolor: red[500] }}>{title?.charAt(0) || 'A'}</Avatar>}
             title={
               <Typography variant="h5" sx={{ fontWeight: 'bold', fontSize: '24px' }}>
-                {author || "Anonymous"}
+                {title || "Anonymous"}
               </Typography>
             }
           />

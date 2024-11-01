@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react"; // Import useEffect
 import axios from "axios";
 import clsx from 'clsx'
 import SelectChangeEvent, { Pagination } from "@mui/material"
-import SearchBar from "../../Pages/products/SearchBar/SearchBar.jsx"
+import SearchBar from "../products/SearchBar/SearchBar.jsx"
 import RefreshIcon from '@mui/icons-material/Refresh';
 import AddIcon from '@mui/icons-material/Add';
 
@@ -29,12 +29,12 @@ import {
   import { Typography } from '@mui/material';
   import SortIcon from '@mui/icons-material/Sort';
 import { useNavigate } from "react-router-dom"; // Import useNavigate
-import Sidebar from '../Sidebar';
+import Sidebar from '../Sidebar.jsx';
 import Sider from "antd/es/layout/Sider";
 import { Flex, Layout } from "antd";
 import Divider from '@mui/material/Divider';
 import { Content, Header } from "antd/es/layout/layout";
-import TopBar from "../TopBar";
+import TopBar from "../TopBar.jsx";
 import { TablePagination } from '@mui/material';
 import { ToastContainer } from "react-toastify";
 

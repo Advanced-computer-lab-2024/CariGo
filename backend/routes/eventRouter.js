@@ -12,7 +12,11 @@ const {
   viewAllVintage,
   updateVintage,
   deleteItinerary,
-  deleteVintage,readAllVintage
+  deleteVintage,
+  readAllVintage,
+  shareItinerary,
+  shareVintage,
+  BookItinerary
 } = require("../controllers/eventController");
 const authController = require("../controllers/authController");
 const router = express.Router();
@@ -20,11 +24,12 @@ const router = express.Router();
 
 router.get(
   "/readAllItineraries",
-
- // authController.restrictTo("Tour_Guide","Advertiser"),
   readAllItineraries
 ); // itineraries
 
+router.get("/readSingleItinerary/:itineraryId", readSingleItinerary); // itineraries/:id
+router.get("/readSingleVintage/:vintageId", readSingleVintage);
+router.get("/readAllVintage", readAllVintage);
 // middleware for authentication
 router.use(authController.protect);
 
@@ -58,7 +63,6 @@ router.get(
   viewAllVintage
 );
 
-router.get("/readSingleItinerary/:itineraryId", readSingleItinerary); // itineraries/:id
 router.patch(
   "/updateItinerary/:itineraryId",
   authController.restrictTo("Tour_Guide"),
@@ -71,9 +75,16 @@ router.delete(
 );
 
 router.get("/readAllVintages", readAllVintages);
-router.get("/readAllVintage", readAllVintage);
-router.get("/readSingleVintage/:vintageId", readSingleVintage);
 router.patch("/updateVintage/:vintageId", updateVintage);
 router.delete("/deleteVintage/:id", deleteVintage);
+
+router.get("/shareItinerary/:id", shareItinerary);
+router.get("/shareVintage/:id", shareVintage);
+
+router.post(
+  "/BookItinerary/:ItineraryId",
+  authController.restrictTo("Tourist"),
+  BookItinerary
+);
 
 module.exports = router;

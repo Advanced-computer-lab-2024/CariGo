@@ -27,7 +27,7 @@ export default function UserItineraryPost({
   img,
   start_date,
   end_date,
-  locations,
+  locations = [], // Default to an empty array
   price,
   tags,
   transportation,
@@ -143,7 +143,9 @@ export default function UserItineraryPost({
 
             <Box sx={{ display: 'flex', marginTop: '5px' }}>
               <PinDropIcon />
-              <Typography sx={{ marginLeft: '5px' }}>Locations: {locations?.join(', ') || "Not specified"}</Typography>
+              <Typography sx={{ marginLeft: '5px' }}>
+                Locations: {Array.isArray(locations) ? locations.join(', ') : "Not specified"}
+              </Typography>
             </Box>
 
             <Box sx={{ display: 'flex', marginTop: '5px' }}>

@@ -41,10 +41,14 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   const filteredBody = filterObj(req.body, "username", "email");
 
   // Update user document
-  const updatedTourist = await Tourist.findByIdAndUpdate(req.user.id, filteredBody, {
-    new: true,
-    runValidators: true,
-  });
+  const updatedTourist = await Tourist.findByIdAndUpdate(
+    req.user.id,
+    filteredBody,
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
 
   res.status(200).json({
     status: "success",

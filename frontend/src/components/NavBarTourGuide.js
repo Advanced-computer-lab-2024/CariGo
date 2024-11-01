@@ -15,7 +15,7 @@ import logoImage from "../assets/cropped_image.png";
 import { useNavigate } from "react-router-dom";
 
 // Updated pages without "Activities"
-const pages = ["Itineraries"];
+const pages = ["Itineraries", "Inactive Itineraries"];
 const settings = ["Profile", "Logout"];
 
 function ResponsiveAppBar() {
@@ -44,6 +44,11 @@ function ResponsiveAppBar() {
   const loadItineraries = () => {
     handleCloseNavMenu();
     navigate("/tour_guide/itineraries");
+  };
+
+  const loadInactiveItineraries = () => {
+    handleCloseNavMenu();
+    navigate("/tour_guide/inactive_itineraries");
   };
 
   return (
@@ -119,7 +124,7 @@ function ResponsiveAppBar() {
               {pages[0]}
             </Button>
             <Button
-              onClick={handleCloseNavMenu}
+              onClick={loadInactiveItineraries}
               sx={{ my: 2, color: "white", display: "block" }}
             >
               {pages[1]}
