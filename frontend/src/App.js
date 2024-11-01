@@ -72,6 +72,9 @@ import ViewProductTourist from "./Pages/Tourist/prodDetails.js";
 import EditProductD from "./Pages/Seller/prodD.js";
 import AddProductSeller from "./Pages/Seller/addP.js";
 import UpdateActivityForm from "./components/UpdateActivityForm.js";
+import ComplaintsList from './Pages/ComplaintsList';
+import ComplaintDetails from './Pages/ComplaintDetails';
+import InactiveItineraries from "./Pages/itineraries/InactiveItineraries.js"
 import TouristHistory from "./Pages/Tourist/TouristHistory.js"
 
 function App() {
@@ -104,7 +107,7 @@ function App() {
         element={<TourGuideProfile userId={localStorage.getItem("id")} />}
       />
       <Route path="tour_guide/itineraries" element={<UserViewItineraries />} />
-      
+      <Route path="tour_guide/inactive_itineraries" element={<InactiveItineraries />} />
       <Route path="tour_guide/itineraries/:id" element={<ItineraryDetails />} />
       <Route path="/Tourist/Products" element={<ViewProductsTourist />} />
       <Route path="/Tourist/Products/ViewProduct/:id" element={<ViewProductTourist />} />
@@ -162,6 +165,8 @@ function App() {
               <Route path="/add-admin" element={<AddAdmin />} />
               <Route path="/add-governor" element={<AddGovernor />} />
               <Route path="/delete-User" element={<DeleteUser />} /> 
+              <Route path="/complaints" element={<ComplaintsList />} />
+              <Route path="/complaints/:id" element={<ComplaintDetails />} />
        
         </Route>
 

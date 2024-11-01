@@ -118,4 +118,41 @@ const getProduct = async (req, res) => {
     }
 };
 
-module.exports = { createProduct, getProducts,getSellersProducts, getProduct, deleteProduct, updateProduct };   
+const archiveProduct = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+  const product = await Product.findByIdAndUpdate(
+      id,
+      { archived: true },
+      { new: true }
+  );
+
+  if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+  }
+
+  res.status(200).json({
+      status: "success",
+      data: { product },
+  });
+});
+
+const unarchiveProduct = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+  const product = await Product.findByIdAndUpdate(
+      id,
+      { archived: false },
+      { new: true }
+  );
+
+  if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+  }
+
+  res.status(200).json({
+      status: "success",
+      data: { product },
+  });
+});
+
+
+module.exports = { createProduct, getProducts,getSellersProducts, getProduct, deleteProduct, updateProduct, archiveProduct, unarchiveProduct };   

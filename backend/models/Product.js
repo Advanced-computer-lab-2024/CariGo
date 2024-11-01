@@ -40,6 +40,10 @@ const productSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+      archived: { // New field to indicate whether the product is archived
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );

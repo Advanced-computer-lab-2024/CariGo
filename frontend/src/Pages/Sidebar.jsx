@@ -15,13 +15,20 @@ import {
   LockOutlined,
   ApiOutlined,
   DatabaseOutlined,
+  ExclamationCircleOutlined,
 } from '@ant-design/icons';
 import { Button, Menu } from 'antd';
+import { Link } from 'react-router-dom';
 
 const items = [
-  { key: '1', icon: <PieChartOutlined />, label: 'Dashboard Overview' },
-  { key: '2', icon: <UserOutlined />, label: 'User Management' },
-  { key: '3', icon: <ContainerOutlined />, label: 'Product Management' },
+  { key: '1', icon: <PieChartOutlined />, label: <Link to="/">Dashboard Overview</Link> },
+  { key: '2', icon: <UserOutlined />, label: <Link to="/user-management">User Management</Link> },
+  { key: '3', icon: <ContainerOutlined />, label: <Link to="/product-management">Product Management</Link> },
+  {
+    key: 'complaints', 
+    icon: <ExclamationCircleOutlined />, 
+    label: <Link to="/complaints">Complaints</Link> 
+  },
   {
     key: 'sub1',
     label: 'Reports',

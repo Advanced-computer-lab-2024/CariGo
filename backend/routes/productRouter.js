@@ -26,6 +26,16 @@ router.post(
     productController.updateProduct
   );
   
+router.patch(
+    '/archiveProduct/:id',
+    authController.protect,
+    productController.archiveProduct
+);
+  router.patch(
+    '/unarchiveProduct/:id',
+    authController.protect,
+    productController.unarchiveProduct
+);
 
 router.delete('/deleteProduct/:id', productController.deleteProduct);
 

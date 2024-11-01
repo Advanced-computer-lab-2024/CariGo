@@ -11,7 +11,7 @@ const VintageModel = require("../models/Vintage");
 const mongoose = require("mongoose");
 const APIFeatures = require("../utils/apiFeatures");
 const Category = require("../models/Category");
-
+const bookingModel = require("../models/Bookings");
 
 
 const createItinerary = async (req, res) => {
@@ -39,6 +39,7 @@ const createItinerary = async (req, res) => {
       start_date,
       end_date,
       accessibility,
+      category
     } = req.body;
     try {
       const itinerary = await itineraryModel.create({
@@ -56,6 +57,7 @@ const createItinerary = async (req, res) => {
         start_date,
         end_date,
         accessibility,
+        category,
       });
       res.status(200).json(itinerary);
     } catch (error) {
@@ -503,6 +505,91 @@ const readAllVintage = async (req, res) => {
 };
 
 
+const shareItinerary = async (req,res) => {
+  const {id}  = req.params;
+  console.log(id);
+  if(mongoose.Types.ObjectId.isValid(id)){
+    // activityModel
+    //   .findOne({ _id: new mongoose.Types.ObjectId(id)},{ link: 1, _id: 0 })
+    //   .then((result) => {
+    //     res.status(200).json(result);
+    //   })
+    //   .catch((error) => {
+    //     res.status(500).json({ error: "couldn't get itinerary data" });
+    //   });
+    const result = `http://localhost:3000/Tourist-itineraries/${id}`;
+    res.status(200).json(result);
+  }
+  else {
+    res
+      .status(404)
+      .json({ error: "couldn't get the activity data, activity id invalid" });
+  }
+}
+
+const shareVintage = async (req,res) => {
+  const {id}  = req.params;
+  console.log(id);
+  if(mongoose.Types.ObjectId.isValid(id)){
+    // activityModel
+    //   .findOne({ _id: new mongoose.Types.ObjectId(id)},{ link: 1, _id: 0 })
+    //   .then((result) => {
+    //     res.status(200).json(result);
+    //   })
+    //   .catch((error) => {
+    //     res.status(500).json({ error: "couldn't get itinerary data" });
+    //   });
+    const result = `http://localhost:3000/allVintages/${id}`;
+    res.status(200).json(result);
+  }
+  else {
+    res
+      .status(404)
+      .json({ error: "couldn't get the activity data, activity id invalid" });
+  }
+}
+
+const BookItinerary = async (req, res) => {
+  const { ItineraryId } = req.params; // Event ID from URL parameters
+  const { UserId, PaymentMethod } = req.body; // User ID from request body
+  let CardNumber;
+  let booking; // Declare booking outside of if-else to use in response
+  if (
+    mongoose.Types.ObjectId.isValid(ItineraryId) &&
+    mongoose.Types.ObjectId.isValid(UserId)
+  ) {
+    try {
+      if (PaymentMethod == "Card") {
+        CardNumber = req.body.CardNumber;
+          booking = await bookingModel.create({
+            ItineraryId: ItineraryId,
+          UserId: UserId,
+          PaymentMethod: PaymentMethod,
+          Status: true,
+          CardNumber: CardNumber,
+        });
+      } else {
+          booking = await bookingModel.create({
+            ItineraryId: ItineraryId,
+          UserId: UserId,
+          PaymentMethod: PaymentMethod,
+          Status: true,
+        });
+      }
+
+      res.status(200).json({
+        message: " booked successfully",
+        booking,
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to book" });
+      console.error("Error while booking:", error);
+    }
+  } else {
+    res.status(400).json({ error: "Invalid itineray ID format" });
+  }
+};
+
 module.exports = {
   createItinerary,
   createvintage,
@@ -514,5 +601,8 @@ module.exports = {
   readSingleVintage,
   updateVintage,
   deleteItinerary,
-  deleteVintage, readAllVintage, readMyItineraries, viewAllVintage
+  deleteVintage, readAllVintage, readMyItineraries, viewAllVintage,
+  shareItinerary,
+  shareVintage,
+  BookItinerary
 };

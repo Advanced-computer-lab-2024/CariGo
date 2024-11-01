@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import SelectTags from "./SelectTags";
 import ItineraryActivityList from "./ItineraryActivityList";
 import ItineraryTags from "./ItineraryTags";
+import SelectCategory from "./ItineraryCategory";
 export default function CreateItineraryForm({ open, handleClose }) {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -23,6 +24,7 @@ export default function CreateItineraryForm({ open, handleClose }) {
     language: "",
     price: 0,
     locations: "",
+    category: "", // Add category state
     pick_up: "",
     drop_off: "",
     accessibility: "",
@@ -113,6 +115,7 @@ export default function CreateItineraryForm({ open, handleClose }) {
           end_date: formData.end_date
             ? new Date(formData.end_date).toISOString()
             : null,
+          category: formData.category, // Include category in submission data
         }),
         headers: {
           "Content-Type": "application/json",
@@ -135,6 +138,14 @@ export default function CreateItineraryForm({ open, handleClose }) {
       console.error("Failed to create itinerary:", error);
       alert(`An error occurred: ${error.message}`);
     }
+  };
+
+
+  const handleCategoryChange = (category) => {
+    setFormData((prev) => ({
+      ...prev,
+      category, // Update category in formData
+    }));
   };
 
   const handleNavigate = () => {
@@ -277,7 +288,12 @@ export default function CreateItineraryForm({ open, handleClose }) {
         selectedTags={formData.tags}
         setSelectedTags={(tags) => setFormData({ ...formData, tags })}
       />
-
+      {/* Category selection */}
+      <Label>Category</Label>
+      <SelectCategory 
+        tag={formData.category} 
+        setTags={handleCategoryChange} // Pass handler to update category
+      />
       <ItineraryActivityList
         activities={localActivities}
         createActivity={createActivity}
