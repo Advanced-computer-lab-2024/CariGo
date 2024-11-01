@@ -35,9 +35,11 @@ import Divider from '@mui/material/Divider';
 import { Content, Header } from "antd/es/layout/layout";
 import TopBar from "../TopBar";
 import { TablePagination } from '@mui/material';
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from 'react-toastify';
 
 import { Navigate, useLocation } from "react-router-dom";
+import ArchiveIcon from '@mui/icons-material/Archive';
+import UnarchiveIcon from '@mui/icons-material/Unarchive';
 import { ArrowRightAlt, Edit } from "@mui/icons-material";
 import SearchIcon from '@mui/icons-material/Search';
 export default function ViewProducts() {
@@ -49,6 +51,8 @@ export default function ViewProducts() {
   const bgError = palette.error.main;
   const bgPrimary = palette.success.main;
   const bgSecondary = palette.warning.light;
+  const token = localStorage.getItem('jwt');
+    
   // Fetch categories function
   const fetchProducts = async () => {
     setLoading(true); // Start loading
@@ -63,6 +67,83 @@ export default function ViewProducts() {
       setLoading(false); // Stop loading
     }
   };
+
+    const refreshProducts = async () => {
+    setLoading(true); // Start loading
+    try {
+      const response = await axios.get("http://localhost:4000/cariGo/products",{
+        headers:{
+            authorization :`Bearer ${token}`
+    }}); // Fetch from backend
+      console.log(response.data); // Log the response data
+      setProducts(response.data); // Set the products state
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    } finally {
+      setLoading(false); // Stop loading
+    }
+  };
+
+  const archiveProduct = async (product) => {
+    try {
+        const response = await axios.patch(
+            `http://localhost:4000/cariGo/products/archiveProduct/${product._id}`,
+            {},
+            {
+                headers: {
+                    authorization: `Bearer ${token}`,
+                },
+            }
+        );
+
+        if (response.status === 204) {
+            toast.success(`Product archived successfully!`);
+
+            // Update the product's `archived` status locally
+            setProducts((prevProducts) =>
+                prevProducts.map((p) =>
+                    p._id === product._id ? { ...p, archived: true } : p
+                )
+            );
+        }
+        refreshProducts();
+
+    } catch (error) {
+        console.error("Error archiving product:", error.message || error);
+        toast.error("Error archiving product. Please check the network tab for details.");
+    }
+};
+
+const unarchiveProduct = async (product) => {
+    try {
+        const response = await axios.patch(
+            `http://localhost:4000/cariGo/products/unarchiveProduct/${product._id}`,
+            {},
+            {
+                headers: {
+                    authorization: `Bearer ${token}`,
+                },
+            }
+        );
+
+        if (response.status === 204) {
+            toast.success(`Product unarchived successfully!`);
+
+            // Update the product's `archived` status locally
+            setProducts((prevProducts) =>
+                prevProducts.map((p) =>
+                    p._id === product._id ? { ...p, archived: false } : p
+                )
+            );
+        }
+        refreshProducts();
+
+    } catch (error) {
+        console.error("Error unarchiving product:", error.message || error);
+        toast.error("Error unarchiving product. Please check the network tab for details.");
+    }
+};
+    
 const onChange = () =>{
 
 }
@@ -276,12 +357,28 @@ const navigate = useNavigate();
                   {/* <IconButton onClick={() => console.log(2)}>
                     <Edit color="primary" />
                   </IconButton> */}
-                  <Rating name="read-only" value={product['ratingsAverage'].avgSoFar} readOnly size="small" precision={0.5} defaultValue={4} />
-                </TableCell>
+                    <Rating  name="read-only"  value={product.ratingsAverage?.avgSoFar || 0} // Provide fallback if undefined
+                    readOnly
+                    size="small"
+                    precision={0.5}
+                    />                </TableCell>
                 <TableCell sx={{ px: 7 }} colSpan={1}>
                   <IconButton onClick={() =>handleDetatils(product._id)}>
                     <Edit color="primary"  />
                   </IconButton>
+                      {product.archived ? (
+                                                <Tooltip title="Unarchive Product" placement="top">
+                                                    <IconButton onClick={() => unarchiveProduct(product)} style={{ color: 'red' }}>
+                                                        <UnarchiveIcon />
+                                                    </IconButton>
+                                                </Tooltip>
+                                            ) : (
+                                                <Tooltip title="Archive Product" placement="top">
+                                                    <IconButton onClick={() => archiveProduct(product)} style={{ color: 'green' }}>
+                                                        <ArchiveIcon />
+                                                    </IconButton>
+                                                </Tooltip>
+                                            )}
                 </TableCell>
               </TableRow>
             ))}
