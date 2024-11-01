@@ -31,5 +31,15 @@ const BookingSchema = new schema({
     default:"",
   }
 });
+
+BookingSchema.pre(/^find/, function (next) {
+  this.populate({
+      path: 'ItineraryId',
+      select: 'author category activities',
+  });
+  next();
+});
+
 const Bookings = mongoose.model("Bookings", BookingSchema);
+
 module.exports = Bookings;
