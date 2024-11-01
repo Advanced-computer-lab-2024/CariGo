@@ -124,29 +124,67 @@ const [filters, setFilters] = useState({
 
   const [filteredVintages, setfilteredVintages] = useState(vintages);
  
-
-  
   const [errorMessage, setErrorMessage] = useState(""); // State to store error messages
  
   const [searchTerm, setSearchTerm] = useState(""); // For search
  
-    const [selectedTag, setSelectedTag] = useState(""); // For search
+  //const [selectedTag, setSelectedTag] = useState(""); // For search
 
+     // Fetch vintages
+     useEffect(() => {
+      const fetchAndProcessVintages = async () => {
+        setLoading(true);
+        setErrorMessage("");
+        try {
+          const token = localStorage.getItem("jwt"); // Retrieve the token
+          const queryParams = new URLSearchParams();
+          if (filters.tags) queryParams.append("tag", filters.tags);
+  
+          const response = await fetch(
+            `http://localhost:4000/Event/readAllVintage/?${queryParams.toString()}`,
+            {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${token}`, // Add token to headers
+                "Content-Type": "application/json",
+              },
+            }
+          );
+  
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+  
+          const json = await response.json();
+          const vintagesArray = Array.isArray(json) ? json : [];
+          setVintages(vintagesArray);
+          setfilteredVintages(vintagesArray); // Initialize filteredVintages with all vintages
+  
+        } catch (error) {
+          console.log("Error fetching vintages:", error);
+          setErrorMessage("Failed to fetch vintages. Please try again later.");
+        } finally {
+          setLoading(false);
+        }
+      };
+  
+      fetchAndProcessVintages();
+    }, [filters]); // Run effect when filters change
+  
 
-
-// const handleSearch = () => {
-//   if (!searchTerm.trim()) {
-//       // If searchTerm is empty, show all activities
-//       setFilteredVintages(vintages);
-//   } else {
-//       const filtered = vintages.filter((vintage) => {
-//           return (vintage.title && vintage.title.toLowerCase().includes(searchTerm.toLowerCase()))
-//               || (vintage.tag && vintage.tag.toLowerCase().includes(searchTerm.toLowerCase()))
+const handleSearch = () => {
+  if (!searchTerm.trim()) {
+      // If searchTerm is empty, show all activities
+      setfilteredVintages(vintages);
+  } else {
+      const filtered = vintages.filter((vintage) => {
+          return (vintage.title && vintage.title.toLowerCase().includes(searchTerm.toLowerCase()))
+              || (vintage.tag && vintage.tag.toLowerCase().includes(searchTerm.toLowerCase()))
               
-//       });
-//       setFilteredVintages(filtered); // Update the filtered activities
-//   }
-// };
+      });
+      setfilteredVintages(filtered); // Update the filtered activities
+  }
+};
 
 // const filteredVin = vintages.filter(
 //   (vintage) =>
@@ -161,46 +199,6 @@ const [filters, setFilters] = useState({
 //     ))
 //   );
 
-//      // Fetch vintages
-//   useEffect(() => {
-//     const fetchAndProcessVintages = async () => {
-//       setLoading(true);
-//       setErrorMessage("");
-//       try {
-//         const token = localStorage.getItem("jwt"); // Retrieve the token
-//         const queryParams = new URLSearchParams();
-//         if (filters.tags) queryParams.append("tag", filters.tags);
-
-//         const response = await fetch(
-//           `http://localhost:4000/Event/readAllVintage/?${queryParams.toString()}`,
-//           {
-//             method: "GET",
-//             headers: {
-//               Authorization: `Bearer ${token}`, // Add token to headers
-//               "Content-Type": "application/json",
-//             },
-//           }
-//         );
-
-//         if (!response.ok) {
-//           throw new Error(`HTTP error! status: ${response.status}`);
-//         }
-
-//         const json = await response.json();
-//         const vintagesArray = Array.isArray(json) ? json : [];
-//         setVintages(vintagesArray);
-//         setFilteredVintages(vintagesArray); // Initialize filteredVintages with all vintages
-
-//       } catch (error) {
-//         console.log("Error fetching vintages:", error);
-//         setErrorMessage("Failed to fetch vintages. Please try again later.");
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-
-//     fetchAndProcessVintages();
-//   }, [filters]); // Run effect when filters change
 
 //   // Filter on search term change
 //   useEffect(() => {
@@ -235,7 +233,7 @@ const [filters, setFilters] = useState({
             onChange={(e) => setSearchTerm(e.target.value)} // Capture search input
             />
           </Search>
-          {/* <Button variant="contained" label="search" onClick={handleSearch} sx={{ ml: 2 }}>search</Button> */}
+          <Button variant="contained" label="search" onClick={handleSearch} sx={{ ml: 2 }}>search</Button>
           </Box>
 
         {/*Filter menu*/}
