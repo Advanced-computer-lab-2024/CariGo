@@ -74,8 +74,9 @@ import AddProductSeller from "./Pages/Seller/addP.js";
 import UpdateActivityForm from "./components/UpdateActivityForm.js";
 import ComplaintsList from './Pages/ComplaintsList';
 import ComplaintDetails from './Pages/ComplaintDetails';
-import InactiveItineraries from "./Pages/itineraries/InactiveItineraries.js"
-import TouristHistory from "./Pages/Tourist/TouristHistory.js"
+import InactiveItineraries from "./Pages/itineraries/InactiveItineraries.js";
+import TouristHistory from "./Pages/Tourist/TouristHistory.js";
+
 
 function App() {
   const token = localStorage.getItem("jwt");
