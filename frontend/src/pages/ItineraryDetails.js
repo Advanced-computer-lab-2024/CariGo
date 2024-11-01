@@ -11,6 +11,8 @@ import ItineraryTags from "../components/ItineraryTags"; // Import the tags comp
 import "../components/styles/CompanyInfo.css";
 import logoImage from "../assets/itinerary.png"; // Correct relative path
 import SelectCategory from "../components/ItineraryCategory";
+import { useNavigate } from "react-router-dom";
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 import axios from "axios";
 
 const ItineraryDetails = () => {
@@ -22,7 +24,12 @@ const ItineraryDetails = () => {
   const [activityTrigger, setActivityTrigger] = useState(0);
   const [selectedTags, setSelectedTags] = useState([]); // State for selected tags
   const [localCategory, setLocalCategory] = useState(null);
+  const [openDialog, setOpenDialog] = useState(false); // State to control dialog visibility
 
+  // Function to handle dialog open and close
+  const handleDialogOpen = () => setOpenDialog(true);
+  const handleDialogClose = () => setOpenDialog(false);
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchItineraryDetails = async () => {
       try {
@@ -62,6 +69,28 @@ const ItineraryDetails = () => {
     fetchItineraryDetails();
   }, [refreshKey, activityTrigger]); // Include `id` in dependencies
 
+  const toggleIsActive = async (newStatus) => {
+    try {
+      const token = localStorage.getItem("jwt");
+      if (!token) throw new Error("No token found. Please log in.");
+
+      await axios.patch(
+        `http://localhost:4000/cariGo/Event/updateItinerary/${id}`,
+        { isActive: newStatus },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      setItinerary((prev) => ({ ...prev, isActive: newStatus }));
+      handleDialogClose(); // Close dialog after action
+
+      if (!newStatus) navigate(-1); // Redirect to the previous page on deactivation
+    } catch (error) {
+      console.error("Error updating itinerary status:", error);
+    }
+  };
+  
   // Function to update itinerary activities and tags
   const updateItinerary = async (activities, tags, category) => {
     const token = localStorage.getItem("jwt");
@@ -196,7 +225,10 @@ const ItineraryDetails = () => {
               selectedTags={selectedTags}
               setSelectedTags={handleTagChange}
             />
-            <Typography variant="body1" sx={{ fontSize: "18px", marginBottom: "5px", marginTop: "10px" }}>
+            <Typography
+              variant="body1"
+              sx={{ fontSize: "18px", marginBottom: "5px", marginTop: "10px" }}
+            >
               <strong>Category:</strong>{" "}
             </Typography>
             <SelectCategory
@@ -307,6 +339,40 @@ const ItineraryDetails = () => {
               />
             </Typography>
           </Box>
+          <Button
+        variant="contained"
+        color={itinerary.isActive ? "error" : "primary"} // Red button for deactivation
+        onClick={handleDialogOpen}
+        sx={{ marginTop: "20px" }}
+      >
+        {itinerary.isActive ? "Deactivate Itinerary" : "Activate Itinerary"}
+      </Button>
+
+      {/* Confirmation dialog */}
+      <Dialog open={openDialog} onClose={handleDialogClose}>
+        <DialogTitle>
+          {itinerary.isActive ? "Confirm Deactivation" : "Confirm Activation"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            {itinerary.isActive
+              ? "Are you sure you want to deactivate this itinerary?"
+              : "Are you sure you want to activate this itinerary?"}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDialogClose} color="primary">
+            Cancel
+          </Button>
+          <Button
+            onClick={() => toggleIsActive(!itinerary.isActive)}
+            color="error"
+            autoFocus
+          >
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
         </div>
       </Box>
     </div>
