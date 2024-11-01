@@ -22,6 +22,7 @@ import AddAdmin from './accounts/addAdmin.jsx';
 import AddGovernor from './accounts/addGovernor.jsx';
 import DeleteUser from './accounts/deleteUser.jsx';
 import ViewProducts from './products/viewProducts.jsx';
+import AdminViewEvents from './AdminViewEvents.js'
 const { Header, Sider, Content } = Layout;
 const Dashboard= () => {
       
@@ -57,6 +58,7 @@ const Dashboard= () => {
               <Route path="/add-admin" element={<AddAdmin />} />
               <Route path="/add-governor" element={<AddGovernor />} />
               <Route path="/delete-User" element={<DeleteUser />} />
+              <Route path="/admin-view-events" element={<AdminViewEvents />} />
       {/* /* Add more routes as needed   */}
             </Routes>  
           </Content>

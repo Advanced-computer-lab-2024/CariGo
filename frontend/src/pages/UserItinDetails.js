@@ -18,10 +18,6 @@ const ItineraryDetails = () => {
     const fetchItineraryDetails = async () => {
       try {
         const token = localStorage.getItem("jwt");
-        if (!token) {
-          throw new Error("No token found. Please log in.");
-        }
-
         const response = await fetch(
           `/cariGo/Event/readSingleItinerary/${id}`,
           {
