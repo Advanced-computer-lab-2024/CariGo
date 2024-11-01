@@ -10,6 +10,7 @@ import ItineraryUpdate from "../components/ItineraryUpdate"; // Import the edit 
 import ItineraryTags from "../components/ItineraryTags"; // Import the tags component
 import "../components/styles/CompanyInfo.css";
 import logoImage from "../assets/itinerary.png"; // Correct relative path
+import SelectCategory from "../components/ItineraryCategory";
 import axios from "axios";
 
 const ItineraryDetails = () => {
@@ -20,6 +21,7 @@ const ItineraryDetails = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [activityTrigger, setActivityTrigger] = useState(0);
   const [selectedTags, setSelectedTags] = useState([]); // State for selected tags
+  const [localCategory, setLocalCategory] = useState(null);
 
   useEffect(() => {
     const fetchItineraryDetails = async () => {
@@ -51,7 +53,7 @@ const ItineraryDetails = () => {
         console.log("gayez", localActivities);
         if (isEditing) {
           setIsEditing(false); // Set editing mode to false after update
-          await updateItinerary(localActivities, data.tags); // Update activities and tags
+          await updateItinerary(localActivities, data.tags, localCategory); // Update activities and tags
         }
       } catch (error) {
         console.error("Error fetching itinerary details:", error);
@@ -61,13 +63,14 @@ const ItineraryDetails = () => {
   }, [refreshKey, activityTrigger]); // Include `id` in dependencies
 
   // Function to update itinerary activities and tags
-  const updateItinerary = async (activities, tags) => {
+  const updateItinerary = async (activities, tags, category) => {
     const token = localStorage.getItem("jwt");
     await axios.patch(
       `http://localhost:4000/cariGo/Event/updateItinerary/${id}`,
       {
         activities: activities,
         tags: tags,
+        category: category,
       },
       {
         headers: {
@@ -93,20 +96,29 @@ const ItineraryDetails = () => {
   const createActivity = async (newActivity) => {
     setLocalActivities((prevActivities) => [...prevActivities, newActivity]);
     console.log("3baki", localActivities);
-    await updateItinerary([...localActivities, newActivity], selectedTags); // Update itinerary with new activity
+    await updateItinerary(
+      [...localActivities, newActivity],
+      selectedTags,
+      localCategory
+    ); // Update itinerary with new activity
     setIsEditing(true);
     setRefreshKey((prev) => prev + 1); // Optionally trigger a refresh if needed
   };
 
   const deleteActivity = async (updatedActivities) => {
-    await updateItinerary(updatedActivities, selectedTags); // Update itinerary with deleted activities
+    await updateItinerary(updatedActivities, selectedTags, localCategory); // Update itinerary with deleted activities
     setRefreshKey((prev) => prev + 1);
   };
 
   const handleTagChange = (newTags) => {
     setSelectedTags(newTags); // Update selected tags
     setIsEditing(true); // Set editing mode to true
-    updateItinerary(localActivities, newTags); // Update itinerary with new tags
+    updateItinerary(localActivities, newTags, localCategory); // Update itinerary with new tags
+  };
+  const handleCategoryChange = (newCategory) => {
+    setLocalCategory(newCategory); // Update selected tags
+    setIsEditing(true); // Set editing mode to true
+    updateItinerary(localActivities, selectedTags, newCategory); // Update itinerary with new tags
   };
 
   if (!itinerary) {
@@ -128,6 +140,7 @@ const ItineraryDetails = () => {
     drop_off,
     accessibility,
     title,
+    category,
   } = itinerary;
 
   // Function to format the date and time
@@ -182,6 +195,13 @@ const ItineraryDetails = () => {
             <ItineraryTags
               selectedTags={selectedTags}
               setSelectedTags={handleTagChange}
+            />
+            <Typography variant="body1" sx={{ fontSize: "18px", marginBottom: "5px", marginTop: "10px" }}>
+              <strong>Category:</strong>{" "}
+            </Typography>
+            <SelectCategory
+              tag={category}
+              setTags={handleCategoryChange} // Pass handler to update category
             />
           </div>
         </Box>
