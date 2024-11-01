@@ -72,6 +72,7 @@ import ViewProductTourist from "./Pages/Tourist/prodDetails.js";
 import EditProductD from "./Pages/Seller/prodD.js";
 import AddProductSeller from "./Pages/Seller/addP.js";
 import UpdateActivityForm from "./components/UpdateActivityForm.js";
+import TouristHistory from "./Pages/Tourist/TouristHistory.js"
 
 function App() {
   const token = localStorage.getItem("jwt");
@@ -127,6 +128,7 @@ function App() {
         <Route path="/tourist-itineraries" element={< TouristItineraries/>} />
         <Route path="/guest-itineraries" element={<GuestItineraries/>} />
         <Route path="/guest-activities" element={<GuestActivities/>} />
+        <Route path="/Tourist-History" element={<TouristHistory />} />
         {/* <Route path="/guest-places" element={<GuestViewVintage/>} /> */}
         <Route path="/createActivity" element={<CreateActivityForm userId={localStorage.getItem("id")} />} /> 
         <Route path="/SignUp" element={<SignUp />} />
