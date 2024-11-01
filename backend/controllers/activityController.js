@@ -362,7 +362,7 @@ const shareActivity = async (req,res) => {
       //   .catch((error) => {
       //     res.status(500).json({ error: "couldn't get itinerary data" });
       //   });
-      const result = `http://localhost:3000/tourist-activities/${id}`;
+      const result = `http://localhost:3000/activities/${id}`;
       res.status(200).json(result);
     }
     else {

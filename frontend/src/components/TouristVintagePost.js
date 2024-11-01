@@ -10,37 +10,38 @@ import Typography from '@mui/material/Typography';
 import { red } from '@mui/material/colors';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import ShareIcon from '@mui/icons-material/Share';
-import { Box } from '@mui/material';
-import { Chip } from '@mui/material';
-import PinDropIcon from '@mui/icons-material/PinDrop'; // For location
-import AttachMoneyIcon from '@mui/icons-material/AttachMoney'; // For ticket prices
+import DeleteIcon from '@mui/icons-material/Delete';
+import { Box, Chip, Snackbar } from '@mui/material';
+import PinDropIcon from '@mui/icons-material/PinDrop';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import DeleteIcon from '@mui/icons-material/Delete';
 
 export default function TouristVintagePost({
   author = "Anonymous",
   id,
   name = "No name provided",
   description = "No description available",
-  pictures = [], // Default as an empty array
-  location = null, // Default is null for the location
+  pictures = [],
+  location = null,
   ticket_price = {
     foreigner: "Not specified",
     native: "Not specified",
     student: "Not specified"
   },
-  tags = [], // Default as an empty array
+  tags = [],
   opening_hours = {
     opening: "Not specified",
     closing: "Not specified"
   }
 }) {
   const navigate = useNavigate();
+  const [snackbarOpen, setSnackbarOpen] = React.useState(false);
+  const [snackbarMessage, setSnackbarMessage] = React.useState('');
 
-  const handleDelete = async (event) => {
+  const handleDelete = async (event) => {
     event.stopPropagation();
-    const confirmDelete = window.confirm("Are you sure you want to delete this itinerary?");
+    const confirmDelete = window.confirm("Are you sure you want to delete this vintage?");
     if (confirmDelete) {
       try {
         const token = localStorage.getItem('jwt');
@@ -48,21 +49,65 @@ export default function TouristVintagePost({
           throw new Error("No token found. Please log in.");
         }
 
-        // Assuming you have the correct API endpoint to delete an itinerary
         await axios.delete(`/cariGo/Event/deleteVintage/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
 
-        alert("Itinerary deleted successfully");
-        // Optionally use navigate or a callback to update the parent component
-        navigate('/myVintages'); // Redirect to the itineraries list or any other page
+        setSnackbarMessage("Vintage deleted successfully");
+        setSnackbarOpen(true);
+        navigate('/myVintages');
       } catch (error) {
-        console.error('Failed to delete itinerary:', error.response ? error.response.data : error.message);
-        alert(`An error occurred while deleting the itinerary. Details: ${error.message}`);
+        console.error('Failed to delete vintage:', error.response ? error.response.data : error.message);
+        setSnackbarMessage(`An error occurred while deleting the vintage. Details: ${error.message}`);
+        setSnackbarOpen(true);
       }
     }
+  };
+
+  const handleShare = async (event) => {
+    event.stopPropagation();
+    try {
+      const token = localStorage.getItem('jwt');
+      if (!token) {
+        throw new Error("No token found. Please log in.");
+      }
+
+      const response = await axios.get(`/cariGo/Event/shareVintage/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const shareLink = response.data;
+
+      if (navigator.share) {
+        await navigator.share({
+          title: 'Check out this vintage place!',
+          text: 'I found this interesting vintage place on CariGo',
+          url: shareLink,
+        });
+      } else {
+        await navigator.clipboard.writeText(shareLink);
+        setSnackbarMessage('Link copied to clipboard!');
+        setSnackbarOpen(true);
+      }
+    } catch (error) {
+      console.error('Error sharing vintage:', error);
+      if (error.response && error.response.status === 401) {
+        setSnackbarMessage('You need to be logged in to share this vintage. Please log in and try again.');
+      } else {
+        setSnackbarMessage('Failed to share vintage. Please try again later.');
+      }
+      setSnackbarOpen(true);
+    }
+  };
+
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackbarOpen(false);
   };
 
   return (
@@ -90,7 +135,7 @@ export default function TouristVintagePost({
       <Box sx={{ display: 'flex', flexDirection: 'row', flexGrow: 1 }}>
         <CardMedia
           component="img"
-          image={pictures[0] || 'placeholder-image.jpg'} // Fallback to placeholder image if no pictures
+          image={pictures[0] || '/placeholder.svg?height=250&width=500'}
           alt={name}
           sx={{
             width: '500px',
@@ -118,7 +163,6 @@ export default function TouristVintagePost({
           </Box>
 
           <Box sx={{ display: 'flex', flexDirection: 'column', marginLeft: '30px', marginTop: '10px' }}>
-            {/* Check if location exists and render if available */}
             {location && location.nation ? (
               <Box sx={{ display: 'flex', marginTop: '5px' }}>
                 <PinDropIcon />
@@ -132,7 +176,6 @@ export default function TouristVintagePost({
               </Typography>
             )}
 
-            {/* Ticket Price Section */}
             <Box sx={{ display: 'flex', marginTop: '5px' }}>
               <AttachMoneyIcon />
               <Typography sx={{ marginLeft: '5px', color: '#126782' }}>
@@ -158,11 +201,24 @@ export default function TouristVintagePost({
           <IconButton aria-label="add to favorites">
             <FavoriteIcon />
           </IconButton>
-          <IconButton aria-label="share">
+          <IconButton aria-label="share" onClick={handleShare}>
             <ShareIcon />
+          </IconButton>
+          <IconButton aria-label="delete" onClick={handleDelete} sx={{ color: 'red' }}>
+            <DeleteIcon />
           </IconButton>
         </Box>
       </CardActions>
+      <Snackbar
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+        message={snackbarMessage}
+      />
     </Card>
   );
 }

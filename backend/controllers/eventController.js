@@ -519,7 +519,7 @@ const shareItinerary = async (req,res) => {
     //   .catch((error) => {
     //     res.status(500).json({ error: "couldn't get itinerary data" });
     //   });
-    const result = `http://localhost:3000/Tourist-itineraries/${id}`;
+    const result = `http://localhost:3000/user_itineraries/${id}`;
     res.status(200).json(result);
   }
   else {
