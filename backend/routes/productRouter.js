@@ -29,11 +29,13 @@ router.post(
 router.patch(
     '/archiveProduct/:id',
     authController.protect,
+    authController.restrictTo('Seller', 'Admin'),
     productController.archiveProduct
 );
   router.patch(
     '/unarchiveProduct/:id',
     authController.protect,
+    authController.restrictTo('Seller', 'Admin'),
     productController.unarchiveProduct
 );
 
