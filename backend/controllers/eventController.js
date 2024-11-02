@@ -590,6 +590,43 @@ const BookItinerary = async (req, res) => {
   }
 };
 
+const MyItineraryBookings = async (req, res) => {
+  const { UserId } = req.body; // User ID from request body
+  if (mongoose.Types.ObjectId.isValid(UserId)) {
+    try {
+      const bookings = await bookingModel.find({UserId,ItineraryId: { $ne: null } }).sort({createdAt: -1});
+      return res.status(200).json(bookings);
+    } catch {
+      res.status(500).json({ error: "Failed to fetch bookings" });
+      console.error("Error while booking:", error);
+    }
+  } else {
+    res.status(400).json({ error: "Invalid event ID format" });
+  }
+};
+
+const CancelItineraryBooking = async (req, res) => {
+    const { UserId } = req.body; // User ID from request body
+    const { ItineraryId } = req.params; // Event ID from URL parameters
+    if (mongoose.Types.ObjectId.isValid(ItineraryId) && mongoose.Types.ObjectId.isValid(UserId)) {
+        try {
+            const bookings = await bookingModel.updateMany(
+                { UserId, ItineraryId }, // Filter to find documents with both UserId and ItineraryId
+                { $set: { Status: false } } // Update to set Status to false
+              );
+              res.status(200).json({
+                message: "Bookings canceled successfully",
+                updatedBookingsCount: bookings.modifiedCount // shows how many bookings were updated
+              }); 
+        } catch {
+          res.status(500).json({ error: "Failed to fetch booking" });
+          console.error("Error while booking:", error);
+        }
+      } else {
+        res.status(400).json({ error: "Invalid event ID format" });
+      }
+};
+
 module.exports = {
   createItinerary,
   createvintage,
@@ -604,5 +641,7 @@ module.exports = {
   deleteVintage, readAllVintage, readMyItineraries, viewAllVintage,
   shareItinerary,
   shareVintage,
-  BookItinerary
+  BookItinerary,
+  MyItineraryBookings,
+  CancelItineraryBooking
 };

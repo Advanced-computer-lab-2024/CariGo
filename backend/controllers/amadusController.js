@@ -5,19 +5,30 @@ const amadeus = new Amadeus({
   clientSecret: 'M6DDYSiCXacAm7i9'
 });
 // Route to get IATA code by city name
-const getIataCode = async (cityName) => {
-  try {
-      const response = await amadeus.referenceData.locations.get({
-          keyword: cityName,
-          subType: 'CITY'
+const getCityByCode = async (req, res) => {
+    try {
+      // Extract the airline code from the query parameters
+      const airlineCode = req.query.airlineCodes; // Ensure this matches your actual query parameter name
+  
+      // Make the request to the Amadeus API
+      const response = await amadeus.referenceData.airlines.get({
+        airlineCodes: [airlineCode] // Pass the airline code as an array
       });
-      return response.data[0]?.iataCode; // Return the IATA code of the first result
-  } catch (error) {
+  
+      // Return the IATA code of the first result, if available
+      const city = response.data;
+      
+      if (iataCode) {
+        return res.json({ city }); // Send the IATA code in the response
+      } else {
+        return res.status(404).json({ message: 'IATA code not found' });
+      }
+    } catch (error) {
       console.error('Error fetching IATA code:', error);
-      throw error;
-  }
-};
-const getFlights = async (req, res) => {
+      return res.status(500).json({ message: 'Internal server error' });
+    }
+  };
+getFlights = async (req, res) => {
   try {
       const { origin, destination, departureDate, adults } = req.query;
 
@@ -77,9 +88,9 @@ const cities = async (req, res) => {
   const { keyword } = req.query; // e.g., city name or part of it
 
   try {
-      const response = await amadeus.referenceData.locations.get({
+      const response = await amadeus.referenceData.locations.cities.get({
           keyword: keyword,
-          subType: 'CITY'
+          
       });
 
       // Map response to include only city name and IATA code
