@@ -31,8 +31,6 @@ export default function ActivityPost({ id,author, img, start_date, end_date, dur
   };
 
 const navigate = useNavigate();
-
-
   return (
     // <Link 
     // to={`/activities/${id}`} 
@@ -43,7 +41,6 @@ const navigate = useNavigate();
       sx={{
         width: '100%', // Use full width of the container
         maxWidth: '900px', // Set a max width
-        height:'350px',
         maxHeight: '500px',
         color: '#126782',
         fontSize: '18px',
@@ -59,7 +56,6 @@ const navigate = useNavigate();
           cursor: 'pointer', // Change cursor to pointer
         },
       }}
-      onClick={() => navigate(`/activity/${id}`)}
     >
       <Box sx={{ display: 'flex', flexDirection: 'row', flexGrow: 1 }}>
         
@@ -88,6 +84,8 @@ const navigate = useNavigate();
             }}
           >
             <CardHeader
+              //avatar={<Avatar sx={{ bgcolor: red[500] }}>R</Avatar>}
+              
               title={
                 <Typography variant="h5" sx={{ width: '300px', fontWeight: 'bold', fontSize: '24px' }}>
                   {title}
@@ -113,6 +111,9 @@ const navigate = useNavigate();
               marginLeft: '30px',
             }}
           >
+            
+            <Typography>author : {author}</Typography>
+
             <Typography>
               category: {category != null ? category:"no specified category"}
               
@@ -138,7 +139,26 @@ const navigate = useNavigate();
                 {isOpened || "status"}
                 </Typography>
                 </Box>
-        
+            <Box sx={{ display: 'flex',
+                marginTop: '5px',
+                margoinLeft:'-10px' ,
+                
+                }}>
+            <PinDropIcon sx={{marginTop:'0px',}}/>
+            <Typography sx={{marginLeft:'5px'}}> 
+
+            {location != null ? (
+              <>
+                lan: {location.lan}<br />
+                lon: {location.lon}
+              </>
+            ) : (
+              'no location specified'
+            )}
+              </Typography>
+            </Box>
+            
+
             <Box sx={{ display: 'flex',
                 marginTop: '5px',
                 margoinLeft:'-10px' ,
@@ -156,11 +176,6 @@ const navigate = useNavigate();
               (price.range.max+"-"+price.range.min )
               :'no specified price'}
               </Typography>
-
-
-            {/* <Typography sx={{fontSize: '16px'}}> {discount >0?  (price -(price*discount/100)): ''}</Typography> */}
-
-
             <Box sx={{
                 backgroundColor : '#ff4d4d',
                 display: 'flex',
@@ -179,7 +194,7 @@ const navigate = useNavigate();
           </Box>
         </Box>
       </Box>
-      <Box sx={{display:'flex', flexDirection:'column', }}>
+
       {/* Description */}
       <CardContent sx={{ flexGrow: 1 }}>
         <Typography
@@ -217,7 +232,6 @@ const navigate = useNavigate();
           </IconButton>
         </Box>
       </CardActions>
-      </Box>
     </Card>
     // </Link>
   );
