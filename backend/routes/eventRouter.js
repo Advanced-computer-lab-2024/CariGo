@@ -64,7 +64,7 @@ router.get(
 
 router.patch(
   "/updateItinerary/:itineraryId",
-  authController.restrictTo("Tour_Guide"),
+  authController.restrictTo("Tour_Guide", "Admin"),
   updateItinerary
 ); // itineraries/:id
 router.delete(
