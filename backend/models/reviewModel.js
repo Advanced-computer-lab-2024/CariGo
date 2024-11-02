@@ -46,13 +46,6 @@ const reviewSchema = new mongoose.Schema(
     }
 );
 
-////////////////// MiddleWare //////////////////
-
-// Create unique indexes for each pair of reference and user
-['product', 'activity', 'itinerary', 'tourGuide'].forEach((ref) => {
-    reviewSchema.index({ [ref]: 1, user: 1 }, { unique: true });
-});
-
 // Populate user field when retrieving reviews
 reviewSchema.pre(/^find/, function (next) {
     this.populate({

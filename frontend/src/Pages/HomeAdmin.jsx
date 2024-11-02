@@ -1,7 +1,7 @@
 import React from 'react';
 import './Home.css';  // If you want to add custom styles
 import { Link } from 'react-router-dom';
-import { UserOutlined, TagOutlined, FolderOutlined, ShoppingOutlined } from '@ant-design/icons'; 
+import { UserOutlined, TagOutlined, FolderOutlined, ShoppingOutlined, CalendarOutlined } from '@ant-design/icons'; 
 import UserActivityChart from './UserActivityChart';
 const HomeAdmin = () => {
     return (
@@ -39,6 +39,13 @@ const HomeAdmin = () => {
               <TagOutlined className="card-icon" /> {/* Use TagOutlined for preferences */}
               <h3>Edit Preference</h3>
               <p>View and manage user preference tags.</p>
+            </Link>
+
+            {/* Clickable card for Edit Preference Tags */}
+            <Link to="/admin-view-events" className="card">
+              <CalendarOutlined className="card-icon" /> {/* Use TagOutlined for preferences */}
+              <h3>View Events</h3>
+              <p>View and manage Events on the system.</p>
             </Link>
           </div>
         </section>
