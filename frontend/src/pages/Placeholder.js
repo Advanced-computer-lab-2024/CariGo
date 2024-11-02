@@ -1,279 +1,273 @@
-import * as React from 'react';
-import { styled } from '@mui/material/styles';
-import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
-import CardMedia from '@mui/material/CardMedia';
-import CardContent from '@mui/material/CardContent';
-import CardActions from '@mui/material/CardActions';
-import Avatar from '@mui/material/Avatar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import { red } from '@mui/material/colors';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import ShareIcon from '@mui/icons-material/Share';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { Box } from '@mui/material';
-import { Chip } from '@mui/material';
-import PinDropIcon from '@mui/icons-material/PinDrop';
-import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
-import SellIcon from '@mui/icons-material/Sell';
-import StarIcon from '@mui/icons-material/Star';
-import Link from '@mui/material/Link';
-import { useNavigate } from 'react-router-dom';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
+import React, { useState, useEffect } from "react";
+import "../styles/index.css";
+import NavBar from "../components/NavBarTourist";
+import { Box, Grid, TextField, Button, MenuItem } from "@mui/material";
+import { styled, alpha } from '@mui/material/styles';
+import SearchIcon from '@mui/icons-material/Search';
+import InputBase from '@mui/material/InputBase';
+import TouristVintagePost from "../components/TouristVintagePost";
+//import vintage from "../../../backend/models/Vintage";
+//import vintage from "../../../backend/models/Vintage";
 
-export default function ActivityPost({ id,author, img, start_date, end_date, duration, tag, description, title,location,
-  price,category,discount,isOpened, rating}) {
-const [expanded, setExpanded] = React.useState(false);
 
-const handleExpandClick = () => {
-  setExpanded(!expanded);
+
+
+
+const Search = styled('div')(({ theme }) => ({
+  position: 'relative',
+  borderRadius: theme.shape.borderRadius,
+//   borderWidth: "2px",
+//   borderColor:"#126782",
+  backgroundColor: alpha(theme.palette.common.white, 0.15),
+  '&:hover': {
+    backgroundColor: alpha(theme.palette.common.white, 0.25),
+  },
+  marginRight: theme.spacing(2),
+  marginLeft: 0,
+  width: '100%',
+  [theme.breakpoints.up('sm')]: {
+    marginLeft: theme.spacing(3),
+    width: 'auto',
+  },
+}));
+
+
+const SearchIconWrapper = styled('div')(({ theme }) => ({
+  padding: theme.spacing(0, 2),
+  height: '100%',
+  position: 'absolute',
+  pointerEvents: 'none',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+}));
+
+const StyledInputBase = styled(InputBase)(({ theme }) => ({
+  color: 'inherit',
+  '& .MuiInputBase-input': {
+    padding: theme.spacing(1, 1, 1, 0),
+    // vertical padding + font size from searchIcon
+    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+    transition: theme.transitions.create('width'),
+    width: '100%',
+    [theme.breakpoints.up('md')]: {
+      width: '20ch',
+    },
+  },
+}));
+
+const TouristViewVintage = () => {
+  const [vintages, setVintages] = useState([]);
+  const [filteredVintages, setFilteredVintages] = useState(vintages); // For filtered vintages
+  const [errorMessage, setErrorMessage] = useState(""); // State to store error messages
+  const [filters, setFilters] = useState({ tags: "" }); // Filter by tag
+  const [searchTerm, setSearchTerm] = useState(""); // For search
+  
+
+  const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+
+const handleFilterChange = (e) => {
+  const { name, value } = e.target;
+  setFilters(prevFilters => ({
+    ...prevFilters,
+    [name]: value
+  }));
+
+  // Reset filtered vintages to all if tags filter is empty
+   if (name === "tags" && !value) {
+     setFilteredVintages(vintages); // Show all vintages if tags filter is cleared
+   }
 };
 
-const navigate = useNavigate();
-return (
-  // <Link 
-  // to={`/activities/${id}`} 
-  // style={{textDecoration:'none'}} 
-  // onClick={() => navigate(`/activities/${id}`)}
-  // >
-  <Card
-    sx={{
-      width: '100%', // Use full width of the container
-      maxWidth: '900px', // Set a max width
-      maxHeight: '500px',
-      color: '#126782',
-      fontSize: '18px',
-      display: 'flex',
-      flexDirection: 'column',
-      borderRadius: '10px',
-      position: 'relative',
-      margin: '20px',
-      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', // Box shadow all around
-      transition: 'transform 0.3s ease', // Transition effect for size change
-      '&:hover': {
-        transform: 'scale(1.02)', // Scale up the card on hover
-        cursor: 'pointer', // Change cursor to pointer
-      },
-    }}
-  >
-    <Box sx={{ display: 'flex', flexDirection: 'row', flexGrow: 1 }}>
+const resetFilters = () => {
+  setFilters({
       
-      <CardMedia
-        component="img"
-        image={img || "/0ae1e586-0d84-43c3-92d4-924c13c01059.jpeg"}
-        alt={title}
+      tags: "",
+      
+  });
+  setFilteredVintages(vintages); // Reset to all activities
+};
+
+
+const handleSearch = () => {
+  if (!searchTerm.trim()) {
+      // If searchTerm is empty, show all activities
+      setFilteredVintages(vintages);
+  } else {
+      const filtered = vintages.filter((vintage) => {
+          return (vintage.title && vintage.title.toLowerCase().includes(searchTerm.toLowerCase()))
+              || (vintage.tags && vintage.tags.some(tag=> tag.title.includes(searchTerm)))
+              
+      });
+      setFilteredVintages(filtered); // Update the filtered activities
+  }
+};
+
+
+
+useEffect(() => {
+  const fetchAndProcessVintages = async () => {
+    setLoading(true);
+    setErrorMessage("");
+    try {
+      const token = localStorage.getItem("jwt"); // Retrieve the token
+      const queryParams = new URLSearchParams();
+      if (filters.tags) queryParams.append("tag", filters.tags);
+
+      const response = await fetch(
+        `http://localhost:4000/Event/readAllVintage/?${queryParams.toString()}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`, // Add token to headers
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const json = await response.json();
+      const vintagesArray = Array.isArray(json) ? json : [];
+      console.log("Fetched vintages:", vintagesArray);
+      setVintages(vintagesArray);
+      setFilteredVintages(vintagesArray)
+
+      const filteredVintages=vintages.filter((vintage) => ((vintage.name &&
+        vintage.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        vintage.tags.some((tag) =>
+          tag.toLowerCase().includes(searchTerm.toLowerCase())
+    )))
+      
+      // // Filter the fetched vintages based on the current search term
+      // const filtered = vintagesArray.filter((vintage) => {
+      //   const matchesName = vintage.name && vintage.name.toLowerCase().includes(searchTerm.toLowerCase());
+      //   const matchesTags = vintage.tags && vintage.tags.some(tag => tag.includes(searchTerm));
+      //   return matchesName || matchesTags; // Check if either condition is met
+      // });
+
+      setFilteredVintages(filteredVintages); // Update the filtered vintages
+
+    } catch (error) {
+      console.log("Error fetching vintages:", error);
+      setErrorMessage("Failed to fetch vintages. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchAndProcessVintages();
+}, [filters, searchTerm]); // Run effect when filters or searchTerm change
+
+  
+
+  return (
+    <div>
+      <NavBar />
+
+
+        {/*Search bar*/}
+
+        <div className="mb-6">
+        <input
+          type="text"
+          placeholder="Search by name, location, or tag..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="mb-4 p-2 border border-slate-700 rounded-md w-[600px] mx-auto block"
+        />
+      </div>
+
+          {/* Filter by Tag */}
+          <TextField
+                    label="tags"
+                    variant="outlined"
+                    name="tags"
+                    value={filters.tags}
+                    onChange={handleFilterChange}
+                    sx={{ mb: 2, mr: 2 }}
+                />
+
+      <Box
         sx={{
-          width: '500px',
-          height: '250px',
-          margin: '2px',
-          borderRadius: '10px',
-          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+          width: "1150px",
+          overflow: "hidden",
+          margin: "0 auto",
+          padding: "20px",
+          height: "80vh", // Set a fixed height for the scrolling area
+          overflow: "auto", // Enable scrolling
+          "&::-webkit-scrollbar": {
+            display: "none", // Hides the scrollbar for WebKit browsers (Chrome, Safari)
+          },
+          //backgroundColor : "aquamarine" ,
         }}
-      />
-      
-      <Box sx={{ display: 'flex', flexDirection: 'column' ,}}>
+      >
+
         <Box
           sx={{
-            width: '400px',
-            padding: '10px',
-            display: 'flex',
-            flexDirection: 'column',
-            overflow: 'overflow',
-            
+            height: "100%",
+            marginLeft: "100px",
+            width: "100%",
+            "&::-webkit-scrollbar": { display: "none" },
           }}
         >
-          <CardHeader
-            avatar={<Avatar sx={{ bgcolor: red[500] }}>R</Avatar>}
-            
-            title={
-              <Typography variant="h5" sx={{ width: '300px', fontWeight: 'bold', fontSize: '24px' }}>
-                {title}
-              </Typography>
-            }
-          />
-
-          {/* Tags below title */}
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginLeft: '15px' }}>
-            {
-            tag != null ?
-            
-              (<Chip label={tag} sx={{backgroundColor :'#126782', color: 'white' }} />)
-            : ""}
-          </Box>
-        </Box>
-        
-        {/* Data Stuff */}
-        <Box
-          sx={{
-            display: 'flex',
-            flexFlow: 'column',
-            marginLeft: '30px',
-          }}
-        >
-          
-          <Typography>author : {author}</Typography>
-
-          <Typography>
-            category: {category != null ? category:"no specified category"}
-            
-          </Typography>
-
-          <Box sx={{display:'flex', }}>
-          <StarIcon sx={{scale:'0.9'}}/>
-          <Typography sx={{fontSize: '16px',marginTop:'1px'}}>{""+rating+""}</Typography>
-          </Box>
-          <Box sx={{
-              fontSize: '16px',
-              backgroundColor: isOpened === 'open' ? '#70db70' : '#ff4d4d',
-              color: 'white', 
-              //padding: '2px 0px',
-              display: 'inline-block',
-              borderRadius: '4px' ,
-              width: isOpened === 'open' ? '50px' : '60px',
-              }}>
-          <Typography sx={{
-              marginLeft: '6px',
-              marginBottom: '2px',
-              }}>
-              {isOpened || "status"}
-              </Typography>
-              </Box>
-              <Typography sx={{fontSize: '16px'}}>{category}</Typography>
-          <Typography sx={{fontSize: '16px'}}>From: {start_date}</Typography>
-          <Typography sx={{fontSize: '16px'}}>To: {end_date}</Typography>
-          <Typography sx={{fontSize: '16px', marginLeft: '30px'}}> {duration}</Typography>
-          <Box sx={{ display: 'flex',
-              marginTop: '5px',
-              margoinLeft:'-10px' ,
-              
-              }}>
-          <PinDropIcon sx={{marginTop:'0px',}}/>
-          <Typography sx={{marginLeft:'5px'}}> 
-
-          {location != null ? (
-            <>
-              lan: {location.lan}<br />
-              lon: {location.lon}
-            </>
-          ) : (
-            'no location specified'
-          )}
-            </Typography>
-          </Box>
-          
-         
-
-          <Box sx={{ display: 'flex',
-              marginTop: '5px',
-              margoinLeft:'-10px' ,
-              
-              }}>
-          <AttachMoneyIcon />
-          <Typography sx={{
-              marginLeft:'5px',
-              //textDecoration: discount>0 ? 'line-through' : 'none',
-              color: '#126782',
-              //discount>0 ? '#ff4d4d' : '#126782',
-              marginRight: '5px',
-          }}> {
-            price != null? 
-            (price.range.max+"-"+price.range.min )
-            :'no specified price'}
-            </Typography>
-
-
-          {/* <Typography sx={{fontSize: '16px'}}> {discount >0?  (price -(price*discount/100)): ''}</Typography> */}
-
-
-          <Box sx={{
-              backgroundColor : '#ff4d4d',
-              display: 'flex',
-              marginLeft: '5px',
-              borderRadius: '5px',
-              padding: '0px',
-              }}>
-                
-          <Typography sx={{marginLeft:'5px', color: "white"}}> {"-"+discount+"%" || ''}</Typography>
-          <SellIcon  sx={{scale: '0.7', color: 'white', marginTop:'2px',marginLeft:'-2px',
-              //do smth about display
-          }}/>
-          </Box>
-          </Box>
-           
-          </Box>
-          <Box sx={{display: "flex" ,
-            marginLeft:'300px',
-            marginTop:'55px',
-            gap:'15px',
-            }}>
-                <Link 
-                  to={`/activities/update/${id}`} 
-                  style={{textDecoration:'none'}} 
-                  onClick={() => navigate(`/activities/update/${id}`)}
-                  sx={{
-                    color: '#126782',
-                    '&:hover': {
-                      cursor: 'pointer',
-                    }}}
-                >
-                  <EditIcon/>
-                </Link>
-                <Link 
-                  to={`/activities/`} 
-                  style={{textDecoration:'none'}} 
-                  // onClick={() => navigate()}
-                  sx={{
-                    color: '#126782',
-                    '&:hover': {
-                      cursor: 'pointer',
-                    }}}
-                >
-                  <DeleteIcon/>
-                  </Link>
-            </Box>
+          {" "}
+          {/* Enable vertical scrolling only */}
+          <>
+            {errorMessage ? (
+                <p style={{ color: 'red', textAlign: 'center' }}>{errorMessage}</p> // Display error message if any
+            ) : (
+                <Grid container spacing={0} sx={{ display: 'flex', flexDirection: 'column', width: '100vw' }}>
+                    {filteredVintages.length > 0 ? (
+                        filteredVintages.map((vintage, index) => (
+                            <Grid item key={index} sx={{ display: 'flex', justifyContent: 'left' }}>
+                                <TouristVintagePost
+                                    id={vintage._id || 'N/A'} // Safely handle missing _id
+                                    name={vintage.name || 'No name provided'} // Handle missing name
+                                    description={vintage.description || 'No description available'} // Handle missing description
+                                    pictures={vintage.pictures || []} // Handle missing pictures with an empty array
+                                    location={vintage.location ? {
+                                        longitude: vintage.location.longitude || 0, // Default longitude
+                                        latitude: vintage.location.latitude || 0,   // Default latitude
+                                        nation: {
+                                            country: vintage.location.country || 'Unknown country',
+                                            city: vintage.location.city || 'Unknown city',
+                                        }
+                                    } : null} // Handle missing location by setting it to null
+                                    ticket_price={vintage.ticket_price ? {
+                                        foreigner: vintage.ticket_price.foreigner || 'Not specified',
+                                        native: vintage.ticket_price.native || 'Not specified',
+                                        student: vintage.ticket_price.student || 'Not specified',
+                                    } : {
+                                        foreigner: 'Not specified',
+                                        native: 'Not specified',
+                                        student: 'Not specified',
+                                    }} // Handle missing ticket_price safely
+                                    tags={vintage.tags || []} // Default tags to an empty array if missing
+                                    opening_hours={vintage.opening_hours ? {
+                                        opening: vintage.opening_hours.opening || 'Not specified',
+                                        closing: vintage.opening_hours.closing || 'Not specified',
+                                    } : {
+                                        opening: 'Not specified',
+                                        closing: 'Not specified',
+                                    }} // Handle missing opening_hours safely
+                                />
+                            </Grid>
+                        ))
+                    ) : (
+                        <p>No vintage posts available.</p> // Display a message if no vintages are found
+                    )}
+                </Grid>
+            )}
+        </>
         </Box>
       </Box>
-
-      {/* Description */}
-      <CardContent sx={{ flexGrow: 1 }}>
-        <Typography
-          variant="body2"
-          sx={{
-            color: 'text.secondary',
-            marginTop: '-10px',
-            marginLeft: '-5px',
-            flexWrap: 'wrap',
-            fontSize: '16px',
-            width: '460px',
-            position: 'absolute',
-            top: '290px',
-          }}
-        >
-          {description}
-        </Typography>
-      </CardContent>
-
-      {/* Card actions */}
-      <CardActions disableSpacing>
-        <Box sx={{ position: 'absolute', bottom: '2px', left: '2px' }}>
-          <IconButton aria-label="add to favorites">
-            <FavoriteIcon />
-          </IconButton>
-          <IconButton aria-label="share">
-            <ShareIcon />
-          </IconButton>
-          <IconButton
-            onClick={handleExpandClick}
-            aria-expanded={expanded}
-            aria-label="show more"
-          >
-            {/* <ExpandMoreIcon /> */}
-          </IconButton>
-        </Box>
-      </CardActions>
-    </Card>
-    // </Link>
+    </div>
   );
-}
+};
+
+export default TouristViewVintage;

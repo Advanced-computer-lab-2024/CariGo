@@ -15,7 +15,8 @@ const {
   deleteVintage,
   readAllVintage,
   shareItinerary,
-  shareVintage
+  shareVintage,
+  BookItinerary
 } = require("../controllers/eventController");
 const authController = require("../controllers/authController");
 const router = express.Router();
@@ -79,5 +80,11 @@ router.delete("/deleteVintage/:id", deleteVintage);
 
 router.get("/shareItinerary/:id", shareItinerary);
 router.get("/shareVintage/:id", shareVintage);
+
+router.post(
+  "/BookItinerary/:ItineraryId",
+  authController.restrictTo("Tourist"),
+  BookItinerary
+);
 
 module.exports = router;

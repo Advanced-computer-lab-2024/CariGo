@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"; // Import useEffect
 import axios from "axios";
 import clsx from 'clsx'
 import SelectChangeEvent, { Pagination } from "@mui/material"
-import SearchBar from "../../Pages/products/SearchBar/SearchBar"
+import SearchBar from "../products/SearchBar/SearchBar"
 import RefreshIcon from '@mui/icons-material/Refresh';
 import AddIcon from '@mui/icons-material/Add';
 

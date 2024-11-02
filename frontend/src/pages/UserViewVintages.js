@@ -6,6 +6,7 @@ import { Box } from "@mui/material";
 import VintageList from "../components/VintageList";
 
 const UserViewVintages = () => {
+  
   return (
     <div>
       <NavBar />
