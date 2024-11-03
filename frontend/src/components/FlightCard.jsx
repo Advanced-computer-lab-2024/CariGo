@@ -37,12 +37,13 @@ const FlightCard = ({ flight, onClick }) =>{
       maxHeight:'350px',
       display: 'flex', // Allows the box to grow with content
       flexDirection:'column', 
-      minWidth:'450px',
+      minWidth:'400px',
       maxWidth: '600px', // Starting width
       margin:'30px',
+      
       }}>
 
-      <Box sx={{display:'flex',}}>
+      <Box sx={{display:'flex',marginTop:'5px',marginBottom:'-5px'}}>
         <FlightDate date={new Date(segments[0].departure.time).toLocaleDateString()}  />
         <FlightDuration duration={formatDuration(segments[0].duration)}/>
       </Box>

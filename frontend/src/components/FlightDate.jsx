@@ -24,7 +24,6 @@ const DateContainer = styled.div`
 `;
 
 
-
 const DateText = styled.span`
   color: #126782;
   font: 500 9px Roboto, sans-serif;
