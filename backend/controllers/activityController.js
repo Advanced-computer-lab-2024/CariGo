@@ -396,7 +396,7 @@ const shareActivity = async (req, res) => {
     //   .catch((error) => {
     //     res.status(500).json({ error: "couldn't get itinerary data" });
     //   });
-    const result = `http://localhost:3000/tourist-activities/${id}`;
+    const result = `http://localhost:3000/activities/${id}`;
     res.status(200).json(result);
   } else {
     res
@@ -406,7 +406,6 @@ const shareActivity = async (req, res) => {
 };
 
 const BookActivity = async (req, res) => {
-    
   const { ActivityId } = req.params; // Event ID from URL parameters
   const { UserId, PaymentMethod } = req.body; // User ID from request body
   console.log(UserId);
@@ -419,7 +418,7 @@ const BookActivity = async (req, res) => {
     try {
       if (PaymentMethod == "Card") {
         CardNumber = req.body.CardNumber;
-          booking = await bookingModel.create({
+        booking = await bookingModel.create({
           ActivityId: ActivityId,
           UserId: UserId,
           PaymentMethod: PaymentMethod,
@@ -427,7 +426,7 @@ const BookActivity = async (req, res) => {
           CardNumber: CardNumber,
         });
       } else {
-          booking = await bookingModel.create({
+        booking = await bookingModel.create({
           ActivityId: ActivityId,
           UserId: UserId,
           PaymentMethod: PaymentMethod,
@@ -448,6 +447,43 @@ const BookActivity = async (req, res) => {
   }
 };
 
+const MyBookings = async (req, res) => {
+  const { UserId } = req.body; // User ID from request body
+  if (mongoose.Types.ObjectId.isValid(UserId)) {
+    try {
+      const bookings = await bookingModel.find({UserId}).sort({createdAt: -1});
+      return res.status(200).json(bookings);
+    } catch {
+      res.status(500).json({ error: "Failed to fetch bookings" });
+      console.error("Error while booking:", error);
+    }
+  } else {
+    res.status(400).json({ error: "Invalid event ID format" });
+  }
+};
+
+const CancelBooking = async (req, res) => {
+    const { UserId } = req.body; // User ID from request body
+    const { ActivityId } = req.params; // Event ID from URL parameters
+    if (mongoose.Types.ObjectId.isValid(ActivityId) && mongoose.Types.ObjectId.isValid(UserId)) {
+        try {
+            const bookings = await bookingModel.updateMany(
+                { UserId, ActivityId }, // Filter to find documents with both UserId and ActivityId
+                { $set: { Status: false } } // Update to set Status to false
+              );
+              res.status(200).json({
+                message: "Bookings canceled successfully",
+                updatedBookingsCount: bookings.modifiedCount // shows how many bookings were updated
+              }); 
+        } catch {
+          res.status(500).json({ error: "Failed to fetch booking" });
+          console.error("Error while booking:", error);
+        }
+      } else {
+        res.status(400).json({ error: "Invalid event ID format" });
+      }
+};
+
 module.exports = {
   createActivity,
   getActivities,
@@ -458,4 +494,6 @@ module.exports = {
   getAdvActivities,
   shareActivity,
   BookActivity,
+  MyBookings,
+  CancelBooking
 };

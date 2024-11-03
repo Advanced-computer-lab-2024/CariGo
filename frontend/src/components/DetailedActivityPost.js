@@ -17,31 +17,24 @@ import { Chip } from '@mui/material';
 import PinDropIcon from '@mui/icons-material/PinDrop';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import SellIcon from '@mui/icons-material/Sell';
-import List from '@mui/material/List';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import Divider from '@mui/material/Divider';
-import InboxIcon from '@mui/icons-material/Inbox';
-import DraftsIcon from '@mui/icons-material/Drafts';
-
-
-
-export default function ActivityPost({ author, img, start_date, end_date, duration, tags, description, title,location,
-    price,category,discount,isOpened}) {
+import StarIcon from '@mui/icons-material/Star';
+import Link from '@mui/material/Link';
+import { useNavigate } from 'react-router-dom';
+export default function DetailedActivityPost({ id,author, img, start_date, end_date, duration, tag, description, title,location,
+    price,category,discount,isOpened, rating}) {
   const [expanded, setExpanded] = React.useState(false);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
-  
 
+  const navigate = useNavigate();
   return (
     <Card
       sx={{
         width: '100%', // Use full width of the container
         maxWidth: '900px', // Set a max width
-        height: '400px',
+        maxHeight: '500px',
         color: '#126782',
         fontSize: '18px',
         display: 'flex',
@@ -50,18 +43,12 @@ export default function ActivityPost({ author, img, start_date, end_date, durati
         position: 'relative',
         margin: '20px',
         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', // Box shadow all around
-        transition: 'transform 0.3s ease', // Transition effect for size change
-        '&:hover': {
-          transform: 'scale(1.02)', // Scale up the card on hover
-          cursor: 'pointer', // Change cursor to pointer
-        },
       }}
     >
       <Box sx={{ display: 'flex', flexDirection: 'row', flexGrow: 1 }}>
-        
         <CardMedia
           component="img"
-          image={img}
+          image={img || "/0ae1e586-0d84-43c3-92d4-924c13c01059.jpeg"}
           alt={title}
           sx={{
             width: '500px',
@@ -71,7 +58,6 @@ export default function ActivityPost({ author, img, start_date, end_date, durati
             boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
           }}
         />
-        
         <Box sx={{ display: 'flex', flexDirection: 'column' ,}}>
           <Box
             sx={{
@@ -83,27 +69,21 @@ export default function ActivityPost({ author, img, start_date, end_date, durati
             }}
           >
             <CardHeader
-              avatar={<Avatar sx={{ bgcolor: red[500] }}>R</Avatar>}
-              action={
-                <IconButton aria-label="settings">
-                  <MoreVertIcon />
-                </IconButton>
-              }
+              //avatar={<Avatar sx={{ bgcolor: red[500] }}>R</Avatar>}
               title={
                 <Typography variant="h5" sx={{ width: '300px', fontWeight: 'bold', fontSize: '24px' }}>
                   {title}
                 </Typography>
               }
             />
-
             {/* Tags below title */}
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginLeft: '15px' }}>
-              {tags.map((tag) => (
-                <Chip key={tag} label={tag} sx={{backgroundColor :'#126782', color: 'white' }} />
-              ))}
+              {
+              tag != null ?
+                (<Chip label={tag} sx={{backgroundColor :'#126782', color: 'white' }} />)
+              : ""}
             </Box>
           </Box>
-          
           {/* Data Stuff */}
           <Box
             sx={{
@@ -112,7 +92,15 @@ export default function ActivityPost({ author, img, start_date, end_date, durati
               marginLeft: '30px',
             }}
           >
-            <Typography sx={{fontSize: '16px'}}>{category}</Typography>
+            <Typography>author : {author}</Typography>
+            <Typography>
+              category: {category != null ? category:"no specified category"}
+            </Typography>
+
+            <Box sx={{display:'flex', }}>
+            <StarIcon sx={{scale:'0.9'}}/>
+            <Typography sx={{fontSize: '16px',marginTop:'1px'}}>{""+rating+""}</Typography>
+            </Box>
             <Box sx={{
                 fontSize: '16px',
                 backgroundColor: isOpened === 'open' ? '#70db70' : '#ff4d4d',
@@ -126,45 +114,54 @@ export default function ActivityPost({ author, img, start_date, end_date, durati
                 marginLeft: '6px',
                 marginBottom: '2px',
                 }}>
-                {isOpened}
+                {isOpened || "status"}
                 </Typography>
                 </Box>
-            <Typography sx={{fontSize: '16px'}}>From: {start_date}</Typography>
-            <Typography sx={{fontSize: '16px'}}>To: {end_date}</Typography>
             <Box sx={{ display: 'flex',
                 marginTop: '5px',
-                margoinLeft:'-10px' ,
-                
+                margoinLeft:'-10px' ,               
                 }}>
             <PinDropIcon sx={{marginTop:'0px',}}/>
-            <Typography sx={{marginLeft:'5px'}}> {location}</Typography>
+            <Typography sx={{marginLeft:'5px'}}> 
+            {location != null ? (
+              <>
+                lan: {location.lan}<br />
+                lon: {location.lon}
+              </>
+            ) : (
+              'no location specified'
+            )}
+              </Typography>
             </Box>
-            
-            <Typography sx={{fontSize: '16px', marginLeft: '30px'}}> {duration}</Typography>
 
             <Box sx={{ display: 'flex',
                 marginTop: '5px',
                 margoinLeft:'-10px' ,
                 
                 }}>
-            <AttachMoneyIcon sx={{marginTop:'0px',}}/>
+            <AttachMoneyIcon />
             <Typography sx={{
                 marginLeft:'5px',
-                textDecoration: discount>0 ? 'line-through' : 'none',
-                color: discount>0 ? '#ff4d4d' : '#126782',
+                //textDecoration: discount>0 ? 'line-through' : 'none',
+                color: '#126782',
+                //discount>0 ? '#ff4d4d' : '#126782',
                 marginRight: '5px',
-            }}> {price}</Typography>
-            <Typography sx={{fontSize: '16px'}}> {discount >0?  (price -(price*discount/100)): ''}</Typography>
+            }}> {
+              price != null? 
+              (price.range.max+"-"+price.range.min )
+              :'no specified price'}
+              </Typography>
             <Box sx={{
                 backgroundColor : '#ff4d4d',
                 display: 'flex',
                 marginLeft: '5px',
                 borderRadius: '5px',
                 padding: '0px',
-                }}>
-                  
-            <Typography sx={{marginLeft:'5px', color: "white"}}> -{discount}%</Typography>
-            <SellIcon  sx={{scale: '0.7', color: 'white', marginTop:'2px',marginLeft:'-2px'}}/>
+                }}>                 
+            <Typography sx={{marginLeft:'5px', color: "white"}}> {"-"+discount+"%" || ''}</Typography>
+            <SellIcon  sx={{scale: '0.7', color: 'white', marginTop:'2px',marginLeft:'-2px',
+                //do smth about display
+            }}/>
             </Box>
             </Box>
 
@@ -210,5 +207,6 @@ export default function ActivityPost({ author, img, start_date, end_date, durati
         </Box>
       </CardActions>
     </Card>
+    // </Link>
   );
 }

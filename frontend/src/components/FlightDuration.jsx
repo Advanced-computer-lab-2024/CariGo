@@ -12,23 +12,31 @@ const FlightDuration = ({ duration }) => {
 
 const DurationContainer = styled.div`
   border-radius: 5px;
-  background-color: #a5cbf1;
+  background-color: white;
   display: flex;
   gap: 6px;
   flex: 1;
   padding: 5px 4px;
+  width: 40px;
+  margin-left:20px;
+  margin-top:10px;
 `;
 
 const DurationIcon = styled.img`
   aspect-ratio: 1;
   object-fit: contain;
   object-position: center;
-  width: 13px;
+  width: 22px;
+  margin-right:2px;
+  margin-top:2px;
+  color:#126782;
 `;
 
 const DurationText = styled.span`
-  color: #2f2f2f;
+   color: #2f2f2f;
   font: 500 9px Roboto, sans-serif;
+  margin-top:5px;
+  font-size:20px;
 `;
 
 export default FlightDuration;

@@ -76,10 +76,15 @@ import ComplaintsList from './Pages/ComplaintsList';
 import ComplaintDetails from './Pages/ComplaintDetails';
 import InactiveItineraries from "./Pages/itineraries/InactiveItineraries.js"
 import AdminViewEvents from "./Pages/AdminViewEvents.js"
-import AdminViewItineraries from "./Pages/AdminViewItineraries.js"
+import AdminItineraryDetails from "./Pages/itineraries/AdminItinDetails.js";
+import AdminViewItineraries from "./Pages/itineraries/AdminViewItineraries.js"
 import TouristHistory from "./Pages/Tourist/TouristHistory.js";
 import FlightBooking from './Pages/FlightBooking.jsx';
 import FlightDetailsPage from "./Pages/FlightDetailsCard.jsx";
+import FileComplaintForm from "./Pages/Tourist/FileComplaintForm";
+import ActivityPostDetail from "./components/ActivityPostDetail.js";
+import HotelBooking from "./Pages/Tourist/HotelBooking.js"
+
 function App() {
   const token = localStorage.getItem("jwt");
  // const navigate = useNavigate();
@@ -134,7 +139,9 @@ function App() {
         <Route path="/tourist-itineraries" element={< TouristItineraries/>} />
         <Route path="/guest-itineraries" element={<GuestItineraries/>} />
         <Route path="/guest-activities" element={<GuestActivities/>} />
+        <Route path="/activity/:id" element={<ActivityPostDetail />} />
         <Route path="/Tourist-History" element={<TouristHistory />} />
+        <Route path="/tourist/file-complaint" element={<FileComplaintForm />} />
         {/* <Route path="/guest-places" element={<GuestViewVintage/>} /> */}
         <Route path="/createActivity" element={<CreateActivityForm userId={localStorage.getItem("id")} />} /> 
         <Route path="/SignUp" element={<SignUp />} />
@@ -172,6 +179,7 @@ function App() {
               <Route path="/complaints/:id" element={<ComplaintDetails />} />
               <Route path="/admin-view-events" element={<AdminViewEvents />} />
               <Route path="/admin-view-events/itineraries" element={<AdminViewItineraries />} />
+              <Route path="/admin-view-events/itineraries/:id" element={<AdminItineraryDetails />} />
         </Route>
 
         <Route path="/guest-places" element={<GuestViewVintage/>} />
@@ -179,6 +187,7 @@ function App() {
         <Route path="/createVintage" element={<CreateVintageForm />} />
         <Route path="/flight" element={<FlightBooking/>} />
         <Route path="/flight-details/:id" element={<FlightDetailsPage/>} />
+        <Route path="/hotels" element={<HotelBooking/>} />
         <Route path="/sellerProfile" element={<SellerProfile userId={localStorage.getItem("id")} />} />
 
 

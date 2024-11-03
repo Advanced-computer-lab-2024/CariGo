@@ -21,8 +21,11 @@ import {
   List,
   ListItem,
   ClickAwayListener,
+  Menu,
+  MenuItem
 } from "@mui/material";
 import FlightCardList from "./FlightCardList"; 
+
 const Frame = () => {
   const [fromCity, setFromCity] = useState("");
   const [fromCityCode, setFromCityCode] = useState("");
@@ -117,11 +120,13 @@ const Frame = () => {
       console.error("Error fetching flights:", error);
     }
   };
+
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <Box display="flex" flexDirection="column" alignItems="center" gap={2} pt={0} pb={3} px={0} bgcolor="white" width={1196}>
+      <Box display="flex" flexDirection="column"  alignItems="center" gap={2} pt={0} pb={3} px={0} bgcolor="white"  >
+        {/* select flight type */}
         <Box width={1197} display="flex" flexDirection="column" alignItems="center">
-          <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap={2} px={45} py={1.5} bgcolor="white" width={1178}>
+          <Box display="flex" flexDirection="row" alignItems="center" justifyContent="center" gap={2} px={45} py={1.5} bgcolor="white" >
             <FormControl component="fieldset">
               <RadioGroup row aria-label="trip-type" name="trip-type" defaultValue="round-trip">
                 <FormControlLabel value="one-way" control={<Radio />} label={<Typography variant="body1">One way</Typography>} />
@@ -131,7 +136,8 @@ const Frame = () => {
             </FormControl>
           </Box>
 
-          <Grid container spacing={2} justifyContent="center" alignItems="center" width={1193} py={1.5}>
+          {/* choose flight details locatios and time */}
+          <Box sx={{gap: '30px' , display: 'flex' , position:"relative", justifyContent:"center", marginTop:'30px',}}>
             <Grid item xs={3}>
               <Typography variant="body2" color="textSecondary">From</Typography>
               <ClickAwayListener onClickAway={handleClickAway}>
@@ -149,15 +155,15 @@ const Frame = () => {
                           <FlightTakeoffIcon />
                         </InputAdornment>
                       ),
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <ArrowDropDownIcon />
-                        </InputAdornment>
-                      ),
+                      //endAdornment: (
+                        // <InputAdornment position="end">
+                        //   <ArrowDropDownIcon />
+                        // </InputAdornment>
+                      //),
                     }}
                   />
                   {isFromDropdownOpen && fromSuggestions.length > 0 && (
-                    <List sx={{ maxHeight: 150, overflowY: 'auto', border: '1px solid #ccc' }}>
+                    <List sx={{ maxHeight: 150, overflowY: 'auto', border: '1px solid #ccc',position:'absolute',zIndex: 100,backgroundColor:'white', }}>
                       {fromSuggestions.map((cityObj) => (
                         <ListItem button key={cityObj.iataCode} onClick={() => handleCitySelect(cityObj, 'from')}>
                           {cityObj.city} ({cityObj.iataCode})
@@ -186,15 +192,15 @@ const Frame = () => {
                           <FlightLandIcon />
                         </InputAdornment>
                       ),
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <ArrowDropDownIcon />
-                        </InputAdornment>
-                      ),
+                      //endAdornment: (
+                        // <InputAdornment position="end">
+                        //   <ArrowDropDownIcon />
+                        // </InputAdornment>
+                      //),
                     }}
                   />
                   {isToDropdownOpen && toSuggestions.length > 0 && (
-                    <List sx={{ maxHeight: 150, overflowY: 'auto', border: '1px solid #ccc' }}>
+                    <List sx={{ maxHeight: 150, overflowY: 'auto', border: '1px solid #ccc' ,position:'absolute',zIndex: 100,backgroundColor:'white',}}>
                       {toSuggestions.map((cityObj) => (
                         <ListItem button key={cityObj.iataCode} onClick={() => handleCitySelect(cityObj, 'to')}>
                           {cityObj.city} ({cityObj.iataCode})
@@ -234,7 +240,7 @@ const Frame = () => {
               />
             </Grid>
 
-            <Grid item xs={3}>
+            <Grid item xs={3} sx={{marginTop:'10px'}}>
               <Typography variant="body2" color="textSecondary">Adults</Typography>
               <Box display="flex" alignItems="center" bgcolor="white">
                 <Button variant="outlined" onClick={decrementAdults} disabled={adults <= 1}>-</Button>
@@ -242,7 +248,7 @@ const Frame = () => {
                 <Button variant="outlined" onClick={incrementAdults}>+</Button>
               </Box>
             </Grid>
-          </Grid>
+          </Box>
         </Box>
 
         <Button
@@ -252,6 +258,7 @@ const Frame = () => {
             padding: "8px 16px",
             borderRadius: "4px",
             textTransform: "none",
+            marginTop:'30px', 
           }} onClick={handleSearchClick}
         >
           <Typography variant="h6" color="white">

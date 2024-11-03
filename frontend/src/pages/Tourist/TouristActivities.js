@@ -134,9 +134,10 @@ export default function TouristViewActivities (){
     const [searchTerm, setSearchTerm] = useState('');
     
     const handleSearch = () => {
+      console.log("search term "+searchTerm);
         if (!searchTerm.trim()) {
             // If searchTerm is empty, show all activities
-            setFilteredActivities(filteredActivities);
+            setFilteredActivities(activities);
         } else {
             const filtered = activities.filter((activity) => {
                 return (activity.title && activity.title.toLowerCase().includes(searchTerm.toLowerCase()))

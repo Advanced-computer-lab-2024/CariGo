@@ -69,6 +69,10 @@ const itinerarySchema = new schema(
       type: Boolean,
       default: true,
     },
+    isFlagged:{
+      type: Boolean,
+      default: false,
+    }
   },
   { timestamps: true }
 );

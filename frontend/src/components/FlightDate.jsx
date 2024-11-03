@@ -12,23 +12,29 @@ const FlightDate = ({ date }) => {
 
 const DateContainer = styled.div`
   border-radius: 5px;
-  background-color: rgba(56, 140, 223, 0.45);
+  background-color: white;
   display: flex;
   gap: 6px;
   flex: 1;
   padding: 5px 4px;
+  width: 30px;
+  margin-left:20px;
+  margin-top:10px;
 `;
 
 const DateIcon = styled.img`
   aspect-ratio: 0.92;
   object-fit: contain;
   object-position: center;
-  width: 12px;
+  width: 20px;
+  color:#126782;
 `;
 
 const DateText = styled.span`
   color: #2f2f2f;
   font: 500 9px Roboto, sans-serif;
+  margin-top:5px;
+  font-size:20px;
 `;
 
 export default FlightDate;
