@@ -18,6 +18,7 @@ const FlightInfo = ({ time, code, city }) => {
 const InfoContainer = styled.div`
   display: flex;
   flex-direction: column;
+  gap:10px;
   font-weight: bold;
   color: #126782;
   width: 200px;

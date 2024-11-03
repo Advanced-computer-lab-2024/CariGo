@@ -123,29 +123,21 @@ const Frame = () => {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <Box display="flex" flexDirection="column"  alignItems="center" gap={2} pt={0} pb={3} px={0} bgcolor="white"  >
-        {/* select flight type */}
-        <Box width={1197} display="flex" flexDirection="column" alignItems="center">
-          <Box display="flex" flexDirection="row" alignItems="center" justifyContent="center" gap={2} px={45} py={1.5} bgcolor="white" >
-            <FormControl component="fieldset">
-              <RadioGroup row aria-label="trip-type" name="trip-type" defaultValue="round-trip">
-                <FormControlLabel value="one-way" control={<Radio />} label={<Typography variant="body1">One way</Typography>} />
-                <FormControlLabel value="round-trip" control={<Radio />} label={<Typography variant="body1">Round Trip</Typography>} />
-                <FormControlLabel value="multicity" control={<Radio />} label={<Typography variant="body1">Multicity</Typography>} />
-              </RadioGroup>
-            </FormControl>
-          </Box>
-
-          {/* choose flight details locatios and time */}
-          <Box sx={{gap: '30px' , display: 'flex' , position:"relative", justifyContent:"center", marginTop:'30px',}}>
-            <Grid item xs={3}>
-              <Typography variant="body2" color="textSecondary">From</Typography>
+      <Box sx={{display:"flex",marginLeft:"10%"}} >
+        {/* VERTICAL BOX */}
+      <Box  bgcolor="white" 
+      sx={{display:"flex", flexDirection:"column",gap:'30px', marginTop:'5%',padding:'10px',}} >
+          {/* choose flight details locatios and time */} 
+          {/* HORIZONTAL BOX 1*/}
+          <Box sx={{gap: '50px' , display: 'flex' ,  marginTop:'30px',}}>
+            <Box>
+              <Typography variant="body2" color="#126782">From</Typography>
               <ClickAwayListener onClickAway={handleClickAway}>
                 <div>
                   <TextField
                     fullWidth
                     variant="outlined"
-                    placeholder="Shahjalal International Airport, Bangladesh"
+                    placeholder="type to select airport.."
                     value={fromCity}
                     onChange={handleFromInputChange}
                     onFocus={() => setIsFromDropdownOpen(true)}
@@ -163,7 +155,7 @@ const Frame = () => {
                     }}
                   />
                   {isFromDropdownOpen && fromSuggestions.length > 0 && (
-                    <List sx={{ maxHeight: 150, overflowY: 'auto', border: '1px solid #ccc',position:'absolute',zIndex: 100,backgroundColor:'white', }}>
+                    <List sx={{ maxHeight: 150, overflowY: 'auto', border: '1px solid #ccc',position:'absolute',zIndex: 100,backgroundColor:'white',cursor: 'pointer', }}>
                       {fromSuggestions.map((cityObj) => (
                         <ListItem button key={cityObj.iataCode} onClick={() => handleCitySelect(cityObj, 'from')}>
                           {cityObj.city} ({cityObj.iataCode})
@@ -173,16 +165,16 @@ const Frame = () => {
                   )}
                 </div>
               </ClickAwayListener>
-            </Grid>
+            </Box>
 
-            <Grid item xs={3}>
-              <Typography variant="body2" color="textSecondary">To</Typography>
+            <Box>
+              <Typography variant="body2" color="#126782">To</Typography>
               <ClickAwayListener onClickAway={handleClickAway}>
                 <div>
                   <TextField
                     fullWidth
                     variant="outlined"
-                    placeholder="Qatar International Airport, Qatar"
+                    placeholder="type to select airport.."
                     value={toCity}
                     onChange={handleToInputChange}
                     onFocus={() => setIsToDropdownOpen(true)}
@@ -200,7 +192,7 @@ const Frame = () => {
                     }}
                   />
                   {isToDropdownOpen && toSuggestions.length > 0 && (
-                    <List sx={{ maxHeight: 150, overflowY: 'auto', border: '1px solid #ccc' ,position:'absolute',zIndex: 100,backgroundColor:'white',}}>
+                    <List sx={{ maxHeight: 150, overflowY: 'auto', border: '1px solid #ccc' ,position:'absolute',zIndex: 100,backgroundColor:'white',cursor: 'pointer',}}>
                       {toSuggestions.map((cityObj) => (
                         <ListItem button key={cityObj.iataCode} onClick={() => handleCitySelect(cityObj, 'to')}>
                           {cityObj.city} ({cityObj.iataCode})
@@ -210,10 +202,13 @@ const Frame = () => {
                   )}
                 </div>
               </ClickAwayListener>
-            </Grid>
+            </Box>
+            </Box>
 
-            <Grid item xs={3}>
-              <Typography variant="body2" color="textSecondary">Date</Typography>
+            {/* HORIZONTAL BOX 2*/}
+            <Box sx={{gap: '50px' , display: 'flex' , marginTop:'30px', }}>
+            <Box>
+              <Typography variant="body2" color="#126782">Date</Typography>
               <DatePicker
                 renderInput={(params) => (
                   <TextField
@@ -238,38 +233,43 @@ const Frame = () => {
                 value={date}
                 onChange={(newValue) => setDate(newValue)}
               />
-            </Grid>
+            </Box>
 
-            <Grid item xs={3} sx={{marginTop:'10px'}}>
-              <Typography variant="body2" color="textSecondary">Adults</Typography>
+            <Box sx={{marginTop:'10px'}}>
+              <Typography variant="body2" color="#126782">Adults</Typography>
               <Box display="flex" alignItems="center" bgcolor="white">
                 <Button variant="outlined" onClick={decrementAdults} disabled={adults <= 1}>-</Button>
-                <Typography variant="h6" sx={{ mx: 2 }}>{adults}</Typography>
+                <Typography variant="h6" color="#126782" sx={{ mx: 2 }}>{adults}</Typography>
                 <Button variant="outlined" onClick={incrementAdults}>+</Button>
               </Box>
-            </Grid>
-          </Box>
+            </Box>
         </Box>
 
         <Button
           variant="contained"
-          color="primary"
+          color="white"
           sx={{
             padding: "8px 16px",
             borderRadius: "4px",
             textTransform: "none",
             marginTop:'30px', 
+            backgroundColor:"#126782",
+            width:'250px',
           }} onClick={handleSearchClick}
         >
           <Typography variant="h6" color="white">
             Search Flight
           </Typography>
         </Button >
-      </Box>
+      </Box >
+
          {/* Render FlightCard if flights are available */}
+         <Box sx={{padding:"20px", marginLeft:"10%" , overflow:'auto'}}>
          {flights.length > 0 && (
             <FlightCardList flights={flights} />
           )}
+          </Box>
+      </Box>
     </LocalizationProvider>
     
   );
