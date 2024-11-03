@@ -16,7 +16,7 @@ import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 
 
-const pages = ['Activities', 'Itinerary', 'Historical Places',"Products"];
+const pages = ['Activities', 'Itinerary', 'Historical Places','Products','File Complaint'];
 const settings = ['My Profile', 'Logout']; // Updated settings
 
 function TouristNB() {
@@ -74,7 +74,10 @@ function TouristNB() {
     // Add your logout logic here
     navigate('/Tourist/Products')
   }
-
+  const loadFileComplaint = () => {
+    handleCloseNavMenu();
+    navigate('/tourist/file-complaint'); 
+  };
   return (
     <AppBar position="static" sx={{ backgroundColor: '#004c74' }}>
       <Container maxWidth="xl">
@@ -133,6 +136,9 @@ function TouristNB() {
               <MenuItem onClick={loadHistoricalPlaces}>
                 <Typography sx={{ textAlign: 'center' }}>{pages[2]}</Typography>
               </MenuItem>
+              <MenuItem onClick={loadFileComplaint}>
+                <Typography sx={{ textAlign: 'center' }}>{pages[4]}</Typography>
+              </MenuItem>
             </Menu>
           </Box>
 
@@ -161,6 +167,9 @@ function TouristNB() {
               sx={{ my: 2, color: 'white', display: 'block' }}
             >
               {pages[3]}
+            </Button>
+              <Button onClick={loadFileComplaint} sx={{ my: 2, color: 'white', display: 'block' }}>
+            {pages[4]}
             </Button>
           </Box>
 

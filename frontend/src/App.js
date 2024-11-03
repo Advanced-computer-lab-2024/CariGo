@@ -76,11 +76,13 @@ import ComplaintsList from './Pages/ComplaintsList';
 import ComplaintDetails from './Pages/ComplaintDetails';
 import InactiveItineraries from "./Pages/itineraries/InactiveItineraries.js"
 import AdminViewEvents from "./Pages/AdminViewEvents.js"
-import AdminViewItineraries from "./Pages/AdminViewItineraries.js"
+import AdminItineraryDetails from "./Pages/itineraries/AdminItinDetails.js";
+import AdminViewItineraries from "./Pages/itineraries/AdminViewItineraries.js"
 import TouristHistory from "./Pages/Tourist/TouristHistory.js";
 import FlightBooking from './Pages/FlightBooking.jsx';
 import FlightDetailsPage from "./Pages/FlightDetailsCard.jsx";
-import ActivityPostDetail from "./components/ActivityPostDetail.js"
+import FileComplaintForm from "./Pages/Tourist/FileComplaintForm";
+
 function App() {
   const token = localStorage.getItem("jwt");
  // const navigate = useNavigate();
@@ -137,6 +139,7 @@ function App() {
         <Route path="/guest-activities" element={<GuestActivities/>} />
         <Route path="/activity/:id" element={<ActivityPostDetail />} />
         <Route path="/Tourist-History" element={<TouristHistory />} />
+        <Route path="/tourist/file-complaint" element={<FileComplaintForm />} />
         {/* <Route path="/guest-places" element={<GuestViewVintage/>} /> */}
         <Route path="/createActivity" element={<CreateActivityForm userId={localStorage.getItem("id")} />} /> 
         <Route path="/SignUp" element={<SignUp />} />
@@ -174,6 +177,7 @@ function App() {
               <Route path="/complaints/:id" element={<ComplaintDetails />} />
               <Route path="/admin-view-events" element={<AdminViewEvents />} />
               <Route path="/admin-view-events/itineraries" element={<AdminViewItineraries />} />
+              <Route path="/admin-view-events/itineraries/:id" element={<AdminItineraryDetails />} />
         </Route>
 
         <Route path="/guest-places" element={<GuestViewVintage/>} />

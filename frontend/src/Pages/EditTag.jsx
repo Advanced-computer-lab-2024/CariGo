@@ -60,14 +60,11 @@ export default function EditTag() {
       case "View All":
         navigate("/view-tags"); // Redirect to "View All" page
         break;
-      case "Update":
+      case "Edit or Delete":
         navigate("/update-tag"); // Redirect to "Update" page
         break;
       case "Create":
         navigate("/create-tag"); // Redirect to "Create" page
-        break;
-      case "Delete":
-        navigate("/delete-tag"); // Redirect to "Delete" page
         break;
       default:
         console.log(`No route for ${product.name}`);
@@ -139,12 +136,9 @@ const productList = [
     name: "View All",
   },
   {
-    name: "Update",
+    name: "Edit or Delete",
   },
   {
     name: "Create",
-  },
-  {
-    name: "Delete",
   },
 ];

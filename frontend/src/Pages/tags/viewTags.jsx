@@ -1,57 +1,59 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Layout } from 'antd';
+import { Layout, Table } from 'antd';
 import Sider from 'antd/es/layout/Sider';
 import Sidebar from '../Sidebar';
-import { ToastContainer } from "react-toastify";
 import { Content, Header } from 'antd/es/layout/layout';
 import TopBar from '../TopBar';
-export default function FetchCategories() {
-  const [categories, setCategories] = useState([]); // State to hold fetched categories
-  const [loading, setLoading] = useState(false); // Loading state
-  const token = localStorage.getItem('jwt')
-  const fetchCategories = async () => {
-    setLoading(true); // Start loading
+import { toast, ToastContainer } from "react-toastify";
+
+const ViewTags = () => {
+  const [tags, setTags] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const token = localStorage.getItem('jwt');
+
+  useEffect(() => {
+    fetchTags();
+  }, []);
+
+  const fetchTags = async () => {
+    setLoading(true);
     try {
-      const response = await axios.get("http://localhost:4000/Admin/getTags",{
-        headers:{
-            authorization :`Bearer ${token}`
-    }}); // Fetch from backend
-      console.log(response.data); // Log the response data
-      setCategories(response.data); // Set the categories state
+      const response = await axios.get("http://localhost:4000/Admin/getTags", {
+        headers: { authorization: `Bearer ${token}` }
+      });
+      setTags(response.data);
     } catch (error) {
-      console.error("Error fetching categories:", error);
+      toast.error("Error fetching tags.");
     } finally {
-      setLoading(false); // Stop loading
+      setLoading(false);
     }
   };
 
   return (
     <Layout style={{ height: '100vh' }}>
-    <Sider width={256} style={{ background: '#001529' }}>
-          <Sidebar />
-        </Sider>
-        <Layout>
+      <Sider width={256} style={{ background: '#001529' }}>
+        <Sidebar />
+      </Sider>
+      <Layout>
         <Header style={{ background: '#001529', padding: 0 }}>
-            <TopBar /> {/* Top bar added here */}
-            
-          </Header>
-          <ToastContainer />
-          <Content style={{ padding: '20px', overflowY: 'auto' }}>
-    <div>
-      <button onClick={fetchCategories}>Fetch Categories</button>
-      {loading && <p>Loading categories...</p>
-      }
-      <ul>
-        {categories.map((category) => (
-          <li key={category._id}>
-            <strong>Name:</strong> {category.title} <br />
-          </li>
-        ))}
-      </ul>
-    </div>
-  </Content>
-  </Layout>
-  </Layout>
+          <TopBar />
+        </Header>
+        <ToastContainer />
+        <Content style={{ padding: '20px', overflowY: 'auto' }}>
+          <h2>View Tags</h2>
+          <Table
+            dataSource={tags}
+            rowKey="_id"
+            loading={loading}
+            pagination={{ pageSize: 10 }}
+          >
+            <Table.Column title="Title" dataIndex="title" key="title" />
+          </Table>
+        </Content>
+      </Layout>
+    </Layout>
   );
-}
+};
+
+export default ViewTags;
