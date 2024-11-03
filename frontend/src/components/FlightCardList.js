@@ -18,11 +18,8 @@ const FlightCardList = ({ flights = [], loading = false }) => {
 
   return (
     <Box sx={{
-      display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fill, minmax(400px, 1fr))', // Adjusts columns based on available space
       gap: '10px',
       margin:'30px',
-      maxHeight: '500px', // Set a max height to enable vertical scrolling
       
       overflowY: 'auto', 
       '&::-webkit-scrollbar': {
@@ -30,6 +27,8 @@ const FlightCardList = ({ flights = [], loading = false }) => {
     },
     msOverflowStyle: 'none', // Hide scrollbar in IE and Edge
     scrollbarWidth: 'none', // Hide scrollbar in Firefox
+    display:'flex',
+    flexDirection: 'column',
     }}>
       {flights.length === 0 ? (
         <Message>No flights available.</Message> // Handle empty list case

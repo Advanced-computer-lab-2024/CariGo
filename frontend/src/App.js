@@ -82,7 +82,8 @@ import TouristHistory from "./Pages/Tourist/TouristHistory.js";
 import FlightBooking from './Pages/FlightBooking.jsx';
 import FlightDetailsPage from "./Pages/FlightDetailsCard.jsx";
 import FileComplaintForm from "./Pages/Tourist/FileComplaintForm";
-import ActivityPostDetail from "./components/ActivityPostDetail.js"
+import ActivityPostDetail from "./components/ActivityPostDetail.js";
+import HotelBooking from "./Pages/Tourist/HotelBooking.js"
 
 function App() {
   const token = localStorage.getItem("jwt");
@@ -186,6 +187,7 @@ function App() {
         <Route path="/createVintage" element={<CreateVintageForm />} />
         <Route path="/flight" element={<FlightBooking/>} />
         <Route path="/flight-details/:id" element={<FlightDetailsPage/>} />
+        <Route path="/hotels" element={<HotelBooking/>} />
         <Route path="/sellerProfile" element={<SellerProfile userId={localStorage.getItem("id")} />} />
 
 

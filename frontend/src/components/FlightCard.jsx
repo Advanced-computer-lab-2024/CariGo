@@ -4,6 +4,10 @@ import FlightInfo from "./FlightInfo";
 import FlightDate from "./FlightDate"; // You might need to adapt this if it doesn't match the data format.
 import FlightDuration from "./FlightDuration";
 import { useNavigate } from 'react-router-dom';
+import { Box ,Typography} from "@mui/material";
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import FlightIcon from '@mui/icons-material/Flight';
+import LuggageIcon from '@mui/icons-material/Luggage';
 
 const FlightCard = ({ flight, onClick }) =>{
   const { airline, segments,price } = flight;
@@ -24,12 +28,26 @@ const FlightCard = ({ flight, onClick }) =>{
     };
 
   return (
-    <Card  onClick={onClick}>
-      <CardHeader>
-        <FlightDate date={new Date(segments[0].departure.time).toLocaleDateString()} />
+    <Box   sx={{
+      border: '2px solid #126782', 
+      borderColor:'#126782',
+      borderRadius:'10px', 
+      //display:'flex', 
+      
+      height:'320px',
+      display: 'flex', // Allows the box to grow with content
+      flexDirection:'column', 
+      maxWidth: '500px', // Starting width
+      margin:'30px',
+      }}>
+
+      <Box sx={{display:'flex', }}>
+        <FlightDate date={new Date(segments[0].departure.time).toLocaleDateString()}  />
         <FlightDuration duration={formatDuration(segments[0].duration)}/>
-      </CardHeader>
+      </Box>
+
       <Divider />
+      <Box sx={{display:'flex',flexDirection:'row'}}>
       <FlightDetails>
         {segments.map((segment, index) => (
           <FlightInfo
@@ -37,15 +55,24 @@ const FlightCard = ({ flight, onClick }) =>{
             time={new Date(segment.departure.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
             code={segment.flightNumber}
             city={`${segment.departure.airport} to ${segment.arrival.airport}`} // Displaying the route
+            
           />
         ))}
-        <FlightIcon>
-          <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/1ab6ee62f061a9bd39efdb1b0483c9a02f9040bfd2a0f09dfc8aaf9e71997c4a?placeholderIfAbsent=true&apiKey=023722a8f8024e4d98a0d7e5b718070f" alt="Flight icon" />
-        </FlightIcon>
       </FlightDetails>
-      <Price>{`Price: ${price.total}   ${price.currency}`}</Price> {/* Display price */}
-      <BookButton>Book</BookButton> {/* Add Book button */}
-    </Card>
+      <FlightIcon sx={{scale:'3', fill:'#126782', marginTop:'30px',marginLeft:'50px',transform: 'rotateZ(45deg)',}}/>
+      </Box>
+
+      <Box sx={{display:'flex', flexDirection:'row', marginTop:'-120px',marginLeft:'12px',}}>
+        <LuggageIcon sx={{ fill:'#126782'}}/>
+      <Typography>{flight.includedCheckedBagsOnly}</Typography>
+      </Box>
+
+      <Box sx={{display:'flex', marginLeft:'330px',padding:'10px',marginBottom:'10px',}}>
+        <AttachMoneyIcon sx={{marginTop:'0px', color: '#126782'}}/>
+      <Price>{`${price.total}   ${price.currency}`}</Price> {/* Display price */}
+      </Box>
+      <BookButton onClick={handleClick}>Book</BookButton> {/* Add Book button */}
+    </Box>
   );
 };
 
@@ -84,45 +111,32 @@ const FlightDetails = styled.section`
   width: 100%;
   max-width: 299px;
   gap: 40px 77px;
+  margin-left: 20px;
+  height:200px;
 `;
 const Price = styled.p`
   font-size: 16px;
-  color: #2f2f2f;
-  margin: 10px 0; /* Margin for spacing */
+  font-weight: bold;
+  color: #126782;
+  margin-top:0px;
+  margin-bottom: 10px;
+  right:0;
 `;
 const BookButton = styled.button`
   padding: 10px 15px;
-  background-color: #007bff; /* Button color */
+  background-color: #126782; /* Button color */
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   font-size: 16px;
   transition: background-color 0.3s;
-
+  margin-top: -15px;
   &:hover {
     background-color: #0056b3; /* Darker shade on hover */
   }
 `;
 
-const FlightIcon = styled.div`
-  background-color: #fff;
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.25);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 38px;
-  height: 38px;
-  margin: auto 0;
-  padding: 0 8px;
 
-  img {
-    aspect-ratio: 1.15;
-    object-fit: contain;
-    object-position: center;
-    width: 15px;
-  }
-`;
 
 export default FlightCard;
