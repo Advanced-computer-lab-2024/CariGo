@@ -20,9 +20,7 @@ import SellIcon from '@mui/icons-material/Sell';
 import StarIcon from '@mui/icons-material/Star';
 import Link from '@mui/material/Link';
 import { useNavigate } from 'react-router-dom';
-
-
-export default function ActivityPost({ id,author, img, start_date, end_date, duration, tag, description, title,location,
+export default function DetailedActivityPost({ id,author, img, start_date, end_date, duration, tag, description, title,location,
     price,category,discount,isOpened, rating}) {
   const [expanded, setExpanded] = React.useState(false);
 
@@ -30,13 +28,8 @@ export default function ActivityPost({ id,author, img, start_date, end_date, dur
     setExpanded(!expanded);
   };
 
-const navigate = useNavigate();
+  const navigate = useNavigate();
   return (
-    // <Link 
-    // to={`/activities/${id}`} 
-    // style={{textDecoration:'none'}} 
-    // onClick={() => navigate(`/activities/${id}`)}
-    // >
     <Card
       sx={{
         width: '100%', // Use full width of the container
@@ -50,15 +43,9 @@ const navigate = useNavigate();
         position: 'relative',
         margin: '20px',
         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', // Box shadow all around
-        transition: 'transform 0.3s ease', // Transition effect for size change
-        '&:hover': {
-          transform: 'scale(1.02)', // Scale up the card on hover
-          cursor: 'pointer', // Change cursor to pointer
-        },
       }}
     >
       <Box sx={{ display: 'flex', flexDirection: 'row', flexGrow: 1 }}>
-        
         <CardMedia
           component="img"
           image={img || "/0ae1e586-0d84-43c3-92d4-924c13c01059.jpeg"}
@@ -71,7 +58,6 @@ const navigate = useNavigate();
             boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
           }}
         />
-        
         <Box sx={{ display: 'flex', flexDirection: 'column' ,}}>
           <Box
             sx={{
@@ -80,29 +66,24 @@ const navigate = useNavigate();
               display: 'flex',
               flexDirection: 'column',
               overflow: 'overflow',
-              
             }}
           >
             <CardHeader
               //avatar={<Avatar sx={{ bgcolor: red[500] }}>R</Avatar>}
-              
               title={
                 <Typography variant="h5" sx={{ width: '300px', fontWeight: 'bold', fontSize: '24px' }}>
                   {title}
                 </Typography>
               }
             />
-
             {/* Tags below title */}
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginLeft: '15px' }}>
               {
               tag != null ?
-              
                 (<Chip label={tag} sx={{backgroundColor :'#126782', color: 'white' }} />)
               : ""}
             </Box>
           </Box>
-          
           {/* Data Stuff */}
           <Box
             sx={{
@@ -111,12 +92,9 @@ const navigate = useNavigate();
               marginLeft: '30px',
             }}
           >
-            
             <Typography>author : {author}</Typography>
-
             <Typography>
               category: {category != null ? category:"no specified category"}
-              
             </Typography>
 
             <Box sx={{display:'flex', }}>
@@ -141,12 +119,10 @@ const navigate = useNavigate();
                 </Box>
             <Box sx={{ display: 'flex',
                 marginTop: '5px',
-                margoinLeft:'-10px' ,
-                
+                margoinLeft:'-10px' ,               
                 }}>
             <PinDropIcon sx={{marginTop:'0px',}}/>
             <Typography sx={{marginLeft:'5px'}}> 
-
             {location != null ? (
               <>
                 lan: {location.lan}<br />
@@ -157,7 +133,6 @@ const navigate = useNavigate();
             )}
               </Typography>
             </Box>
-            
 
             <Box sx={{ display: 'flex',
                 marginTop: '5px',
@@ -182,8 +157,7 @@ const navigate = useNavigate();
                 marginLeft: '5px',
                 borderRadius: '5px',
                 padding: '0px',
-                }}>
-                  
+                }}>                 
             <Typography sx={{marginLeft:'5px', color: "white"}}> {"-"+discount+"%" || ''}</Typography>
             <SellIcon  sx={{scale: '0.7', color: 'white', marginTop:'2px',marginLeft:'-2px',
                 //do smth about display

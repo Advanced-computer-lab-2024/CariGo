@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import FlightCard from "./FlightCard";
 import { useNavigate } from 'react-router-dom';
+import { Box } from "@mui/material";
 const FlightCardList = ({ flights = [], loading = false }) => {
   const navigate = useNavigate();
   const handleCardClick = (flight) => {
@@ -16,7 +17,20 @@ const FlightCardList = ({ flights = [], loading = false }) => {
   }
 
   return (
-    <List>
+    <Box sx={{
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fill, minmax(400px, 1fr))', // Adjusts columns based on available space
+      gap: '10px',
+      margin:'30px',
+      maxHeight: '500px', // Set a max height to enable vertical scrolling
+      
+      overflowY: 'auto', 
+      '&::-webkit-scrollbar': {
+      display: 'none', // Hide scrollbar in WebKit browsers (e.g., Chrome, Safari)
+    },
+    msOverflowStyle: 'none', // Hide scrollbar in IE and Edge
+    scrollbarWidth: 'none', // Hide scrollbar in Firefox
+    }}>
       {flights.length === 0 ? (
         <Message>No flights available.</Message> // Handle empty list case
       ) : (
@@ -24,7 +38,7 @@ const FlightCardList = ({ flights = [], loading = false }) => {
           <FlightCard key={flight.id} flight={flight} onClick={() => handleCardClick(flight)} />
         ))
       )}
-    </List>
+    </Box>
   );
 };
 

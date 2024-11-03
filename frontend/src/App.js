@@ -80,6 +80,7 @@ import AdminViewItineraries from "./Pages/AdminViewItineraries.js"
 import TouristHistory from "./Pages/Tourist/TouristHistory.js";
 import FlightBooking from './Pages/FlightBooking.jsx';
 import FlightDetailsPage from "./Pages/FlightDetailsCard.jsx";
+import ActivityPostDetail from "./components/ActivityPostDetail.js"
 function App() {
   const token = localStorage.getItem("jwt");
  // const navigate = useNavigate();
@@ -134,6 +135,7 @@ function App() {
         <Route path="/tourist-itineraries" element={< TouristItineraries/>} />
         <Route path="/guest-itineraries" element={<GuestItineraries/>} />
         <Route path="/guest-activities" element={<GuestActivities/>} />
+        <Route path="/activity/:id" element={<ActivityPostDetail />} />
         <Route path="/Tourist-History" element={<TouristHistory />} />
         {/* <Route path="/guest-places" element={<GuestViewVintage/>} /> */}
         <Route path="/createActivity" element={<CreateActivityForm userId={localStorage.getItem("id")} />} /> 
