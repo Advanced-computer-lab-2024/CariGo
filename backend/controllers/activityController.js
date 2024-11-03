@@ -7,6 +7,7 @@ const activityModel = require("../models/Activity");
 // const CategoryModel = require("../models/Category");
 const mongoose = require("mongoose");
 const bookingModel = require("../models/Bookings");
+const User = require("../models/User");
 
 const createActivity = async (req, res) => {
   try {
@@ -406,17 +407,30 @@ const shareActivity = async (req, res) => {
 };
 
 const BookActivity = async (req, res) => {
-  const { ActivityId } = req.params; // Event ID from URL parameters
-  const { UserId, PaymentMethod } = req.body; // User ID from request body
+  const { ActivityId } = req.params;
+  const { PaymentMethod } = req.body;
+  const UserId = req.user.id;
   console.log(UserId);
   let CardNumber;
-  let booking; // Declare booking outside of if-else to use in response
+  let booking;
+
   if (
     mongoose.Types.ObjectId.isValid(ActivityId) &&
     mongoose.Types.ObjectId.isValid(UserId)
   ) {
     try {
-      if (PaymentMethod == "Card") {
+      // Fetch the activity to get the price
+      const activity = await Activity.findById(ActivityId);
+      if (!activity) {
+        return res.status(404).json({ error: "Activity not found" });
+      }
+
+      const user = await User.findById(UserId);
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      if (PaymentMethod === "Card") {
         CardNumber = req.body.CardNumber;
         booking = await bookingModel.create({
           ActivityId: ActivityId,
@@ -434,16 +448,24 @@ const BookActivity = async (req, res) => {
         });
       }
 
+      // Add loyalty points
+      user.addLoyaltyPoints(activity.price.range.min);
+      await user.save({ validateBeforeSave: false });
+
       res.status(200).json({
-        message: " booked successfully",
+        message: "Booked successfully",
         booking,
+        loyaltyPointsEarned: Math.floor(activity.price * (user.level === 1 ? 0.5 : user.level === 2 ? 1 : 1.5)),
+        newTotalPoints: user.loyaltyPoints,
+        newLevel: user.level,
+        newBadge: user.badge
       });
     } catch (error) {
-      res.status(500).json({ error: "Failed to book" });
+      res.status(500).json({ error: "Failed to book", message: error.message });
       console.error("Error while booking:", error);
     }
   } else {
-    res.status(400).json({ error: "Invalid event ID format" });
+    res.status(400).json({ error: "Invalid activity ID or user ID format" });
   }
 };
 

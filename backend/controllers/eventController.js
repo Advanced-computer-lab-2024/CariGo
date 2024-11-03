@@ -12,6 +12,8 @@ const mongoose = require("mongoose");
 const APIFeatures = require("../utils/apiFeatures");
 const Category = require("../models/Category");
 const bookingModel = require("../models/Bookings");
+const Itinerary = require("../models/Itinerary");
+const User = require("../models/User");
 
 
 const createItinerary = async (req, res) => {
@@ -551,7 +553,8 @@ const shareVintage = async (req,res) => {
 
 const BookItinerary = async (req, res) => {
   const { ItineraryId } = req.params; // Event ID from URL parameters
-  const { UserId, PaymentMethod } = req.body; // User ID from request body
+  const { PaymentMethod } = req.body; // User ID from request body
+  const UserId = req.user.id;
   let CardNumber;
   let booking; // Declare booking outside of if-else to use in response
   if (
@@ -559,6 +562,16 @@ const BookItinerary = async (req, res) => {
     mongoose.Types.ObjectId.isValid(UserId)
   ) {
     try {
+      const itinerary = await Itinerary.findById(ItineraryId);
+      if (!itinerary) {
+        return res.status(404).json({ error: "Iternirary not found" });
+      }
+
+      const user = await User.findById(UserId);
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
       if (PaymentMethod == "Card") {
         CardNumber = req.body.CardNumber;
           booking = await bookingModel.create({
@@ -577,9 +590,17 @@ const BookItinerary = async (req, res) => {
         });
       }
 
+      // Add loyalty points
+      user.addLoyaltyPoints(itinerary.price.range.min);
+      await user.save({ validateBeforeSave: false });
+
       res.status(200).json({
-        message: " booked successfully",
+        message: "Booked successfully",
         booking,
+        loyaltyPointsEarned: Math.floor(activity.price * (user.level === 1 ? 0.5 : user.level === 2 ? 1 : 1.5)),
+        newTotalPoints: user.loyaltyPoints,
+        newLevel: user.level,
+        newBadge: user.badge
       });
     } catch (error) {
       res.status(500).json({ error: "Failed to book" });
