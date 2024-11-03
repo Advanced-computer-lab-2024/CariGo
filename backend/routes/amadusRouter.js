@@ -7,4 +7,4 @@ router.get('/cities',amadusController.cities);
 router.get('/hotels',amadusController.getHotels);
 router.get('/hotelDetails',amadusController.getHotelDetails);
 router.get('/seatMap',amadusController.getSeatmap);
-module.exports = router;
+module.exports = router;

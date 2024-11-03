@@ -296,7 +296,7 @@ const getHotelDetails = async (hotelIds, adults, checkIn, checkOut, noOfrooms) =
       const { hotel } = hotelOffer; // Destructure hotel data
 
       // Construct Google Maps link
-      const googleMapsLink = `https://www.google.com/maps/search/?api=1&query=${hotel.longitude},${hotel.latitude}`;
+      const googleMapsLink =` https://www.google.com/maps/search/?api=1&query=${hotel.longitude},${hotel.latitude}`;
 
       return {
         ...hotelOffer, // Return the original hotel offer data
