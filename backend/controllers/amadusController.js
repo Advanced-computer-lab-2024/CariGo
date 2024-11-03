@@ -32,47 +32,7 @@ const getCityByCode = async (req, res) => {
     try {
       const { origin, destination, departureDate, adults,children ,nonStop ,travelClass} = req.query;
   
-  getFlights = async (req, res) => {
-    try {
-      const { origin, destination, departureDate, adults,children ,nonStop ,travelClass} = req.query;
-  
       const response = await amadeus.shopping.flightOffersSearch.get({
-        originLocationCode: origin,
-        destinationLocationCode: destination,
-        departureDate: departureDate,
-        adults: adults,
-        children:children,
-        nonStop:nonStop,
-        travelClass:travelClass
-      });
-  
-      // Collect all unique airline codes
-      const airlineCodesSet = new Set();
-      response.data.forEach(offer => {
-        if (offer.validatingAirlineCodes[0]) {
-          airlineCodesSet.add(offer.validatingAirlineCodes[0]);
-        }
-      });
-  
-      const airlineCodesArray = Array.from(airlineCodesSet);
-      let airlineNamesMap = {};
-      
-      // Fetch airline names for all unique airline codes
-      if (airlineCodesArray.length > 0) {
-        try {
-          const airlineResponse = await amadeus.referenceData.airlines.get({
-            airlineCodes: airlineCodesArray.join(',')
-          });
-          
-          airlineNamesMap = airlineResponse.data.reduce((map, airline) => {
-            map[airline.iataCode] = airline.businessName;
-            return map;
-          }, {});
-        } catch (error) {
-          console.error(`Error fetching airline details: ${error.message}`);
-        }
-      }
-  
         originLocationCode: origin,
         destinationLocationCode: destination,
         departureDate: departureDate,
@@ -149,54 +109,10 @@ const getCityByCode = async (req, res) => {
         };
       }));
   
-      const flights = await Promise.all(response.data.map(offer => {
-        const airlineCode = offer.validatingAirlineCodes[0] || 'Unknown Airline';
-        const airlineName = airlineNamesMap[airlineCode] || 'Unknown Airline';
-  
-        return {
-          id: offer.id,
-          airline: airlineCode,
-          airlineName: airlineName,
-          oneway :offer.oneWay,
-          segments: offer.itineraries.flatMap(itinerary => {
-            return itinerary.segments.map(segment => ({
-              flightNumber: segment.number,
-              departure: {
-                airport: segment.departure.iataCode,
-                terminal :segment.departure.terminal,
-                time: segment.departure.at
-              },
-              arrival: {
-                airport: segment.arrival.iataCode,
-                terminal :segment.departure.terminal,
-                time: segment.arrival.at
-              },
-              duration: segment.duration,
-              numberOfStops: segment.numberOfStops,
-              fareDetails: offer.travelerPricings[0].fareDetailsBySegment.find(fd => fd.segmentId === segment.id) || {}
-            }));
-          }),
-          price: {
-            total: offer.price.total,
-            currency: offer.price.currency
-          },
-          fareType: offer.pricingOptions.fareType[0], // Type of fare
-          includedCheckedBagsOnly: offer.pricingOptions.includedCheckedBagsOnly, // Checked bags included
-          lastTicketingDate: offer.lastTicketingDate,
-          numberOfBookableSeats: offer.numberOfBookableSeats,
-          travelerType: offer.travelerPricings[0].travelerType // Type of traveler (e.g., ADULT)
-        };
-      }));
-  
       res.json(flights);
-    } catch (error) {
     } catch (error) {
       console.error(error);
       res.status(500).send(error.message);
-    }
-  };
-  
-  
     }
   };
   
@@ -211,9 +127,6 @@ const cities = async (req, res) => {
   const { keyword } = req.query; // e.g., city name or part of it
 
   try {
-      const response = await amadeus.referenceData.locations.get({
-        keyword : keyword,
-        subType : Amadeus.location.any
       const response = await amadeus.referenceData.locations.get({
         keyword : keyword,
         subType : Amadeus.location.any
@@ -255,7 +168,7 @@ const cities = async (req, res) => {
 //       address: hotel.address,
 //       hotelIds: hotel.hotelIds,
 //       location: hotel.geoCode, // Includes latitude and longitude
-//       googleMapsLink: `https://www.google.com/maps/search/?api=1&query=${hotel.geoCode.latitude},${hotel.geoCode.longitude}`,
+//       googleMapsLink: https://www.google.com/maps/search/?api=1&query=${hotel.geoCode.latitude},${hotel.geoCode.longitude},
 //     }));
 
 //     // Return the list of hotels
@@ -269,37 +182,6 @@ const cities = async (req, res) => {
 const getHotels = async (req, res) => {
   try {
     const { keyword, adults, checkIn, checkOut ,noOfrooms} = req.query;
-    const { keyword, adults, checkIn, checkOut ,noOfrooms} = req.query;
-
-    // Validate required parameters
-    if (!keyword) {
-      return res.status(400).json({ error: 'Keyword is required.' });
-    }
-
-    // Retrieve hotel data using the Amadeus API
-    const response = await amadeus.referenceData.locations.hotel.get({
-      keyword: keyword,
-      subType: 'HOTEL_GDS',
-    });
-    console.log(response.data)
-    // Extract hotel IDs from the response
-    const hotelIds = response.data.flatMap(hotel => hotel.hotelIds);
-    console.log(hotelIds.join(','));
-    // If no hotel IDs are found
-    if (hotelIds.length === 0) {
-      return res.status(404).json({ error: 'No hotels found for the given keyword.' });
-    }
-
-    // Fetch hotel details for the extracted IDs
-    const hotelDetailsResponse = await getHotelDetails(
-      hotelIds.join(','), // Join IDs for the API call
-      adults,
-      checkIn,
-      checkOut,noOfrooms
-    );
-
-    // Return the hotel details
-    res.json(hotelDetailsResponse);
 
     // Validate required parameters
     if (!keyword) {
@@ -332,8 +214,6 @@ const getHotels = async (req, res) => {
     res.json(hotelDetailsResponse);
 
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: error.message });
     console.error(error);
     res.status(500).json({ error: error.message });
   }
@@ -416,7 +296,7 @@ const getHotelDetails = async (hotelIds, adults, checkIn, checkOut, noOfrooms) =
       const { hotel } = hotelOffer; // Destructure hotel data
 
       // Construct Google Maps link
-      const googleMapsLink = `https://www.google.com/maps/search/?api=1&query=${hotel.longitude},${hotel.latitude}`;
+      const googleMapsLink =` https://www.google.com/maps/search/?api=1&query=${hotel.longitude},${hotel.latitude}`;
 
       return {
         ...hotelOffer, // Return the original hotel offer data
