@@ -314,7 +314,7 @@ const handleClassSelect = (event) => {
       </Box >
 
          {/* Render FlightCard if flights are available */}
-         <Box sx={{padding:"20px", marginLeft:"10%" , overflow:'auto'}}>
+         <Box sx={{padding:"20px", marginLeft:"10%" , overflow:'auto',marginTop:'4%',}}>
          {flights.length > 0 && (
             <FlightCardList flights={flights} />
           )}

@@ -35,9 +35,20 @@ const HotelCardList = ({ hotels = [], loading = false }) => {
         overflowY: 'auto',
         display: 'flex',
         flexDirection: 'column',
-        '&::-webkit-scrollbar': { display: 'none' }, // Hide scrollbar in WebKit browsers
-        msOverflowStyle: 'none', // Hide scrollbar in IE and Edge
-        scrollbarWidth: 'none', // Hide scrollbar in Firefox
+        overflowX: 'hidden', 
+        maxHeight:'600px',
+        '&::-webkit-scrollbar': {
+          width: '8px', // Width of the scrollbar
+        
+          },
+        '&::-webkit-scrollbar-thumb': {
+          backgroundColor: '#126782', // Color of the scrollbar thumb
+          borderRadius: '10px', // Rounded corners for the scrollbar thumb
+          },
+        '&::-webkit-scrollbar-track': {
+          backgroundColor: '#f1f1f1', // Color of the scrollbar track
+          borderRadius: '10px', // Rounded corners for the scrollbar track
+        },
       }}
     >
       {hotels.map((hotel) => (

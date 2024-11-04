@@ -251,7 +251,7 @@ export default function BookHotels(){
             </Box >
       
                {/* Render HotelCard if hotels are available */}
-               <Box sx={{padding:"20px", marginLeft:"10%" , overflow:'auto'}}>
+               <Box sx={{padding:"20px", marginLeft:"10%" , overflow:'auto',marginTop:'4%',}}>
                {hotels.length > 0 && (
                   <HotelCardList hotels={hotels} />
                 )}

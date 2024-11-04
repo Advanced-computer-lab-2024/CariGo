@@ -38,7 +38,9 @@ const FlightCard = ({ flight, onClick }) =>{
       flexDirection:'column', 
       minWidth:'400px',
       maxWidth: '800px', // Starting width
-      margin:'30px',
+      margin:'20px',
+      marginTop:'20px',
+      marginRight:'60px',
       
       }}>
 
