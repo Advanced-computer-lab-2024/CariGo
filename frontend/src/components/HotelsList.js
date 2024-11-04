@@ -51,11 +51,16 @@ const HotelCardList = ({ hotels = [], loading = false }) => {
         },
       }}
     >
-      {hotels.map((hotel) => (
+      {/* {hotels.map((hotel) => (
         <Box key={hotel.id} sx={{ marginBottom: '10px' }}>
           <HotelCard hotel={hotel} onClick={() => handleCardClick(hotel)} />
         </Box>
-      ))}
+      ))} */}
+       {hotels.map((hotel) => 
+                hotel.offers.map((offer) => (
+                    <HotelCard  hotel={hotel} offer={offer} />
+                ))
+            )}
     </Box>
   );
 };
