@@ -83,9 +83,9 @@ import FlightBooking from './Pages/FlightBooking.jsx';
 import FlightDetailsPage from "./Pages/FlightDetailsCard.jsx";
 import FileComplaintForm from "./Pages/Tourist/FileComplaintForm";
 import ActivityPostDetail from "./components/ActivityPostDetail.js";
-import HotelBooking from "./Pages/Tourist/HotelBooking.js"
+import HotelBooking from "./Pages/Tourist/HotelBooking.js";
 import BookingPage from "./Pages/Tourist/Booking.js";
-
+import AdminViewActivity from "./Pages/activities/AdminViewActivity.js";
 function App() {
   const token = localStorage.getItem("jwt");
  // const navigate = useNavigate();
@@ -181,6 +181,7 @@ function App() {
               <Route path="/admin-view-events" element={<AdminViewEvents />} />
               <Route path="/admin-view-events/itineraries" element={<AdminViewItineraries />} />
               <Route path="/admin-view-events/itineraries/:id" element={<AdminItineraryDetails />} />
+              <Route path="/admin-view-events/activities" element={<AdminViewActivity />} />
         </Route>
 
         <Route path="/guest-places" element={<GuestViewVintage/>} />
