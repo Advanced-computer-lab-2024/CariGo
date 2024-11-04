@@ -17,6 +17,9 @@ const {
   shareItinerary,
   shareVintage,
   BookItinerary,
+  MyItineraryBookings,
+  CancelItineraryBooking,
+  currencyConversion,
 } = require("../controllers/eventController");
 const authController = require("../controllers/authController");
 const router = express.Router();
@@ -86,5 +89,11 @@ router.post(
   authController.restrictTo("Tourist"),
   BookItinerary
 );
+
+router.get('/MyItineraryBookings',authController.restrictTo("Tourist"),MyItineraryBookings);
+
+router.patch('/CancelItineraryBooking',authController.restrictTo("Tourist"),CancelItineraryBooking);
+
+router.get("/currencyConversion",currencyConversion);
 
 module.exports = router;

@@ -10,8 +10,8 @@ export default function FlightBooking() {
 
     return (
         <>
-            <NavBar />
-   <FlightSearch/>
+        
+        <FlightSearch/>
   
         </>
     );

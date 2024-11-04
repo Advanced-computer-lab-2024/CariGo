@@ -38,7 +38,9 @@ const FlightCard = (Hotel) =>{
       display: 'flex', 
       flexDirection:'column', 
       maxWidth: '450px',
-      margin:'30px',
+      margin:'20px',
+      marginTop:'20px',
+      marginRight:'60px',
       }}>
         <Box sx={{width:'90%',margin:'20px'}}>
         <Typography 

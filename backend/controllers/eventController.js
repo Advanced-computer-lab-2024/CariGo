@@ -597,10 +597,7 @@ const BookItinerary = async (req, res) => {
       res.status(200).json({
         message: "Booked successfully",
         booking,
-        loyaltyPointsEarned: Math.floor(
-          itinerary.price *
-            (user.level === 1 ? 0.5 : user.level === 2 ? 1 : 1.5)
-        ),
+        loyaltyPointsEarned: Math.floor(itinerary.price * (user.level === 1 ? 0.5 : user.level === 2 ? 1 : 1.5)),
         newTotalPoints: user.loyaltyPoints,
         newLevel: user.level,
         newBadge: user.badge,
@@ -613,6 +610,7 @@ const BookItinerary = async (req, res) => {
     res.status(400).json({ error: "Invalid itineray ID format" });
   }
 };
+
 
 const MyItineraryBookings = async (req, res) => {
   const { UserId } = req.body; // User ID from request body
@@ -657,9 +655,12 @@ const CancelItineraryBooking = async (req, res) => {
             updatedBookingsCount: bookings.modifiedCount, // shows how many bookings were updated
           });
         } else {
-          res.status(400).json({
-            message: "Cannot book/cancel within 48 hours of the itinerary date",
-          });
+          res
+            .status(400)
+            .json({
+              message:
+                "Cannot book/cancel within 48 hours of the itinerary date",
+            });
         }
       } else {
         res.status(404).json({ message: "itinerary not found" });
@@ -670,6 +671,36 @@ const CancelItineraryBooking = async (req, res) => {
     }
   } else {
     res.status(400).json({ error: "Invalid event ID format" });
+  }
+
+};
+
+const axios = require('axios');
+const dotenv = require("dotenv");
+dotenv.config({ path: "../.env" });
+const currencyConversion = async (req, res) => {
+  try {
+    const { currency } = req.body;
+    const key = process.env.currencyConversionKey;
+    const url = `https://v6.exchangerate-api.com/v6/${key}/pair/EGP/${currency}`;
+    const response = await axios.get(url);
+    const data = response.data;
+    const result = data.conversion_rate;
+    if (data.result === "success") {
+      console.log("Exchange rates:", data.conversion_rate);
+      console.log("Exchange rates:", result);
+      res.status(200).json({
+        message: "Currency conversion successful",
+        result // shows how many bookings were updated
+      });
+      // Access rates like: data.conversion_rates['EUR'], data.conversion_rates['EGP'], etc.
+    } else {
+      console.error("Error fetching exchange rates:", data.error);
+      res.status(400).json({ error: data.error });
+    }
+  } catch (error) {
+    console.error("Error making request:", error);
+    res.status(500).json({ error: "An error occurred while fetching exchange rates" });
   }
 };
 
@@ -693,4 +724,5 @@ module.exports = {
   BookItinerary,
   MyItineraryBookings,
   CancelItineraryBooking,
+  currencyConversion
 };

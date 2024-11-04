@@ -20,13 +20,23 @@ const FlightCardList = ({ flights = [], loading = false }) => {
     <Box sx={{
       gap: '10px',
       margin:'30px',
-      
-      overflowY: 'auto', 
+      marginBottom: '0px',
+      overflowY: 'auto',
+      overflowX: 'hidden', 
+      maxHeight:'600px',
       '&::-webkit-scrollbar': {
-      display: 'none', // Hide scrollbar in WebKit browsers (e.g., Chrome, Safari)
+      width: '8px', // Width of the scrollbar
+      
+      },
+    '&::-webkit-scrollbar-thumb': {
+      backgroundColor: '#126782', // Color of the scrollbar thumb
+      borderRadius: '10px', // Rounded corners for the scrollbar thumb
+      },
+    '&::-webkit-scrollbar-track': {
+      backgroundColor: '#f1f1f1', // Color of the scrollbar track
+      borderRadius: '10px', // Rounded corners for the scrollbar track
     },
-    msOverflowStyle: 'none', // Hide scrollbar in IE and Edge
-    scrollbarWidth: 'none', // Hide scrollbar in Firefox
+
     display:'flex',
     flexDirection: 'column',
     }}>
