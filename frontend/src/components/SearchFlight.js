@@ -238,7 +238,7 @@ const Frame = () => {
             <Box sx={{marginTop:'10px'}}>
               <Typography variant="body2" color="#126782">Adults</Typography>
               <Box display="flex" alignItems="center" bgcolor="white">
-                <Button variant="outlined" onClick={decrementAdults} disabled={adults <= 1}>-</Button>
+                <Button variant="outlined"  onClick={decrementAdults} disabled={adults <= 1}>-</Button>
                 <Typography variant="h6" color="#126782" sx={{ mx: 2 }}>{adults}</Typography>
                 <Button variant="outlined" onClick={incrementAdults}>+</Button>
               </Box>
