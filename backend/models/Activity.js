@@ -68,6 +68,10 @@ const activitySchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    isFlagged: {
+      type: Boolean,
+      default: false,
+    }
   },
   { timestamps: true }
 );
