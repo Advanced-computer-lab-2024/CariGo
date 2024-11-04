@@ -6,6 +6,7 @@ import LocationCityIcon from '@mui/icons-material/LocationCity';
 import CommuteIcon from '@mui/icons-material/Commute';
 import FlightBooking from "../FlightBooking";
 import HotelBooking from "./HotelBooking";
+import TransportationBooking from "../../components/TransportationBooking";
 export default function BookingPage(){
     const[selectedBooking, setSelectedBooking]= useState("");
 
@@ -75,9 +76,9 @@ export default function BookingPage(){
             {selectedBooking ==="hotel" &&
             <HotelBooking/>
             }
-            {/* {selectedBooking ==="transportation" &&
+            {selectedBooking ==="transportation" &&
             <TransportationBooking/>
-            } */}
+            }
         </div>
     );
 }

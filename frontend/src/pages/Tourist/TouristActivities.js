@@ -54,7 +54,6 @@ export default function TouristViewActivities (){
             ...prevFilters,
             [name]: value
         }));
-        
     };
   
     const handleFilter = () => {
@@ -207,6 +206,7 @@ export default function TouristViewActivities (){
                 <Box sx={{display:'flex',
                  flexDirection: anchorEl ? 'column' : 'row' ,
                   marginTop: '30px',marginLeft :'120px',}}> {/* for filter and sort next to each other*/}
+                  
                 {/*Filter menu*/}
                 <Box
                 sx={{
@@ -252,6 +252,7 @@ export default function TouristViewActivities (){
                       name="category"
                       value={filters.category}
                       onChange={handleFilterChange}
+                      type="text"
                       sx={{ mb: 2, mr: 2 }}
                   />
                   <TextField
