@@ -125,8 +125,8 @@ const handleClassSelect = (event) => {
     const formattedDate = date.format("YYYY-MM-DD");
 
     try {
-        console.log(`http://localhost:4000/cariGo/flights//getFlights?origin=${fromIATA}&destination=${toIATA}&departureDate=${formattedDate}&adults=${adults}`);
-      const response = await fetch(`http://localhost:4000/cariGo/flights//getFlights?origin=${fromIATA}&destination=${toIATA}&departureDate=${formattedDate}&adults=${adults}`);
+        console.log(`http://localhost:4000/cariGo/flights//getFlights?origin=${fromIATA}&destination=${toIATA}&departureDate=${formattedDate}&adults=${adults}&children=${children}&travelClass=${Class}`);
+      const response = await fetch(`http://localhost:4000/cariGo/flights//getFlights?origin=${fromIATA}&destination=${toIATA}&departureDate=${formattedDate}&adults=${adults}&children=${children}&travelClass=${Class}`);
       const data = await response.json();
       console.log("Flight data:", data); 
       setFlights(data);// Handle the flight data as needed
@@ -140,7 +140,7 @@ const handleClassSelect = (event) => {
       <Box sx={{display:"flex",marginLeft:"10%"}} >
         {/* VERTICAL BOX */}
       <Box  bgcolor="white" 
-      sx={{display:"flex", flexDirection:"column",gap:'30px', marginTop:'5%',padding:'10px',}} >
+      sx={{display:"flex", flexDirection:"column",gap:'30px', marginTop:'5%',padding:'10px',marginBottom:'12%'}} >
           {/* choose flight details locatios and time */} 
 
           {/* HORIZONTAL BOX 1*/}

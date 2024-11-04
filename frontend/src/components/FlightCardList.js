@@ -20,6 +20,7 @@ const FlightCardList = ({ flights = [], loading = false }) => {
     <Box sx={{
       gap: '10px',
       margin:'30px',
+      marginBottom: '0px',
       overflowY: 'auto',
       overflowX: 'hidden', 
       maxHeight:'600px',
