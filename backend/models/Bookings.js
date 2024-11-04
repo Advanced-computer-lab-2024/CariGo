@@ -40,6 +40,7 @@ BookingSchema.pre(/^find/, function (next) {
   next();
 });
 
+
 const Bookings = mongoose.model("Bookings", BookingSchema);
 
 module.exports = Bookings;
