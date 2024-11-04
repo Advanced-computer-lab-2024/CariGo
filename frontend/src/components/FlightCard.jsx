@@ -4,7 +4,7 @@ import FlightInfo from "./FlightInfo";
 import FlightDate from "./FlightDate"; // You might need to adapt this if it doesn't match the data format.
 import FlightDuration from "./FlightDuration";
 import { useNavigate } from 'react-router-dom';
-import { Box ,Typography} from "@mui/material";
+import { Box ,Typography,Button} from "@mui/material";
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import FlightIcon from '@mui/icons-material/Flight';
 import LuggageIcon from '@mui/icons-material/Luggage';
@@ -33,21 +33,24 @@ const FlightCard = ({ flight, onClick }) =>{
       borderColor:'#126782',
       borderRadius:'10px', 
       //display:'flex', 
-      
-      height:'320px',
-      display: 'flex', // Allows the box to grow with content
+      maxHeight:'350px',
+      display: 'inline-flex', 
       flexDirection:'column', 
-      maxWidth: '500px', // Starting width
-      margin:'30px',
+      minWidth:'400px',
+      maxWidth: '800px', // Starting width
+      margin:'20px',
+      marginTop:'20px',
+      marginRight:'60px',
+      
       }}>
 
-      <Box sx={{display:'flex', }}>
+      <Box sx={{display:'flex',marginTop:'5px',marginBottom:'-5px'}}>
         <FlightDate date={new Date(segments[0].departure.time).toLocaleDateString()}  />
         <FlightDuration duration={formatDuration(segments[0].duration)}/>
       </Box>
 
       <Divider />
-      <Box sx={{display:'flex',flexDirection:'row'}}>
+      <Box sx={{display:'flex',flexDirection:'row', height:"80px"}}>
       <FlightDetails>
         {segments.map((segment, index) => (
           <FlightInfo
@@ -59,19 +62,22 @@ const FlightCard = ({ flight, onClick }) =>{
           />
         ))}
       </FlightDetails>
-      <FlightIcon sx={{scale:'3', fill:'#126782', marginTop:'30px',marginLeft:'50px',transform: 'rotateZ(45deg)',}}/>
       </Box>
-
-      <Box sx={{display:'flex', flexDirection:'row', marginTop:'-120px',marginLeft:'12px',}}>
+      <FlightIcon sx={{scale:'3', fill:'#126782',margin:'30px', marginTop:'30px',marginLeft:"70px", transform: 'rotateZ(45deg)',}}/>
+      {/* <Box sx={{display:'flex', flexDirection:'row', marginTop:'-120px',marginLeft:'12px',}}>
         <LuggageIcon sx={{ fill:'#126782'}}/>
       <Typography>{flight.includedCheckedBagsOnly}</Typography>
-      </Box>
-
-      <Box sx={{display:'flex', marginLeft:'330px',padding:'10px',marginBottom:'10px',}}>
+      </Box> */}
+      {/*PUTS PRICE AND BOOK BUTTON AT BOTTOM */}
+      <Box sx={{position:'relative',  display:'flex',}}>
+      <Box sx={{display:'flex', padding:'10px',marginBottom:'10px',}}>
         <AttachMoneyIcon sx={{marginTop:'0px', color: '#126782'}}/>
       <Price>{`${price.total}   ${price.currency}`}</Price> {/* Display price */}
       </Box>
-      <BookButton onClick={handleClick}>Book</BookButton> {/* Add Book button */}
+      <Button onClick={handleClick} 
+      sx={{color:'white',  backgroundColor:'#126782', borderRadius:'5px',position:'absolute',right:'15px', bottom:'15px',}} 
+      >Book</Button> {/* Add Book button */}
+      </Box>
     </Box>
   );
 };
@@ -121,20 +127,6 @@ const Price = styled.p`
   margin-top:0px;
   margin-bottom: 10px;
   right:0;
-`;
-const BookButton = styled.button`
-  padding: 10px 15px;
-  background-color: #126782; /* Button color */
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.3s;
-  margin-top: -15px;
-  &:hover {
-    background-color: #0056b3; /* Darker shade on hover */
-  }
 `;
 
 

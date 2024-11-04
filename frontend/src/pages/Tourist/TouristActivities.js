@@ -50,11 +50,11 @@ export default function TouristViewActivities (){
     // handles if filter value changes
     const handleFilterChange = (e) => {
         const { name, value } = e.target;
+        //console.log(`Changing ${name} to ${value}`);
         setFilterInputValues(prevFilters => ({
             ...prevFilters,
             [name]: value
         }));
-        
     };
   
     const handleFilter = () => {
@@ -120,7 +120,7 @@ export default function TouristViewActivities (){
                 setFilteredActivities(json); // Initialize filteredActivities with all activities
             } catch (error) {
                 console.log('Error fetching activities:', error);
-                setError('Failed to fetch activities. Please try again later.');
+                //setError('Failed to fetch activities. Please try again later.');
             } finally {
                 setLoading(false);
             }
@@ -207,6 +207,7 @@ export default function TouristViewActivities (){
                 <Box sx={{display:'flex',
                  flexDirection: anchorEl ? 'column' : 'row' ,
                   marginTop: '30px',marginLeft :'120px',}}> {/* for filter and sort next to each other*/}
+                  
                 {/*Filter menu*/}
                 <Box
                 sx={{
@@ -241,7 +242,7 @@ export default function TouristViewActivities (){
                       label="Price"
                       variant="outlined"
                       name="price"
-                      value={filters.price}
+                      value={filterInputValues.price}
                       onChange={handleFilterChange}
                       type="number"
                       sx={{ mb: 2, mr: 2 , marginLeft :'10px',}}
@@ -250,15 +251,16 @@ export default function TouristViewActivities (){
                       label="Category"
                       variant="outlined"
                       name="category"
-                      value={filters.category}
+                      value={filterInputValues.category}
                       onChange={handleFilterChange}
+                      type="text"
                       sx={{ mb: 2, mr: 2 }}
                   />
                   <TextField
                       label="Rating"
                       variant="outlined"
                       name="rating"
-                      value={filters.rating}
+                      value={filterInputValues.rating}
                       onChange={handleFilterChange}
                       type="number"
                       sx={{ mb: 2, mr: 2 }}
@@ -268,7 +270,7 @@ export default function TouristViewActivities (){
                       //label="Start Date"
                       variant="outlined"
                       name="startDate"
-                      value={filters.startDate}
+                      value={filterInputValues.startDate}
                       onChange={handleFilterChange}
                       type="date"
                       sx={{ mb: 2, mr: 2 }}
@@ -333,6 +335,7 @@ export default function TouristViewActivities (){
         flexDirection: "column",
         gap: "15px",
         overflowX: 'hidden',
+        overflowY: 'auto', 
         '&::-webkit-scrollbar': {display: 'none',},
         }}> {/* Enable vertical scrolling only */}
   

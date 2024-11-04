@@ -33,13 +33,13 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, "Please confirm your password!"],
       validate: {
-        //ONLY WORKS ON CREATE AND SAVE!!
-        validator: function (el) {
+        validator: function(el) {
           return el === this.password;
         },
-        message: "Passwords do not match",
-      },
+        message: "Passwords do not match"
+      }
     },
+  
     role: {
       type: String,
       enum: [
@@ -137,6 +137,18 @@ const userSchema = new mongoose.Schema(
     taxationRegistryCard: {
       type: String, // Path to the taxation registry card (for Advertisers/Sellers)
     },
+    loyaltyPoints: {
+      type: Number,
+      default: 0
+    },
+    level: {
+      type: Number,
+      default: 1
+    },
+    badge: {
+      type: String,
+      default: 'Bronze'
+    },
   },
   { timestamps: true }
 );
@@ -200,6 +212,39 @@ userSchema.methods.createPasswordResetToken = function() {
   this.passwordResetExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
 
   return resetToken;
+};
+
+userSchema.methods.addLoyaltyPoints = function(amountPaid) {
+  let pointsMultiplier;
+  switch(this.level) {
+    case 1:
+      pointsMultiplier = 0.5;
+      break;
+    case 2:
+      pointsMultiplier = 1;
+      break;
+    case 3:
+      pointsMultiplier = 1.5;
+      break;
+    default:
+      pointsMultiplier = 0.5;
+  }
+
+  this.loyaltyPoints += Math.floor(amountPaid * pointsMultiplier);
+  this.updateLevelAndBadge();
+};
+
+userSchema.methods.updateLevelAndBadge = function() {
+  if (this.loyaltyPoints <= 100000) {
+    this.level = 1;
+    this.badge = 'Bronze';
+  } else if (this.loyaltyPoints <= 500000) {
+    this.level = 2;
+    this.badge = 'Silver';
+  } else {
+    this.level = 3;
+    this.badge = 'Gold';
+  }
 };
 
 const User = mongoose.model("User", userSchema, "User");

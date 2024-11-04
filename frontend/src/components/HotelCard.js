@@ -25,9 +25,12 @@ const HotelCard = ({ hotel,offer }) => {
       display: 'flex',
       flexDirection: 'column',
       maxWidth: '450px',
-      margin: '30px',
-    }}>
-      <Box sx={{ width: '90%', margin: '20px' }}>
+      margin:'20px',
+      marginTop:'20px',
+      marginRight:'60px',
+      }}>
+        <Box sx={{width:'90%',margin:'20px'}}>
+ 
         <Typography 
           sx={{ color: '#126782', fontSize: '26px', fontWeight: 'bold', padding: '10px' }}
         >

@@ -1,10 +1,11 @@
 import React from "react";
 import styled from "styled-components";
+import TimelapseIcon from '@mui/icons-material/Timelapse';
 
 const FlightDuration = ({ duration }) => {
   return (
     <DurationContainer>
-      <DurationIcon src="https://cdn.builder.io/api/v1/image/assets/TEMP/5ff62850f398acb9e199c2ad2e44843068a12f7fec44de0d84208218a7124d0e?placeholderIfAbsent=true&apiKey=023722a8f8024e4d98a0d7e5b718070f" alt="Clock icon" />
+      <TimelapseIcon fontSize="medium" sx={{fill:"#126782"}} />
       <DurationText>{duration}</DurationText>
     </DurationContainer>
   );
@@ -14,29 +15,20 @@ const DurationContainer = styled.div`
   border-radius: 5px;
   background-color: white;
   display: flex;
-  gap: 6px;
+  gap: 7px;
   flex: 1;
   padding: 5px 4px;
   width: 40px;
-  margin-left:20px;
+  margin-left:-50px;
   margin-top:10px;
 `;
 
-const DurationIcon = styled.img`
-  aspect-ratio: 1;
-  object-fit: contain;
-  object-position: center;
-  width: 22px;
-  margin-right:2px;
-  margin-top:2px;
-  color:#126782;
-`;
 
 const DurationText = styled.span`
-   color: #2f2f2f;
+  color: #126782;
   font: 500 9px Roboto, sans-serif;
-  margin-top:5px;
-  font-size:20px;
+  margin-top:3px;
+  font-size:16px;
 `;
 
 export default FlightDuration;

@@ -25,6 +25,7 @@ export default function UserItineraryPost({
   id,
   author,
   img,
+  title,
   start_date,
   end_date,
   locations = [], // Default to an empty array
@@ -115,10 +116,10 @@ export default function UserItineraryPost({
 
         <Box sx={{ display: 'flex', flexDirection: 'column', width: '400px', padding: '10px' }}>
           <CardHeader
-            avatar={<Avatar sx={{ bgcolor: red[500] }}>{author?.charAt(0) || 'A'}</Avatar>}
+            avatar={<Avatar sx={{ bgcolor: red[500] }}>{title?.charAt(0) || 'A'}</Avatar>}
             title={
               <Typography variant="h5" sx={{ fontWeight: 'bold', fontSize: '24px' }}>
-                {author || "Anonymous"}
+                {title || "Anonymous"}
               </Typography>
             }
           />

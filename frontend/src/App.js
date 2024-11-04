@@ -84,8 +84,10 @@ import FlightDetailsPage from "./Pages/FlightDetailsCard.jsx";
 import FileComplaintForm from "./Pages/Tourist/FileComplaintForm";
 import ActivityPostDetail from "./components/ActivityPostDetail.js";
 import HotelBooking from "./Pages/Tourist/HotelBooking.js";
+import BookingPage from "./Pages/Tourist/Booking.js";
 import Map from "./components/Map.js" ;
 
+import AdminViewActivity from "./Pages/activities/AdminViewActivity.js";
 function App() {
   const token = localStorage.getItem("jwt");
  // const navigate = useNavigate();
@@ -181,15 +183,17 @@ function App() {
               <Route path="/admin-view-events" element={<AdminViewEvents />} />
               <Route path="/admin-view-events/itineraries" element={<AdminViewItineraries />} />
               <Route path="/admin-view-events/itineraries/:id" element={<AdminItineraryDetails />} />
+              <Route path="/admin-view-events/activities" element={<AdminViewActivity />} />
         </Route>
 
         <Route path="/guest-places" element={<GuestViewVintage/>} />
         <Route path="/tourist-places" element={<TouristViewVintage />} />
         <Route path="/createVintage" element={<CreateVintageForm />} />
+        <Route path="/booking" element={<BookingPage/>} />
         <Route path="/flight" element={<FlightBooking/>} />
         <Route path="/flight-details/:id" element={<FlightDetailsPage/>} />
         <Route path="/hotels" element={<HotelBooking/>} />
-        <Route path="/map" element={<Map/>} />
+        <Route path="/map" element={<Map/>} />  
         <Route path="/sellerProfile" element={<SellerProfile userId={localStorage.getItem("id")} />} />
 
 
