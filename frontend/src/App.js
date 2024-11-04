@@ -83,7 +83,8 @@ import FlightBooking from './Pages/FlightBooking.jsx';
 import FlightDetailsPage from "./Pages/FlightDetailsCard.jsx";
 import FileComplaintForm from "./Pages/Tourist/FileComplaintForm";
 import ActivityPostDetail from "./components/ActivityPostDetail.js";
-import HotelBooking from "./Pages/Tourist/HotelBooking.js"
+import HotelBooking from "./Pages/Tourist/HotelBooking.js";
+import Map from "./components/Map.js" ;
 
 function App() {
   const token = localStorage.getItem("jwt");
@@ -188,6 +189,7 @@ function App() {
         <Route path="/flight" element={<FlightBooking/>} />
         <Route path="/flight-details/:id" element={<FlightDetailsPage/>} />
         <Route path="/hotels" element={<HotelBooking/>} />
+        <Route path="/map" element={<Map/>} />
         <Route path="/sellerProfile" element={<SellerProfile userId={localStorage.getItem("id")} />} />
 
 
