@@ -54,19 +54,11 @@ export default function BookHotels(){
         };
       
         
-        const handleCitySelect = (city, type) => {
-          if (type === 'from') {
+        const handleCitySelect = (city) => {
             setCity(city.city);
             setCityCode(city.iataCode);
             setFromSuggestions([]);
             setIsFromDropdownOpen(false);
-          }
-        //   else {
-        //     setToCity(city.city);
-        //     settoCityCode(city.iataCode);
-        //     setToSuggestions([]);
-        //     setIsToDropdownOpen(false);
-        //   }
         };
       
         const handleClickAway = () => {
@@ -145,7 +137,7 @@ export default function BookHotels(){
                         {isFromDropdownOpen && fromSuggestions.length > 0 && (
                           <List sx={{ maxHeight: 150, overflowY: 'auto', border: '1px solid #ccc',position:'absolute',zIndex: 100,backgroundColor:'white',cursor: 'pointer', }}>
                             {fromSuggestions.map((cityObj) => (
-                              <ListItem button key={cityObj.iataCode} onClick={() => handleCitySelect(cityObj, 'from')}>
+                              <ListItem button key={cityObj.iataCode} onClick={() => handleCitySelect(cityObj)}>
                                 {cityObj.city} ({cityObj.iataCode})
                               </ListItem>
                             ))}
@@ -229,12 +221,12 @@ export default function BookHotels(){
                     </Box>
                   </Box>
 
-                  <Box sx={{marginTop:'10px'}}>
+                  <Box sx={{marginTop:'10px',marginLeft:'90px'}}>
                     <Typography variant="body2" color="#126782">Children</Typography>
                     <Box display="flex" alignItems="center" bgcolor="white">
-                      <Button variant="outlined"  onClick={decrementAdults} disabled={children <= 0}>-</Button>
+                      <Button variant="outlined"  onClick={decrementChildren} disabled={children <= 0}>-</Button>
                       <Typography variant="h6" color="#126782" sx={{ mx: 2 }}>{children}</Typography>
-                      <Button variant="outlined" onClick={incrementAdults}>+</Button>
+                      <Button variant="outlined" onClick={incrementChildren}>+</Button>
                     </Box>
                   </Box>
               </Box>
