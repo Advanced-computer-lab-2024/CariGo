@@ -595,13 +595,13 @@ const BookItinerary = async (req, res) => {
       }
 
       // Add loyalty points
-      user.addLoyaltyPoints(itinerary.price.range.min);
+      user.addLoyaltyPoints(itinerary.price);
       await user.save({ validateBeforeSave: false });
 
       res.status(200).json({
         message: "Booked successfully",
         booking,
-        loyaltyPointsEarned: Math.floor(activity.price * (user.level === 1 ? 0.5 : user.level === 2 ? 1 : 1.5)),
+        loyaltyPointsEarned: Math.floor(itinerary.price * (user.level === 1 ? 0.5 : user.level === 2 ? 1 : 1.5)),
         newTotalPoints: user.loyaltyPoints,
         newLevel: user.level,
         newBadge: user.badge
