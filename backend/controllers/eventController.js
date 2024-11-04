@@ -615,11 +615,14 @@ const BookItinerary = async (req, res) => {
   }
 };
 
+
 const MyItineraryBookings = async (req, res) => {
   const { UserId } = req.body; // User ID from request body
   if (mongoose.Types.ObjectId.isValid(UserId)) {
     try {
-      const bookings = await bookingModel.find({UserId,ItineraryId: { $ne: null } }).sort({createdAt: -1});
+      const bookings = await bookingModel
+        .find({ UserId, ItineraryId: { $ne: null } })
+        .sort({ createdAt: -1 });
       return res.status(200).json(bookings);
     } catch {
       res.status(500).json({ error: "Failed to fetch bookings" });
@@ -631,25 +634,77 @@ const MyItineraryBookings = async (req, res) => {
 };
 
 const CancelItineraryBooking = async (req, res) => {
-    const { UserId } = req.body; // User ID from request body
-    const { ItineraryId } = req.params; // Event ID from URL parameters
-    if (mongoose.Types.ObjectId.isValid(ItineraryId) && mongoose.Types.ObjectId.isValid(UserId)) {
-        try {
-            const bookings = await bookingModel.updateMany(
-                { UserId, ItineraryId }, // Filter to find documents with both UserId and ItineraryId
-                { $set: { Status: false } } // Update to set Status to false
-              );
-              res.status(200).json({
-                message: "Bookings canceled successfully",
-                updatedBookingsCount: bookings.modifiedCount // shows how many bookings were updated
-              }); 
-        } catch {
-          res.status(500).json({ error: "Failed to fetch booking" });
-          console.error("Error while booking:", error);
+  const { UserId } = req.body; // User ID from request body
+  const { ItineraryId } = req.body; // Event ID from URL parameters
+  if (
+    mongoose.Types.ObjectId.isValid(ItineraryId) &&
+    mongoose.Types.ObjectId.isValid(UserId)
+  ) {
+    try {
+      const itinerary = await itineraryModel.findById(ItineraryId);
+      const itineraryDate = itinerary.start_date;
+
+      if (itineraryDate) {
+        const currDate = new Date();
+        const timeDifference = itineraryDate.getTime() - currDate.getTime(); // Difference in milliseconds
+        const hoursDifference = timeDifference / (1000 * 60 * 60); // Convert to hours
+
+        if (hoursDifference >= 48) {
+          const bookings = await bookingModel.updateMany(
+            { UserId, ItineraryId }, // Filter to find documents with both UserId and ItineraryId
+            { $set: { Status: false } } // Update to set Status to false
+          );
+          res.status(200).json({
+            message: "Bookings canceled successfully",
+            updatedBookingsCount: bookings.modifiedCount, // shows how many bookings were updated
+          });
+        } else {
+          res
+            .status(400)
+            .json({
+              message:
+                "Cannot book/cancel within 48 hours of the itinerary date",
+            });
         }
       } else {
-        res.status(400).json({ error: "Invalid event ID format" });
+        res.status(404).json({ message: "itinerary not found" });
       }
+    } catch {
+      res.status(500).json({ error: "Failed to fetch booking" });
+      console.error("Error while booking:", error);
+    }
+  } else {
+    res.status(400).json({ error: "Invalid event ID format" });
+  }
+};
+
+const axios = require('axios');
+const dotenv = require("dotenv");
+dotenv.config({ path: "../.env" });
+const currencyConversion = async (req, res) => {
+  try {
+    const { currency } = req.body;
+    const key = process.env.currencyConversionKey;
+    const url = `https://v6.exchangerate-api.com/v6/${key}/pair/EGP/${currency}`;
+    const response = await axios.get(url);
+    const data = response.data;
+    const result = data.conversion_rate;
+    if (data.result === "success") {
+      console.log("Exchange rates:", data.conversion_rate);
+      console.log("Exchange rates:", result);
+      res.status(200).json({
+        message: "Currency conversion successful",
+        result // shows how many bookings were updated
+      });
+      // Access rates like: data.conversion_rates['EUR'], data.conversion_rates['EGP'], etc.
+    } else {
+      console.error("Error fetching exchange rates:", data.error);
+      res.status(400).json({ error: data.error });
+    }
+  } catch (error) {
+    console.error("Error making request:", error);
+    res.status(500).json({ error: "An error occurred while fetching exchange rates" });
+  }
 };
 
 
@@ -669,5 +724,6 @@ module.exports = {
   shareVintage,
   BookItinerary,
   MyItineraryBookings,
-  CancelItineraryBooking
+  CancelItineraryBooking,
+  currencyConversion
 };

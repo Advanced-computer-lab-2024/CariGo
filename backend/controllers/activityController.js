@@ -469,11 +469,11 @@ const BookActivity = async (req, res) => {
   }
 };
 
-const MyBookings = async (req, res) => {
+const MyActivityBookings = async (req, res) => {
   const { UserId } = req.body; // User ID from request body
   if (mongoose.Types.ObjectId.isValid(UserId)) {
     try {
-      const bookings = await bookingModel.find({UserId}).sort({createdAt: -1});
+      const bookings = await bookingModel.find({UserId,ActivityId: { $ne: null }}).sort({createdAt: -1});
       return res.status(200).json(bookings);
     } catch {
       res.status(500).json({ error: "Failed to fetch bookings" });
@@ -484,26 +484,43 @@ const MyBookings = async (req, res) => {
   }
 };
 
-const CancelBooking = async (req, res) => {
-    const { UserId } = req.body; // User ID from request body
-    const { ActivityId } = req.params; // Event ID from URL parameters
-    if (mongoose.Types.ObjectId.isValid(ActivityId) && mongoose.Types.ObjectId.isValid(UserId)) {
-        try {
-            const bookings = await bookingModel.updateMany(
-                { UserId, ActivityId }, // Filter to find documents with both UserId and ActivityId
-                { $set: { Status: false } } // Update to set Status to false
-              );
-              res.status(200).json({
-                message: "Bookings canceled successfully",
-                updatedBookingsCount: bookings.modifiedCount // shows how many bookings were updated
-              }); 
-        } catch {
+const CancelActivityBooking = async (req, res) => {
+  const { UserId } = req.body; // User ID from request body
+  const { ActivityId } = req.body; // Event ID from URL parameters
+  if (mongoose.Types.ObjectId.isValid(ActivityId) && mongoose.Types.ObjectId.isValid(UserId)) {
+      try {
+          
+          const activity = await activityModel.findById(ActivityId);
+          console.log(activity);
+          const activityDate = activity.start_date;
+          
+          if (activityDate) {
+              const currDate = new Date();
+              const timeDifference = activityDate.getTime() - currDate.getTime(); // Difference in milliseconds
+              const hoursDifference = timeDifference / (1000 * 60 * 60); // Convert to hours
+
+              if (hoursDifference >= 48) {
+                  const bookings = await bookingModel.updateMany(
+                      { UserId, ActivityId }, // Filter to find documents with both UserId and ActivityId
+                      { $set: { Status: false } } // Update to set Status to false
+                  );
+                  res.status(200).json({
+                      message: "Bookings canceled successfully",
+                      updatedBookingsCount: bookings.modifiedCount // shows how many bookings were updated
+                  });
+              } else {
+                  res.status(400).json({ message: "Cannot book/cancel within 48 hours of the activity date" });
+              }
+          } else {
+              res.status(404).json({ message: "Activity not found" });
+          }
+      } catch {
           res.status(500).json({ error: "Failed to fetch booking" });
           console.error("Error while booking:", error);
-        }
-      } else {
-        res.status(400).json({ error: "Invalid event ID format" });
       }
+  } else {
+      res.status(400).json({ error: "Invalid event ID format" });
+  }
 };
 
 module.exports = {
@@ -516,6 +533,6 @@ module.exports = {
   getAdvActivities,
   shareActivity,
   BookActivity,
-  MyBookings,
-  CancelBooking
+  MyActivityBookings,
+  CancelActivityBooking
 };
