@@ -16,7 +16,7 @@ const {
   readAllVintage,
   shareItinerary,
   shareVintage,
-  BookItinerary
+  BookItinerary,
 } = require("../controllers/eventController");
 const authController = require("../controllers/authController");
 const router = express.Router();
