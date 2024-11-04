@@ -73,7 +73,7 @@ export default function EditCategory() {
               </Link>
 
               {/* Clickable card for Edit Preference Tags */}
-              <Link to="/admin-view-events" className="card">
+              <Link to="/admin-view-events/activities" className="card">
                 <EnvironmentOutlined className="card-icon" />{" "}
                 {/* Use TagOutlined for preferences */}
                 <h3>View Activities</h3>

@@ -18,7 +18,7 @@ router.get('/getOne/:id', activityController.getActivity);
 router.post('/createActivity',[authController.protect ,authController.restrictTo("Advertiser")], activityController.createActivity);
 
 // router.post('/createActivity',[authController.protect ,authController.restrictTo("Advertiser")], activityController.createActivity);
-router.patch('/updateActivity/:id',[authController.protect ,authController.restrictTo("Advertiser")],activityController.updateActivity);
+router.patch('/updateActivity/:id',[authController.protect ,authController.restrictTo("Advertiser","Admin")],activityController.updateActivity);
 
 
 router.delete('/deleteActivity/:id', [authController.protect ,authController.restrictTo("Advertiser")],activityController.deleteActivity);
