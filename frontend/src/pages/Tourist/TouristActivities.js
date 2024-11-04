@@ -50,7 +50,7 @@ export default function TouristViewActivities (){
     // handles if filter value changes
     const handleFilterChange = (e) => {
         const { name, value } = e.target;
-        console.log(`Changing ${name} to ${value}`);
+        //console.log(`Changing ${name} to ${value}`);
         setFilterInputValues(prevFilters => ({
             ...prevFilters,
             [name]: value
