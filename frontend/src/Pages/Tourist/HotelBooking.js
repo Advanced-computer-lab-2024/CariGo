@@ -8,7 +8,7 @@ import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import {Box,Button,Typography,Link,List,ListItem,ClickAwayListener,Menu,MenuItem,TextField,InputAdornment} from "@mui/material";
-import HotelsList from "../../components/HotelsList"; 
+
 import HotelCardList from "../../components/HotelsList";
 
 
@@ -110,7 +110,7 @@ export default function BookHotels(){
             <Box sx={{display:"flex",marginLeft:"10%"}} >
               {/* VERTICAL BOX */}
             <Box  bgcolor="white" 
-            sx={{display:"flex", flexDirection:"column",gap:'30px', marginTop:'5%',padding:'10px',}} >
+            sx={{display:"flex", flexDirection:"column",gap:'30px', marginTop:'5%',padding:'10px',marginBottom:'12%'}} >
                 {/* choose hotel details locatios and time */} 
                 {/* HORIZONTAL BOX 1*/}
                 <Box sx={{gap: '50px' , display: 'flex' ,  marginTop:'30px',}}>

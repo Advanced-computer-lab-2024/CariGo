@@ -9,7 +9,7 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import BedIcon from '@mui/icons-material/Bed';
 import PinDropIcon from '@mui/icons-material/PinDrop';
 
-const FlightCard = (Hotel) =>{
+const TransportCard = (Hotel) =>{
   //const { airline, segments,price } = flight;
     // Function to format the duration string
     const navigate = useNavigate();
@@ -103,7 +103,4 @@ const FlightCard = (Hotel) =>{
   );
 };
 
-
-
-
-export default FlightCard;
+export default TransportCard;
