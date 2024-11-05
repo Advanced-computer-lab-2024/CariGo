@@ -19,6 +19,7 @@ const productRouter = require("./routes/productRouter.js");
 const experienceRouter = require("./routes/experienceRouter");
 const amadusRouter = require("./routes/amadusRouter.js");
 const transportationRouter = require("./routes/transportationRouter.js");
+const purchaseRouter = require("./routes/purchaseRouter.js");
 const app = express();
 
 
@@ -62,6 +63,7 @@ app.use("/cariGo/transportation",transportationRouter)
 
 app.use("/cariGo/Event", eventRouter)
 app.use("/cariGo/experience", experienceRouter);
+app.use("/cariGo/purchase", purchaseRouter);
 
 app.all("*", (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
