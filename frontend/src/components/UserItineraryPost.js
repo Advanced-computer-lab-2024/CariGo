@@ -173,13 +173,6 @@ export default function UserItineraryPost({
           <IconButton aria-label="share">
             <ShareIcon />
           </IconButton>
-          <IconButton
-            aria-label="delete"
-            onClick={handleDelete} // Add the delete handler here
-            sx={{ color: 'red' }} // Optional styling for the delete icon
-          >
-            <DeleteIcon />
-          </IconButton>
         </Box>
       </CardActions>
     </Card>

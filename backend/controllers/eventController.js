@@ -258,7 +258,7 @@ const readAllItineraries = async (req, res) => {
 
   try {
     // Initialize the query
-    let query = itineraryModel.find();
+    let query = itineraryModel.find({isActive: true});
 
     // Check if a tag title is provided
     let itineraries = []; // Declare itineraries with let
@@ -329,6 +329,7 @@ const readMyItineraries = async (req, res) => {
     const itineraries = await itineraryModel
       .find({ author: id })
       .populate("tags")
+      .populate("category")
       .sort({
         createdAt: -1,
       });
