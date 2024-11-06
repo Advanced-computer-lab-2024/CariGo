@@ -28,7 +28,7 @@ const ItineraryList = () => {
                 }
 
                 const json = await response.json();
-                setItineraries(json);
+                setItineraries(json.filter(itinerary => itinerary.isActive === true));
             } catch (error) {
                 console.log('Error fetching itineraries:', error);
             }
@@ -43,7 +43,7 @@ const ItineraryList = () => {
                 <Grid item key={index} sx={{ display: 'flex', justifyContent: 'left' }}>
                     <ItineraryPost
                         id={itinerary._id}
-                        author={itinerary.author?.name}
+                        title={itinerary.title}
                         img={"frontend/public/assets/images/itirenary.png"}
                         start_date={itinerary.start_date}
                         end_date={itinerary.end_date}

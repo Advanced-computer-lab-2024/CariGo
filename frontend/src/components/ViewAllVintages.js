@@ -16,7 +16,7 @@ const ViewAllVintages = () => {
                     throw new Error('No token found. Please log in.');
                 }
                 
-                const response = await fetch(`/cariGo/Event/viewAllVintage`, { 
+                const response = await fetch(`http://localhost:4000/Event/readAllVintage`, { 
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`,

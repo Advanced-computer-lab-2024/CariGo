@@ -52,5 +52,10 @@ router.patch(
   authController.changePassword
 );
 
+router.patch(
+  "/UpdateWallet",
+  authController.restrictTo("Tourist"),
+  userController.UpdateWallet
+);
 
 module.exports = router;

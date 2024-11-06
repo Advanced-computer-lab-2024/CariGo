@@ -5,7 +5,7 @@ const catchAsync = require("../utils/catchAsync");
 
 const createProduct = catchAsync(async (req, res, next) => {
     const newProduct = await Product.create({
-      author: req.user._id,
+      author: req.body.author,
       name: req.body.name,
       price: req.body.price,
       description: req.body.description,
@@ -118,4 +118,41 @@ const getProduct = async (req, res) => {
     }
 };
 
-module.exports = { createProduct, getProducts,getSellersProducts, getProduct, deleteProduct, updateProduct };   
+const archiveProduct = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+  const product = await Product.findByIdAndUpdate(
+      id,
+      { archived: true },
+      { new: true }
+  );
+
+  if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+  }
+
+  res.status(200).json({
+      status: "success",
+      data: { product },
+  });
+});
+
+const unarchiveProduct = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+  const product = await Product.findByIdAndUpdate(
+      id,
+      { archived: false },
+      { new: true }
+  );
+
+  if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+  }
+
+  res.status(200).json({
+      status: "success",
+      data: { product },
+  });
+});
+
+
+module.exports = { createProduct, getProducts,getSellersProducts, getProduct, deleteProduct, updateProduct, archiveProduct, unarchiveProduct };   
