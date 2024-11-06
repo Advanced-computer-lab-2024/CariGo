@@ -85,10 +85,11 @@ import FileComplaintForm from "./Pages/Tourist/FileComplaintForm";
 import ActivityPostDetail from "./components/ActivityPostDetail.js";
 import HotelBooking from "./Pages/Tourist/HotelBooking.js";
 import BookingPage from "./Pages/Tourist/Booking.js";
-import Map from "./components/Map.js" ;
+import TransportationSearch from "./Pages/TransportationSearch.js" ;
 
 import AdminViewActivity from "./Pages/activities/AdminViewActivity.js";
 import ProductAnalysis from "./Pages/products/ProductAnalysis.jsx";
+import MyBookings from "./Pages/Tourist/MyBookings.js";
 function App() {
   const token = localStorage.getItem("jwt");
  // const navigate = useNavigate();
@@ -113,6 +114,7 @@ function App() {
     <Router>
     <Routes>
         <Route path="/" element={<Home />} /> {/* Default route */}
+        <Route path="/tourist/MyBookings" element={<MyBookings />} /> {/* Default route */}
         <Route path="/login" element={<LoginPage />} />
       <Route
         path="tour_guide/profile"
@@ -195,7 +197,7 @@ function App() {
         <Route path="/flight" element={<FlightBooking/>} />
         <Route path="/flight-details/:id" element={<FlightDetailsPage/>} />
         <Route path="/hotels" element={<HotelBooking/>} />
-        <Route path="/map" element={<Map/>} />  
+        <Route path="/map" element={<TransportationSearch/>} />  
         <Route path="/sellerProfile" element={<SellerProfile userId={localStorage.getItem("id")} />} />
 
 

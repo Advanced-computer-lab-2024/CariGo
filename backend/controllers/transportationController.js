@@ -98,15 +98,41 @@ const deleteTransportation = async (req, res) => {
 
 const getTransportations = async (req, res) => {
   try {
-    const { departureLocation, arrivalLocation, date, radius = 5000 } = req.body;
+    // Extract query parameters
+    const { depLat, depLon, depDesc, arrLat, arrLon, arrDesc, date, radius = 3000 } = req.query;
 
-    // Validate input
-    if (!departureLocation || !arrivalLocation || !date) {
+    // Validate input parameters
+    if (!depLat || !depLon || !depDesc || !arrLat || !arrLon || !arrDesc || !date) {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
-    const { coordinates: depCor, description: depDesc } = departureLocation;
-    const { coordinates: arrCor, description: arrDesc } = arrivalLocation;
+    // Parse latitude and longitude to numbers
+    const depLatNum = parseFloat(depLat);
+    const depLonNum = parseFloat(depLon);
+    const arrLatNum = parseFloat(arrLat);
+    const arrLonNum = parseFloat(arrLon);
+
+    // Check if the coordinates are valid numbers
+    if (isNaN(depLatNum) || isNaN(depLonNum) || isNaN(arrLatNum) || isNaN(arrLonNum)) {
+      return res.status(400).json({ message: "Invalid latitude or longitude" });
+    }
+
+    // Convert coordinates into GeoJSON Point format
+    const depLocation = {
+      type: "Point",
+      coordinates: [depLonNum, depLatNum], // MongoDB expects [longitude, latitude]
+    };
+    const arrLocation = {
+      type: "Point",
+      coordinates: [arrLonNum, arrLatNum],
+    };
+
+    // Normalize the date to the start of the day to avoid time zone issues
+    const searchDate = new Date(date);
+    searchDate.setHours(0, 0, 0, 0);  // Normalize to start of the day (00:00:00)
+
+    // Convert radius to radians (as MongoDB expects it in radians)
+    const radiusInRadians = radius / 6378.1;
 
     // First, try to find transportations using coordinates
     let transportationOptions = await Transportation.find({
@@ -114,33 +140,37 @@ const getTransportations = async (req, res) => {
         {
           departureLocation: {
             $geoWithin: {
-              $centerSphere: [depCor, radius / 6378.1],
+              $centerSphere: [depLocation.coordinates, radiusInRadians],
             },
           },
         },
         {
           arrivalLocation: {
             $geoWithin: {
-              $centerSphere: [arrCor, radius / 6378.1],
+              $centerSphere: [arrLocation.coordinates, radiusInRadians],
             },
           },
         },
-        { date: { $eq: new Date(date) } },
+        { date: { $eq: date } },
         { bookingOpened: true },
       ],
     });
 
     // If no options found, try searching by description
     if (transportationOptions.length === 0) {
+      // Escape special characters for regex search
+      const depDescEscaped = depDesc.replace(/[.*+?^=!:${}()|\[\]\/\\]/g, '\\$&');
+      const arrDescEscaped = arrDesc.replace(/[.*+?^=!:${}()|\[\]\/\\]/g, '\\$&');
+
       transportationOptions = await Transportation.find({
         $and: [
           {
-            "departureLocation.description": { $regex: new RegExp(depDesc, 'i') },
+            "departureLocation.description": { $regex: new RegExp(depDescEscaped, 'i') },
           },
           {
-            "arrivalLocation.description": { $regex: new RegExp(arrDesc, 'i') },
+            "arrivalLocation.description": { $regex: new RegExp(arrDescEscaped, 'i') },
           },
-          { date: { $eq: new Date(date) } },
+          { date: { $eq: searchDate } },
           { bookingOpened: true },
         ],
       });
@@ -157,12 +187,15 @@ const getTransportations = async (req, res) => {
     // Combine the lists: am first, then pm
     const sortedTransportationOptions = [...amList, ...pmList];
 
+    // Send the response
     res.status(200).json(sortedTransportationOptions);
+
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server error" });
   }
 };
+
 
 
 
