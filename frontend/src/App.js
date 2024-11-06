@@ -17,7 +17,7 @@ import  TouristVintage from "./Pages/Tourist/TouristPlaces";
 import CreateVintageForm from "./Pages/CreateVintageForm.js";
 
 import './styles/index.css';
-
+import Checkout from "./Pages/SignUp/Checkout.js";
 import UserViewActivities from './Pages/UserViewActivities';
 import AdminHome from './Pages/Home';
 import React, { lazy, Suspense } from 'react'; // Keep this line
@@ -129,7 +129,11 @@ function App() {
         <Route path="/guest-activities" element={<GuestActivities/>} />
         {/* <Route path="/guest-places" element={<GuestViewVintage/>} /> */}
         <Route path="/createActivity" element={<CreateActivityForm userId={localStorage.getItem("id")} />} /> 
-        <Route path="/SignUp" element={<SignUp />} />
+        <Route path="/Register-Tourist" element={<Checkout role={"Tourist"}/>} />
+        {/* <Route path="/Register-Tourist" element={<SignUp/>} /> */}
+        <Route path="/Register-Seller" element={<Checkout role={"Seller"}/>} />
+        <Route path="/Register-TourGuide" element={<Checkout role={"Tour_Guide"}/>} />
+        <Route path="/Register-Advertiser" element={<Checkout role={"Advertiser"}/>} />
         <Route path="/advertiser" element={<AdvertiserProfile userId={localStorage.getItem("id")} />} />
         <Route path="/tourist-profile" element={<TouristProfile userId={localStorage.getItem("id")} />} />
         <Route path="/tgHome" element={<TouristGuestHome/>} />

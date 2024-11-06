@@ -15,7 +15,7 @@ const signToken = (id) => {
 
 exports.signup = catchAsync(async (req, res, next) => {
   const userType = req.body.role;
-
+  console.log(req.body);
   if (userType === "admin" || userType === "Tourism_Governer") {
     return next(
       new AppError(

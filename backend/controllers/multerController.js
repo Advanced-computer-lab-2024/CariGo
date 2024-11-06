@@ -46,6 +46,7 @@ const upload = multer({
 exports.uploadUserPhoto = upload.single("photo");
 
 exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
+  console.log(req.file);
   if (!req.file) return next();
 
   const uniqueImageId = uuidv4();
@@ -82,6 +83,7 @@ const filterObj = (obj, ...allowedFields) => {
 exports.uploadImages = catchAsync(async (req, res, next) => {
   // Filter out unwanted fields that are not allowed to be updated
   const filteredBody = filterObj(req.body, "name", "email");
+  console.log(req.file);
   if (req.file) filteredBody.photo = req.file.filename; // or logo
 
   // Update the user document
@@ -248,3 +250,61 @@ exports.resizeProductImages = catchAsync(async (req, res, next) => {
     next();
   });
   
+  exports.uploadGuestDocs = catchAsync(async (req, res, next) => {
+    const filteredBody = filterObj(req.body, "name", "email"); // Optional fields
+  
+    // console.log("Received files:", req.files); // Log all received files
+  
+    // Function to save file and return filename
+    const saveFile = async (file, prefix) => {
+      const uniqueImageId = Date.now() + '-' + Math.round(Math.random() * 1E9);
+      const filename = `${prefix}-${uniqueImageId}${path.extname(file.originalname)}`;
+      const filepath = path.join('public', 'img', 'documents', filename);
+      await fs.writeFile(filepath, file.buffer);
+      return filename;
+    };
+  
+    // Add file paths to the filteredBody if documents are uploaded
+    if (req.files && req.files.id) {
+      filteredBody.idDocument = await saveFile(req.files.id[0], 'id');
+      // console.log("ID Document:", filteredBody.idDocument);
+    }
+  
+    if (req.files && req.files.certificates && req.files.certificates.length > 0) {
+      filteredBody.certificates = await Promise.all(
+        req.files.certificates.map(file => saveFile(file, 'certificate'))
+      );
+      // console.log("Certificates:", filteredBody.certificates);
+    } else {
+      console.log("No certificates found in the request");
+    }
+  
+    if (req.files && req.files.taxationRegistryCard) {
+      filteredBody.taxationRegistryCard = await saveFile(req.files.taxationRegistryCard[0], 'tax');
+      console.log("Taxation Registry Card:", filteredBody.taxationRegistryCard);
+    }
+  
+    // Set documentApprovalStatus to 'Pending'
+    filteredBody.documentApprovalStatus = "Pending";
+  
+    // console.log("Filtered body before update:", filteredBody);
+  
+    // Update the user document
+    const updatedUser = await User.findByIdAndUpdate(req.user.id, filteredBody, {
+      new: true,
+      runValidators: true,
+    });
+  
+    if (!updatedUser) {
+      return next(new AppError('User not found', 404));
+    }
+  
+    // console.log("Updated user:", updatedUser);
+  
+    res.status(200).json({
+      status: "success",
+      data: {
+        user: updatedUser,
+      },
+    });
+  });
