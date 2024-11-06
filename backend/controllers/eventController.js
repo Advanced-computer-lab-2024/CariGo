@@ -654,6 +654,10 @@ const CancelItineraryBooking = async (req, res) => {
             message: "Bookings canceled successfully",
             updatedBookingsCount: bookings.modifiedCount, // shows how many bookings were updated
           });
+          const canceled = await bookingModel.findOne({ItineraryId: ItineraryId,status: true});
+          if(!canceled){
+            await Itinerary.findByIdAndUpdate(ItineraryId, { isBooked: false });
+          }
         } else {
           res
             .status(400)

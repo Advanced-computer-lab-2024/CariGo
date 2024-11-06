@@ -9,6 +9,7 @@ const advertiserRouter = require("./routes/avertiserRouter.js");
 const activityRouter = require("./routes/activityRouter.js");
 const eventRouter = require("./routes/eventRouter.js");
 const reviewRouter = require("./routes/reviewRoutes.js")
+const touristRouter = require("./routes/touristRouter.js")
 
 const cors = require("cors");
 
@@ -19,6 +20,7 @@ const productRouter = require("./routes/productRouter.js");
 const experienceRouter = require("./routes/experienceRouter");
 const amadusRouter = require("./routes/amadusRouter.js");
 const transportationRouter = require("./routes/transportationRouter.js");
+const purchaseRouter = require("./routes/purchaseRouter.js");
 const DeleteRequestRouter = require("./routes/deleteRequestRouter.js");
 const app = express();
 
@@ -60,11 +62,13 @@ app.use("/Admin",adminRouter);
 app.use("/cariGo/products",productRouter)
 app.use("/cariGo/flights",amadusRouter)
 app.use("/cariGo/transportation",transportationRouter)
+app.use("/cariGo/tourist",touristRouter);
 app.use("/cariGo/delReq",DeleteRequestRouter)
 
 
 app.use("/cariGo/Event", eventRouter)
 app.use("/cariGo/experience", experienceRouter);
+app.use("/cariGo/purchase", purchaseRouter);
 
 app.all("*", (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
