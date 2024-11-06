@@ -89,6 +89,7 @@ import TransportationSearch from "./Pages/TransportationSearch.js" ;
 
 import AdminViewActivity from "./Pages/activities/AdminViewActivity.js";
 import ProductAnalysis from "./Pages/products/ProductAnalysis.jsx";
+import ProductDetails2 from "./Pages/products/ProductDetails2.jsx";
 import MyBookings from "./Pages/Tourist/MyBookings.js";
 function App() {
   const token = localStorage.getItem("jwt");
@@ -176,6 +177,7 @@ function App() {
               <Route path="/admin/manage-products/product-Details/:id" element={<ProductDetails/>} />
               <Route path="/update-tag" element={<UpdateTag />} />
               <Route path='/admin/view-products' element={<ViewProducts/>}/>
+              <Route path='/admin/view-products/:id' element={<ProductDetails2/>}/>
               <Route path="/create-tag" element={<CreateTag />} />
               <Route path="/delete-tag" element={<DeleteTag />} />
               <Route path="/add-admin" element={<AddAdmin />} />
