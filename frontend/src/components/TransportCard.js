@@ -6,8 +6,8 @@ import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import FlightIcon from '@mui/icons-material/Flight';
 import LuggageIcon from '@mui/icons-material/Luggage';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import BedIcon from '@mui/icons-material/Bed';
 import PinDropIcon from '@mui/icons-material/PinDrop';
+import CommuteIcon from '@mui/icons-material/Commute';
 
 const TransportCard = (Hotel) =>{
   //const { airline, segments,price } = flight;
@@ -43,9 +43,7 @@ const TransportCard = (Hotel) =>{
       marginRight:'60px',
       }}>
         <Box sx={{width:'90%',margin:'20px'}}>
-        <Typography 
-        sx={{color:'#126782', fontSize:'26px', fontWeight:'bold',padding:'10px',}}
-        >Hotel name</Typography>
+        <CommuteIcon fontSize="large" sx={{fill:'#126782'}}/>
       <Divider sx={{borderBottomWidth: 3}} />
 
       {/*INFO BOX*/}
@@ -72,11 +70,8 @@ const TransportCard = (Hotel) =>{
      </Box>
      </Box>
      {/*END OF DATES BOX*/}
-     {/*number of beds*/}
-    <Box sx={{display:'flex',gap:'10px', padding:'5px', marginLeft:'-10px'}}> 
-      <BedIcon fontSize="medium" sx={{fill:"#126782"}}/>
-      <Typography sx={{color:'#126782',padding:'1px'}}>2 king size beds</Typography> 
-     </Box>
+    
+    
       {/*location link*/}
     <Box sx={{display:'flex',gap:'10px', padding:'5px', marginLeft:'-10px'}}> 
       <PinDropIcon fontSize="medium" sx={{fill:"#126782"}}/>

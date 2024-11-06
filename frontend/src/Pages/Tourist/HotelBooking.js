@@ -9,7 +9,6 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import {Box,Button,Typography,Link,List,ListItem,ClickAwayListener,Menu,MenuItem,TextField,InputAdornment} from "@mui/material";
 
-import HotelCardList from "../../components/HotelsList";
 import HotelsList from "../../components/HotelsList"; 
 //import HotelCardList from "../../components/HotelsList";
 

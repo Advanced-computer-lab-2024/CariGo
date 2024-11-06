@@ -15,37 +15,54 @@ import TransportCard from"./TransportCard";
 
 
 export default function TransportBooking(){
-        const [City, setCity] = useState("");
-        const [CityCode, setCityCode] = useState("");
-        const [checkIn, setCheckIn] = useState(dayjs()); // Initialize with current date
-        const [checkOut, setCheckOut] = useState(dayjs()); // Initialize with current date
-        const [adults, setAdults] = useState(1); // Initialize adults count
-        const[children, setChildren] = useState(0);
+    const [departureLocation, setDepartureLocation] = useState({
+        type: "Point",
+        coordinates: [
+            -122.4194,
+            37.7749
+        ],
+        description: "aswan"
+    });
+      const [arrivalLocation, setArrivalLocation] = useState({
+        type: "Point",
+        coordinates: [
+            -122.4194,
+            37.7749
+        ]
+    });
+      const [date, setDate] = useState(new Date(2024,3,28));
 
+      const requestBody={
+        departureLocation: departureLocation,
+        arrivalLocation: arrivalLocation,
+        date: date
+      }
+      
         const [fromSuggestions, setFromSuggestions] = useState([]);
         const [toSuggestions, setToSuggestions] = useState([]);
         const [isLoading, setIsLoading] = useState(false);
         const [isFromDropdownOpen, setIsFromDropdownOpen] = useState(false);
         const [isToDropdownOpen, setIsToDropdownOpen] = useState(false);
-        const [hotels, setHotels] = useState([]); 
-        const fetchCities = async (keyword, type) => {
-          if (keyword.length < 2) {
-            if (type === 'from') setFromSuggestions([]);
-            else setToSuggestions([]);
-            return;
-          }
-          setIsLoading(true);
-          try {
-            const response = await fetch(`http://localhost:4000/cariGo/flights/cities?keyword=${keyword}`);
-            const data = await response.json();
-            if (type === 'from') setFromSuggestions(data);
-            else setToSuggestions(data);
-          } catch (error) {
-            console.error("Error fetching cities:", error);
-          } finally {
-            setIsLoading(false);
-          }
-        };
+        const [transports, setTransports] = useState([]); 
+
+        // const fetchHotels = async (keyword, type) => {
+        //   if (keyword.length < 2) {
+        //     if (type === 'from') setFromSuggestions([]);
+        //     else setToSuggestions([]);
+        //     return;
+        //   }
+        //   setIsLoading(true);
+        //   try {
+        //     const response = await fetch(`http://localhost:4000/cariGo/flights/cities?keyword=${keyword}`);
+        //     const data = await response.json();
+        //     if (type === 'from') setFromSuggestions(data);
+        //     else setToSuggestions(data);
+        //   } catch (error) {
+        //     console.error("Error fetching cities:", error);
+        //   } finally {
+        //     setIsLoading(false);
+        //   }
+        // };
       
         const handleClickAway = () => {
           setIsFromDropdownOpen(false);
@@ -55,25 +72,25 @@ export default function TransportBooking(){
         };
 
         const handleSearchClick = async () => {
-          if (!City || !checkIn || !checkOut) {
-            alert("Please fill in all fields");
-            return;
-          }
-      
-          const fromIATA = CityCode; // Assuming the IATA code is part of the selected city object
-          const formattedCheckIn = checkIn.format("YYYY-MM-DD");
-          const formattedCheckOut = checkOut.format("YYYY-MM-DD");
-
+        //   if (!City || !checkIn || !checkOut) {
+        //     alert("Please fill in all fields");
+        //     return;
+        //   }
+        
           try {
-              console.log(`http://localhost:4000/cariGo/hotels?keyword=${City}&checkIn=${formattedCheckIn}&checkOut=${formattedCheckOut}&adults=${adults}&children=${children}`);
-            const response = await fetch(`http://localhost:4000/cariGo/hotels?keyword=${City}&checkIn=${formattedCheckIn}&checkOut=${formattedCheckOut}&adults=${adults}&children=${children}`);
+              console.log(`localhost:4000/cariGo/transportation/`);
+            const response = (await fetch(`localhost:4000/cariGo/transportation/`), {
+                method: 'GET',
+                body: JSON.stringify(requestBody),
+              });
+        ;
             const data = await response.json();
-            console.log("Hotel data:", data); 
-            setHotels(data);// Handle the hotel data as needed
+            console.log("transportation data:", data); 
+            setTransports(data);// Handle the hotel data as needed
           } catch (error) {
             console.error("Error fetching hotel:", error);
           }
-        };
+        }
       
         return (
           <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -88,11 +105,11 @@ export default function TransportBooking(){
                     <Typography variant="body2" color="#126782">Start Location</Typography>
                     <ClickAwayListener onClickAway={handleClickAway}>
                       <div>
-                        <TextField
+                         <TextField
                           fullWidth
                           variant="outlined"
                           placeholder="start location"
-                          value={City}
+                          //value={City}
                           //onChange={handleCityInputChange}
                           onFocus={() => setIsFromDropdownOpen(true)}
                           InputProps={{
@@ -106,11 +123,7 @@ export default function TransportBooking(){
                         />
                         {isFromDropdownOpen && fromSuggestions.length > 0 && (
                           <List sx={{ maxHeight: 150, overflowY: 'auto', border: '1px solid #ccc',position:'absolute',zIndex: 100,backgroundColor:'white',cursor: 'pointer', }}>
-                            {/* {fromSuggestions.map((cityObj) => (
-                              <ListItem button key={cityObj.iataCode} onClick={() => handleCitySelect(cityObj)}>
-                                {cityObj.city} ({cityObj.iataCode})
-                              </ListItem>
-                            ))} */}
+                           
                             {/* TO BE CHANGED TO AUTO COMPLETE LIST */}
                           </List>
                         )}
@@ -126,7 +139,7 @@ export default function TransportBooking(){
                           fullWidth
                           variant="outlined"
                           placeholder="Destination"
-                          value={City}
+                          //value={City}
                           //onChange={handleCityInputChange}
                           onFocus={() => setIsFromDropdownOpen(true)}
                           InputProps={{
@@ -147,7 +160,7 @@ export default function TransportBooking(){
                             ))} */}
                             {/* TO BE CHANGED TO AUTO COMPLETE LIST */}
                           </List>
-                        )}
+                        )} 
                       </div>
                     </ClickAwayListener>
                   </Box>
@@ -160,8 +173,6 @@ export default function TransportBooking(){
                   
                 </Box>
                 {/* END OF HORIZONTAL BOX 2*/}
-
-             
 
               <Button
                 variant="contained"
