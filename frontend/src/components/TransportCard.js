@@ -9,9 +9,12 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import PinDropIcon from '@mui/icons-material/PinDrop';
 import CommuteIcon from '@mui/icons-material/Commute';
 
-const TransportCard = (Hotel) =>{
-  //const { airline, segments,price } = flight;
-    // Function to format the duration string
+const TransportCard = (Transportation) =>{
+  const departure= Transportation.departureTime;
+  //const departureLocStr=Transportation.departureLocation.description;
+  const arrival= Transportation.arrivalTime;
+  //const arrivalLocStr=Transportation.arrivalLocation.description;
+  
     const navigate = useNavigate();
 
     // const handleClick = () => {
@@ -28,58 +31,74 @@ const TransportCard = (Hotel) =>{
       return durationString.replace(/H/g, ' hours ').replace(/M/g, ' minutes ').trim();
     };
 
+    const waitingTime = (time) => {
+      let currentTime = new Date();
+      
+      if(time)
+        return {hrs: time.hours - currentTime.getHours() , mins: time.minutes - currentTime.getMinutes()}
+    }
+
   return (
     <Card variant="outlined"  sx={{
       border: '2px solid #126782', 
       borderColor:'#126782',
       borderRadius:'10px', 
-      height:'400px',
+      height:'320px',
       maxHeight:'600px',
+      //overflowY:'overflow',
       display: 'flex', 
       flexDirection:'column', 
-      maxWidth: '450px',
+      width: '450px',
       margin:'20px',
       marginTop:'20px',
       marginRight:'60px',
       }}>
-        <Box sx={{width:'90%',margin:'20px'}}>
-        <CommuteIcon fontSize="large" sx={{fill:'#126782'}}/>
+        <Box sx={{margin:'5%', padding:'5px', marginTop:'2%'}}>{/*EVERYTHING BOX*/}
+        <Box sx={{width:'90%',margin:'10px', display:'flex'}}>
+        <CommuteIcon fontSize="large" sx={{fill:'#126782'}}/>{/* to be changed based on carType */}
+        {/* <Typography fontSize="16px">
+          in {waitingTime(departure).hrs}h{waitingTime(departure).mins}
+          </Typography> */}
+      </Box>
       <Divider sx={{borderBottomWidth: 3}} />
 
       {/*INFO BOX*/}
       <Box sx={{margin: "10px",marginLeft:'10px',}}>
-      <Typography sx={{color:'#126782',padding:'1px',fontWeight:'bold'}}>Duration</Typography>
-        {/*PUTS CHECK IN AND OUT NEXT TO EACH OTHER*/}
-      <Box sx={{display:'flex',gap:'50px', marginLeft:'20px',padding:'5px' }}>
+      {/*departure and arrival BOX*/}
+      <Box sx={{gap:'50px'}}>
+      {/*departure*/}
       <Box>
-      <Typography sx={{color:'#126782',padding:'1px'}}>from</Typography>
-      {/*check in*/}
-     <Box sx={{display:'flex',padding:'5px',gap:'10px',}}> 
-      <CalendarMonthIcon fontSize="medium" sx={{fill:"#126782"}}/>
-      <Typography type="date" sx={{color:'#126782',padding:'1px'}}>4/11/2024</Typography> 
-     </Box>
+      <Typography sx={{color:'#126782',padding:'1px'}}>
+        {departure ? `${departure.hours}:${departure.mins} ${departure.dayTime}` : 'departure time'}
+      </Typography>
+      <Typography sx={{color:'#126782',padding:'1px'}}>
+        {/* {departureLocStr ? departureLocStr : 'departure time'} */}
+        departure location
+      </Typography>
      </Box>
 
+     {/*arrival*/}
      <Box>
-     <Typography sx={{color:'#126782',padding:'1px'}}>to</Typography>
-    {/*check out*/}
-    <Box sx={{display:'flex',padding:'5px',gap:'10px',}}> 
-      <CalendarMonthIcon fontSize="medium" sx={{fill:"#126782"}}/>
-      <Typography type="date" sx={{color:'#126782',padding:'1px'}}>9/11/2024</Typography> 
+      <Typography sx={{color:'#126782',padding:'1px'}}>
+        {departure ? `${departure.hours}:${departure.mins} ${departure.dayTime}` : 'arrival time'}
+      </Typography>
+      <Typography sx={{color:'#126782',padding:'1px'}}>
+        {/* {arrivalLocStr ? arrivalLocStr : 'arrival time'} */}
+        arrival location
+      </Typography>
      </Box>
      </Box>
-     </Box>
-     {/*END OF DATES BOX*/}
+     {/*END OF departure and arrival BOX*/}
     
     
       {/*location link*/}
-    <Box sx={{display:'flex',gap:'10px', padding:'5px', marginLeft:'-10px'}}> 
+      <Box sx={{display:'flex',gap:'10px', padding:'5px', marginLeft:'-10px'}}> 
       <PinDropIcon fontSize="medium" sx={{fill:"#126782"}}/>
       <Link  href="https://www.example.com"  sx={{color: '#126782',padding: '1px',cursor: 'pointer',textDecoration: 'none',
         '&:hover': {textDecoration: 'underline',}}}
         >location link</Link> 
      </Box>
-     </Box>
+    
      {/*for price and booking button*/}
      <Box sx={{position:'relative',padding:'10px',}}>
       <Box sx={{display:'flex', marginLeft:'-10px',padding:'5px',marginBottom:'10px',bottom:'10px'}}>
@@ -93,7 +112,7 @@ const TransportCard = (Hotel) =>{
       >Book</Button> {/* Add Book button */}
       </Box>
       </Box>
-      
+      </Box>{/* END OF EVERYTHING BOX */}
     </Card>
   );
 };

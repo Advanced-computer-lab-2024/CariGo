@@ -6,10 +6,6 @@ import TransportCard from "./TransportCard";
 const TransportCardList = ({ hotels = [], loading = false }) => {
   const navigate = useNavigate();
 
-  const handleCardClick = (hotel) => {
-    navigate(`/transport-details/${hotel.id}`, { state: { hotel } });
-  };
-
   
   if (loading) {
     return (
