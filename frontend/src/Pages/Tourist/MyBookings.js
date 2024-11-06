@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from "react";
 import "../../styles/index.css";
 import TouristNB from "./components/TouristNavBar";
-import { Box, Grid, Menu, TextField, Button, CircularProgress, Typography, MenuItem } from '@mui/material';
+import { Box, Grid, Menu, TextField, Button, IconButton, CircularProgress, Typography, MenuItem } from '@mui/material';
 import { styled, alpha } from "@mui/material/styles";
 import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
 import BookingCard from "./components/BookingCard";
+import RateReviewIcon from '@mui/icons-material/RateReview'; // Review icon for itinerary
+import PersonPinIcon from '@mui/icons-material/PersonPin'; // New icon for Tour Guide review
+import ItineraryReviewForm from "frontend/src/components/itineraryReviewForm.js"; // Import the itinerary review form
+import TourGuideReviewForm from "frontend/src/components/TourGuideReviewForm.js"; // Import the new Tour Guide review form
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -50,9 +54,13 @@ const MyBookings = () => {
   const [itineraries, setItineraries] = useState([]);
   const [filteredActivities, setFilteredActivities] = useState([]);
   const [filters, setFilters] = useState({
-    status: "", // Use status filter for "Booked" or "Not Booked"
+    status: "",
   });
   const [searchTerm, setSearchTerm] = useState("");
+  const [openReviewForm, setOpenReviewForm] = useState(false); // State to control form visibility for itinerary review
+  const [openTourGuideReviewForm, setOpenTourGuideReviewForm] = useState(false); // State for Tour Guide review form
+  const [selectedItineraryId, setSelectedItineraryId] = useState(null); // For itinerary review
+  const [selectedTourGuideId, setSelectedTourGuideId] = useState(null); // For Tour Guide review
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
@@ -66,56 +74,45 @@ const MyBookings = () => {
     setFilters({
       status: "",
     });
-    setFilteredActivities(itineraries); // Reset to all activities
-    setSearchTerm(""); // Reset search term as well
+    setFilteredActivities(itineraries);
+    setSearchTerm("");
   };
-  const today = new Date();
+
   const handleSearch = () => {
     const today = new Date();
-  
     const filtered = itineraries.filter((itinerary) => {
-      // Adjust startDate parsing if necessary
       const itineraryStartDate = new Date(itinerary.ItineraryId.start_date);
-  
-      // Determine the status based on filters and start date
       const matchesStatus =
         filters.status === ""
           ? true
           : filters.status === "Booked"
-          ? itinerary.Status === true && itineraryStartDate >= today // Booked and future start date
+          ? itinerary.Status === true && itineraryStartDate >= today
           : filters.status === "Canceled Bookings"
-          ? itinerary.Status === false // Canceled bookings
+          ? itinerary.Status === false
           : filters.status === "Done"
-          ? itinerary.Status === true && itineraryStartDate < today // Done if start date is in the past
+          ? itinerary.Status === true && itineraryStartDate < today
           : false;
-  
-      // Check if the itinerary title matches the search term
       const matchesSearchTerm =
         itinerary.ItineraryId.title &&
         itinerary.ItineraryId.title
           .toLowerCase()
           .includes(searchTerm.toLowerCase());
-  
       return matchesStatus && matchesSearchTerm;
     });
-  
-    setFilteredActivities(filtered); // Update filtered activities
+    setFilteredActivities(filtered);
   };
 
   useEffect(() => {
     const fetchItineraries = async () => {
       try {
         const token = localStorage.getItem("jwt");
-        const response = await fetch(
-          `http://localhost:4000/Event/MyItineraryBookings`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const response = await fetch(`http://localhost:4000/Event/MyItineraryBookings`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -123,7 +120,7 @@ const MyBookings = () => {
 
         const json = await response.json();
         setItineraries(json);
-        setFilteredActivities(json); // Set initial filtered activities
+        setFilteredActivities(json);
       } catch (error) {
         console.log("Error fetching itineraries:", error);
       }
@@ -132,10 +129,31 @@ const MyBookings = () => {
     fetchItineraries();
   }, []);
 
+  const openReviewFormHandler = (id) => {
+    console.log("Opening review form for itinerary id:", id);
+    setSelectedItineraryId(id); // Set the ID of the itinerary being reviewed
+    setOpenReviewForm(true); // Open the review form for itinerary
+  };
+
+  const openTourGuideReviewFormHandler = (tourGuideId) => {
+    console.log("Opening review form for tour guide id:", tourGuideId); // Debugging log
+    setSelectedTourGuideId(tourGuideId); // Set the tour guide ID (author's ID)
+    setOpenTourGuideReviewForm(true); // Open the review form for the tour guide
+  };
+
+  const closeReviewFormHandler = () => {
+    setOpenReviewForm(false); // Close the review form
+    setSelectedItineraryId(null); // Clear the selected itinerary ID
+  };
+
+  const closeTourGuideReviewFormHandler = () => {
+    setOpenTourGuideReviewForm(false); // Close the tour guide review form
+    setSelectedTourGuideId(null); // Clear the selected tour guide ID
+  };
+
   return (
     <div>
       <TouristNB />
-      {/* Filter Form */}
       <form>
         <TextField
           select
@@ -144,7 +162,7 @@ const MyBookings = () => {
           name="status"
           value={filters.status}
           onChange={handleFilterChange}
-          sx={{ mb: 2, mr: 2,width:"200px" }}
+          sx={{ mb: 2, mr: 2, width: "200px" }}
         >
           <MenuItem value="Done">Done</MenuItem>
           <MenuItem value="Booked">Booked</MenuItem>
@@ -155,7 +173,6 @@ const MyBookings = () => {
         </Button>
       </form>
 
-      {/* Search bar */}
       <Box sx={{ display: "flex" }}>
         <Search>
           <SearchIconWrapper>
@@ -164,7 +181,7 @@ const MyBookings = () => {
           <StyledInputBase
             placeholder="Search…"
             inputProps={{ "aria-label": "search" }}
-            onChange={(e) => setSearchTerm(e.target.value)} // Capture search input
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
         </Search>
         <Button variant="contained" onClick={handleSearch} sx={{ ml: 2 }}>
@@ -185,32 +202,50 @@ const MyBookings = () => {
           },
         }}
       >
-        <Box
-          sx={{
-            height: "100%",
-            width: "100%",
-            "&::-webkit-scrollbar": { display: "none" },
-          }}
-        >
-          <Grid container spacing={0} sx={{ flexDirection: "column", width: "100vw" }}>
-            {filteredActivities.map((itinerary, index) => (
-              <Grid item key={index} sx={{ justifyContent: "left" }}>
-                <BookingCard
-                  id={itinerary.ItineraryId._id}
-                  author={itinerary.ItineraryId.author}
-                  name={itinerary.ItineraryId.title}
-                  img={"frontend/public/assets/images/itirenary.png"}
-                  startDate={itinerary.ItineraryId.start_date}
-                  endDate={itinerary.ItineraryId.end_date}
-                  location={itinerary.ItineraryId.locations}
-                  status={itinerary.Status}
-                  price={itinerary.ItineraryId.price}
-                />
-              </Grid>
-            ))}
-          </Grid>
-        </Box>
+        <Grid container spacing={0} sx={{ flexDirection: "column", width: "100vw" }}>
+          {filteredActivities.map((itinerary, index) => (
+            <Grid item key={index} sx={{ justifyContent: "left" }}>
+              <BookingCard
+                id={itinerary.ItineraryId._id}
+                author={itinerary.ItineraryId.author}
+                name={itinerary.ItineraryId.title}
+                img={"frontend/public/assets/images/itirenary.png"}
+                startDate={itinerary.ItineraryId.start_date}
+                endDate={itinerary.ItineraryId.end_date}
+                location={itinerary.ItineraryId.locations}
+                status={itinerary.Status}
+                price={itinerary.ItineraryId.price}
+              />
+              {/* Add an icon button to open the itinerary review form */}
+              <IconButton onClick={() => openReviewFormHandler(itinerary.ItineraryId._id)}>
+                <RateReviewIcon />
+              </IconButton>
+              {/* Add a separate icon button for the tour guide review */}
+              <IconButton onClick={() => openTourGuideReviewFormHandler(itinerary.ItineraryId.author)}>
+                <PersonPinIcon />
+              </IconButton>
+            </Grid>
+          ))}
+        </Grid>
       </Box>
+
+      {/* Render the itinerary review form dialog */}
+      {selectedItineraryId && (
+        <ItineraryReviewForm
+          itineraryId={selectedItineraryId}
+          open={openReviewForm}
+          onClose={closeReviewFormHandler}
+        />
+      )}
+
+      {/* Render the tour guide review form dialog */}
+      {selectedTourGuideId && openTourGuideReviewForm && (
+        <TourGuideReviewForm
+          tourGuideId={selectedTourGuideId}
+          open={openTourGuideReviewForm}
+          onClose={closeTourGuideReviewFormHandler}
+        />
+      )}
     </div>
   );
 };
