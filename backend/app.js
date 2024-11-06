@@ -19,6 +19,7 @@ const productRouter = require("./routes/productRouter.js");
 const experienceRouter = require("./routes/experienceRouter");
 const amadusRouter = require("./routes/amadusRouter.js");
 const transportationRouter = require("./routes/transportationRouter.js");
+const DeleteRequestRouter = require("./routes/deleteRequestRouter.js");
 const app = express();
 
 
@@ -59,6 +60,8 @@ app.use("/Admin",adminRouter);
 app.use("/cariGo/products",productRouter)
 app.use("/cariGo/flights",amadusRouter)
 app.use("/cariGo/transportation",transportationRouter)
+app.use("/cariGo/delReq",DeleteRequestRouter)
+
 
 app.use("/cariGo/Event", eventRouter)
 app.use("/cariGo/experience", experienceRouter);
