@@ -86,6 +86,7 @@ import ActivityPostDetail from "./components/ActivityPostDetail.js";
 import HotelBooking from "./Pages/Tourist/HotelBooking.js";
 import BookingPage from "./Pages/Tourist/Booking.js";
 import AdminViewActivity from "./Pages/activities/AdminViewActivity.js";
+import MyBookings from "./Pages/Tourist/MyBookings.js";
 function App() {
   const token = localStorage.getItem("jwt");
  // const navigate = useNavigate();
@@ -110,6 +111,7 @@ function App() {
     <Router>
     <Routes>
         <Route path="/" element={<Home />} /> {/* Default route */}
+        <Route path="/tourist/MyBookings" element={<MyBookings />} /> {/* Default route */}
         <Route path="/login" element={<LoginPage />} />
       <Route
         path="tour_guide/profile"

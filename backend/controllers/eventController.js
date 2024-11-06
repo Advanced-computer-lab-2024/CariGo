@@ -617,14 +617,17 @@ const BookItinerary = async (req, res) => {
 
 
 const MyItineraryBookings = async (req, res) => {
-  const { UserId } = req.body; // User ID from request body
+  const  UserId  = req.user.id; // User ID from request body
+  //console.log("/////////////////////////////////////////"+UserId+"//////////////////////////////////////////////////");
   if (mongoose.Types.ObjectId.isValid(UserId)) {
     try {
       const bookings = await bookingModel
         .find({ UserId, ItineraryId: { $ne: null } })
         .sort({ createdAt: -1 });
+        //console.log(bookings);  
       return res.status(200).json(bookings);
-    } catch {
+      
+    } catch (error){
       res.status(500).json({ error: "Failed to fetch bookings" });
       console.error("Error while booking:", error);
     }
@@ -634,21 +637,23 @@ const MyItineraryBookings = async (req, res) => {
 };
 
 const CancelItineraryBooking = async (req, res) => {
-  const { UserId } = req.body; // User ID from request body
+  const  UserId  = req.user.id; // User ID from request body
   const { ItineraryId } = req.body; // Event ID from URL parameters
+  console.log(ItineraryId+ "    "+UserId);
   if (
     mongoose.Types.ObjectId.isValid(ItineraryId) &&
     mongoose.Types.ObjectId.isValid(UserId)
   ) {
     try {
       const itinerary = await itineraryModel.findById(ItineraryId);
+      //console.log(itinerary);
       const itineraryDate = itinerary.start_date;
 
       if (itineraryDate) {
         const currDate = new Date();
         const timeDifference = itineraryDate.getTime() - currDate.getTime(); // Difference in milliseconds
         const hoursDifference = timeDifference / (1000 * 60 * 60); // Convert to hours
-
+        console.log(hoursDifference);
         if (hoursDifference >= 48) {
           const bookings = await bookingModel.updateMany(
             { UserId, ItineraryId }, // Filter to find documents with both UserId and ItineraryId
@@ -663,13 +668,14 @@ const CancelItineraryBooking = async (req, res) => {
             .status(400)
             .json({
               message:
-                "Cannot book/cancel within 48 hours of the itinerary date",
+                "Cannot cancel booking within 48 hours of the itinerary date",
             });
         }
       } else {
         res.status(404).json({ message: "itinerary not found" });
       }
-    } catch {
+    } catch(error) {
+      
       res.status(500).json({ error: "Failed to fetch booking" });
       console.error("Error while booking:", error);
     }

@@ -514,7 +514,7 @@ const CancelActivityBooking = async (req, res) => {
           } else {
               res.status(404).json({ message: "Activity not found" });
           }
-      } catch {
+      } catch (error) {
           res.status(500).json({ error: "Failed to fetch booking" });
           console.error("Error while booking:", error);
       }
