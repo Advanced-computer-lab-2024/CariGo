@@ -393,8 +393,11 @@ const readSingleItinerary = (req, res) => {
     itineraryModel
       .findOne({ _id: new mongoose.Types.ObjectId(req.params.itineraryId) })
       .populate("tags")
+      .populate("category")
+      .populate("author")
       .sort({ createdAt: -1 })
       .then((result) => {
+        console.log(result);
         res.status(201).json(result);
       })
       .catch((error) => {

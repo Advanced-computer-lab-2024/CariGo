@@ -5,7 +5,7 @@ import SelectChangeEvent, { Pagination } from "@mui/material";
 import SearchBar from "./SearchBar/SearchBar";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import AddIcon from "@mui/icons-material/Add";
-
+import QueryStatsIcon from '@mui/icons-material/QueryStats';
 import {
   Box,
   Card,
@@ -449,6 +449,14 @@ export default function ViewProducts() {
                             </IconButton>
                           </Tooltip>
                         )}
+                        <Tooltip title="Product Analysis" placement="top">
+                            <IconButton
+                              onClick={() => navigate("/admin/analysis")}
+                              style={{ color: "green" }}
+                            >
+                              <QueryStatsIcon />
+                            </IconButton>
+                          </Tooltip>
                       </TableCell>
                     </TableRow>
                   ))}

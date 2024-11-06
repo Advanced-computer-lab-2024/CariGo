@@ -8,10 +8,11 @@ const {
   makePurchase,
 } = require("../controllers/purchaseController");
 
+router.get("/productPurchases/:id", getProductPurchases);
+
 // middleware for authentication
 router.use(authController.protect);
 router.get("/purchases", getAllPurchases);
 router.get("/userPurchases", getUserPurchases);
-router.get("/productPurchases/:id", getProductPurchases);
 router.post("/makePurchase", makePurchase);
 module.exports = router;
