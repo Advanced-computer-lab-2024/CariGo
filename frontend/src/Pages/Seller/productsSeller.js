@@ -35,9 +35,11 @@ import Divider from '@mui/material/Divider';
 import { Content, Header } from "antd/es/layout/layout";
 import TopBar from "../TopBar";
 import { TablePagination } from '@mui/material';
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 
 import { Navigate, useLocation } from "react-router-dom";
+import ArchiveIcon from "@mui/icons-material/Archive";
+import UnarchiveIcon from "@mui/icons-material/Unarchive";
 import { ArrowRightAlt, Edit } from "@mui/icons-material";
 import SearchIcon from '@mui/icons-material/Search';
 export default function ViewProductsSeller() {
@@ -49,6 +51,8 @@ export default function ViewProductsSeller() {
   const bgError = palette.error.main;
   const bgPrimary = palette.success.main;
   const bgSecondary = palette.warning.light;
+  const token = localStorage.getItem("jwt");
+
   // Fetch categories function
   const fetchProducts = async () => {
     setLoading(true); // Start loading
@@ -68,6 +72,91 @@ export default function ViewProductsSeller() {
       console.error("Error fetching products:", error);
     } finally {
       setLoading(false); // Stop loading
+    }
+  };
+    
+    const refreshProducts = async () => {
+    try {
+      // Assuming you're passing the seller's ID and possibly sorting parameters
+      const sellerId = localStorage.getItem('id');  // Replace with actual seller ID
+     // const sortParam = 'ratingsAverage';  // Or any other sort param you need
+      
+      // Make an Axios request to the backend (assuming your route is '/cariGo/products/sellers/:id')
+      const response = await axios.get(`http://localhost:4000/cariGo/products/getSellersProducts/${sellerId}`, {
+        // params: {
+        //   sort: sortParam, // optional, if you want to sort the products
+        // }
+      });
+  
+      // Once you have the products, store them in state (if using React)
+      setProducts(response.data); // Assuming 'setProducts' is your state update function
+  
+    } catch (error) {
+      console.error('Error refreshing products:', error);
+      // Handle any errors (e.g., show a message to the user)
+    }
+  };
+  
+
+  const archiveProduct = async (product) => {
+    try {
+      const response = await axios.patch(
+        `http://localhost:4000/cariGo/products/archiveProduct/${product._id}`,
+        {},
+        {
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 204) {
+        toast.success(`Product archived successfully!`);
+
+        // Update the product's `archived` status locally
+        setProducts((prevProducts) =>
+          prevProducts.map((p) =>
+            p._id === product._id ? { ...p, archived: true } : p
+          )
+        );
+      }
+      refreshProducts();
+    } catch (error) {
+      console.error("Error archiving product:", error.message || error);
+      toast.error(
+        "Error archiving product. Please check the network tab for details."
+      );
+    }
+  };
+
+  const unarchiveProduct = async (product) => {
+    try {
+      const response = await axios.patch(
+        `http://localhost:4000/cariGo/products/unarchiveProduct/${product._id}`,
+        {},
+        {
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 204) {
+        toast.success(`Product unarchived successfully!`);
+
+        // Update the product's `archived` status locally
+        setProducts((prevProducts) =>
+          prevProducts.map((p) =>
+            p._id === product._id ? { ...p, archived: false } : p
+          )
+        );
+      }
+      refreshProducts();
+    } catch (error) {
+      console.error("Error unarchiving product:", error.message || error);
+      toast.error(
+        "Error unarchiving product. Please check the network tab for details."
+      );
     }
   };
 const onChange = () =>{
@@ -283,8 +372,27 @@ const navigate = useNavigate();
                 <TableCell sx={{ px: 7 }} colSpan={1}>
                   <IconButton onClick={() =>handleDetatils(product._id)}>
                     <Edit color="primary"  />
-                  </IconButton>
-                </TableCell>
+                </IconButton>
+                        {product.archived ? (
+                          <Tooltip title="Unarchive Product" placement="top">
+                            <IconButton
+                              onClick={() => unarchiveProduct(product)}
+                              style={{ color: "red" }}
+                            >
+                              <UnarchiveIcon />
+                            </IconButton>
+                          </Tooltip>
+                        ) : (
+                          <Tooltip title="Archive Product" placement="top">
+                            <IconButton
+                              onClick={() => archiveProduct(product)}
+                              style={{ color: "green" }}
+                            >
+                              <ArchiveIcon />
+                            </IconButton>
+                          </Tooltip>
+                        )}
+                      </TableCell>
               </TableRow>
             ))}
           </TableBody>

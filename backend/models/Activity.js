@@ -71,6 +71,10 @@ const activitySchema = new mongoose.Schema(
     isFlagged: {
       type: Boolean,
       default: false,
+    },
+    isBooked:{
+      type: Boolean,
+      default: false,
     }
   },
   { timestamps: true }

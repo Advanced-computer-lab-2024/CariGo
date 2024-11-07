@@ -9,7 +9,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import {Box,Button,Typography,Link,List,ListItem,ClickAwayListener,Menu,MenuItem,TextField,InputAdornment} from "@mui/material";
 import HotelsList from "../../components/HotelsList"; 
-import HotelCardList from "../../components/HotelsList";
+//import HotelCardList from "../../components/HotelsList";
 
 
 
@@ -95,11 +95,11 @@ export default function BookHotels(){
           const formattedCheckOut = checkOut.format("YYYY-MM-DD");
 
           try {
-              console.log(`http://localhost:4000/cariGo/hotels?keyword=${City}&checkIn=${formattedCheckIn}&checkOut=${formattedCheckOut}&adults=${adults}&children=${children}`);
-            const response = await fetch(`http://localhost:4000/cariGo/hotels?keyword=${City}&checkIn=${formattedCheckIn}&checkOut=${formattedCheckOut}&adults=${adults}&children=${children}`);
+              console.log(`http://localhost:4000/cariGo/flights/hotels?keyword=${City}&checkIn=${formattedCheckIn}&checkOut=${formattedCheckOut}&adults=${adults}&children=${children}`);
+            const response = await fetch(`http://localhost:4000/cariGo/flights/hotels?keyword=${City}&checkIn=${formattedCheckIn}&checkOut=${formattedCheckOut}&adults=${adults}&children=${children}`);
             const data = await response.json();
             console.log("Hotel data:", data); 
-            setHotels(data);// Handle the hotel data as needed
+            setHotels(data.data);// Handle the hotel data as needed
           } catch (error) {
             console.error("Error fetching hotel:", error);
           }
@@ -137,7 +137,7 @@ export default function BookHotels(){
                         {isFromDropdownOpen && fromSuggestions.length > 0 && (
                           <List sx={{ maxHeight: 150, overflowY: 'auto', border: '1px solid #ccc',position:'absolute',zIndex: 100,backgroundColor:'white',cursor: 'pointer', }}>
                             {fromSuggestions.map((cityObj) => (
-                              <ListItem button key={cityObj.iataCode} onClick={() => handleCitySelect(cityObj)}>
+                              <ListItem button key={cityObj.city} onClick={() => handleCitySelect(cityObj)}>
                                 {cityObj.city} ({cityObj.iataCode})
                               </ListItem>
                             ))}
@@ -253,7 +253,7 @@ export default function BookHotels(){
                {/* Render HotelCard if hotels are available */}
                <Box sx={{padding:"20px", marginLeft:"10%" , overflow:'auto',marginTop:'4%',}}>
                {hotels.length > 0 && (
-                  <HotelCardList hotels={hotels} />
+                  <HotelsList hotels={hotels} />
                 )}
                 </Box>
             </Box>

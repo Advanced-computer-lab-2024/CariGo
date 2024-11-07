@@ -1,47 +1,72 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Button, Badge, Card, Input, List } from 'antd';
+import { Button, Badge, Card, Input, List, message } from 'antd';
 
 const ComplaintDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [complaint, setComplaint] = useState(null);
-  const [reply, setReply] = useState(''); // State for new reply
-  const [replies, setReplies] = useState([]); // State to hold all replies
+  const [reply, setReply] = useState('');
+  const [replies, setReplies] = useState([]);
+  const token = localStorage.getItem("jwt");
 
   useEffect(() => {
-    // Fetch complaint data based on ID
-    setComplaint({
-      id: id,
-      title: 'Booking Issue',
-      body: 'There was a problem with my booking.',
-      status: 'Pending',
-      date: '2024-10-01',
-    });
-    
-    // Mock existing replies (replace with fetch request if needed)
-    setReplies([
-    ]);
+    // Fetch complaint data from the backend
+    const fetchComplaint = async () => {
+      try {
+        const response = await axios.get(`http://localhost:4000/Admin/viewComplaint/${id}`, {
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
+        }
+      );
+        setComplaint(response.data.data.complaint);
+        setReplies(response.data.data.complaint.replies || []);
+      } catch (error) {
+        console.error('Error fetching complaint:', error);
+        message.error('Failed to load complaint details.');
+      }
+    };
+
+    fetchComplaint();
   }, [id]);
 
-  const handleStatusToggle = () => {
-    // Toggle status and save to the server
-    setComplaint((prev) => ({
-      ...prev,
-      status: prev.status === 'Pending' ? 'Resolved' : 'Pending',
-    }));
+  const handleStatusToggle = async () => {
+    try {
+      const updatedStatus = complaint.status === 'Pending' ? 'Resolved' : 'Pending';
+      const response = await axios.patch(`http://localhost:4000/Admin/updateComplaintStatus/${id}`, { status: updatedStatus }, {
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      }
+    );
+      setComplaint(response.data.data.complaint);
+      message.success(`Complaint marked as ${updatedStatus}`);
+    } catch (error) {
+      console.error('Error updating status:', error);
+      message.error('Failed to update complaint status.');
+    }
   };
 
-  const handleReplySubmit = () => {
+  const handleReplySubmit = async () => {
     if (reply.trim()) {
-      // Update the replies list
-      const newReply = { id: Date.now(), content: reply, date: new Date().toISOString().split('T')[0] };
-      setReplies((prev) => [...prev, newReply]);
-      
-      // Clear the reply input
-      setReply('');
-      
-      // Here you would typically send the reply to the server
+      try {
+        // Send the reply to the backend
+        const response = await axios.post(`http://localhost:4000/Admin/replyToComplaint/${id}`, { reply }, {
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
+        }
+      );
+        // Update the replies list with the new reply
+        setReplies((prev) => [...prev, { content: reply, date: new Date().toISOString().split('T')[0] }]);
+        setReply('');
+        message.success('Reply submitted successfully.');
+      } catch (error) {
+        console.error('Error submitting reply:', error);
+        message.error('Failed to submit reply.');
+      }
     }
   };
 
@@ -64,7 +89,7 @@ const ComplaintDetails = () => {
         <List
           dataSource={replies}
           renderItem={(reply) => (
-            <List.Item key={reply.id}>
+            <List.Item key={reply.date}>
               <p><strong>Date:</strong> {reply.date}</p>
               <p>{reply.content}</p>
             </List.Item>

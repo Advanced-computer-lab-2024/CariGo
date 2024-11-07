@@ -23,12 +23,14 @@ const {
 } = require("../controllers/eventController");
 const authController = require("../controllers/authController");
 const router = express.Router();
+
 router.get("/currencyConversion",currencyConversion);
 
 router.get(
   "/readAllItineraries",
   readAllItineraries
 ); // itineraries
+
 
 router.get("/readSingleItinerary/:itineraryId", readSingleItinerary); // itineraries/:id
 router.get("/readSingleVintage/:vintageId", readSingleVintage);
@@ -60,11 +62,7 @@ router.get(
 ); // itineraries
 
 // router.post('/createActivity', createActivity);
-router.get(
-  "/viewAllVintage",
-  authController.protect,
-  viewAllVintage
-);
+router.get("/viewAllVintage", authController.protect, viewAllVintage);
 
 router.patch(
   "/updateItinerary/:itineraryId",
@@ -90,9 +88,17 @@ router.post(
   BookItinerary
 );
 
-router.get('/MyItineraryBookings',authController.restrictTo("Tourist"),MyItineraryBookings);
+router.get(
+  "/MyItineraryBookings",
+  authController.restrictTo("Tourist"),
+  MyItineraryBookings
+);
 
-router.patch('/CancelItineraryBooking',authController.restrictTo("Tourist"),CancelItineraryBooking);
+router.patch(
+  "/CancelItineraryBooking",
+  authController.restrictTo("Tourist"),
+  CancelItineraryBooking
+);
 
 
 
