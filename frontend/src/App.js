@@ -90,8 +90,11 @@ import TransportationSearch from "./Pages/TransportationSearch.js" ;
 import AdminViewActivity from "./Pages/activities/AdminViewActivity.js";
 import ProductAnalysis from "./Pages/products/ProductAnalysis.jsx";
 import MyBookings from "./Pages/Tourist/MyBookings.js";
+//const dotenv = require('dotenv')
 function App() {
+  
   const token = localStorage.getItem("jwt");
+  //dotenv.config({ path: "./.env" });
  // const navigate = useNavigate();
   // Decode the token safely
   let userId;

@@ -53,7 +53,7 @@ export default function ViewProducts() {
   const bgPrimary = palette.success.main;
   const bgSecondary = palette.warning.light;
   const token = localStorage.getItem("jwt");
-
+  const folderPics = `http://localhost:4000/public/img/products/`;
   // Fetch categories function
   const fetchProducts = async () => {
     setLoading(true); // Start loading
@@ -384,8 +384,11 @@ export default function ViewProducts() {
                         sx={{ px: 0, textTransform: "capitalize" }}
                       >
                         <Box display="flex" alignItems="center" gap={4}>
-                          <img src={product.imgUrl} alt="p" />
-                          <Paragraph>{product.name}</Paragraph>
+                        <label htmlFor="file-upload" className="custom-file-upload">
+                        <img src={folderPics+product.mainImage} alt="p" />
+
+            </label>
+             <Paragraph>{product.name}</Paragraph>
                         </Box>
                       </TableCell>
 

@@ -56,12 +56,12 @@ exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
   if (req.user.role === "Tour_Guide") {
     req.file.filename = `tour-guide-${req.user.id}-${uniqueImageId}.jpeg`;
   } else if (req.user.role === "Advertiser" || req.user.role === "Seller") {
-    req.file.filename = `logo-${req.user.id}-${uniqueImageId}.jpeg`;
+    req.file.filename = `logo-${req.user.id}-${uniqueImageId}.jpeg`;  
     folder = "logos"; // Use 'logos' folder for Advertiser and Seller
   } else {
     req.file.filename = `user-${req.user.id}-${uniqueImageId}.jpeg`; // Default for other users
   }
-
+console.log(req.file.filename)
   await sharp(req.file.buffer)
     .resize(500, 500)
     .toFormat("jpeg")
@@ -83,9 +83,9 @@ const filterObj = (obj, ...allowedFields) => {
 exports.uploadImages = catchAsync(async (req, res, next) => {
   // Filter out unwanted fields that are not allowed to be updated
   const filteredBody = filterObj(req.body, "name", "email");
-  console.log(req.file);
+  console.log(req.file+" before");
   if (req.file) filteredBody.photo = req.file.filename; // or logo
-
+  console.log(" after")
   // Update the user document
   const updatedUser = await User.findByIdAndUpdate(req.user.id, filteredBody, {
     new: true,
@@ -242,13 +242,14 @@ exports.uploadGuestDocs = catchAsync(async (req, res, next) => {
 // Update multer to allow multiple file uploads for product images
 exports.uploadProductImages = upload.fields([
   { name: "mainImage", maxCount: 1 }, // One main image
-  { name: "images", maxCount: 5 }, // Up to 5 additional images
+ { name: "images", maxCount: 5 }, // Up to 5 additional images
 ]);
-
+// exports.uploadProductImages = upload.single("mainImage");
 exports.resizeProductImages = catchAsync(async (req, res, next) => {
-    const uniqueImageId = uuidv4();
+ // console.log(req.files.mainImage)  
+  const uniqueImageId = uuidv4();
     const folder = "products";
-  
+   // console.log(req.files.mainImage)
     // Process main image if it exists
     if (req.files && req.files.mainImage) {
       req.body.mainImage = `product-${req.params.id}-main-${uniqueImageId}.jpeg`;

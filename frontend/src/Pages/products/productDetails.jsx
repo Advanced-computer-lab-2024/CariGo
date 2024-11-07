@@ -77,9 +77,15 @@ const FormContainer = styled(Paper)(({ theme }) => ({
    
     const handleSubmit = async (e) => {
       e.preventDefault();
+      const token = localStorage.getItem('jwt')
         try {
           console.log(data)
-          await axios.patch(`http://localhost:4000/cariGo/products/updateProduct/${id}`, data); // Call update endpoint
+          await axios.patch(`http://localhost:4000/cariGo/products/updateProduct/${id}`, data,{
+            headers:{
+                authorization :`Bearer ${token}`
+        
+              }
+            }); // Call update endpoint
           toast.success("Product updated successfully!"); // Show success message
           fetchTags(); // Refresh the tag list
          

@@ -91,13 +91,13 @@ function Checkout({role}) {
         if (imageResponse.status === 401) {
           throw new Error("Unauthorized: Incorrect Data");
         }
-        throw new Error(`HTTP error! Status: ${formResponse.status}`);
+        throw new Error(`HTTP error! Status: ${imageResponse.status}`);
       }
       console.log("checked")
       // Parse the JSON response
       const bin = await imageResponse.json();
       console.log("photo added successfully", bin); // Log success
-
+      window.location.href = '/login';
     } catch (error) {
       console.error("Error:", error.message); // Log the error in console
       //alert("signup failed: " + error.message); // Show alert to the user
