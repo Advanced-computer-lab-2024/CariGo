@@ -204,6 +204,8 @@ const MyBookings = () => {
                   endDate={itinerary.ItineraryId.end_date}
                   location={itinerary.ItineraryId.locations}
                   status={itinerary.Status}
+                  NumberOfTickets={itinerary.NumberOfTickets}
+                  TotalPrice={itinerary.TotalPrice}
                   price={itinerary.ItineraryId.price}
                 />
               </Grid>

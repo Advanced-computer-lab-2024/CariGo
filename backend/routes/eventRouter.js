@@ -23,7 +23,7 @@ const {
 } = require("../controllers/eventController");
 const authController = require("../controllers/authController");
 const router = express.Router();
-
+router.get("/currencyConversion",currencyConversion);
 
 router.get(
   "/readAllItineraries",
@@ -94,6 +94,6 @@ router.get('/MyItineraryBookings',authController.restrictTo("Tourist"),MyItinera
 
 router.patch('/CancelItineraryBooking',authController.restrictTo("Tourist"),CancelItineraryBooking);
 
-router.get("/currencyConversion",currencyConversion);
+
 
 module.exports = router;
