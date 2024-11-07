@@ -16,30 +16,41 @@ const BookingSchema = new schema({
     ref: "Itinerary",
   },
   Status: {
-    type:Boolean,
+    type: Boolean,
     default: true,
   },
   PaymentMethod: {
     type: String,
-    enum: [
-      "Cash",
-      "Card",
-    ],
+    enum: ["Wallet", "Card"],
   },
-  CardNumber:{
+  CardNumber: {
     type: String,
-    default:"",
-  }
+    default: "",
+  },
+  NumberOfTickets: {
+    type: Number,
+    
+  },
+  TotalPrice: {
+    type: Number,
+    
+  },
 });
 
 BookingSchema.pre(/^find/, function (next) {
   this.populate({
-      path: 'ItineraryId',
-      select: 'author category activities',
+    path: "ItineraryId",
   });
   next();
 });
 
+// Populate ActivityId if it's defined, otherwise populate ItineraryId
+BookingSchema.pre(/^find/, function (next) {
+    this.populate({
+      path: "ActivityId", // Correcting the path to match the field name
+    });
+  next();
+});
 
 const Bookings = mongoose.model("Bookings", BookingSchema);
 

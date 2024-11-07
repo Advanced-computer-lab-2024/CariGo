@@ -258,7 +258,7 @@ const readAllItineraries = async (req, res) => {
 
   try {
     // Initialize the query
-    let query = itineraryModel.find();
+    let query = itineraryModel.find({isActive: true});
 
     // Check if a tag title is provided
     let itineraries = []; // Declare itineraries with let
@@ -329,6 +329,7 @@ const readMyItineraries = async (req, res) => {
     const itineraries = await itineraryModel
       .find({ author: id })
       .populate("tags")
+      .populate("category")
       .sort({
         createdAt: -1,
       });
@@ -392,8 +393,11 @@ const readSingleItinerary = (req, res) => {
     itineraryModel
       .findOne({ _id: new mongoose.Types.ObjectId(req.params.itineraryId) })
       .populate("tags")
+      .populate("category")
+      .populate("author")
       .sort({ createdAt: -1 })
       .then((result) => {
+        console.log(result);
         res.status(201).json(result);
       })
       .catch((error) => {
@@ -552,7 +556,7 @@ const shareVintage = async (req, res) => {
 
 const BookItinerary = async (req, res) => {
   const { ItineraryId } = req.params; // Event ID from URL parameters
-  const { PaymentMethod } = req.body; // User ID from request body
+  const { PaymentMethod,TotalPrice,NumberOfTickets } = req.body; // User ID from request body
   const UserId = req.user.id;
   let CardNumber;
   let booking; // Declare booking outside of if-else to use in response
@@ -580,13 +584,19 @@ const BookItinerary = async (req, res) => {
           PaymentMethod: PaymentMethod,
           Status: true,
           CardNumber: CardNumber,
+          NumberOfTickets:NumberOfTickets,
+          TotalPrice:TotalPrice
         });
       } else {
+
         booking = await bookingModel.create({
+
           ItineraryId: ItineraryId,
           UserId: UserId,
           PaymentMethod: PaymentMethod,
           Status: true,
+          NumberOfTickets:NumberOfTickets,
+          TotalPrice:TotalPrice
         });
       }
 
@@ -613,14 +623,17 @@ const BookItinerary = async (req, res) => {
 
 
 const MyItineraryBookings = async (req, res) => {
-  const { UserId } = req.body; // User ID from request body
+  const  UserId  = req.user.id; // User ID from request body
+  //console.log("/////////////////////////////////////////"+UserId+"//////////////////////////////////////////////////");
   if (mongoose.Types.ObjectId.isValid(UserId)) {
     try {
       const bookings = await bookingModel
         .find({ UserId, ItineraryId: { $ne: null } })
         .sort({ createdAt: -1 });
+        //console.log(bookings);  
       return res.status(200).json(bookings);
-    } catch {
+      
+    } catch (error){
       res.status(500).json({ error: "Failed to fetch bookings" });
       console.error("Error while booking:", error);
     }
@@ -630,21 +643,23 @@ const MyItineraryBookings = async (req, res) => {
 };
 
 const CancelItineraryBooking = async (req, res) => {
-  const { UserId } = req.body; // User ID from request body
+  const  UserId  = req.user.id; // User ID from request body
   const { ItineraryId } = req.body; // Event ID from URL parameters
+  console.log(ItineraryId+ "    "+UserId);
   if (
     mongoose.Types.ObjectId.isValid(ItineraryId) &&
     mongoose.Types.ObjectId.isValid(UserId)
   ) {
     try {
       const itinerary = await itineraryModel.findById(ItineraryId);
+      //console.log(itinerary);
       const itineraryDate = itinerary.start_date;
 
       if (itineraryDate) {
         const currDate = new Date();
         const timeDifference = itineraryDate.getTime() - currDate.getTime(); // Difference in milliseconds
         const hoursDifference = timeDifference / (1000 * 60 * 60); // Convert to hours
-
+        console.log(hoursDifference);
         if (hoursDifference >= 48) {
           const bookings = await bookingModel.updateMany(
             { UserId, ItineraryId }, // Filter to find documents with both UserId and ItineraryId
@@ -654,18 +669,23 @@ const CancelItineraryBooking = async (req, res) => {
             message: "Bookings canceled successfully",
             updatedBookingsCount: bookings.modifiedCount, // shows how many bookings were updated
           });
+          const canceled = await bookingModel.findOne({ItineraryId: ItineraryId,status: true});
+          if(!canceled){
+            await Itinerary.findByIdAndUpdate(ItineraryId, { isBooked: false });
+          }
         } else {
           res
             .status(400)
             .json({
               message:
-                "Cannot book/cancel within 48 hours of the itinerary date",
+                "Cannot cancel booking within 48 hours of the itinerary date",
             });
         }
       } else {
         res.status(404).json({ message: "itinerary not found" });
       }
-    } catch {
+    } catch(error) {
+      
       res.status(500).json({ error: "Failed to fetch booking" });
       console.error("Error while booking:", error);
     }
@@ -680,7 +700,8 @@ const dotenv = require("dotenv");
 dotenv.config({ path: "../.env" });
 const currencyConversion = async (req, res) => {
   try {
-    const { currency } = req.body;
+    const { currency } = req.query;
+    console.log(currency);
     const key = process.env.currencyConversionKey;
     const url = `https://v6.exchangerate-api.com/v6/${key}/pair/EGP/${currency}`;
     const response = await axios.get(url);

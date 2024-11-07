@@ -55,8 +55,7 @@ exports.createReview = catchAsync(async (req, res, next) => {
 
   if (req.body.activity) {
     const activityId = req.body.activity;
-    console.log("Checking activity booking:", { userId, activityId });
-    booking = await Booking.findOne({
+    const booking = await Booking.find({
       UserId: userId,
       ActivityId: activityId,
       Status: true,
@@ -71,8 +70,7 @@ exports.createReview = catchAsync(async (req, res, next) => {
     }
   } else if (req.body.itinerary) {
     const itineraryId = req.body.itinerary;
-    console.log("Checking itinerary booking:", { userId, itineraryId });
-    booking = await Booking.findOne({
+    const booking = await Booking.find({
       UserId: userId,
       ItineraryId: itineraryId,
       Status: true,
@@ -87,13 +85,13 @@ exports.createReview = catchAsync(async (req, res, next) => {
     }
   } else if (req.body.tourGuide) {
     const tourGuideId = req.body.tourGuide;
-    // console.log("Checking tour guide booking:", { userId, tourGuideId });
-    // console.log(`userId: ${userId}, tourGuideId: ${tourGuideId}`);
-    booking = await Booking.find({
+    console.log(tourGuideId,"ana hena");
+    const booking = await Booking.find({
       UserId: userId,
       "ItineraryId.author": tourGuideId,
       Status: true,
     });
+    console.log(booking)
     if (!booking) {
       return next(
         new AppError(

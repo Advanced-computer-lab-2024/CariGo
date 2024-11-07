@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { styled } from '@mui/material/styles';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 import CardMedia from '@mui/material/CardMedia';
@@ -10,38 +11,49 @@ import Typography from '@mui/material/Typography';
 import { red } from '@mui/material/colors';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import ShareIcon from '@mui/icons-material/Share';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { Box } from '@mui/material';
 import { Chip } from '@mui/material';
-import PinDropIcon from '@mui/icons-material/PinDrop'; // For location
-import AttachMoneyIcon from '@mui/icons-material/AttachMoney'; // For ticket prices
+import PinDropIcon from '@mui/icons-material/PinDrop';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import StarIcon from '@mui/icons-material/Star';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import DeleteIcon from '@mui/icons-material/Delete';
+import logoImage from '../../../assets/itinerary.png'; // Correct relative path
 
 export default function MyBookingsPost({
-  author = "Anonymous",
   id,
-  name = "No name provided",
-  description = "No description available",
-  pictures = [], // Default as an empty array
-  location = null, // Default is null for the location
-  ticket_price = {
-    foreigner: "Not specified",
-    native: "Not specified",
-    student: "Not specified"
-  },
-  tags = [], // Default as an empty array
-  opening_hours = {
-    opening: "Not specified",
-    closing: "Not specified"
-  }
+  title,
+  img,
+  start_date,
+  end_date,
+  locations,
+  price,
+  tags,
+  transportation,
+  accommodation,
+  rating,
+  isBooked,
+  accessibility,
 }) {
   const navigate = useNavigate();
 
-  const handleCancel = async (event) => {
-    event.stopPropagation();
-    const confirmCanceling = window.confirm("Are you sure you want to cancel your booking for this itinerary?");
-    if (confirmCanceling) {
+  // Format the date and time
+  const formatDateTime = (dateString) => {
+    const options = {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+    };
+    return new Date(dateString).toLocaleString(undefined, options);
+  };
+
+  const handleDelete = async () => {
+    const cancelBooking = window.confirm("Are you sure you want to cancel this booking?");
+    if (cancelBooking) {
       try {
         const token = localStorage.getItem('jwt');
         if (!token) {
@@ -49,23 +61,25 @@ export default function MyBookingsPost({
         }
 
         // Assuming you have the correct API endpoint to delete an itinerary
-        await axios.delete(`/cariGo/Event/CancelItineraryBooking`, {
+        await axios.patch(`/cariGo/Event/CancelItineraryBooking`, {
+            
+            ItineraryId: id, // Itinerary ID to cancel
+        },
+        {
             headers: {
-              Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${token}`, // Set the authorization header
+                "Content-Type": "application/json", // Specify content type
             },
-            data: {
-              UserId: localStorage.getItem("id"),//, data.data.user._id), // Replace with the actual ID or variable
-              ItineraryId: id,
-            },
-          });
+        }
+    );
 
         alert("Itinerary booking canceled successfully");
         // Optionally use navigate or a callback to update the parent component
+        //navigate('/tour_guide/itineraries'); // Redirect to the itineraries list or any other page
         window.location.reload();
-        // console.log("Vintages deleted")
       } catch (error) {
         console.error('Failed to cancel itinerary booking:', error.response ? error.response.data : error.message);
-        alert(`An error occurred while canceling itinerary bookings. Details: ${error.message}`);
+        alert(`An error occurred while canceling the booking. Details: ${error.message}`);
       }
     }
   };
@@ -85,18 +99,18 @@ export default function MyBookingsPost({
         margin: '20px',
         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
         transition: 'transform 0.3s ease',
-        // '&:hover': {
-        //   transform: 'scale(1.02)',
-        //   cursor: 'pointer',
-        // },
+        '&:hover': {
+          transform: 'scale(1.02)',
+          cursor: 'pointer',
+        },
       }}
-      //onClick={() => navigate(`/vintage/${id}`)}
+      //onClick={() => navigate(`/tour_guide/itineraries/${id}`)}
     >
       <Box sx={{ display: 'flex', flexDirection: 'row', flexGrow: 1 }}>
         <CardMedia
           component="img"
-          image={pictures[0] || 'placeholder-image.jpg'} // Fallback to placeholder image if no pictures
-          alt={name}
+          image={logoImage || "/default-itinerary.jpg"}
+          alt="Itinerary Image"
           sx={{
             width: '500px',
             height: '250px',
@@ -108,53 +122,50 @@ export default function MyBookingsPost({
 
         <Box sx={{ display: 'flex', flexDirection: 'column', width: '400px', padding: '10px' }}>
           <CardHeader
-            avatar={<Avatar sx={{ bgcolor: red[500] }}>{author?.charAt(0)}</Avatar>}
+            avatar={<Avatar sx={{ bgcolor: red[500] }}>{title?.charAt(0) || 'A'}</Avatar>}
             title={
               <Typography variant="h5" sx={{ fontWeight: 'bold', fontSize: '24px' }}>
-                {name}
+                {title || "Anonymous"}
               </Typography>
             }
           />
 
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginLeft: '15px' }}>
-            {tags?.map((tag, index) => (
-              <Chip key={index} label={tag} sx={{ backgroundColor: '#126782', color: 'white' }} />
+            {tags?.map((tag) => (
+              <Chip key={tag._id} label={tag.title} sx={{ backgroundColor: '#126782', color: 'white' }} />
             ))}
           </Box>
 
-          <Box sx={{ display: 'flex', flexDirection: 'column', marginLeft: '30px', marginTop: '10px' }}>
-            {/* Check if location exists and render if available */}
-            {location && location.nation ? (
-              <Box sx={{ display: 'flex', marginTop: '5px' }}>
-                <PinDropIcon />
-                <Typography sx={{ marginLeft: '5px' }}>
-                  Location: {location.nation.city}, {location.nation.country}<br/> (Lat: {location.latitude}, Long: {location.longitude})
-                </Typography>
-              </Box>
-            ) : (
-              <Typography sx={{ marginLeft: '5px', marginTop: '5px' }}>
-                Location: Not specified
-              </Typography>
-            )}
+          <Box sx={{ display: 'flex', flexDirection: 'column', marginLeft: '30px' }}>
+            <Box sx={{ display: 'flex' }}>
+              <StarIcon sx={{ scale: '0.9' }} />
+              <Typography sx={{ fontSize: '16px', marginTop: '1px' }}>{rating || "No rating"}</Typography>
+            </Box>
+            <Typography sx={{ fontSize: '16px' }}>
+              From: {formatDateTime(start_date)}
+            </Typography>
+            <Typography sx={{ fontSize: '16px' }}>
+              To: {formatDateTime(end_date)}
+            </Typography>
 
-            {/* Ticket Price Section */}
             <Box sx={{ display: 'flex', marginTop: '5px' }}>
-              <AttachMoneyIcon />
-              <Typography sx={{ marginLeft: '5px', color: '#126782' }}>
-                Ticket Prices :<br/> Foreigner: {ticket_price.foreigner}<br/> Native: {ticket_price.native}<br/> Student: {ticket_price.student}
-              </Typography>
+              <PinDropIcon />
+              <Typography sx={{ marginLeft: '5px' }}>Locations: {locations?.join(', ') || "Not specified"}</Typography>
             </Box>
 
-            <Typography sx={{ fontSize: '16px', marginTop: '10px' }}>
-              Opening Hours: {opening_hours.opening} - {opening_hours.closing}
-            </Typography>
+            <Box sx={{ display: 'flex', marginTop: '5px' }}>
+              <AttachMoneyIcon />
+              <Typography sx={{ marginLeft: '5px', color: price ? '#126782' : '#ff4d4d' }}>
+                {price ? `$${price}` : "Price not specified"}
+              </Typography>
+            </Box>
           </Box>
         </Box>
       </Box>
 
       <CardContent sx={{ flexGrow: 1 }}>
         <Typography variant="body2" sx={{ color: 'text.secondary', marginTop: '-10px', fontSize: '16px', width: '460px' }}>
-          {description}
+          {transportation || "No transportation info"} | {accommodation || "No accommodation info"}
         </Typography>
       </CardContent>
 
@@ -168,13 +179,13 @@ export default function MyBookingsPost({
           </IconButton>
           <IconButton
             aria-label="delete"
-            onClick={(event) => handleDelete(event)} // Add the delete handler here
+            onClick={handleDelete} // Add the delete handler here
             sx={{ color: 'red' }} // Optional styling for the delete icon
           >
             <DeleteIcon />
           </IconButton>
         </Box>
       </CardActions>
-    </Card>
-  );
+    </Card>
+  );
 }

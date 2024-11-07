@@ -9,7 +9,7 @@ import profileImage from '../../assets/profile.png';
 import TouristInfoEdit from '../../components/TouristInfoEdit';
 import TouristNB from './components/TouristNavBar';
 import {jwtDecode} from "jwt-decode";
-
+//import profilePic from '../../../../backend/public/img/users/'
 const TouristProfile = ({ userId }) => {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -62,7 +62,8 @@ const TouristProfile = ({ userId }) => {
   }
 
   const coverImage = headerImage; 
-  const logoImage = profileImage;
+  console.log(process.env.REACT_APP_BACKEND_URL +"sd")
+  const logoImage =  `http://localhost:4000/public/img/users/`+profile.photo || profileImage;
 
   return (
     <div className="tourist-profile">

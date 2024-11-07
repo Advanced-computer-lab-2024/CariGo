@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Badge, Button, Input, Select } from 'antd';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 const { Search } = Input;
 const { Option } = Select;
@@ -9,18 +10,32 @@ const ComplaintsList = () => {
   const [complaints, setComplaints] = useState([]);
   const [loading, setLoading] = useState(false);
   const [statusFilter, setStatusFilter] = useState(null);
+  const token = localStorage.getItem("jwt");
 
   useEffect(() => {
-    // Fetch complaints data from an API or server
-    // Mock data used for now
-    setLoading(true);
-    setComplaints([
-      { id: 1, title: 'Booking Issue', status: 'Pending', date: '2024-10-01' },
-      { id: 2, title: 'Payment Issue', status: 'Resolved', date: '2024-09-15' },
-      // Add more mock data
-    ]);
-    setLoading(false);
-  }, []);
+    const fetchComplaints = async () => {
+      setLoading(true); // Start loading
+      try {
+        const response = await axios.get(
+          "http://localhost:4000/Admin/viewAllComplaints",
+          {
+            headers: {
+              authorization: `Bearer ${token}`,
+            },
+          }
+        ); // Fetch complaints from backend
+        console.log(response.data); // Log the response data
+        setComplaints(response.data.data.complaints); // Set the complaints state
+      } catch (error) {
+        console.error("Error fetching complaints:", error);
+        // Optionally handle error (e.g., show a notification)
+      } finally {
+        setLoading(false); // Stop loading
+      }
+    };
+
+    fetchComplaints();
+  }, [token]);
 
   const handleStatusChange = (status) => {
     setStatusFilter(status);
@@ -34,7 +49,7 @@ const ComplaintsList = () => {
     {
       title: 'Title',
       dataIndex: 'title',
-      render: (text, record) => <Link to={`/complaints/${record.id}`}>{text}</Link>,
+      render: (text, record) => <Link to={`/complaints/${record._id}`}>{text}</Link>,
     },
     {
       title: 'Status',
@@ -50,7 +65,7 @@ const ComplaintsList = () => {
       defaultSortOrder: 'descend', // Optional: set a default sort order
     },
   ];
-  
+
   return (
     <div>
       <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between' }}>
@@ -72,7 +87,7 @@ const ComplaintsList = () => {
       <Table
         columns={columns}
         dataSource={filteredComplaints}
-        rowKey="id"
+        rowKey="_id" // Updated to use the correct key for complaints
         loading={loading}
       />
     </div>

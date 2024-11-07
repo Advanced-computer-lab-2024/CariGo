@@ -1,27 +1,37 @@
 import React, { useState } from 'react';
-import { FaPencilAlt, FaStickyNote, FaCalendarAlt } from 'react-icons/fa'; // Updated import for title icon
+import axios from 'axios'; // Import axios for HTTP requests
+import { FaPencilAlt, FaStickyNote, FaCalendarAlt } from 'react-icons/fa';
 
 const FileComplaintForm = () => {
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
   const [date, setDate] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // Simulate form submission
-    setSuccessMessage('Your complaint has been successfully submitted!');
+    try {
+      // Send complaint data to the backend
+      const response = await axios.post('http://localhost:4000/cariGo/tourist/fileComplaint', {
+        title,
+        body,
+        date,
+      });
 
-    // Clear form fields after submission (optional)
-    setTitle('');
-    setBody('');
-    setDate('');
-
-    // Set a timer to clear the success message after 3 seconds
-    setTimeout(() => {
-      setSuccessMessage('');
-    }, 3000);
+      if (response.data.status === 'success') {
+        setSuccessMessage('Your complaint has been successfully submitted!');
+        setTitle('');
+        setBody('');
+        setDate('');
+        setTimeout(() => setSuccessMessage(''), 3000);
+      }
+    } catch (error) {
+      console.error(error.response?.data ); // Log error details
+      setErrorMessage('Failed to submit complaint. Please try again later.');
+      setTimeout(() => setErrorMessage(''), 3000);
+    }    
   };
 
   return (
@@ -39,7 +49,6 @@ const FileComplaintForm = () => {
           style={styles.input}
           required
         />
-
         <label style={styles.label} htmlFor="body">
           <FaStickyNote style={styles.icon} /> Description
         </label>
@@ -50,7 +59,6 @@ const FileComplaintForm = () => {
           style={styles.textarea}
           required
         ></textarea>
-
         <label style={styles.label} htmlFor="date">
           <FaCalendarAlt style={styles.icon} /> Date
         </label>
@@ -62,11 +70,11 @@ const FileComplaintForm = () => {
           style={styles.input}
           required
         />
-
         <button type="submit" style={styles.button}>Submit</button>
       </form>
-      
-      {successMessage && <p style={styles.successMessage}>{successMessage}</p>} {/* Success message */}
+
+      {successMessage && <p style={styles.successMessage}>{successMessage}</p>}
+      {errorMessage && <p style={styles.errorMessage}>{errorMessage}</p>}
     </div>
   );
 };
@@ -96,12 +104,12 @@ const styles = {
     fontWeight: '500',
     color: '#34495e',
     marginBottom: '8px',
-    display: 'flex', // Use flex to align icon and text
-    alignItems: 'center', // Center vertically
+    display: 'flex',
+    alignItems: 'center',
   },
   icon: {
-    marginRight: '8px', // Space between icon and label text
-    color: '#2980b9', // Color for the icons
+    marginRight: '8px',
+    color: '#2980b9',
   },
   input: {
     padding: '12px',
@@ -135,7 +143,13 @@ const styles = {
   successMessage: {
     marginTop: '20px',
     fontSize: '16px',
-    color: '#27ae60', // Green color for success message
+    color: '#27ae60',
+    textAlign: 'center',
+  },
+  errorMessage: {
+    marginTop: '20px',
+    fontSize: '16px',
+    color: '#e74c3c',
     textAlign: 'center',
   },
 };
