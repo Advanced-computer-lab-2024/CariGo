@@ -14,6 +14,7 @@ export default function UploadDocumentsPage() {
     taxationRegistryCard: null,
   });
 const userRole=localStorage.getItem("role");
+console.log(userRole);
 // const userRole = "Tour_Guide"; // Set this dynamically as needed
 //   const [selectedFiles, setSelectedFiles] = useState({
 //     id: null,
@@ -124,6 +125,14 @@ const userRole=localStorage.getItem("role");
               onChange={handleFileChange}
               accept=".jpg,.jpeg,.png,.pdf"
               required
+              style={{
+                padding: '10px',
+                fontSize: '16px',
+                width: '100%',
+                boxSizing: 'border-box',
+                display: 'block',         // Ensure the inputs are block elements
+                visibility: 'visible',    // Force visibility in case they're hidden
+              }}
             />
           </FormControl>
 
@@ -137,6 +146,14 @@ const userRole=localStorage.getItem("role");
               multiple
               onChange={handleFileChange}
               accept=".pdf"
+              style={{
+                padding: '10px',
+                fontSize: '16px',
+                width: '100%',
+                boxSizing: 'border-box',
+                display: 'block',         // Ensure the inputs are block elements
+                visibility: 'visible',    // Force visibility in case they're hidden
+              }}
             />
           </FormControl>
           )}
@@ -150,6 +167,14 @@ const userRole=localStorage.getItem("role");
               name="taxationRegistryCard"
               onChange={handleFileChange}
               accept=".pdf"
+              style={{
+                padding: '10px',
+                fontSize: '16px',
+                width: '100%',
+                boxSizing: 'border-box',
+                display: 'block',         // Ensure the inputs are block elements
+                visibility: 'visible',    // Force visibility in case they're hidden
+              }}
             />
           </FormControl> 
            )}
