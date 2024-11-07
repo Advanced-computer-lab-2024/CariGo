@@ -5,11 +5,12 @@ import { Box, Grid, Menu, TextField, Button, IconButton, CircularProgress, Typog
 import { styled, alpha } from "@mui/material/styles";
 import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
-import BookingCard from "./components/BookingCard";
-import RateReviewIcon from '@mui/icons-material/RateReview'; // Review icon for itinerary
+import MyBookedActivityCard from "./components/MyBookedActivityCard";
+import RateReviewIcon from '@mui/icons-material/RateReview'; // Review icon for activity
 import PersonPinIcon from '@mui/icons-material/PersonPin'; // New icon for Tour Guide review
+import ActivityReviewForm from "frontend/src/components/itineraryReviewForm.js"; // Renamed to ActivityReviewForm
 import ItineraryReviewForm from "frontend/src/components/itineraryReviewForm.js"; // Import the itinerary review form
-import TourGuideReviewForm from "frontend/src/components/TourGuideReviewForm.js"; // Import the new Tour Guide review form
+import TourGuideReviewForm from "frontend/src/components/TourGuideReviewForm.js";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -50,17 +51,17 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-const MyBookings = () => {
-  const [itineraries, setItineraries] = useState([]);
+const MyBookedActivities = () => {
+  const [activities, setActivities] = useState([]); // Changed from itineraries to activities
   const [filteredActivities, setFilteredActivities] = useState([]);
   const [filters, setFilters] = useState({
     status: "",
   });
   const [searchTerm, setSearchTerm] = useState("");
-  const [openReviewForm, setOpenReviewForm] = useState(false); // State to control form visibility for itinerary review
-  const [openTourGuideReviewForm, setOpenTourGuideReviewForm] = useState(false); // State for Tour Guide review form
-  const [selectedItineraryId, setSelectedItineraryId] = useState(null); // For itinerary review
-  const [selectedTourGuideId, setSelectedTourGuideId] = useState(null); // For Tour Guide review
+  const [openActivityReviewForm, setOpenActivityReviewForm] = useState(false); // Renamed to openActivityReviewForm
+  const [openTourGuideReviewForm, setOpenTourGuideReviewForm] = useState(false);
+  const [selectedActivityId, setSelectedActivityId] = useState(null); // Changed from selectedItineraryId to selectedActivityId
+  const [selectedTourGuideId, setSelectedTourGuideId] = useState(null);
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
@@ -74,27 +75,27 @@ const MyBookings = () => {
     setFilters({
       status: "",
     });
-    setFilteredActivities(itineraries);
+    setFilteredActivities(activities);
     setSearchTerm("");
   };
 
   const handleSearch = () => {
     const today = new Date();
-    const filtered = itineraries.filter((itinerary) => {
-      const itineraryStartDate = new Date(itinerary.ItineraryId.start_date);
+    const filtered = activities.filter((activity) => { // Changed from itineraries.filter to activities.filter
+      const activityStartDate = new Date(activity.ActivityId.start_date); // Changed itineraryStartDate to activityStartDate
       const matchesStatus =
         filters.status === ""
           ? true
           : filters.status === "Booked"
-          ? itinerary.Status === true && itineraryStartDate >= today
+          ? activity.Status === true && activityStartDate >= today
           : filters.status === "Canceled Bookings"
-          ? itinerary.Status === false
+          ? activity.Status === false
           : filters.status === "Done"
-          ? itinerary.Status === true && itineraryStartDate < today
+          ? activity.Status === true && activityStartDate < today
           : false;
       const matchesSearchTerm =
-        itinerary.ItineraryId.title &&
-        itinerary.ItineraryId.title
+        activity.ActivityId.title &&
+        activity.ActivityId.title
           .toLowerCase()
           .includes(searchTerm.toLowerCase());
       return matchesStatus && matchesSearchTerm;
@@ -103,10 +104,10 @@ const MyBookings = () => {
   };
 
   useEffect(() => {
-    const fetchItineraries = async () => {
+    const fetchActivities = async () => { // Renamed from fetchItineraries to fetchActivities
       try {
         const token = localStorage.getItem("jwt");
-        const response = await fetch(`http://localhost:4000/Event/MyItineraryBookings`, {
+        const response = await fetch(`http://localhost:4000/cariGo/activity/MyActivityBookings`, {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -119,36 +120,36 @@ const MyBookings = () => {
         }
 
         const json = await response.json();
-        setItineraries(json);
+        setActivities(json); // Changed from setItineraries to setActivities
         setFilteredActivities(json);
       } catch (error) {
-        console.log("Error fetching itineraries:", error);
+        console.log("Error fetching activities:", error);
       }
     };
 
-    fetchItineraries();
+    fetchActivities();
   }, []);
 
-  const openReviewFormHandler = (id) => {
-    console.log("Opening review form for itinerary id:", id);
-    setSelectedItineraryId(id); // Set the ID of the itinerary being reviewed
-    setOpenReviewForm(true); // Open the review form for itinerary
+  const openActivityReviewFormHandler = (id) => { // Renamed from openReviewFormHandler
+    console.log("Opening review form for activity id:", id);
+    setSelectedActivityId(id); // Changed from setSelectedItineraryId to setSelectedActivityId
+    setOpenActivityReviewForm(true); // Renamed to setOpenActivityReviewForm
   };
 
   const openTourGuideReviewFormHandler = (tourGuideId) => {
-    console.log("Opening review form for tour guide id:", tourGuideId); // Debugging log
-    setSelectedTourGuideId(tourGuideId); // Set the tour guide ID (author's ID)
-    setOpenTourGuideReviewForm(true); // Open the review form for the tour guide
+    console.log("Opening review form for tour guide id:", tourGuideId);
+    setSelectedTourGuideId(tourGuideId);
+    setOpenTourGuideReviewForm(true);
   };
 
-  const closeReviewFormHandler = () => {
-    setOpenReviewForm(false); // Close the review form
-    setSelectedItineraryId(null); // Clear the selected itinerary ID
+  const closeActivityReviewFormHandler = () => { // Renamed from closeReviewFormHandler
+    setOpenActivityReviewForm(false); // Renamed to setOpenActivityReviewForm
+    setSelectedActivityId(null); // Changed from setSelectedItineraryId to setSelectedActivityId
   };
 
   const closeTourGuideReviewFormHandler = () => {
-    setOpenTourGuideReviewForm(false); // Close the tour guide review form
-    setSelectedTourGuideId(null); // Clear the selected tour guide ID
+    setOpenTourGuideReviewForm(false);
+    setSelectedTourGuideId(null);
   };
 
   return (
@@ -211,26 +212,25 @@ const MyBookings = () => {
           }}
         >
           <Grid container spacing={0} sx={{ flexDirection: "column", width: "100vw" }}>
-            {filteredActivities.map((itinerary, index) => (
+            {filteredActivities.map((activity, index) => ( // Changed itinerary to activity
               <Grid item key={index} sx={{ justifyContent: "left" }}>
-                <BookingCard
-                  id={itinerary.ItineraryId._id}
-                  author={itinerary.ItineraryId.author}
-                  name={itinerary.ItineraryId.title}
+                <MyBookedActivityCard
+                  id={activity.ActivityId._id}
+                  author={activity.ActivityId.author}
+                  name={activity.ActivityId.title}
                   img={"frontend/public/assets/images/itirenary.png"}
-                  startDate={itinerary.ItineraryId.start_date}
-                  endDate={itinerary.ItineraryId.end_date}
-                  location={itinerary.ItineraryId.locations}
-                  status={itinerary.Status}
-                  NumberOfTickets={itinerary.NumberOfTickets}
-                  TotalPrice={itinerary.TotalPrice}
-                  price={itinerary.ItineraryId.price}
+                  startDate={activity.ActivityId.start_date} // Changed itinerary to activity
+                  endDate={activity.ActivityId.end_date} // Changed itinerary to activity
+                  status={activity.Status} // Changed itinerary to activity
+                  NumberOfTickets={activity.NumberOfTickets} // Changed itinerary to activity
+                  TotalPrice={activity.TotalPrice} // Changed itinerary to activity
+                  price={activity.ActivityId.price.range.min} // Changed itinerary to activity
                 />
-                    <IconButton onClick={() => openReviewFormHandler(itinerary.ItineraryId._id)}>
+                    <IconButton onClick={() => openActivityReviewFormHandler(activity.ActivityId._id)}>
                 <RateReviewIcon />
               </IconButton>
               {/* Add a separate icon button for the tour guide review */}
-              <IconButton onClick={() => openTourGuideReviewFormHandler(itinerary.ItineraryId.author)}>
+              <IconButton onClick={() => openTourGuideReviewFormHandler(activity.ActivityId.author)}>
                 <PersonPinIcon />
               </IconButton>
               </Grid>
@@ -240,25 +240,26 @@ const MyBookings = () => {
 
       </Box>
 
-      {/* Render the itinerary review form dialog */}
-      {selectedItineraryId && (
-        <ItineraryReviewForm
-          itineraryId={selectedItineraryId}
-          open={openReviewForm}
-          onClose={closeReviewFormHandler}
+      {/* Render the activity review form dialog */}
+      {selectedActivityId && (
+        <ActivityReviewForm
+          open={openActivityReviewForm}
+          onClose={closeActivityReviewFormHandler}
+          activityId={selectedActivityId}
         />
       )}
 
       {/* Render the tour guide review form dialog */}
-      {selectedTourGuideId && openTourGuideReviewForm && (
+      {selectedTourGuideId && (
         <TourGuideReviewForm
-          tourGuideId={selectedTourGuideId}
           open={openTourGuideReviewForm}
           onClose={closeTourGuideReviewFormHandler}
+          tourGuideId={selectedTourGuideId}
         />
       )}
+
     </div>
   );
 };
 
-export default MyBookings;
+export default MyBookedActivities;

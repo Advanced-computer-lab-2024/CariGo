@@ -1,10 +1,10 @@
-import './BookingCard.css';
+import './ActivityCard.css';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import logoImage from '../../../assets/itinerary.png'; // Correct relative path
 
-const BookingCard = ({ id, name, startDate, endDate, location, status, img,price,author,NumberOfTickets,TotalPrice }) => {
+const MyBookedActivityCard = ({ id, name, startDate, endDate, location, status, img,price,author,NumberOfTickets,TotalPrice }) => {
   const [isPast, setIsPast] = React.useState(false);
 
   React.useEffect(() => {
@@ -26,8 +26,8 @@ const BookingCard = ({ id, name, startDate, endDate, location, status, img,price
           throw new Error("No token found. Please log in.");
         }
 
-        await axios.patch(`/cariGo/Event/CancelItineraryBooking`, {
-          ItineraryId: id,
+        await axios.patch(`/cariGo/activity/CancelActivityBooking`, {
+          ActivityId: id,
         },
         {
           headers: {
@@ -37,7 +37,7 @@ const BookingCard = ({ id, name, startDate, endDate, location, status, img,price
         });
 
 
-        alert("Itinerary booking canceled successfully");
+        alert("activity booking canceled successfully");
         const rate = parseFloat(JSON.parse(localStorage.getItem("conversionRate")))||1;
         console.log(rate);
         await axios.patch(`/cariGo/users/UpdateWallet`, {
@@ -57,7 +57,7 @@ const BookingCard = ({ id, name, startDate, endDate, location, status, img,price
         window.location.reload();
       }, 5000); // 5000 ms = 5 seconds
       } catch (error) {
-        console.error('Failed to cancel itinerary booking:', error.response ? error.response.data : error.message);
+        console.error('Failed to cancel Activity booking:', error.response ? error.response.data : error.message);
         alert(`An error occurred while canceling the booking. Details: ${error.message},${error.response.data.message}`);
       }
     }
@@ -96,4 +96,4 @@ const BookingCard = ({ id, name, startDate, endDate, location, status, img,price
   );
 };
 
-export default BookingCard;
+export default MyBookedActivityCard;
