@@ -86,6 +86,7 @@ import ActivityPostDetail from "./components/ActivityPostDetail.js";
 import HotelBooking from "./Pages/Tourist/HotelBooking.js";
 import BookingPage from "./Pages/Tourist/Booking.js";
 import Map from "./components/Map.js" ;
+import Checkout from './Pages/checkout/Checkout';
 
 import AdminViewActivity from "./Pages/activities/AdminViewActivity.js";
 function App() {
@@ -195,6 +196,7 @@ function App() {
         <Route path="/hotels" element={<HotelBooking/>} />
         <Route path="/map" element={<Map/>} />  
         <Route path="/sellerProfile" element={<SellerProfile userId={localStorage.getItem("id")} />} />
+        <Route path="/checkout/:type/:id" element={<Checkout />} />
 
 
         {/* Add more routes as needed */}

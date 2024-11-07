@@ -51,9 +51,12 @@ exports.getReview = factory.getOne(Review);
 
 exports.createReview = catchAsync(async (req, res, next) => {
   const userId = req.user._id;
+  let booking;
+
   if (req.body.activity) {
     const activityId = req.body.activity;
-    const booking = await Booking.findOne({
+    console.log("Checking activity booking:", { userId, activityId });
+    booking = await Booking.findOne({
       UserId: userId,
       ActivityId: activityId,
       Status: true,
@@ -68,7 +71,8 @@ exports.createReview = catchAsync(async (req, res, next) => {
     }
   } else if (req.body.itinerary) {
     const itineraryId = req.body.itinerary;
-    const booking = await Booking.findOne({
+    console.log("Checking itinerary booking:", { userId, itineraryId });
+    booking = await Booking.findOne({
       UserId: userId,
       ItineraryId: itineraryId,
       Status: true,
@@ -83,7 +87,9 @@ exports.createReview = catchAsync(async (req, res, next) => {
     }
   } else if (req.body.tourGuide) {
     const tourGuideId = req.body.tourGuide;
-    const booking = await Booking.findOne({
+    // console.log("Checking tour guide booking:", { userId, tourGuideId });
+    // console.log(`userId: ${userId}, tourGuideId: ${tourGuideId}`);
+    booking = await Booking.find({
       UserId: userId,
       "ItineraryId.author": tourGuideId,
       Status: true,
@@ -91,14 +97,16 @@ exports.createReview = catchAsync(async (req, res, next) => {
     if (!booking) {
       return next(
         new AppError(
-          `You cannot review this tour guide because you have not completed it.`,
+          `You cannot review this tour guide because you have not completed a tour with him.`,
           400
         )
       );
     }
   }
+
   const doc = await Review.create(req.body);
   res.status(201).json({ status: "success", data: { data: doc } });
 });
+
 exports.deleteReview = factory.deleteOne(Review);
 exports.updateReview = factory.updateOne(Review);
