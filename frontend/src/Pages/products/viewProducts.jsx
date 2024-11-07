@@ -5,7 +5,7 @@ import SelectChangeEvent, { Pagination } from "@mui/material";
 import SearchBar from "./SearchBar/SearchBar";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import AddIcon from "@mui/icons-material/Add";
-import QueryStatsIcon from '@mui/icons-material/QueryStats';
+import QueryStatsIcon from "@mui/icons-material/QueryStats";
 import {
   Box,
   Card,
@@ -238,6 +238,12 @@ export default function ViewProducts() {
     // Navigating to a page with the id in the URL
     navigate(`/admin/manage-products/product-details/${id}`);
   };
+
+  const handleDetatils2 = (id) => {
+    // Navigating to a page with the id in the URL
+    navigate(`/admin/view-products/${id}`);
+  };
+
   const handleAdd = () => {
     navigate(`/admin/manage-products/AddProduct`);
   };
@@ -382,6 +388,7 @@ export default function ViewProducts() {
                         colSpan={2}
                         align="left"
                         sx={{ px: 0, textTransform: "capitalize" }}
+                        onClick={() => handleDetatils2(product._id)}
                       >
                         <Box display="flex" alignItems="center" gap={4}>
                         <label htmlFor="file-upload" className="custom-file-upload">
@@ -417,13 +424,19 @@ export default function ViewProducts() {
                         )}
                       </TableCell>
 
-                      <TableCell sx={{ px: 6 }} colSpan={2}>
+                      <TableCell
+                        sx={{ px: 6 }}
+                        colSpan={2}
+                        onClick={() => {
+                          handleDetatils2(product._id);
+                        }}
+                      >
                         {/* <IconButton onClick={() => console.log(2)}>
                     <Edit color="primary" />
                   </IconButton> */}
                         <Rating
                           name="read-only"
-                          value={product.ratingsAverage|| 0} // Provide fallback if undefined
+                          value={product.ratingsAverage || 0} // Provide fallback if undefined
                           readOnly
                           size="small"
                           precision={0.5}
@@ -453,13 +466,13 @@ export default function ViewProducts() {
                           </Tooltip>
                         )}
                         <Tooltip title="Product Analysis" placement="top">
-                            <IconButton
-                              onClick={() => navigate("/admin/analysis")}
-                              style={{ color: "green" }}
-                            >
-                              <QueryStatsIcon />
-                            </IconButton>
-                          </Tooltip>
+                          <IconButton
+                            onClick={() => navigate("/admin/analysis")}
+                            style={{ color: "green" }}
+                          >
+                            <QueryStatsIcon />
+                          </IconButton>
+                        </Tooltip>
                       </TableCell>
                     </TableRow>
                   ))}

@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { Bar } from "react-chartjs-2"; // Use Bar instead of Line
+import { Line } from "react-chartjs-2"; // Use Line instead of Bar
 import { Chart, registerables } from "chart.js";
 import axios from "axios";
 
 Chart.register(...registerables); // Register all components
 
-const ProductAnalysis = () => {
+const ProductAnalysis = ({ id }) => {
   const [chartData, setChartData] = useState(null);
 
   useEffect(() => {
     const fetchPurchaseData = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:4000/cariGo/purchase/productPurchases/6727e23a1335caa450eb86f3"
+          `http://localhost:4000/cariGo/purchase/productPurchases/${id}`
         );
         const purchases = response.data.Purchases;
 
@@ -44,9 +44,14 @@ const ProductAnalysis = () => {
             {
               label: "Monthly Purchases",
               data: quantities,
-              backgroundColor: "rgba(75, 192, 192, 0.5)",
+              backgroundColor: "rgba(75, 192, 192, 0.2)",
               borderColor: "rgba(75, 192, 192, 1)",
-              borderWidth: 1,
+              borderWidth: 2,
+              lineTension: 0, // Make the line sharp at each data point (zigzag effect)
+              pointBackgroundColor: "rgba(75, 192, 192, 1)",
+              pointBorderColor: "#fff",
+              pointBorderWidth: 1,
+              pointRadius: 5,
             },
           ],
         });
@@ -56,7 +61,7 @@ const ProductAnalysis = () => {
     };
 
     fetchPurchaseData();
-  }, []);
+  }, [id]);
 
   const options = {
     scales: {
@@ -64,13 +69,13 @@ const ProductAnalysis = () => {
         beginAtZero: true,
         title: {
           display: true,
-          text: 'Quantity',
+          text: "Quantity",
         },
       },
       x: {
         title: {
           display: true,
-          text: 'Month',
+          text: "Month",
         },
       },
     },
@@ -80,7 +85,7 @@ const ProductAnalysis = () => {
     <div>
       <h2>Monthly Purchases Chart (Past 5 Months)</h2>
       {chartData ? (
-        <Bar data={chartData} options={options} />
+        <Line data={chartData} options={options} /> 
       ) : (
         <p>Loading data...</p>
       )}
