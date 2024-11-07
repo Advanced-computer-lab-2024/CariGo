@@ -15,7 +15,7 @@ exports.setEntityUserIds = (entityName) => (req, res, next) => {
 // Generic Handler to get all reviews for any entity
 exports.getAllReviewsForEntity = (entityName) =>
   catchAsync(async (req, res, next) => {
-    const entityId = req.params[`${entityName}Id`];
+    const entityId = req.params.id;
 
     if (!entityId) {
       return next(
