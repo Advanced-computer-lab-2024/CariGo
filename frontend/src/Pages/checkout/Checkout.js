@@ -30,7 +30,7 @@ const user = JSON.parse(localStorage.getItem("user"));
 
 const steps = ["Ticket details", "Payment details", "Review your order"];
 
-export default function Checkout(props, { activityId }) {
+export default function Checkout(props, { activityId },) {
   const disableCustomTheme = props;
   const [activeStep, setActiveStep] = React.useState(0);
   const [orderData, setOrderData] = React.useState({
@@ -41,6 +41,14 @@ export default function Checkout(props, { activityId }) {
   const [activityDetails, setItemDetails] = React.useState(null);
   const [userDetails, setUser] = React.useState(null);
   const [totalPrice, setTotalPrice] = React.useState(0);
+
+   // === Step 1: Add state for checkbox tracking ===
+   const [isTermsChecked, setIsTermsChecked] = React.useState(false);
+
+   // === Step 2: Checkbox change handler ===
+   const handleCheckboxChange = (event) => {
+     setIsTermsChecked(event.target.checked);
+   };
 
   const { type, id } = useParams();
   const navigate = useNavigate();
@@ -184,6 +192,7 @@ export default function Checkout(props, { activityId }) {
     setOrderData({ ...orderData, paymentMethod: paymentType });
   };
 
+  // === Step 3: Pass `isTermsChecked` and `handleCheckboxChange` to `QuantityForm` ===
   function getStepContent(step) {
     switch (step) {
       case 0:
@@ -191,6 +200,8 @@ export default function Checkout(props, { activityId }) {
           <QuantityForm
             quantity={orderData.quantity}
             onQuantityChange={handleQuantityChange}
+            isTermsChecked={isTermsChecked}          // <--- Pass checkbox state
+            onCheckboxChange={handleCheckboxChange}  // <--- Pass checkbox handler
           />
         );
       case 1:
@@ -430,6 +441,7 @@ export default function Checkout(props, { activityId }) {
                     variant="contained"
                     endIcon={<ChevronRightRoundedIcon />}
                     disabled={
+                      (!isTermsChecked)||
                       activeStep === 1 &&
                       userDetails.wallet - totalPrice < 0 &&
                       orderData.paymentMethod === "wallet"
