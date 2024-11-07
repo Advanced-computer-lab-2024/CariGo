@@ -1,7 +1,7 @@
 import React from "react";
 // import ReactDOM from "react-dom/client";
 import "../styles/index.css";
-import NavBar from "../components/NavBarTourist";
+import NavBar from "../components/NavBarTourGov";
 import { Box } from "@mui/material";
 import VintageList from "../components/VintageList";
 

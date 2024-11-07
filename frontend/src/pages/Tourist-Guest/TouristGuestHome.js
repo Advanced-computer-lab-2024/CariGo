@@ -1,5 +1,5 @@
 import React from 'react';
-import NavBar from '../../components/NavBarTourist'; // Adjust path if necessary
+import NavBar from '../../components/NavBarTourGov'; // Adjust path if necessary
 import { Box, Typography } from '@mui/material';
 
 const TouristGuestHome = () => {

@@ -89,11 +89,16 @@ import BookingPage from "./Pages/Tourist/Booking.js";
 import TransportationSearch from "./Pages/TransportationSearch.js" ;
 
 import AdminViewActivity from "./Pages/activities/AdminViewActivity.js";
+
+import Pass from "./Pages/changePassword.js";
+import UploadDocumentsPage from "./Pages/UploadDocuments.js";
+
 import ProductAnalysis from "./Pages/products/ProductAnalysis.jsx";
 import ProductDetails2 from "./Pages/products/ProductDetails2.jsx";
 import MyBookings from "./Pages/Tourist/MyBookings.js";
 import MyBookedActivities from "./Pages/Tourist/MyBookedActivities.js"
 //const dotenv = require('dotenv')
+
 function App() {
   
   const token = localStorage.getItem("jwt");
@@ -211,6 +216,9 @@ function App() {
         <Route path="/hotels" element={<HotelBooking/>} />
         <Route path="/map" element={<TransportationSearch/>} />  
         <Route path="/sellerProfile" element={<SellerProfile userId={localStorage.getItem("id")} />} />
+        <Route path="/change-password" element={<Pass/>} />
+        <Route path="/upload" element={<UploadDocumentsPage/>} />
+
         <Route path="/checkout/:type/:id" element={<PaymentCheckout />} />
 
 
