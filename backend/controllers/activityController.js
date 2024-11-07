@@ -589,7 +589,7 @@ const BookActivity = async (req, res) => {
 };
 
 const MyActivityBookings = async (req, res) => {
-  const { UserId } = req.body; // User ID from request body
+  const  UserId  = req.user.id; // User ID from request body
   if (mongoose.Types.ObjectId.isValid(UserId)) {
     try {
       const bookings = await bookingModel.find({UserId,ActivityId: { $ne: null }}).sort({createdAt: -1});
@@ -604,7 +604,7 @@ const MyActivityBookings = async (req, res) => {
 };
 
 const CancelActivityBooking = async (req, res) => {
-  const { UserId } = req.body; // User ID from request body
+  const UserId  = req.user.id; // User ID from request body
   const { ActivityId } = req.body; // Event ID from URL parameters
   if (mongoose.Types.ObjectId.isValid(ActivityId) && mongoose.Types.ObjectId.isValid(UserId)) {
       try {
