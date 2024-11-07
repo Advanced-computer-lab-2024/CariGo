@@ -8,7 +8,7 @@ import TopBar from "../TopBar";
 import { ToastContainer } from "react-toastify";
 import { Content, Header } from "antd/es/layout/layout";
 import { useState, useEffect } from "react";
-
+import ProductReviews from "../../components/ProductReviews";
 const { Title, Paragraph, Text } = Typography;
 
 const ProductDetails = () => {
@@ -116,6 +116,7 @@ const ProductDetails = () => {
           <Row>
             <Col span={24}>
               <ProductAnalysis id={id} />
+              <ProductReviews id={id}/>
             </Col>
           </Row>
         </Content>

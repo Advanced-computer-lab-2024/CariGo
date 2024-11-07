@@ -16,7 +16,7 @@ import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 
 
-const pages = ['Activities', 'Itinerary', 'Historical Places','Products','File Complaint'];
+const pages = ['Suggested For You','Activities', 'Itinerary', 'Historical Places','Products','File Complaint'];
 const settings = ['My Profile', 'Logout']; // Updated settings
 
 function TouristNB() {
@@ -42,6 +42,11 @@ function TouristNB() {
   };
 
   // Navigation functions
+
+  const loadSuggestedForYou = () => {
+    handleCloseNavMenu();
+    navigate('/Tourist');
+  };
   const loadActivities = () => {
     handleCloseNavMenu();
     navigate('/tourist-activities');
@@ -145,31 +150,38 @@ function TouristNB() {
           {/* Desktop Menu */}
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             <Button
-              onClick={loadActivities}
+              onClick={loadSuggestedForYou}
               sx={{ my: 2, color: 'white', display: 'block' }}
             >
               {pages[0]}
             </Button>
+            {/* <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}> */}
             <Button
-              onClick={loadItinerary}
+              onClick={loadActivities}
               sx={{ my: 2, color: 'white', display: 'block' }}
             >
               {pages[1]}
             </Button>
             <Button
-              onClick={loadHistoricalPlaces}
+              onClick={loadItinerary}
               sx={{ my: 2, color: 'white', display: 'block' }}
             >
               {pages[2]}
             </Button>
             <Button
-              onClick={loadProducts}
+              onClick={loadHistoricalPlaces}
               sx={{ my: 2, color: 'white', display: 'block' }}
             >
               {pages[3]}
             </Button>
+            <Button
+              onClick={loadProducts}
+              sx={{ my: 2, color: 'white', display: 'block' }}
+            >
+              {pages[4]}
+            </Button>
               <Button onClick={loadFileComplaint} sx={{ my: 2, color: 'white', display: 'block' }}>
-            {pages[4]}
+            {pages[5]}
             </Button>
           </Box>
 
