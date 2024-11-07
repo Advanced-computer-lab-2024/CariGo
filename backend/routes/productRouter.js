@@ -13,9 +13,10 @@ router.get('/getSellersProducts/:id', productController.getSellersProducts);
 router.post(
     '/createProduct',
     authController.protect,
+    
+    productController.createProduct,
     multerController.uploadProductImages,
-    multerController.resizeProductImages,
-    productController.createProduct
+    multerController.resizeProductImages
   );
   
   router.patch(

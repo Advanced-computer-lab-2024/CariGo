@@ -17,7 +17,7 @@ import  TouristVintage from "./Pages/Tourist/TouristPlaces.js";
 import CreateVintageForm from "./Pages/CreateVintageForm.js";
 
 import './styles/index.css';
-
+import Checkout from "./Pages/SignUp/Checkout.js";
 import UserViewActivities from "./Pages/Tourist/TouristActivities.js";
 import AdminHome from './Pages/Home.js';
 import React, { lazy, Suspense } from 'react'; // Keep this line
@@ -91,8 +91,11 @@ import AdminViewActivity from "./Pages/activities/AdminViewActivity.js";
 import ProductAnalysis from "./Pages/products/ProductAnalysis.jsx";
 import ProductDetails2 from "./Pages/products/ProductDetails2.jsx";
 import MyBookings from "./Pages/Tourist/MyBookings.js";
+//const dotenv = require('dotenv')
 function App() {
+  
   const token = localStorage.getItem("jwt");
+  //dotenv.config({ path: "./.env" });
  // const navigate = useNavigate();
   // Decode the token safely
   let userId;
@@ -151,7 +154,11 @@ function App() {
         <Route path="/tourist/file-complaint" element={<FileComplaintForm />} />
         {/* <Route path="/guest-places" element={<GuestViewVintage/>} /> */}
         <Route path="/createActivity" element={<CreateActivityForm userId={localStorage.getItem("id")} />} /> 
-        <Route path="/SignUp" element={<SignUp />} />
+        <Route path="/Register-Tourist" element={<Checkout role={"Tourist"}/>} />
+        {/* <Route path="/Register-Tourist" element={<SignUp/>} /> */}
+        <Route path="/Register-Seller" element={<Checkout role={"Seller"}/>} />
+        <Route path="/Register-TourGuide" element={<Checkout role={"Tour_Guide"}/>} />
+        <Route path="/Register-Advertiser" element={<Checkout role={"Advertiser"}/>} />
         <Route path="/advertiser" element={<AdvertiserProfile userId={localStorage.getItem("id")} />} />
         <Route path="/tourist-profile" element={<TouristProfile userId={localStorage.getItem("id")} />} />
         <Route path="/tgHome" element={<TouristGuestHome/>} />
