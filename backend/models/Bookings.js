@@ -21,11 +21,19 @@ const BookingSchema = new schema({
   },
   PaymentMethod: {
     type: String,
-    enum: ["Cash", "Card"],
+    enum: ["Wallet", "Card"],
   },
   CardNumber: {
     type: String,
     default: "",
+  },
+  NumberOfTickets: {
+    type: Number,
+    
+  },
+  TotalPrice: {
+    type: Number,
+    
   },
 });
 

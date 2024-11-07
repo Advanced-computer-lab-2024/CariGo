@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import logoImage from '../../../assets/itinerary.png'; // Correct relative path
 
-const BookingCard = ({ id, name, startDate, endDate, location, status, img,price,author }) => {
+const BookingCard = ({ id, name, startDate, endDate, location, status, img,price,author,NumberOfTickets,TotalPrice }) => {
   const [isPast, setIsPast] = React.useState(false);
 
   React.useEffect(() => {
@@ -36,8 +36,26 @@ const BookingCard = ({ id, name, startDate, endDate, location, status, img,price
           },
         });
 
+
         alert("Itinerary booking canceled successfully");
+        const rate = parseFloat(JSON.parse(localStorage.getItem("conversionRate")))||1;
+        console.log(rate);
+        await axios.patch(`/cariGo/users/UpdateWallet`, {
+          numOfTickets:NumberOfTickets,
+          price:price,
+          conversionRate:rate
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+        alert("refunded to your wallet successfully");
+        // Add a 5-second delay before reloading the page
+      setTimeout(() => {
         window.location.reload();
+      }, 5000); // 5000 ms = 5 seconds
       } catch (error) {
         console.error('Failed to cancel itinerary booking:', error.response ? error.response.data : error.message);
         alert(`An error occurred while canceling the booking. Details: ${error.message},${error.response.data.message}`);
@@ -60,6 +78,9 @@ const BookingCard = ({ id, name, startDate, endDate, location, status, img,price
           Start date: {startDate} - End date: {endDate}
         </p>
         <p className="booking-card__location">Location: {location}</p>
+        <p className="booking-card__status">
+        TotalPrice: {TotalPrice}
+        </p>
         <p className="booking-card__status">
           Status: {isPast&&status ? "Done" : status ? "Booked" : "Canceled Bookings"}
         </p>
