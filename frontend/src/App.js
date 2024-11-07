@@ -85,6 +85,8 @@ import FileComplaintForm from "./Pages/Tourist/FileComplaintForm";
 import ActivityPostDetail from "./components/ActivityPostDetail.js";
 import HotelBooking from "./Pages/Tourist/HotelBooking.js"
 import AdminViewActivity from "./Pages/activities/AdminViewActivity.js";
+import Pass from "./Pages/changePassword.js";
+ import UploadDocumentsPage from "./Pages/UploadDocuments.js";
 function App() {
   const token = localStorage.getItem("jwt");
  // const navigate = useNavigate();
@@ -190,6 +192,9 @@ function App() {
         <Route path="/flight-details/:id" element={<FlightDetailsPage/>} />
         <Route path="/hotels" element={<HotelBooking/>} />
         <Route path="/sellerProfile" element={<SellerProfile userId={localStorage.getItem("id")} />} />
+        <Route path="/change-password" element={<Pass/>} />
+        <Route path="/upload" element={<UploadDocumentsPage/>} />
+
 
 
         {/* Add more routes as needed */}
