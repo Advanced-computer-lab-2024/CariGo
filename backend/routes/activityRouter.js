@@ -30,8 +30,8 @@ router.get('/shareActivity/:id',activityController.shareActivity);
 
 router.post('/BookActivity/:ActivityId',[authController.protect,authController.restrictTo("Tourist")],activityController.BookActivity);
 
-router.get('/MyBookings',[authController.protect,authController.restrictTo("Tourist")],activityController.MyActivityBookings);
+router.get('/MyActivityBookings',[authController.protect,authController.restrictTo("Tourist")],activityController.MyActivityBookings);
 
-router.patch('/CancelBooking/:ActivityId',[authController.protect,authController.restrictTo("Tourist")],activityController.CancelActivityBooking);
+router.patch('/CancelActivityBooking',[authController.protect,authController.restrictTo("Tourist")],activityController.CancelActivityBooking);
 
 module.exports = router;

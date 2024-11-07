@@ -91,6 +91,7 @@ import AdminViewActivity from "./Pages/activities/AdminViewActivity.js";
 import ProductAnalysis from "./Pages/products/ProductAnalysis.jsx";
 import ProductDetails2 from "./Pages/products/ProductDetails2.jsx";
 import MyBookings from "./Pages/Tourist/MyBookings.js";
+import MyBookedActivities from "./Pages/Tourist/MyBookedActivities.js"
 //const dotenv = require('dotenv')
 function App() {
   
@@ -119,6 +120,7 @@ function App() {
     <Routes>
         <Route path="/" element={<Home />} /> {/* Default route */}
         <Route path="/tourist/MyBookings" element={<MyBookings />} /> {/* Default route */}
+        <Route path="/tourist/MyBookedActivities" element={<MyBookedActivities />} /> {/* Default route */}
         <Route path="/login" element={<LoginPage />} />
       <Route
         path="tour_guide/profile"
