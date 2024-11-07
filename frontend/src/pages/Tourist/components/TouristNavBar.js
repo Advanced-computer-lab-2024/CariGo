@@ -17,7 +17,7 @@ import { Link } from 'react-router-dom';
 
 
 const pages = ['Activities', 'Itinerary', 'Historical Places','Products','File Complaint'];
-const settings = ['My Profile', 'Logout']; // Updated settings
+const settings = ['My Profile', 'Logout','change password']; // Updated settings
 
 function TouristNB() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -69,6 +69,11 @@ function TouristNB() {
     // Add your logout logic here
     navigate('/login'); // Example navigation after logout
   };
+  const handleChangePass=()=>{
+    handleCloseUserMenu();
+
+    navigate('/change-password');
+  }
   const loadProducts = () =>{
     handleCloseUserMenu();
     // Add your logout logic here
@@ -195,6 +200,9 @@ function TouristNB() {
               </MenuItem>
               <MenuItem onClick={handleLogout}>
                 <Typography sx={{ textAlign: 'center' }}>Logout</Typography>
+              </MenuItem>
+              <MenuItem onClick={handleChangePass}>
+                <Typography sx={{ textAlign: 'center' }}>Change Password</Typography>
               </MenuItem>
             </Menu>
           </Box>
