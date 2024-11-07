@@ -17,7 +17,8 @@ import  TouristVintage from "./Pages/Tourist/TouristPlaces.js";
 import CreateVintageForm from "./Pages/CreateVintageForm.js";
 
 import './styles/index.css';
-import Checkout from "./Pages/SignUp/Checkout.js";
+import Checkout from "./Pages/SignUp/Checkout";
+import PaymentCheckout from './Pages/checkout/Checkout';
 import UserViewActivities from "./Pages/Tourist/TouristActivities.js";
 import AdminHome from './Pages/Home.js';
 import React, { lazy, Suspense } from 'react'; // Keep this line
@@ -86,7 +87,6 @@ import ActivityPostDetail from "./components/ActivityPostDetail.js";
 import HotelBooking from "./Pages/Tourist/HotelBooking.js";
 import BookingPage from "./Pages/Tourist/Booking.js";
 import TransportationSearch from "./Pages/TransportationSearch.js" ;
-import Checkout from './Pages/checkout/Checkout';
 
 import AdminViewActivity from "./Pages/activities/AdminViewActivity.js";
 import ProductAnalysis from "./Pages/products/ProductAnalysis.jsx";
@@ -211,7 +211,7 @@ function App() {
         <Route path="/hotels" element={<HotelBooking/>} />
         <Route path="/map" element={<TransportationSearch/>} />  
         <Route path="/sellerProfile" element={<SellerProfile userId={localStorage.getItem("id")} />} />
-        <Route path="/checkout/:type/:id" element={<Checkout />} />
+        <Route path="/checkout/:type/:id" element={<PaymentCheckout />} />
 
 
         {/* Add more routes as needed */}

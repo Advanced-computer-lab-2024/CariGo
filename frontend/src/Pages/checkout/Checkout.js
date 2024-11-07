@@ -19,11 +19,14 @@ import PaymentForm from "./components/PaymentForm";
 import Review from "./components/Review";
 import SitemarkIcon from "./components/SitemarkIcon";
 import AppTheme from "./theme/AppTheme";
-import { jwtDecode } from 'jwt-decode';
+import { jwtDecode } from "jwt-decode";
 import axios from "axios";
+import { useParams, useNavigate } from "react-router-dom";
+import logoImage from "../../assets/logo-no-background.png"; // Correct relative path
+import Avatar from "@mui/material/Avatar";
+
 import ColorModeIconDropdown from "./theme/ColorModeIconDropdown";
 const user = JSON.parse(localStorage.getItem("user"));
-
 
 const steps = ["Ticket details", "Payment details", "Review your order"];
 
@@ -35,54 +38,122 @@ export default function Checkout(props, { activityId }) {
     paymentMethod: "creditCard",
     cardDetails: {},
   });
-  const [activityDetails, setActivityDetails] = React.useState(null);
+  const [activityDetails, setItemDetails] = React.useState(null);
   const [userDetails, setUser] = React.useState(null);
   const [totalPrice, setTotalPrice] = React.useState(0);
 
-  React.useEffect(() => {
-    fetchActivityDetails();
-    fetchUser();
-  }, []);
+  const { type, id } = useParams();
+  const navigate = useNavigate();
+
+  // React.useEffect(() => {
+  //   fetchActivityDetails();
+  //   fetchUser();
+  // }, []);
 
   React.useEffect(() => {
-    if (activityDetails && activityDetails.price && activityDetails.price.range) {
-      const price = parseFloat(activityDetails.price.range.min);
+    if (activityDetails && activityDetails.price) {
+      let price;
+      if (type === "activity") {
+        price = parseFloat(activityDetails.price.range.min);
+      } else {
+        price = parseFloat(activityDetails.price);
+      }
       setTotalPrice((price * orderData.quantity).toFixed(2));
     }
   }, [activityDetails, orderData.quantity]);
 
-  const fetchUser = async () => {
+  React.useEffect(() => {
+    const fetchDetails = async () => {
+      try {
+        const endpoint =
+          type === "activity"
+            ? `http://localhost:4000/cariGo/activity/getOne/${id}`
+            : `http://localhost:4000/cariGo/Event/readSingleItinerary/${id}`;
 
+        // console.log(type);
+        const response = await axios.get(endpoint);
+        setItemDetails(response.data);
+
+        // // Calculate initial total price
+        // const basePrice = type === 'activity'
+        //   ? response.data.price.range.min
+        //   : response.data.price;
+        // setTotalPrice((basePrice * orderData.quantity).toFixed(2));
+      } catch (err) {
+        console.error("Error fetching details:", err);
+      }
+    };
+
+    fetchUser();
+    fetchDetails();
+  }, [type, id]);
+
+  const fetchUser = async () => {
     try {
-      // console.log('Fetching profile for userId:', userId); 
-      
-      const token = localStorage.getItem("jwt"); // or sessionStorage.getItem('jwt')
+      const token = localStorage.getItem("jwt");
       const id = jwtDecode(token).id;
-      // console.log("Token:", id); // Add token logging to verify
-      
+
+      const response = await axios.get(
+        `http://localhost:4000/cariGo/users/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setUser(response.data);
+    } catch (err) {
+      console.error("Error fetching profile:", err);
+    }
+  };
+
+  const navigateToOrders = () => {
+    navigate(
+      type === "activity"
+        ? "/tourist/MyBookedActivities"
+        : "/tourist/MyBookings"
+    );
+  };
+  const handlePlaceOrder = async () => {
+    // setLoading(true);
+    try {
+      const token = localStorage.getItem("jwt");
       if (!token) {
         throw new Error("No token found. Please log in.");
       }
 
-      const response = await axios.get(`http://localhost:4000/cariGo/users/${id}`, {
+      let price;
+      if (type === "activity") {
+        price = parseFloat(activityDetails.price.range.min);
+      } else {
+        price = parseFloat(activityDetails.price);
+      }
+
+      const endpoint =
+        type === "activity"
+          ? `http://localhost:4000/cariGo/activity/BookActivity/${id}`
+          : `http://localhost:4000/cariGo/Event/BookItinerary/${id}`;
+
+      const payload = {
+        PaymentMethod:
+          orderData.paymentMethod === "creditCard" ? "Card" : "Wallet",
+        TotalPrice: orderData.quantity * price,
+        NumberOfTickets: orderData.quantity,
+      };
+
+      const response = await axios.post(endpoint, payload, {
         headers: {
-          Authorization: `Bearer ${token}`
-        }
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
       });
 
-      // console.log('Profile data received:', response.data); 
-    } catch (err) {
-      console.error('Error fetching profile:', err); 
-    }
-  };
-
-  const fetchActivityDetails = async () => {
-    try {
-      const response = await fetch(`http://localhost:4000/cariGo/activity/getOne/67039d9b118f13afe8a28f6b`);
-      const data = await response.json();
-      setActivityDetails(data);
+      if (response.data) {
+        handleNext(); // Show success step
+      }
     } catch (error) {
-      console.error("Error fetching activity details:", error);
+      console.error("Error during booking:", error);
+      // setError(error.response?.data?.error || 'Booking failed');
     }
   };
 
@@ -99,46 +170,45 @@ export default function Checkout(props, { activityId }) {
   };
 
   const handlePaymentDetailsChange = (paymentDetails) => {
-    setOrderData({ ...orderData, ...paymentDetails });
+    setOrderData({
+      ...orderData,
+      ...paymentDetails,
+      cardDetails: {
+        ...orderData.cardDetails,
+        ...paymentDetails.cardDetails,
+      },
+    });
   };
 
-  const handlePlaceOrder = async () => {
-    try {
-      const token = localStorage.getItem('jwt');
-      if (!token) {
-        throw new Error("No token found. Please log in.");
-      }
-      const response = await fetch('http://localhost:4000/cariGo/activity/BookActivity/67039d9b118f13afe8a28f6b', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          activityId: activityDetails.id,
-          quantity: orderData.quantity,
-          paymentMethod: orderData.paymentMethod,
-        }),
-      });
-      const result = await response.json();
-      if (response.ok) {
-        handleNext();
-      } else {
-        console.error('Booking failed:', result.error);
-      }
-    } catch (error) {
-      console.error('Error during booking:', error);
-    }
+  const handlePaymentTypeChange = (paymentType) => {
+    setOrderData({ ...orderData, paymentMethod: paymentType });
   };
 
   function getStepContent(step) {
     switch (step) {
       case 0:
-        return <QuantityForm quantity={orderData.quantity} onQuantityChange={handleQuantityChange} />;
+        return (
+          <QuantityForm
+            quantity={orderData.quantity}
+            onQuantityChange={handleQuantityChange}
+          />
+        );
       case 1:
-        return <PaymentForm  userDetails={userDetails} paymentTotal={totalPrice} onPaymentDetailsChange={handlePaymentDetailsChange}/>;
+        return (
+          <PaymentForm
+            userDetails={userDetails}
+            paymentTotal={totalPrice}
+            onPaymentDetailsChange={handlePaymentDetailsChange}
+          />
+        );
       case 2:
-        return <Review orderData={orderData} activityDetails={activityDetails} totalPrice={`${totalPrice}`} />;
+        return (
+          <Review
+            orderData={orderData}
+            activityDetails={activityDetails}
+            totalPrice={`${totalPrice}`}
+          />
+        );
       default:
         throw new Error("Unknown step");
     }
@@ -174,7 +244,11 @@ export default function Checkout(props, { activityId }) {
             gap: 4,
           }}
         >
-          <SitemarkIcon />
+          <Avatar
+            alt="Logo"
+            src={logoImage}
+            sx={{ width: 80, height: 80, mr: 4 }}
+          />
           <Box
             sx={{
               display: "flex",
@@ -184,7 +258,11 @@ export default function Checkout(props, { activityId }) {
               maxWidth: 500,
             }}
           >
-            <Info totalPrice={`$${totalPrice}`} activityDetails={activityDetails} />
+            <Info
+              totalPrice={`$${totalPrice}`}
+              activityDetails={activityDetails}
+              type={type}
+            />
           </Box>
         </Grid>
         <Grid
@@ -248,13 +326,9 @@ export default function Checkout(props, { activityId }) {
                 <Typography variant="subtitle2" gutterBottom>
                   Selected products
                 </Typography>
-                <Typography variant="body1">
-                  ${totalPrice}
-                </Typography>
+                <Typography variant="body1">${totalPrice}</Typography>
               </div>
-              <InfoMobile
-                totalPrice={`$${totalPrice}`}
-              />
+              <InfoMobile totalPrice={`$${totalPrice}`} />
             </CardContent>
           </Card>
           <Box
@@ -306,6 +380,7 @@ export default function Checkout(props, { activityId }) {
                 <Button
                   variant="contained"
                   sx={{ alignSelf: "start", width: { xs: "100%", sm: "auto" } }}
+                  onClick={navigateToOrders}
                 >
                   Go to my orders
                 </Button>
@@ -354,7 +429,16 @@ export default function Checkout(props, { activityId }) {
                   <Button
                     variant="contained"
                     endIcon={<ChevronRightRoundedIcon />}
-                    onClick={activeStep === steps.length - 1 ? handlePlaceOrder : handleNext}
+                    disabled={
+                      activeStep === 1 &&
+                      userDetails.wallet - totalPrice < 0 &&
+                      orderData.paymentMethod === "wallet"
+                    }
+                    onClick={
+                      activeStep === steps.length - 1
+                        ? handlePlaceOrder
+                        : handleNext
+                    }
                     sx={{ width: { xs: "100%", sm: "fit-content" } }}
                   >
                     {activeStep === steps.length - 1 ? "Place order" : "Next"}

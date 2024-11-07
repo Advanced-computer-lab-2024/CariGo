@@ -29,7 +29,7 @@ const products = [
   },
 ];
 
-function Info({ totalPrice ,activityDetails}) {
+function Info({ totalPrice ,activityDetails, type}) {
   return (
     <React.Fragment>
       <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>
@@ -46,7 +46,9 @@ function Info({ totalPrice ,activityDetails}) {
               secondary={activityDetails?.description}
             />
             <Typography variant="body1" sx={{ fontWeight: 'medium' }}>
-              {activityDetails?.price.range.min}
+            {type === 'activity' 
+                ? activityDetails?.price?.range?.min 
+                : activityDetails?.price}
             </Typography>
           </ListItem>
       </List>

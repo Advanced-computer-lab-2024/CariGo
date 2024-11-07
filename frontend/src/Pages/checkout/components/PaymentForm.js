@@ -83,15 +83,20 @@ const FormGrid = styled("div")(() => ({
   flexDirection: "column",
 }));
 
-export default function Component(userDetails, paymentTotal) {
+export default function Component({ userDetails, paymentTotal, onPaymentDetailsChange, cardDetails = {} }) {
   const [paymentType, setPaymentType] = React.useState("creditCard");
-  const [cardNumber, setCardNumber] = React.useState("");
-  const [cvv, setCvv] = React.useState("");
-  const [expirationDate, setExpirationDate] = React.useState("");
+  const [cardNumber, setCardNumber] = React.useState(cardDetails.number || "");
+  const [cvv, setCvv] = React.useState(cardDetails.cvv || "");
+  const [cardName, setCardName] = React.useState(cardDetails.name || "");
+  const [expirationDate, setExpirationDate] = React.useState(cardDetails.expirationDate || "");
   const userWallet = userDetails.wallet;
+  const bookingPayment = paymentTotal;
+  const walletAfterPurchase = userWallet - bookingPayment;
 
   const handlePaymentTypeChange = (event) => {
-    setPaymentType(event.target.value);
+    const newPaymentType = event.target.value;
+    setPaymentType(newPaymentType);
+    onPaymentDetailsChange({ paymentMethod: newPaymentType });
   };
 
   const handleCardNumberChange = (event) => {
@@ -99,6 +104,7 @@ export default function Component(userDetails, paymentTotal) {
     const formattedValue = value.replace(/(\d{4})(?=\d)/g, "$1 ");
     if (value.length <= 16) {
       setCardNumber(formattedValue);
+      updateCardDetails("number", formattedValue);
     }
   };
 
@@ -106,7 +112,14 @@ export default function Component(userDetails, paymentTotal) {
     const value = event.target.value.replace(/\D/g, "");
     if (value.length <= 3) {
       setCvv(value);
+      updateCardDetails("cvv", value);
     }
+  };
+
+  const handleCardNameChange = (event) => {
+    const value = event.target.value;
+    setCardName(value);
+    updateCardDetails("name", value);
   };
 
   const handleExpirationDateChange = (event) => {
@@ -114,7 +127,17 @@ export default function Component(userDetails, paymentTotal) {
     const formattedValue = value.replace(/(\d{2})(?=\d{2})/, "$1/");
     if (value.length <= 4) {
       setExpirationDate(formattedValue);
+      updateCardDetails("expirationDate", formattedValue);
     }
+  };
+
+  const updateCardDetails = (field, value) => {
+    onPaymentDetailsChange({
+      cardDetails: {
+        ...cardDetails,
+        [field]: value,
+      },
+    });
   };
 
   return (
@@ -133,7 +156,7 @@ export default function Component(userDetails, paymentTotal) {
         >
           <Card selected={paymentType === "creditCard"}>
             <CardActionArea
-              onClick={() => setPaymentType("creditCard")}
+              onClick={() => handlePaymentTypeChange({ target: { value: "creditCard" } })}
               sx={{
                 ".MuiCardActionArea-focusHighlight": {
                   backgroundColor: "transparent",
@@ -143,9 +166,7 @@ export default function Component(userDetails, paymentTotal) {
                 },
               }}
             >
-              <CardContent
-                sx={{ display: "flex", alignItems: "center", gap: 1 }}
-              >
+              <CardContent sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                 <CreditCardRoundedIcon
                   fontSize="small"
                   sx={[
@@ -164,9 +185,9 @@ export default function Component(userDetails, paymentTotal) {
               </CardContent>
             </CardActionArea>
           </Card>
-          <Card selected={paymentType === "bankTransfer"}>
+          <Card selected={paymentType === "wallet"}>
             <CardActionArea
-              onClick={() => setPaymentType("bankTransfer")}
+              onClick={() => handlePaymentTypeChange({ target: { value: "wallet" } })}
               sx={{
                 ".MuiCardActionArea-focusHighlight": {
                   backgroundColor: "transparent",
@@ -176,9 +197,7 @@ export default function Component(userDetails, paymentTotal) {
                 },
               }}
             >
-              <CardContent
-                sx={{ display: "flex", alignItems: "center", gap: 1 }}
-              >
+              <CardContent sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                 <WalletIcon
                   fontSize="small"
                   sx={[
@@ -188,7 +207,7 @@ export default function Component(userDetails, paymentTotal) {
                         color: "grey.600",
                       }),
                     }),
-                    paymentType === "bankTransfer" && {
+                    paymentType === "wallet" && {
                       color: "primary.main",
                     },
                   ]}
@@ -261,6 +280,8 @@ export default function Component(userDetails, paymentTotal) {
                   placeholder="John Smith"
                   required
                   size="small"
+                  value={cardName}
+                  onChange={handleCardNameChange}
                 />
               </FormGrid>
               <FormGrid sx={{ flexGrow: 1 }}>
@@ -285,7 +306,7 @@ export default function Component(userDetails, paymentTotal) {
           />
         </Box>
       )}
-      {paymentType === "bankTransfer" && (
+      {paymentType === "wallet" && (
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
           <Alert severity="warning" icon={<WarningRoundedIcon />}>
             Choosing this payment method will remove the booking price from your
@@ -299,7 +320,7 @@ export default function Component(userDetails, paymentTotal) {
               Wallet after purchase:
             </Typography>
             <Typography variant="body1" sx={{ fontWeight: "medium" }}>
-              {userWallet - paymentTotal}
+              {walletAfterPurchase}
             </Typography>
           </Box>
         </Box>

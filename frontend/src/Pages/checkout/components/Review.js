@@ -19,9 +19,6 @@ export default function Review({ orderData, activityDetails, totalPrice }) {
             primary={activityDetails?.title || "Activity"} 
             secondary={`Quantity: ${quantity}`} 
           />
-          {/* <Typography variant="body2">
-            ${((activityDetails?.price || 0) * quantity).toFixed(2)}
-          </Typography> */}
         </ListItem>
         <ListItem sx={{ py: 1, px: 0 }}>
           <ListItemText primary="Total" />
@@ -68,7 +65,7 @@ export default function Review({ orderData, activityDetails, totalPrice }) {
                   <Typography variant="body2">Card holder:</Typography>
                 </Grid>
                 <Grid item xs={6}>
-                  <Typography variant="body2">{cardDetails.name}</Typography>
+                  <Typography variant="body2">{cardDetails.name || 'N/A'}</Typography>
                 </Grid>
                 <Grid item xs={6}>
                   <Typography variant="body2">Card number:</Typography>
@@ -77,6 +74,12 @@ export default function Review({ orderData, activityDetails, totalPrice }) {
                   <Typography variant="body2">
                     {cardDetails.number ? `xxxx-xxxx-xxxx-${cardDetails.number.slice(-4)}` : 'N/A'}
                   </Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <Typography variant="body2">Expiration date:</Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <Typography variant="body2">{cardDetails.expirationDate || 'N/A'}</Typography>
                 </Grid>
               </>
             )}

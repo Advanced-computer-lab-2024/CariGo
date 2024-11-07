@@ -6,7 +6,7 @@ const authcontroller = require("./../controllers/authController");
 const router = express.Router({ mergeParams: true });
 
 //// from this point, no one can access any of these routes without being logged in
-router.route("/product/:id").get(catchAsync(reviewController.getAllProductReviews));
+router.route("/product/:id").get(reviewController.getAllProductReviews);
 
 router.use(authcontroller.protect);
 
