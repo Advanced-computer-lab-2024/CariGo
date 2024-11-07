@@ -4,6 +4,7 @@ const catchAsync = require("../utils/catchAsync");
 // const User = require('./../models/userModel');
 
 const createProduct = catchAsync(async (req, res, next) => {
+  console.log(req.body)
     const newProduct = await Product.create({
       author: req.body.author,
       name: req.body.name,

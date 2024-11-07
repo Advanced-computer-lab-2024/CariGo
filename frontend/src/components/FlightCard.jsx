@@ -33,13 +33,14 @@ const FlightCard = ({ flight, onClick }) =>{
       borderColor:'#126782',
       borderRadius:'10px', 
       //display:'flex', 
-       position:'relative',
       maxHeight:'350px',
-      display: 'flex', // Allows the box to grow with content
+      display: 'inline-flex', 
       flexDirection:'column', 
       minWidth:'400px',
-      maxWidth: '600px', // Starting width
-      margin:'30px',
+      maxWidth: '800px', // Starting width
+      margin:'20px',
+      marginTop:'20px',
+      marginRight:'60px',
       
       }}>
 

@@ -122,7 +122,7 @@ export default function UserViewActivities() {
         if (sortOption) queryParams.append("sort", sortOption);
 
         const response = await fetch(
-          `http://localhost:4000/Carigo/Activity/?${queryParams.toString()}`
+          `http://localhost:4000/cariGo/activity/adminActivities?${queryParams.toString()}`
         );
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);

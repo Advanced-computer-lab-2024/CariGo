@@ -135,7 +135,7 @@ function SignUp() {
       // Optionally redirect the user or perform another action
       // For example, using react-router:
       // history.push('/dashboard');
-      window.location.href = '/login'; 
+     // window.location.href = '/login'; 
       console.log(token);
     } catch (error) {
       console.error("Error:", error.message); // Log the error in console

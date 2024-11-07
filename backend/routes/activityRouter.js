@@ -9,6 +9,7 @@ const router = express.Router();
 
 
 router.get('/', activityController.getActivities);
+router.get('/adminActivities', activityController.getActivitiesForAdmin);
 router.get('/getadvact',[authController.protect ,authController.restrictTo("Advertiser")], activityController.getAdvActivities);
 
 router.get('/getOne/:id', activityController.getActivity);
@@ -29,8 +30,8 @@ router.get('/shareActivity/:id',activityController.shareActivity);
 
 router.post('/BookActivity/:ActivityId',[authController.protect,authController.restrictTo("Tourist")],activityController.BookActivity);
 
-router.get('/MyBookings',[authController.protect,authController.restrictTo("Tourist")],activityController.MyBookings);
+router.get('/MyActivityBookings',[authController.protect,authController.restrictTo("Tourist")],activityController.MyActivityBookings);
 
-router.get('/CancelBooking/:ActivityId',[authController.protect,authController.restrictTo("Tourist")],activityController.CancelBooking);
+router.patch('/CancelActivityBooking',[authController.protect,authController.restrictTo("Tourist")],activityController.CancelActivityBooking);
 
 module.exports = router;

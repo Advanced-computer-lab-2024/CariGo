@@ -115,12 +115,6 @@ const getCityByCode = async (req, res) => {
       res.status(500).send(error.message);
     }
   };
-  
-  
-
-
-
-
 
 
 const cities = async (req, res) => {

@@ -135,6 +135,120 @@ const getActivities = async (req, res) => {
   const priceParam = req.query.price ? parseFloat(req.query.price) : null;
 
   // Initialize the query with base conditions
+  const query = Activity.find({
+    start_date: { $gte: today },
+    isFlagged: false, // Only include activities that are not flagged
+  });
+  
+
+  // Add category filter if it exists
+  if (req.query.Category) {
+    query.where({ Category: req.query.Category });
+  }
+
+  // If price parameter is provided, filter activities based on price range
+  console.log(priceParam);
+  if (priceParam !== null) {
+    query.where({
+      $and: [
+        { "price.range.min": { $lte: priceParam } }, // Price is greater than or equal to min
+        { "price.range.max": { $gte: priceParam } }, // Price is less than or equal to max
+      ],
+    });
+    // Remove price parameter from req.query
+    delete req.query.price;
+  }
+
+  try {
+    // Initialize APIFeatures with the query and query string
+    const features = new APIFeatures(query, req.query).filter();
+
+    // Apply sorting
+    const activities = await features.query.sort(sortBy);
+
+    if (!activities.length) {
+      return res.status(404).json({ message: "Activities not found" });
+    }
+
+    // Collect all tag and category IDs from the activities
+    const tagIds = activities
+      .map((activity) => activity.tag)
+      .filter((tag) => tag);
+    const categoryIds = activities
+      .map((activity) => activity.Category)
+      .filter((category) => category);
+
+    // Fetch tags and categories based on the collected IDs
+    const tags = await Tag.find({ _id: { $in: tagIds } });
+    const categories = await Category.find({ _id: { $in: categoryIds } });
+
+    // Create a map for quick lookup
+    const tagMap = {};
+    tags.forEach((tag) => {
+      tagMap[tag._id] = tag.title; // Map tag IDs to their titles
+    });
+
+    const categoryMap = {};
+    categories.forEach((category) => {
+      categoryMap[category._id] = category.name; // Map category IDs to their names
+    });
+
+    // Replace IDs in activities with corresponding titles/names
+    const formattedActivities = activities.map((activity) => ({
+      ...activity._doc, // Spread original activity fields
+      tag: tagMap[activity.tag] || activity.tag, // Replace tag ID with title or keep original if not found
+      Category: categoryMap[activity.Category] || activity.Category, // Replace category ID with name or keep original if not found
+    }));
+
+    res.status(200).json(formattedActivities);
+  } catch (error) {
+    console.error("Error retrieving activities:", error);
+    res
+      .status(500)
+      .json({ message: "Error retrieving activities", error: error.message });
+  }
+};
+
+const getActivitiesForAdmin = async (req, res) => {
+  const today = new Date();
+  let sortBy = req.query.sort || "-createdAt"; // Default to "-createdAt" if no parameter is provided
+
+  // Validate sortBy parameter
+  const validSortFields = ["discount", "price", "ratingsAverage", "-createdAt"];
+  if (!validSortFields.includes(sortBy)) {
+    return res.status(400).json({
+      message: `Invalid sortBy parameter. Allowed values are: ${validSortFields.join(
+        ", "
+      )}`,
+    });
+  }
+
+  // Change sortBy to "price.range.min" if it is "price"
+  if (sortBy === "price") {
+    sortBy = "price.range.min";
+  }
+
+  const categoryName = req.query.Category;
+
+  if (categoryName) {
+    try {
+      const category = await Category.findOne({ name: categoryName });
+      if (!category) {
+        return res.status(404).json({ message: "Category not found" });
+      }
+      req.query.Category = category._id; // Replace the category name with the category ID
+    } catch (error) {
+      return res.status(500).json({
+        message: "An error occurred while fetching the category",
+        error,
+      });
+    }
+  }
+
+  // Check if the price parameter is provided
+  const priceParam = req.query.price ? parseFloat(req.query.price) : null;
+
+  // Initialize the query with base conditions
   const query = Activity.find({ start_date: { $gte: today } });
 
   // Add category filter if it exists
@@ -204,6 +318,7 @@ const getActivities = async (req, res) => {
       .json({ message: "Error retrieving activities", error: error.message });
   }
 };
+
 
 // const getAdvActivities = async (req, res) => {
 //     try {
@@ -408,7 +523,7 @@ const shareActivity = async (req, res) => {
 
 const BookActivity = async (req, res) => {
   const { ActivityId } = req.params;
-  const { PaymentMethod } = req.body;
+  const { PaymentMethod,TotalPrice,NumberOfTickets } = req.body;
   const UserId = req.user.id;
   console.log(UserId);
   let CardNumber;
@@ -438,6 +553,8 @@ const BookActivity = async (req, res) => {
           PaymentMethod: PaymentMethod,
           Status: true,
           CardNumber: CardNumber,
+          NumberOfTickets:NumberOfTickets,
+          TotalPrice:TotalPrice
         });
       } else {
         booking = await bookingModel.create({
@@ -445,6 +562,8 @@ const BookActivity = async (req, res) => {
           UserId: UserId,
           PaymentMethod: PaymentMethod,
           Status: true,
+          NumberOfTickets:NumberOfTickets,
+          TotalPrice:TotalPrice
         });
       }
 
@@ -469,11 +588,11 @@ const BookActivity = async (req, res) => {
   }
 };
 
-const MyBookings = async (req, res) => {
-  const { UserId } = req.body; // User ID from request body
+const MyActivityBookings = async (req, res) => {
+  const  UserId  = req.user.id; // User ID from request body
   if (mongoose.Types.ObjectId.isValid(UserId)) {
     try {
-      const bookings = await bookingModel.find({UserId}).sort({createdAt: -1});
+      const bookings = await bookingModel.find({UserId,ActivityId: { $ne: null }}).sort({createdAt: -1});
       return res.status(200).json(bookings);
     } catch {
       res.status(500).json({ error: "Failed to fetch bookings" });
@@ -484,38 +603,56 @@ const MyBookings = async (req, res) => {
   }
 };
 
-const CancelBooking = async (req, res) => {
-    const { UserId } = req.body; // User ID from request body
-    const { ActivityId } = req.params; // Event ID from URL parameters
-    if (mongoose.Types.ObjectId.isValid(ActivityId) && mongoose.Types.ObjectId.isValid(UserId)) {
-        try {
-            const bookings = await bookingModel.updateMany(
-                { UserId, ActivityId }, // Filter to find documents with both UserId and ActivityId
-                { $set: { Status: false } } // Update to set Status to false
-              );
-              res.status(200).json({
-                message: "Bookings canceled successfully",
-                updatedBookingsCount: bookings.modifiedCount // shows how many bookings were updated
-              }); 
-        } catch {
+const CancelActivityBooking = async (req, res) => {
+  const UserId  = req.user.id; // User ID from request body
+  const { ActivityId } = req.body; // Event ID from URL parameters
+  if (mongoose.Types.ObjectId.isValid(ActivityId) && mongoose.Types.ObjectId.isValid(UserId)) {
+      try {
+          
+          const activity = await activityModel.findById(ActivityId);
+          console.log(activity);
+          const activityDate = activity.start_date;
+          
+          if (activityDate) {
+              const currDate = new Date();
+              const timeDifference = activityDate.getTime() - currDate.getTime(); // Difference in milliseconds
+              const hoursDifference = timeDifference / (1000 * 60 * 60); // Convert to hours
+
+              if (hoursDifference >= 48) {
+                  const bookings = await bookingModel.updateMany(
+                      { UserId, ActivityId }, // Filter to find documents with both UserId and ActivityId
+                      { $set: { Status: false } } // Update to set Status to false
+                  );
+                  res.status(200).json({
+                      message: "Bookings canceled successfully",
+                      updatedBookingsCount: bookings.modifiedCount // shows how many bookings were updated
+                  });
+              } else {
+                  res.status(400).json({ message: "Cannot book/cancel within 48 hours of the activity date" });
+              }
+          } else {
+              res.status(404).json({ message: "Activity not found" });
+          }
+      } catch (error) {
           res.status(500).json({ error: "Failed to fetch booking" });
           console.error("Error while booking:", error);
-        }
-      } else {
-        res.status(400).json({ error: "Invalid event ID format" });
       }
+  } else {
+      res.status(400).json({ error: "Invalid event ID format" });
+  }
 };
 
 module.exports = {
   createActivity,
   getActivities,
   getActivity,
+  getActivitiesForAdmin,
   deleteActivity,
   updateActivity,
   sortActivities,
   getAdvActivities,
   shareActivity,
   BookActivity,
-  MyBookings,
-  CancelBooking
+  MyActivityBookings,
+  CancelActivityBooking
 };

@@ -15,7 +15,7 @@ const signToken = (id) => {
 
 exports.signup = catchAsync(async (req, res, next) => {
   const userType = req.body.role;
-
+  console.log(req.body);
   if (userType === "admin" || userType === "Tourism_Governer") {
     return next(
       new AppError(
@@ -157,7 +157,7 @@ exports.protect = catchAsync(async (req, res, next) => {
     // console.log("entered")
     token = req.headers.authorization.split(" ")[1];
   }
-
+  // console.log(token)
   if (!token) {
     return next(new AppError("You are not logged in! Please log in ❌", 401));
   }
