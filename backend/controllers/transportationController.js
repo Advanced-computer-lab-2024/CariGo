@@ -188,9 +188,19 @@ const getTransportations = async (req, res) => {
 
     // Combine the lists: am first, then pm
     const sortedTransportationOptions = [...amList, ...pmList];
+    const transportationWithLinks = sortedTransportationOptions.map(option => {
+      // Construct Google Maps URLs
+      const depMapLink = `https://www.google.com/maps?q=${option.departureLocation.coordinates[1]},${option.departureLocation.coordinates[0]}`;
+      const arrMapLink = `https://www.google.com/maps?q=${option.arrivalLocation.coordinates[1]},${option.arrivalLocation.coordinates[0]}`;
 
+      return {
+        ...option.toObject(), // Convert mongoose object to plain JavaScript object
+        departureLocationMapLink: depMapLink,
+        arrivalLocationMapLink: arrMapLink,
+      };
+    });
     // Send the response
-    res.status(200).json(sortedTransportationOptions);
+    res.status(200).json(transportationWithLinks);
 
   } catch (error) {
     console.error(error);

@@ -1,15 +1,10 @@
 import React, { useEffect, useState } from "react";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
-import LocationCityIcon from '@mui/icons-material/LocationCity';
-
-import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import {Box,Button,Typography,Link,List,ListItem,ClickAwayListener,Menu,MenuItem,TextField,InputAdornment,CircularProgress} from "@mui/material";
-import PinDropIcon from '@mui/icons-material/PinDrop';
-import TransportCard from"./TransportCard";
 import TransportCardList from "./TransportCardList";
 import MyMapComponent from './Map.js';
 
@@ -63,7 +58,7 @@ export default function TransportBooking(){
         depLat: departureLocation.lat,
         arrLon: arrivalLocation.lng,
         arrLat: arrivalLocation.lat,
-        date: date,
+        date: date ? date.format('YYYY-MM-DD') : '', // Format date before passing
         depDesc: departureDescription,
         arrDesc: arrivalDescription,
       });
@@ -81,7 +76,6 @@ export default function TransportBooking(){
         const data = await response.json();
         setTransports(data);
         console.log('Search result:', data);
-        // Handle the data, such as displaying it to the user
         // Save the flight data to sessionStorage
         sessionStorage.setItem('transports', JSON.stringify(data)); 
       } catch (error) {
@@ -187,11 +181,11 @@ export default function TransportBooking(){
       
                {/* Render HotelCard if hotels are available */}
                <Box sx={{padding:"20px", marginLeft:"10%" , overflow:'auto',marginTop:'4%',}}>
-               {isLoading ? <CircularProgress sx={{color:'#126782', margin:'70px'}} /> :
-               transports.length > 0 && (
-                  <TransportCardList transports={transports} />
-                )
-              }
+               {isLoading ? (
+            <CircularProgress sx={{ color: '#126782', margin: '70px' }} />
+          ) : (
+            transports.length > 0 && <TransportCardList transports={transports} />
+          )}
                 </Box>
                 {/* <TransportCard/> */}
             </Box>

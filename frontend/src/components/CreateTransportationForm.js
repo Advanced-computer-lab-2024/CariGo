@@ -19,6 +19,9 @@ export default function CreateTransportationForm() {
   const [departureHour, setDepartureHour] = useState('');
   const [departureMinutes, setDepartureMinutes] = useState('');
   const [departureDayTime, setDepartureDayTime] = useState('am');
+  const [arrivalHour, setarrivalHour] = useState('');
+  const [arrivalMinutes, setarrivalMinutes] = useState('');
+  const [arrivalDayTime, setarrivalDayTime] = useState('am');
 
   // Departure and arrival locations stored as lat/lng coordinates
   const [departureLan, setDepartureLan] = useState(40.7128);
@@ -77,6 +80,9 @@ export default function CreateTransportationForm() {
       departureHour,
       departureMinutes,
       departureDayTime,
+      arrivalHour,
+      arrivalMinutes,
+      arrivalDayTime,
       departureLan,
       departureLon,
       arrivalLan,
@@ -221,6 +227,33 @@ export default function CreateTransportationForm() {
               </StyledSelect>
             </Box>
             {errorMessages.departureTime && <HelperText>{errorMessages.departureTime}</HelperText>}
+          </FormControl>
+
+  
+
+          {/* Departure Time */}
+          <FormControl required>
+            <Label>Arrival Time</Label>
+            <Box sx={{ display: 'flex', gap: '10px' }}>
+              <StyledSelect onChange={(e) => setarrivalHour(e.target.value)} value={arrivalHour}>
+                <option value="">Hour</option>
+                {[...Array(12).keys()].map(i => (
+                  <option key={i} value={i + 1}>{i + 1}</option>
+                ))}
+              </StyledSelect>
+              <StyledSelect onChange={(e) => setarrivalMinutes(e.target.value)} value={arrivalMinutes}>
+                <option value="">Minute</option>
+                <option value="00">00</option>
+                <option value="15">15</option>
+                <option value="30">30</option>
+                <option value="45">45</option>
+              </StyledSelect>
+              <StyledSelect onChange={(e) => setarrivalDayTime(e.target.value)} value={arrivalDayTime}>
+                <option value="am">AM</option>
+                <option value="pm">PM</option>
+              </StyledSelect>
+            </Box>
+            {errorMessages.arrivalTime && <HelperText>{errorMessages.arrivalTime}</HelperText>}
           </FormControl>
 
           {/* Departure Location */}

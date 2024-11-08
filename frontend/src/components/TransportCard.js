@@ -9,6 +9,8 @@ import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import DirectionsBusIcon from '@mui/icons-material/DirectionsBus';
 import StarIcon from '@mui/icons-material/Star';
 import SellIcon from '@mui/icons-material/Sell';
+import AcUnitIcon from '@mui/icons-material/AcUnit';
+import  { useEffect, useState } from 'react';
 
 const TransportCard = ({Transportation}) =>{
 
@@ -39,6 +41,18 @@ const TransportCard = ({Transportation}) =>{
       if(time)
         return {hrs: time.hours - currentTime.getHours() , mins: time.minutes - currentTime.getMinutes()}
     }
+    const handleLocationLinkClick = (locationMapLink) => {
+      // Open the map link in a new tab or window
+      //window.open(locationMapLink, '_blank');
+      sessionStorage.setItem('previousPageState', JSON.stringify({
+        departureTime: Transportation.departureTime,
+        arrivalTime: Transportation.arrivalTime,
+        price: Transportation.price,
+        // Add any other state data you want to preserve
+      }));
+      // After the user is done viewing the map, use navigate(-1) to go back to the previous page
+        // This acts like history.goBack()
+    };
 
   return (
     <Card variant="outlined"  sx={{
@@ -74,58 +88,89 @@ const TransportCard = ({Transportation}) =>{
       {/*departure*/}
       <Box sx={{}}>
       <Typography sx={{color:'#126782',padding:'1px', fontWeight:'bold'}}>
-        {departureLocStr ? departureLocStr : 'departure location'}
+        {departureLocStr ? departureLocStr : 'departure time'}
         {/* departure location */}
       </Typography>
       <Typography sx={{color:'#ff4d4d',padding:'1px',}}>
-        {departure ? `${departure.hours}:${departure.minutes} ${departure.dayTime}` : 'departure time'}
+        { `${Transportation.departureTime.hours}:${Transportation.departureTime.minutes} ${Transportation.departureTime.dayTime}` }
       </Typography>
       
      </Box>
 
      {/*arrival*/}
-     <Box sx={{}}>
-     <Typography sx={{color:'#126782',padding:'1px',fontWeight:'bold'}}>
-        {arrivalLocStr ? arrivalLocStr : 'arrival location'}
-        {/* arrival location */}
-      </Typography>
-      <Typography sx={{color:'#ff4d4d',padding:'1px', }}>
-        {departure ? `${departure.hours}:${departure.minutes} ${departure.dayTime}` : 'arrival time'}
-      </Typography>
-      
-     </Box>
+     {arrival && (
+  <Box sx={{}}>
+    <Typography sx={{ color: '#126782', padding: '1px', fontWeight: 'bold' }}>
+      {arrivalLocStr ? arrivalLocStr : 'Arrival Time'}
+    </Typography>
+    <Typography sx={{ color: '#ff4d4d', padding: '1px' }}>
+      {`${Transportation.arrivalTime.hours}:${Transportation.arrivalTime.minutes} ${Transportation.arrivalTime.dayTime}`}
+    </Typography>
+  </Box>
+)}
      </Box>
      {/*END OF departure and arrival BOX*/}
-    
+     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <Typography sx={{ color: '#126782', padding: '1px', fontWeight: 'bold' }}>
+              Driver Number
+            </Typography>
+            <Typography sx={{ color: '#ff4d4d', padding: '1px' }}>
+              {Transportation.driverNumber || 'N/A'}
+            </Typography>
+
+            <Typography sx={{ color: '#126782', padding: '1px', fontWeight: 'bold' }}>
+              Plate Number
+            </Typography>
+            <Typography sx={{ color: '#ff4d4d', padding: '1px' }}>
+              {Transportation.plateNumber || 'N/A'}
+            </Typography>
+          </Box>
     
       {/*location link*/}
-      <Box sx={{display:'flex',gap:'10px', padding:'5px', marginLeft:'-10px'}}> 
+      <Box sx={{ display: 'flex', gap: '10px', padding: '5px', marginLeft: '-10px' }}>
+  <PinDropIcon fontSize="medium" sx={{ fill: "#126782" }} />
+  <Link
+    href={Transportation.departureLocationMapLink}  // Corrected this line
+    sx={{
+      color: '#126782',
+      padding: '1px',
+      cursor: 'pointer',
+      textDecoration: 'none',
+      '&:hover': { textDecoration: 'underline' },
+    }}
+    target="_blank"
+  >
+    departure location link
+  </Link>
+</Box>
+
+     <Box sx={{display:'flex',gap:'10px', padding:'5px', marginLeft:'-10px'}}> 
       <PinDropIcon fontSize="medium" sx={{fill:"#126782"}}/>
-      <Link  href={"https://www.example.com"}  sx={{color: '#126782',padding: '1px',cursor: 'pointer',textDecoration: 'none',
+      <Link  href={Transportation.arrivalLocationMapLink}  sx={{color: '#126782',padding: '1px',cursor: 'pointer',textDecoration: 'none',
         '&:hover': {textDecoration: 'underline',}}}
-        >location link</Link> 
+        >arrivallocation link</Link> 
      </Box>
+               {/* AC availability (conditional) */}
+               {Transportation.ac && (
+            <Box sx={{ display: 'flex', gap: '5px', paddingTop: '10px' }}>
+              <AcUnitIcon sx={{ fill: '#126782', fontSize: '30px' }} />
+              <Typography sx={{ color: '#126782', fontWeight: 'bold' }}>Air Conditioned</Typography>
+            </Box>
+          )}
     
      {/*for price and booking button*/}
-     <Box sx={{position:'relative',padding:'10px',}}>
-      <Box sx={{display:'flex', marginLeft:'-10px',padding:'5px',marginBottom:'10px',bottom:'10px'}}>
-        <AttachMoneyIcon sx={{marginTop:'0px', color: '#126782'}}/>
-      <Typography sx={{color:'#126782', fontSize:'16px',marginLeft:'5px'}}
-      >price</Typography> {/* Display price */}
+     <Box sx={{ position: 'relative', padding: '10px' }}>
+  <Box sx={{ display: 'flex', marginLeft: '-10px', padding: '5px', marginBottom: '10px', bottom: '10px' }}>
+    <AttachMoneyIcon sx={{ marginTop: '0px', color: '#126782' }} />
+    <Typography sx={{ color: '#126782', fontSize: '16px', marginLeft: '5px' }}>
+      {Transportation.price} {/* Display price */}
+    </Typography>
 
-      {/* <Box sx={{
-          backgroundColor : '#ff4d4d',
-          display: 'flex',
-          marginLeft: '5px',
-          borderRadius: '5px',
-          padding: '0px',
-          }}>
-                  
-      <Typography sx={{marginLeft:'5px', color: "white"}}> {"-"+Transportation.discount+"%" || ''}</Typography>
-      <SellIcon  sx={{scale: '0.7', color: 'white', marginTop:'2px',marginLeft:'-2px',}}/>
-      </Box> */}
-      
-      </Box>
+    {/* Discount Section (commented out, but ready for use) */}
+
+  </Box>
+</Box>
+<Box>
       <Button 
       sx={{color:'white',  backgroundColor:'#ff4d4d', borderRadius:'5px',position:'absolute',right:'0px', bottom:'10px',}} 
       >Book</Button> {/* Add Book button */}
