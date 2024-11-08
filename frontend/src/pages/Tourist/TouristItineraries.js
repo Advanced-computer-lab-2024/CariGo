@@ -63,8 +63,6 @@ const TouristItineraries = () => {
         tags: "",
         startDate: "",
     });
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
     const [sortOption, setSortOption] = useState('');
     const [anchorEl, setAnchorEl] = React.useState(null);
 

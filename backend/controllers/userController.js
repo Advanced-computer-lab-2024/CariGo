@@ -18,6 +18,7 @@ const getUser = async (req, res) => {
   }
 
   const user = await User.findById(id);
+  console.log(user);
 
   if (!user) {
     return res.status(404).json({ error: "No such User" });
@@ -48,11 +49,42 @@ const updateUserData = (req, res) => {
   }
 };
 
+const UpdateWallet = async (req, res) => {
+  const  UserId  = req.user.id; // User ID from request body
+  const {numOfTickets,price,conversionRate } = req.body; // Event ID from URL parameters
+  console.log(UserId);
+  if (mongoose.Types.ObjectId.isValid(UserId)) {
+    try {
+      const user = await User.findById(UserId);
+      //console.log(itinerary);
+
+          const refund = (price*conversionRate) * numOfTickets;
+          const cashBack = user.wallet + refund ;
+          const walletNewValue = await User.updateOne(
+            { _id: UserId }, // Filter to find documents with both UserId and ItineraryId
+            { $set: { wallet: cashBack } } // Update to set Status to false
+          );
+          res.status(200).json({
+            message: "refund done successfully",
+            updatedWallet: walletNewValue.modifiedCount, // shows how many bookings were updated
+          });
+        
+       
+    } catch(error) {
+      
+      res.status(500).json({ error: "Failed to fetch user" });
+      console.error("Error while refunding:", error);
+    }
+  } else {
+    res.status(400).json({ error: "Invalid user ID format" });
+  }
+};
 
 module.exports = {
   getUsers,
   getUser,
-  updateUserData
+  updateUserData,
+  UpdateWallet
   //   deleteWorkout,
   //   updateWorkout
 };

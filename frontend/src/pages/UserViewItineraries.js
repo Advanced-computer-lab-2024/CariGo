@@ -7,6 +7,7 @@ import ItineraryList from "../components/ItirenaryList";
 import { useNavigate } from "react-router-dom";
 // const navigate = useNavigate();
 import { Button } from '@mui/material'; // Using Material-UI for styling
+
 const UserViewItirenaries = () => {
     const handleNavigate = () => {
   navigate("/tour_guide/itineraries/new");

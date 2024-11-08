@@ -7,7 +7,7 @@ import Profile_Header from './Profile_Header';
 import SellerInfo from './SellerInfo';
 // import CenteredTabs from '../components/CenteredTabs';
 // import TourismGovernerTabs from '../components/tourismGovernerTabs';
-// import NavBar from '../components/NavBar';
+import NavBar from '../../components/NavBarAdvertiser';
 // import SmallButton from '../components/smallButton'; // Import SmallButton here
 // import SmallButtonTG from '../components/smallButtonTG';
 import SmallButtonS from './smallButtonS';
@@ -75,32 +75,35 @@ const SellerProfile = ({ userId }) => {
   }
 
   return (
-    <div className="advertiser-profile">
-      <header className="profile-header">
-        <Profile_Header 
-          companyName={profile.username  /*companyName || 'CariGo'*/} 
-          coverImage={coverImage} 
-          logo={logoImage} 
-        />
-      </header>
-      <div className="profile-content">
-        <SellerInfo 
-          userName={profile.username || 'No username provided'} 
-          email={profile.email || 'No email provided'}
-          description={profile.description || 'no description was provided'}
-        //   previousWork={profile.previousWork || 'no previous work was provided'}
-          mobileNumber={profile.mobile_number || 'no mobile was provided'}
-        //   role={profile.role || 'No role assigned'}
-        //   hotline={profile.hotline || 'No hotline provided'}
-        //   website={profile.website_link || '#'}
-        //   about={profile.about || 'No about information available.'}
-        //   description={profile.description || 'No description available.'}
-        //   { userName, email, yearsOfExperience,previousWork,mobileNumber }
-        />
+    <div>
+      <NavBar/>
+      <div className="advertiser-profile">
+        <header className="profile-header">
+          <Profile_Header 
+            companyName={profile.username  /*companyName || 'CariGo'*/} 
+            coverImage={coverImage} 
+            logo={logoImage} 
+          />
+        </header>
+        <div className="profile-content">
+          <SellerInfo 
+            userName={profile.username || 'No username provided'} 
+            email={profile.email || 'No email provided'}
+            description={profile.description || 'no description was provided'}
+          //   previousWork={profile.previousWork || 'no previous work was provided'}
+            mobileNumber={profile.mobile_number || 'no mobile was provided'}
+          //   role={profile.role || 'No role assigned'}
+          //   hotline={profile.hotline || 'No hotline provided'}
+          //   website={profile.website_link || '#'}
+          //   about={profile.about || 'No about information available.'}
+          //   description={profile.description || 'No description available.'}
+          //   { userName, email, yearsOfExperience,previousWork,mobileNumber }
+          />
         
-        <SmallButtonS profile={profile} setProfile={setProfile} setRefreshKey={setRefreshKey} /> {/* Pass setRefreshKey */}
-        <Button style={{marginTop:"10px"}} onClick={()=>handleProducts()}>View Products</Button>
-        {/* <SellerTabs /> */}
+          <SmallButtonS profile={profile} setProfile={setProfile} setRefreshKey={setRefreshKey} /> {/* Pass setRefreshKey */}
+          <Button style={{marginTop:"10px"}} onClick={()=>handleProducts()}>View Products</Button>
+          {/* <SellerTabs /> */}
+        </div>
       </div>
     </div>
   );

@@ -15,7 +15,7 @@ const signToken = (id) => {
 
 exports.signup = catchAsync(async (req, res, next) => {
   const userType = req.body.role;
-
+  console.log(req.body);
   if (userType === "admin" || userType === "Tourism_Governer") {
     return next(
       new AppError(
@@ -47,6 +47,7 @@ exports.signup = catchAsync(async (req, res, next) => {
       passwordChangedAt: Date.now(),
     };
   } else if (userType === "Tourist") {
+    console.log("object", req.body.selectedTags);
     newUserData = {
       username: req.body.username,
       email: req.body.email,
@@ -58,6 +59,7 @@ exports.signup = catchAsync(async (req, res, next) => {
       DOB: req.body.dob,
       job: req.body.job,
       passwordChangedAt: Date.now(),
+      selectedTags: req.body.selectedTags
     };
   } else if (userType === "Tour_Guide"){
     newUserData = {
@@ -157,7 +159,7 @@ exports.protect = catchAsync(async (req, res, next) => {
     // console.log("entered")
     token = req.headers.authorization.split(" ")[1];
   }
-
+  // console.log(token)
   if (!token) {
     return next(new AppError("You are not logged in! Please log in ❌", 401));
   }

@@ -524,7 +524,7 @@ const shareActivity = async (req, res) => {
 
 const BookActivity = async (req, res) => {
   const { ActivityId } = req.params;
-  const { PaymentMethod } = req.body;
+  const { PaymentMethod,TotalPrice,NumberOfTickets } = req.body;
   const UserId = req.user.id;
   console.log(UserId);
   let CardNumber;
@@ -554,6 +554,8 @@ const BookActivity = async (req, res) => {
           PaymentMethod: PaymentMethod,
           Status: true,
           CardNumber: CardNumber,
+          NumberOfTickets:NumberOfTickets,
+          TotalPrice:TotalPrice
         });
       } else {
         booking = await bookingModel.create({
@@ -561,6 +563,8 @@ const BookActivity = async (req, res) => {
           UserId: UserId,
           PaymentMethod: PaymentMethod,
           Status: true,
+          NumberOfTickets:NumberOfTickets,
+          TotalPrice:TotalPrice
         });
       }
       await Activity.updateOne(
@@ -589,7 +593,7 @@ const BookActivity = async (req, res) => {
 };
 
 const MyActivityBookings = async (req, res) => {
-  const { UserId } = req.body; // User ID from request body
+  const  UserId  = req.user.id; // User ID from request body
   if (mongoose.Types.ObjectId.isValid(UserId)) {
     try {
       const bookings = await bookingModel.find({UserId,ActivityId: { $ne: null }}).sort({createdAt: -1});
@@ -604,7 +608,7 @@ const MyActivityBookings = async (req, res) => {
 };
 
 const CancelActivityBooking = async (req, res) => {
-  const { UserId } = req.body; // User ID from request body
+  const UserId  = req.user.id; // User ID from request body
   const { ActivityId } = req.body; // Event ID from URL parameters
   if (mongoose.Types.ObjectId.isValid(ActivityId) && mongoose.Types.ObjectId.isValid(UserId)) {
       try {
@@ -638,7 +642,7 @@ const CancelActivityBooking = async (req, res) => {
           } else {
               res.status(404).json({ message: "Activity not found" });
           }
-      } catch {
+      } catch (error) {
           res.status(500).json({ error: "Failed to fetch booking" });
           console.error("Error while booking:", error);
       }

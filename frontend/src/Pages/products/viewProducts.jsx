@@ -6,6 +6,9 @@ import SearchBar from "./SearchBar/SearchBar";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import AddIcon from "@mui/icons-material/Add";
 
+import { Tag } from "primereact/tag";
+
+import QueryStatsIcon from "@mui/icons-material/QueryStats";
 import {
   Box,
   Card,
@@ -53,7 +56,7 @@ export default function ViewProducts() {
   const bgPrimary = palette.success.main;
   const bgSecondary = palette.warning.light;
   const token = localStorage.getItem("jwt");
-
+  const folderPics = `http://localhost:4000/public/img/products/`;
   // Fetch categories function
   const fetchProducts = async () => {
     setLoading(true); // Start loading
@@ -238,6 +241,12 @@ export default function ViewProducts() {
     // Navigating to a page with the id in the URL
     navigate(`/admin/manage-products/product-details/${id}`);
   };
+
+  const handleDetatils2 = (id) => {
+    // Navigating to a page with the id in the URL
+    navigate(`/admin/view-products/${id}`);
+  };
+
   const handleAdd = () => {
     navigate(`/admin/manage-products/AddProduct`);
   };
@@ -382,9 +391,15 @@ export default function ViewProducts() {
                         colSpan={2}
                         align="left"
                         sx={{ px: 0, textTransform: "capitalize" }}
+                        onClick={() => handleDetatils2(product._id)}
                       >
                         <Box display="flex" alignItems="center" gap={4}>
-                          <img src={product.imgUrl} alt="p" />
+                          <label
+                            htmlFor="file-upload"
+                            className="custom-file-upload"
+                          >
+                            <img src={folderPics + product.mainImage} alt="p" />
+                          </label>
                           <Paragraph>{product.name}</Paragraph>
                         </Box>
                       </TableCell>
@@ -414,13 +429,19 @@ export default function ViewProducts() {
                         )}
                       </TableCell>
 
-                      <TableCell sx={{ px: 6 }} colSpan={2}>
+                      <TableCell
+                        sx={{ px: 6 }}
+                        colSpan={2}
+                        onClick={() => {
+                          handleDetatils2(product._id);
+                        }}
+                      >
                         {/* <IconButton onClick={() => console.log(2)}>
                     <Edit color="primary" />
                   </IconButton> */}
                         <Rating
                           name="read-only"
-                          value={product.ratingsAverage|| 0} // Provide fallback if undefined
+                          value={product.ratingsAverage || 0} // Provide fallback if undefined
                           readOnly
                           size="small"
                           precision={0.5}
@@ -449,6 +470,14 @@ export default function ViewProducts() {
                             </IconButton>
                           </Tooltip>
                         )}
+                        <Tooltip title="Product Analysis" placement="top">
+                          <IconButton
+                            onClick={() => navigate("/admin/analysis")}
+                            style={{ color: "green" }}
+                          >
+                            <QueryStatsIcon />
+                          </IconButton>
+                        </Tooltip>
                       </TableCell>
                     </TableRow>
                   ))}

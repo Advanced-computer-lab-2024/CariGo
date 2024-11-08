@@ -10,7 +10,7 @@ const activityRouter = require("./routes/activityRouter.js");
 const eventRouter = require("./routes/eventRouter.js");
 const reviewRouter = require("./routes/reviewRoutes.js")
 const touristRouter = require("./routes/touristRouter.js")
-
+const path = require('path')
 const cors = require("cors");
 
 const adminRouter= require("./routes/adminRouter.js");
@@ -27,22 +27,23 @@ const app = express();
 
 
 // LIMIT REQUESTS FROM SAME API
-const limiter = rateLimit({
-  windowMs: 60 * 60 * 1000, // 1 hour
-  max: 100, // limit each IP to 100 requests per windowMs
-  message: "Too many requests from this IP, please try again in an hour!⌚",
-});
-app.use("/cariGo", limiter);
+// const limiter = rateLimit({
+//   windowMs: 60 * 60 * 1000, // 1 hour
+//   max: 100, // limit each IP to 100 requests per windowMs
+//   message: "Too many requests from this IP, please try again in an hour!⌚",
+// });
+// app.use("/cariGo", limiter);
 
 app.use(
   cors({
     origin: "http://localhost:3000", // The port React is running on
+    methods: ['GET', 'POST', 'PUT', 'DELETE','PATCH'],
     credentials: true// allow session cookies from same site
   })
 ); // Enable CORS for all routes and origins
 // BODY PARSER, reading data from body into req.body
-app.use(bodyParser.raw({ type: "application/octet-stream", limit: "10mb" }));
-app.use(express.json({ limit: "10kb" }));
+app.use('/public',express.static(path.join(__dirname,'public')));
+app.use(bodyParser.raw({ type: "application/octet-stream"}));
 app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());

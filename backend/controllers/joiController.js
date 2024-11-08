@@ -53,6 +53,9 @@ const roleSchemas = {
     job: Joi.string().required().messages({
       "any.required": "Job is a required field for Tourist role.🫡",
     }),
+    selectedTags: Joi.required().messages({
+      "any.required": "Job is a required field for Tourist role.🫡",
+    }),
   }),
   Tour_Guide: Joi.object({
     mobile_number: Joi.string().required().messages({
