@@ -36,6 +36,7 @@ const MyPurchases = () => {
       {purchases.map((purchase) => (
         <PurchaseCard
           key={purchase._id}
+          id={purchase._id}
           name={purchase.ProductId.name}
           description={purchase.ProductId.description}
           price={purchase.ProductId.price}
