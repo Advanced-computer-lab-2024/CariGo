@@ -30,7 +30,7 @@ const TransportationSchema = new mongoose.Schema(
      
     },
     duration: Number,
-    estimatedArrivalTime: {
+    arrivalTime: {
       hours: Number,
       minutes: Number,
       dayTime: String,
