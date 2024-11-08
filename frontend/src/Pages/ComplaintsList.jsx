@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Badge, Button, Input, Select } from 'antd';
+import { Table, Badge, Input, Select, Layout } from 'antd';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import Sidebar from "./Sidebar";
+import TopBar from "./TopBar";
 
 const { Search } = Input;
 const { Option } = Select;
+const { Sider, Content, Header } = Layout;
 
 const ComplaintsList = () => {
   const [complaints, setComplaints] = useState([]);
@@ -67,8 +70,16 @@ const ComplaintsList = () => {
   ];
 
   return (
-    <div>
-      <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between' }}>
+ <Layout style={{ minHeight: '100vh' }}>
+      <Sider width={256} style={{ background: '#001529' }}>
+        <Sidebar />
+      </Sider>
+      <Layout>
+        <Header style={{ background: '#001529', padding: 0 }}>
+          <TopBar />
+        </Header>
+        <Content style={{ padding: '20px' }}>
+        <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between' }}>
         <Select
           placeholder="Filter by Status"
           style={{ width: 150 }}
@@ -90,7 +101,9 @@ const ComplaintsList = () => {
         rowKey="_id" // Updated to use the correct key for complaints
         loading={loading}
       />
-    </div>
+        </Content>
+      </Layout>
+    </Layout>
   );
 };
 
