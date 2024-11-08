@@ -5,6 +5,7 @@ import Tab from '@mui/material/Tab';
 import ActivityPostAdvList from './ActivityPostAdvList';
 import ActivityPostAdvertiser from './ActivityPostAdvertiser';
 import CreateActivityForm from '../Pages/CreateActivityForm';
+import TransportListAdvertiser from './TransportListAdvertiser';
 import { jwtDecode } from "jwt-decode";
 
 // Example Components for the tabs
@@ -43,6 +44,7 @@ export default function CenteredTabs() {
       >
         <Tab label="Create Activity" />
         <Tab label="Activity Post" />
+        <Tab label="My Transportations" />
         <Tab label="Settings" />
       </Tabs>
 
@@ -50,7 +52,8 @@ export default function CenteredTabs() {
       <Box sx={{ padding: 3 }}>
         {value === 0 && <CreateActivityForm />}  {/* Render Company Info in Tab 1 */}
         {value === 1 && <ActivityPostAdvList />}  {/* Render Activity Post in Tab 2 */}
-        {value === 2 && <div>Settings Component</div>}  {/* Placeholder for Settings in Tab 3 */}
+        {value === 2 && <TransportListAdvertiser/>}  {/* Placeholder for Settings in Tab 3 */}
+        {value === 3 && <div>Settings Component</div>}  {/* Placeholder for Settings in Tab 3 */}
       </Box>
     </Box>
   );
