@@ -37,7 +37,7 @@ const FlightCard = ({ flight, onClick }) =>{
       display: 'inline-flex', 
       flexDirection:'column', 
       minWidth:'400px',
-      maxWidth: '800px', // Starting width
+      maxWidth: '800px', 
       margin:'20px',
       marginTop:'20px',
       marginRight:'60px',
@@ -55,7 +55,8 @@ const FlightCard = ({ flight, onClick }) =>{
         {segments.map((segment, index) => (
           <FlightInfo
             key={index}
-            time={new Date(segment.departure.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+            time1={new Date(segment.departure.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+            time2={new Date(segment.arrival.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
             code={segment.flightNumber}
             city={`${segment.departure.airport} to ${segment.arrival.airport}`} // Displaying the route
             
@@ -63,7 +64,7 @@ const FlightCard = ({ flight, onClick }) =>{
         ))}
       </FlightDetails>
       </Box>
-      <FlightIcon sx={{scale:'3', fill:'#126782',margin:'30px', marginTop:'30px',marginLeft:"70px", transform: 'rotateZ(45deg)',}}/>
+      <FlightIcon sx={{scale:'3', fill:'#126782',margin:'30px', marginTop:'50px',marginLeft:"70px", transform: 'rotateZ(45deg)',}}/>
       {/* <Box sx={{display:'flex', flexDirection:'row', marginTop:'-120px',marginLeft:'12px',}}>
         <LuggageIcon sx={{ fill:'#126782'}}/>
       <Typography>{flight.includedCheckedBagsOnly}</Typography>

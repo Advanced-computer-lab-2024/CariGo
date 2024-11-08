@@ -5,6 +5,9 @@ import SelectChangeEvent, { Pagination } from "@mui/material";
 import SearchBar from "./SearchBar/SearchBar";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import AddIcon from "@mui/icons-material/Add";
+
+import { Tag } from "primereact/tag";
+
 import QueryStatsIcon from "@mui/icons-material/QueryStats";
 import {
   Box,
@@ -391,11 +394,13 @@ export default function ViewProducts() {
                         onClick={() => handleDetatils2(product._id)}
                       >
                         <Box display="flex" alignItems="center" gap={4}>
-                        <label htmlFor="file-upload" className="custom-file-upload">
-                        <img src={folderPics+product.mainImage} alt="p" />
-
-            </label>
-             <Paragraph>{product.name}</Paragraph>
+                          <label
+                            htmlFor="file-upload"
+                            className="custom-file-upload"
+                          >
+                            <img src={folderPics + product.mainImage} alt="p" />
+                          </label>
+                          <Paragraph>{product.name}</Paragraph>
                         </Box>
                       </TableCell>
 

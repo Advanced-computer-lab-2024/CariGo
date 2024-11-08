@@ -341,6 +341,25 @@ const readMyItineraries = async (req, res) => {
   }
 };
 
+const suggestedItineraries = async (req, res) => {
+  // Check if tags is an array; if it's not, make it an array (even if it's a single string)
+  const tags = Array.isArray(req.query.tags) ? req.query.tags : [req.query.tags];
+
+  try {
+    // Find itineraries with matching tags
+    const itineraries = await itineraryModel.find({
+      isActive: true,
+      isFlagged: false,
+      tags: { $in: tags }
+    }).populate("tags");
+    res.json(itineraries);
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching itineraries' });
+  }
+};
+
+
+
 const deleteItinerary = async (req, res) => {
   const { id } = req.params;
   if (mongoose.Types.ObjectId.isValid(id)) {
@@ -745,5 +764,6 @@ module.exports = {
   BookItinerary,
   MyItineraryBookings,
   CancelItineraryBooking,
-  currencyConversion
+  currencyConversion,
+  suggestedItineraries
 };

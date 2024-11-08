@@ -1,5 +1,7 @@
 const Amadeus = require('amadeus');
-
+const User = require("../models/User");
+const mongoose = require('mongoose');
+const bookingModel = require("../models/Bookings");
 const amadeus = new Amadeus({
   clientId: 'momcIYlJsGggAZfsLmPF4vnrr8P3dVRa',
   clientSecret: 'M6DDYSiCXacAm7i9'
@@ -344,9 +346,201 @@ const getSeatmap = async (req, res) => {
   }
 };
 
+const BookHotel = async (req, res) => {
+  const { hotelId } = req.params;
+  const { PaymentMethod ,price} = req.body;
+  const UserId = req.user.id;
+  console.log(hotelId);
+  console.log(1);
+  let CardNumber;
+  let booking;
+
+  if (
+
+    mongoose.Types.ObjectId.isValid(UserId)
+  ) {
+    try {
+      // Fetch the activity to get the price
+      
+
+      const user = await User.findById(UserId);
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      if (PaymentMethod === "Card") {
+        CardNumber = req.body.CardNumber;
+        booking = await bookingModel.create({
+          HotelId: hotelId,
+          UserId: UserId,
+          PaymentMethod: PaymentMethod,
+          Status: true,
+          CardNumber: CardNumber,
+        });
+      } else {
+        booking = await bookingModel.create({
+          HotelId: hotelId,
+          UserId: UserId,
+          PaymentMethod: PaymentMethod,
+          Status: true,
+        });
+      }
+
+      // Add loyalty points
+      user.addLoyaltyPoints(price);
+      await user.save({ validateBeforeSave: false });
+
+      res.status(200).json({
+        message: "Booked successfully",
+        booking,
+        loyaltyPointsEarned: Math.floor(price * (user.level === 1 ? 0.5 : user.level === 2 ? 1 : 1.5)),
+        newTotalPoints: user.loyaltyPoints,
+        newLevel: user.level,
+        newBadge: user.badge
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to book", message: error.message });
+      console.error("Error while booking:", error);
+    }
+  } else {
+    res.status(400).json({ error: "Invalid activity ID or user ID format" });
+  }
+};
+
+const BookFlight= async (req, res) => {
+  const { flightId } = req.params;
+  
+  const { PaymentMethod ,price} = req.body;
+  const UserId = req.user.id;
+  console.log(UserId);
+  let CardNumber;
+  let booking;
+
+  if (
+
+    mongoose.Types.ObjectId.isValid(UserId)
+  ) {
+    try {
+      // Fetch the activity to get the price
 
 
+      const user = await User.findById(UserId);
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
 
+      if (PaymentMethod === "Card") {
+        CardNumber = req.body.CardNumber;
+        booking = await bookingModel.create({
+          FlightId: flightId,
+          UserId: UserId,
+          PaymentMethod: PaymentMethod,
+          Status: true,
+          CardNumber: CardNumber,
+        });
+      } else {
+        booking = await bookingModel.create({
+          FlightId: flightId,
+          UserId: UserId,
+          PaymentMethod: PaymentMethod,
+          Status: true,
+        });
+      }
 
+      // Add loyalty points
+     user.addLoyaltyPoints(price);
+      await user.save({ validateBeforeSave: false });
 
-module.exports={getFlights,cities,getHotels,getHotelDetails,getSeatmap};
+      res.status(200).json({
+        message: "Booked successfully",
+        booking,
+        loyaltyPointsEarned: Math.floor(price * (user.level === 1 ? 0.5 : user.level === 2 ? 1 : 1.5)),
+        newTotalPoints: user.loyaltyPoints,
+        newLevel: user.level,
+        newBadge: user.badge
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to book", message: error.message });
+      console.error("Error while booking:", error);
+    }
+  } else {
+    res.status(400).json({ error: "Invalid activity ID or user ID format" });
+  }
+};
+const MyHotelBookings = async (req, res) => {
+   UserId  = req.user.id; // User ID from request body
+  if (mongoose.Types.ObjectId.isValid(UserId)) {
+    try {
+      const bookings = await bookingModel.find({UserId,HotelId: { $ne: null }}).sort({createdAt: -1});
+      return res.status(200).json(bookings);
+    } catch {
+      res.status(500).json({ error: "Failed to fetch bookings" });
+      console.error("Error while booking:", error);
+    }
+  } else {
+    res.status(400).json({ error: "Invalid event ID format" });
+  }
+};
+
+const MyFlightBookings = async (req, res) => {
+  UserId  = req.user.id; // User ID from request body
+ if (mongoose.Types.ObjectId.isValid(UserId)) {
+   try {
+     const bookings = await bookingModel.find({UserId,FlightId: { $ne: null }}).sort({createdAt: -1});
+     return res.status(200).json(bookings);
+   } catch {
+     res.status(500).json({ error: "Failed to fetch bookings" });
+     console.error("Error while booking:", error);
+   }
+ } else {
+   res.status(400).json({ error: "Invalid event ID format" });
+ }
+};
+
+const CancelhotelBooking = async (req, res) => {
+  UserId  = req.user.id; // User ID from request body
+ const { HotelId } = req.params; // Event ID from URL parameters
+ if ( mongoose.Types.ObjectId.isValid(UserId)) {
+     try {
+         const bookings = await bookingModel.updateMany(
+             { UserId, HotelId }, // Filter to find documents with both UserId and ActivityId
+             { $set: { Status: false } } // Update to set Status to false
+           );
+           res.status(200).json({
+             message: "Bookings canceled successfully",
+             updatedBookingsCount: bookings.modifiedCount // shows how many bookings were updated
+           }); 
+     } catch {
+       res.status(500).json({ error: "Failed to fetch booking" });
+       console.error("Error while booking:", error);
+     }
+   } else {
+     res.status(400).json({ error: "Invalid event ID format" });
+   }
+};
+
+const CancelflightBooking = async (req, res) => {
+  UserId  = req.user.id; // User ID from request body
+ const { FlightId } = req.params; // Event ID from URL parameters
+ if ( mongoose.Types.ObjectId.isValid(UserId)) {
+     try {
+         const bookings = await bookingModel.updateMany(
+             { UserId, FlightId }, // Filter to find documents with both UserId and ActivityId
+             { $set: { Status: false } } // Update to set Status to false
+           );
+           res.status(200).json({
+             message: "Bookings canceled successfully",
+             updatedBookingsCount: bookings.modifiedCount // shows how many bookings were updated
+           }); 
+     } catch {
+       res.status(500).json({ error: "Failed to fetch booking" });
+       console.error("Error while booking:", error);
+     }
+   } else {
+     res.status(400).json({ error: "Invalid event ID format" });
+   }
+};
+
+module.exports={getFlights,cities,getHotels,getHotelDetails,getSeatmap,CancelflightBooking,CancelhotelBooking,BookHotel,BookFlight,MyHotelBookings,
+  MyFlightBookings
+};

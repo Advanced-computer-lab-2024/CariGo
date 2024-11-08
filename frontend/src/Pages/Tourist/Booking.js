@@ -5,7 +5,7 @@ import FlightIcon from '@mui/icons-material/Flight';
 import LocationCityIcon from '@mui/icons-material/LocationCity';
 import CommuteIcon from '@mui/icons-material/Commute';
 import FlightBooking from "../FlightBooking";
-import HotelBooking from "./HotelBooking";
+import HotelBooking from "../../components/HotelBooking";
 import TransportationBooking from "../../components/TransportationBooking";
 export default function BookingPage(){
     const[selectedBooking, setSelectedBooking]= useState("");

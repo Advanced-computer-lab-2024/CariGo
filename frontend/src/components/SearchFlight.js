@@ -8,7 +8,7 @@ import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import {Box,Button,FormControl,FormControlLabel,InputAdornment, InputLabel, OutlinedInput,
-  TextField,Typography,List,ListItem,ClickAwayListener,Select,Menu,MenuItem} from "@mui/material";
+  TextField,Typography,List,ListItem,ClickAwayListener,Select,Menu,MenuItem, CircularProgress} from "@mui/material";
 import FlightCardList from "./FlightCardList"; 
 import FlightClassIcon from '@mui/icons-material/FlightClass';
 
@@ -29,111 +29,111 @@ const Frame = () => {
   const [isToDropdownOpen, setIsToDropdownOpen] = useState(false);
   const [flights, setFlights] = useState([]); 
 
-const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-const inputRef = useRef(null); //refrence class field to deselect on click away
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const inputRef = useRef(null); //refrence class field to deselect on click away
 
-const handleClassSelect = (event) => {
-  setClass(event.target.value);
+    const handleClassSelect = (event) => {
+      setClass(event.target.value);
 
-  console.log(event.target.value,Class);
-  setIsDropdownOpen(false);
-};
+      console.log(event.target.value,Class);
+      setIsDropdownOpen(false);
+    };
 
 
-  const fetchCities = async (keyword, type) => {
-    if (keyword.length < 2) {
-      if (type === 'from') setFromSuggestions([]);
-      else setToSuggestions([]);
-      return;
-    }
-    setIsLoading(true);
-    try {
-      const response = await fetch(`http://localhost:4000/cariGo/flights/cities?keyword=${keyword}`);
-      const data = await response.json();
-      if (type === 'from') setFromSuggestions(data);
-      else setToSuggestions(data);
-    } catch (error) {
-      console.error("Error fetching cities:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+      const fetchCities = async (keyword, type) => {
+        if (keyword.length < 2) {
+          if (type === 'from') setFromSuggestions([]);
+          else setToSuggestions([]);
+          return;
+        }
+        
+        try {
+          const response = await fetch(`http://localhost:4000/cariGo/flights/cities?keyword=${keyword}`);
+          const data = await response.json();
+          if (type === 'from') setFromSuggestions(data);
+          else setToSuggestions(data);
+        } catch (error) {
+          console.error("Error fetching cities:", error);
+        } 
+      };
 
-  const handleFromInputChange = (event) => {
-    const value = event.target.value;
-    setFromCity(value);
-    fetchCities(value, 'from');
-    setIsFromDropdownOpen(true);
-  };
+      const handleFromInputChange = (event) => {
+        const value = event.target.value;
+        setFromCity(value);
+        fetchCities(value, 'from');
+        setIsFromDropdownOpen(true);
+      };
 
-  const handleToInputChange = (event) => {
-    const value = event.target.value;
-    setToCity(value);
-    fetchCities(value, 'to');
-    setIsToDropdownOpen(true);
-  };
+      const handleToInputChange = (event) => {
+        const value = event.target.value;
+        setToCity(value);
+        fetchCities(value, 'to');
+        setIsToDropdownOpen(true);
+      };
 
-  const handleCitySelect = (city, type) => {
-    if (type === 'from') {
-      setFromCity(city.city);
-      setFromCityCode(city.iataCode);
-      setFromSuggestions([]);
-      setIsFromDropdownOpen(false);
-    } else {
-      setToCity(city.city);
-      settoCityCode(city.iataCode);
-      setToSuggestions([]);
-      setIsToDropdownOpen(false);
-    }
-  };
+      const handleCitySelect = (city, type) => {
+        if (type === 'from') {
+          setFromCity(city.city);
+          setFromCityCode(city.iataCode);
+          setFromSuggestions([]);
+          setIsFromDropdownOpen(false);
+        } else {
+          setToCity(city.city);
+          settoCityCode(city.iataCode);
+          setToSuggestions([]);
+          setIsToDropdownOpen(false);
+        }
+      };
 
-  const handleClickAway = () => {
-    setIsFromDropdownOpen(false);
-    setIsToDropdownOpen(false);
-    setFromSuggestions([]);
-    setToSuggestions([]);
-    
-    //inputRef.current?.blur(); 
-  };
+      const handleClickAway = () => {
+        setIsFromDropdownOpen(false);
+        setIsToDropdownOpen(false);
+        setFromSuggestions([]);
+        setToSuggestions([]);
+        
+        //inputRef.current?.blur(); 
+      };
 
-  const incrementAdults = () => {
-    setAdults((prev) => prev + 1);
-  };
+      const incrementAdults = () => {
+        setAdults((prev) => prev + 1);
+      };
 
-  const decrementAdults = () => {
-    setAdults((prev) => (prev > 1 ? prev - 1 : 1)); // Prevent going below 1
-  };
+      const decrementAdults = () => {
+        setAdults((prev) => (prev > 1 ? prev - 1 : 1)); // Prevent going below 1
+      };
 
-  const incrementChildren = () => {
-    setChildren((prev) => prev + 1);
-  };
+      const incrementChildren = () => {
+        setChildren((prev) => prev + 1);
+      };
 
-  const decrementChildren = () => {
-    setChildren((prev) => (prev > 1 ? prev - 1 : 1)); // Prevent going below 1
-  };
+      const decrementChildren = () => {
+        setChildren((prev) => (prev > 1 ? prev - 1 : 1)); // Prevent going below 1
+      };
 
-  
+      
 
-  const handleSearchClick = async () => {
-    if (!fromCity || !toCity || !date || !Class) {
-      alert("Please fill in all fields");
-      return;
-    }
+      const handleSearchClick = async () => {
+        if (!fromCity || !toCity || !date || !Class) {
+          alert("Please fill in all fields");
+          return;
+        }
 
-    const fromIATA = fromCityCode; // Assuming the IATA code is part of the selected city object
-    const toIATA = toCityCode; // Assuming the IATA code is part of the selected city object
-    const formattedDate = date.format("YYYY-MM-DD");
-
-    try {
-        console.log(`http://localhost:4000/cariGo/flights//getFlights?origin=${fromIATA}&destination=${toIATA}&departureDate=${formattedDate}&adults=${adults}&children=${children}&travelClass=${Class}`);
-      const response = await fetch(`http://localhost:4000/cariGo/flights//getFlights?origin=${fromIATA}&destination=${toIATA}&departureDate=${formattedDate}&adults=${adults}&children=${children}&travelClass=${Class}`);
-      const data = await response.json();
-      console.log("Flight data:", data); 
-      setFlights(data);// Handle the flight data as needed
-    } catch (error) {
-      console.error("Error fetching flights:", error);
-    }
-  };
+        const fromIATA = fromCityCode; // Assuming the IATA code is part of the selected city object
+        const toIATA = toCityCode; // Assuming the IATA code is part of the selected city object
+        const formattedDate = date.format("YYYY-MM-DD");
+        setIsLoading(true);
+        try {
+            console.log(`http://localhost:4000/cariGo/flights//getFlights?origin=${fromIATA}&destination=${toIATA}&departureDate=${formattedDate}&adults=${adults}&children=${children}&travelClass=${Class}`);
+          const response = await fetch(`http://localhost:4000/cariGo/flights//getFlights?origin=${fromIATA}&destination=${toIATA}&departureDate=${formattedDate}&adults=${adults}&children=${children}&travelClass=${Class}`);
+          const data = await response.json();
+          console.log("Flight data:", data); 
+          setFlights(data);// Handle the flight data as needed
+        } catch (error) {
+          console.error("Error fetching flights:", error);
+        }finally {
+          setIsLoading(false);
+        }
+      };
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -315,9 +315,11 @@ const handleClassSelect = (event) => {
 
          {/* Render FlightCard if flights are available */}
          <Box sx={{padding:"20px", marginLeft:"10%" , overflow:'auto',marginTop:'4%',}}>
-         {flights.length > 0 && (
+         {isLoading ? <CircularProgress sx={{color:'#126782', margin:'70px'}} /> :
+         flights.length > 0 && (
             <FlightCardList flights={flights} />
-          )}
+          )
+          }
           </Box>
       </Box>
     </LocalizationProvider>

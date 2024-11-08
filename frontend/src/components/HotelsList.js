@@ -1,23 +1,15 @@
 import React from "react";
 import { useNavigate } from 'react-router-dom';
-import { Box, Typography, CircularProgress } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import HotelCard from "./HotelCard";
 
-const HotelCardList = ({ hotels = [], loading = false }) => {
+  const HotelCardList = ({ hotels = [], loading = false }) => {
   const navigate = useNavigate();
 
   const handleCardClick = (hotel) => {
     navigate(`/flight-details/${hotel.id}`, { state: { hotel } });
   };
 
-  if (loading) {
-    return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-        <CircularProgress />
-        <Typography sx={{ ml: 2 }}>Loading hotels...</Typography>
-      </Box>
-    );
-  }
 
   if (!Array.isArray(hotels) ) {
     return (

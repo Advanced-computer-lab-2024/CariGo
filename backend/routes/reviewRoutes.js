@@ -1,5 +1,5 @@
 const express = require("express");
-const catchAsync = require('../utils/catchAsync')
+const catchAsync = require("../utils/catchAsync");
 const reviewController = require("./../controllers/reviewController");
 const authcontroller = require("./../controllers/authController");
 
@@ -9,7 +9,6 @@ const router = express.Router({ mergeParams: true });
 router.route("/product/:id").get(reviewController.getAllProductReviews);
 
 router.use(authcontroller.protect);
-
 
 router
   .route("/product")
@@ -29,7 +28,7 @@ router
     reviewController.createReview
   );
 
-  router.route("/itinerary/:id").get(reviewController.getAllItineraryReviews);
+router.route("/itinerary/:id").get(reviewController.getAllItineraryReviews);
 
 router
   .route("/itinerary")
@@ -39,7 +38,7 @@ router
     reviewController.createReview
   );
 
-  router.route("/tourGuide/:id").get(reviewController.getAllTourGuideReviews);
+router.route("/tourGuide/:id").get(reviewController.getAllTourGuideReviews);
 
 router
   .route("/tourGuide")

@@ -10,21 +10,29 @@ import PinDropIcon from '@mui/icons-material/PinDrop';
 const HotelCard = ({ hotel,offer }) => {
   const navigate = useNavigate();
 
-  const formatDuration = (duration) => {
-    if (!duration) return ""; // Handle cases where duration might be undefined
-    const durationString = duration.substring(2);
-    return durationString.replace(/H/g, ' hours ').replace(/M/g, ' minutes ').trim();
-  };
+  function calculateStayDuration(checkInDate, checkOutDate) {
+    // Convert the input dates to Date objects
+    const checkIn = new Date(checkInDate);
+    const checkOut = new Date(checkOutDate);
+  
+    // Calculate the difference in time (in milliseconds)
+    const timeDifference = checkOut - checkIn;
+  
+    // Calculate the number of days
+    const days = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
+  
+    return days;
+  }
 
   return (
-    <Card variant="outlined" sx={{
-      border: '2px solid #126782',
-      borderColor: '#126782',
-      borderRadius: '10px',
-      height :'700px',
-      maxHeight: '700px',
-      display: 'flex',
-      flexDirection: 'column',
+    <Card variant="outlined"  sx={{
+      border: '2px solid #126782', 
+      borderColor:'#126782',
+      borderRadius:'10px', 
+      //height:'400px',
+      maxHheight:'600px',
+      display: 'flex', 
+      flexDirection:'column', 
       maxWidth: '450px',
       margin:'20px',
       marginTop:'20px',
@@ -41,7 +49,9 @@ const HotelCard = ({ hotel,offer }) => {
 
         {/*INFO BOX*/}
         <Box sx={{ margin: "10px", marginLeft: '10px' }}>
-          <Typography sx={{ color: '#126782', padding: '1px', fontWeight: 'bold' }}>Duration</Typography>
+          <Typography sx={{ color: '#126782', padding: '1px', fontWeight: 'bold' }}>
+            {calculateStayDuration(offer.checkInDate,offer.checkOutDate)} days
+            </Typography>
           <Box sx={{ display: 'flex', gap: '50px', marginLeft: '20px', padding: '5px' }}>
             <Box>
               <Typography sx={{ color: '#126782', padding: '1px' }}>from</Typography>

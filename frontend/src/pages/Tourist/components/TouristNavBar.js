@@ -16,8 +16,10 @@ import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 
 
-const pages = ['Activities', 'Itinerary', 'Historical Places','Products','File Complaint'];
-const settings = ['My Profile', 'Logout']; // Updated settings
+
+const pages = ['Suggested For You','Activities', 'Itinerary', 'Historical Places','Products','File Complaint','Book Services'];
+const settings = ['My Profile', 'Logout','change password']; // Updated settings
+
 
 function TouristNB() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -42,6 +44,11 @@ function TouristNB() {
   };
 
   // Navigation functions
+
+  const loadSuggestedForYou = () => {
+    handleCloseNavMenu();
+    navigate('/Tourist');
+  };
   const loadActivities = () => {
     handleCloseNavMenu();
     navigate('/tourist-activities');
@@ -69,6 +76,11 @@ function TouristNB() {
     // Add your logout logic here
     navigate('/login'); // Example navigation after logout
   };
+  const handleChangePass=()=>{
+    handleCloseUserMenu();
+
+    navigate('/change-password');
+  }
   const loadProducts = () =>{
     handleCloseUserMenu();
     // Add your logout logic here
@@ -77,6 +89,10 @@ function TouristNB() {
   const loadFileComplaint = () => {
     handleCloseNavMenu();
     navigate('/tourist/file-complaint'); 
+  };
+  const loadBookServices = () => {
+    handleCloseNavMenu();
+    navigate('/book-services');
   };
   return (
     <AppBar position="static" sx={{ backgroundColor: '#004c74' }}>
@@ -145,31 +161,41 @@ function TouristNB() {
           {/* Desktop Menu */}
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             <Button
-              onClick={loadActivities}
+              onClick={loadSuggestedForYou}
               sx={{ my: 2, color: 'white', display: 'block' }}
             >
               {pages[0]}
             </Button>
+            {/* <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}> */}
             <Button
-              onClick={loadItinerary}
+              onClick={loadActivities}
               sx={{ my: 2, color: 'white', display: 'block' }}
             >
               {pages[1]}
             </Button>
             <Button
-              onClick={loadHistoricalPlaces}
+              onClick={loadItinerary}
               sx={{ my: 2, color: 'white', display: 'block' }}
             >
               {pages[2]}
             </Button>
             <Button
-              onClick={loadProducts}
+              onClick={loadHistoricalPlaces}
               sx={{ my: 2, color: 'white', display: 'block' }}
             >
               {pages[3]}
             </Button>
+            <Button
+              onClick={loadProducts}
+              sx={{ my: 2, color: 'white', display: 'block' }}
+            >
+              {pages[4]}
+            </Button>
               <Button onClick={loadFileComplaint} sx={{ my: 2, color: 'white', display: 'block' }}>
-            {pages[4]}
+            {pages[5]}
+            </Button>
+            <Button onClick={loadBookServices} sx={{ my: 2, color: 'white', display: 'block' }}>
+            {pages[6]}
             </Button>
           </Box>
 
@@ -195,6 +221,9 @@ function TouristNB() {
               </MenuItem>
               <MenuItem onClick={handleLogout}>
                 <Typography sx={{ textAlign: 'center' }}>Logout</Typography>
+              </MenuItem>
+              <MenuItem onClick={handleChangePass}>
+                <Typography sx={{ textAlign: 'center' }}>Change Password</Typography>
               </MenuItem>
             </Menu>
           </Box>

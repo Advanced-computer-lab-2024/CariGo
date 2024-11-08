@@ -20,7 +20,7 @@ const WarningText = styled(Typography)(() => ({
   marginBottom: "16px",
 }));
 
-export default function QuantityForm({ quantity, onQuantityChange }) {
+export default function QuantityForm({ quantity, onQuantityChange, isTermsChecked, onCheckboxChange }) {
   const handleTicketChange = (event) => {
     const value = parseInt(event.target.value);
     onQuantityChange(isNaN(value) ? 1 : Math.max(1, value));
@@ -51,7 +51,14 @@ export default function QuantityForm({ quantity, onQuantityChange }) {
       </Grid>
       <FormGrid item xs={12}>
         <FormControlLabel
-          control={<Checkbox name="agreeToTerms" value="yes" />}
+          control={
+            <Checkbox
+              name="agreeToTerms"
+              value="yes"
+              checked={isTermsChecked}             // <--- Control checked value
+              onChange={onCheckboxChange}          // <--- Trigger change handler
+            />
+          }
           label="I agree to the booking terms and conditions"
         />
       </FormGrid>

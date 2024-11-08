@@ -4,11 +4,13 @@ import styled from "styled-components";
 import LuggageIcon from '@mui/icons-material/Luggage';
 
 
-const FlightInfo = ({ time, code, city }) => {
+const FlightInfo = ({ time1, time2, city,code }) => {
   return (
     <InfoContainer>
       <City >{city}</City>
-      <Time>{time}</Time>
+      <Time>{time1}</Time>
+      <Typography color="#126782">to</Typography>
+      <Time>{time2}</Time>
       {/* <Code>{code}</Code> */}
       
     </InfoContainer>
@@ -18,7 +20,7 @@ const FlightInfo = ({ time, code, city }) => {
 const InfoContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap:10px;
+  //gap:10px;
   font-weight: bold;
   color: #126782;
   width: 200px;
@@ -30,7 +32,7 @@ const Time = styled.span`
  display: flex;
   flex-direction: row;
   color: #929292;
-  margin-top:10px;
+  margin-top:0px;
 `;
 
 // const Code = styled.span`
@@ -42,9 +44,9 @@ const Time = styled.span`
 // `;
 
 const City = styled.span`
-
   white-space: nowrap;
   margin-top: 10px;
+  margin-bottom:10px
 `;
 
 export default FlightInfo;

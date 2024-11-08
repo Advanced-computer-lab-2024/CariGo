@@ -80,20 +80,26 @@ import AdminViewEvents from "./Pages/AdminViewEvents.js"
 import AdminItineraryDetails from "./Pages/itineraries/AdminItinDetails.js";
 import AdminViewItineraries from "./Pages/itineraries/AdminViewItineraries.js"
 import TouristHistory from "./Pages/Tourist/TouristHistory.js";
-import FlightBooking from './Pages/FlightBooking.jsx';
+//import FlightBooking from './Pages/FlightBooking.jsx';
 import FlightDetailsPage from "./Pages/FlightDetailsCard.jsx";
 import FileComplaintForm from "./Pages/Tourist/FileComplaintForm";
 import ActivityPostDetail from "./components/ActivityPostDetail.js";
-import HotelBooking from "./Pages/Tourist/HotelBooking.js";
-import BookingPage from "./Pages/Tourist/Booking.js";
+//import HotelBooking from "./components/HotelBooking.js";
+import BookServicesPage from "./Pages/Tourist/Booking.js";
 import TransportationSearch from "./Pages/TransportationSearch.js" ;
 
 import AdminViewActivity from "./Pages/activities/AdminViewActivity.js";
+
+import Pass from "./Pages/changePassword.js";
+import UploadDocumentsPage from "./Pages/UploadDocuments.js";
+
 import ProductAnalysis from "./Pages/products/ProductAnalysis.jsx";
 import ProductDetails2 from "./Pages/products/ProductDetails2.jsx";
 import MyBookings from "./Pages/Tourist/MyBookings.js";
 import MyBookedActivities from "./Pages/Tourist/MyBookedActivities.js"
+import CreateTransportation from "./components/CreateTransportationForm.js"
 //const dotenv = require('dotenv')
+
 function App() {
   
   const token = localStorage.getItem("jwt");
@@ -156,7 +162,8 @@ function App() {
         <Route path="/Tourist-History" element={<TouristHistory />} />
         <Route path="/tourist/file-complaint" element={<FileComplaintForm />} />
         {/* <Route path="/guest-places" element={<GuestViewVintage/>} /> */}
-        <Route path="/createActivity" element={<CreateActivityForm userId={localStorage.getItem("id")} />} /> 
+        <Route path="/createActivity" element={<CreateActivityForm userId={localStorage.getItem("id")} />} />
+        <Route path="/createTransportation" element={<CreateTransportation userId={localStorage.getItem("id")} />} /> 
         <Route path="/Register-Tourist" element={<Checkout role={"Tourist"}/>} />
         {/* <Route path="/Register-Tourist" element={<SignUp/>} /> */}
         <Route path="/Register-Seller" element={<Checkout role={"Seller"}/>} />
@@ -205,12 +212,15 @@ function App() {
         <Route path="/guest-places" element={<GuestViewVintage/>} />
         <Route path="/tourist-places" element={<TouristViewVintage />} />
         <Route path="/createVintage" element={<CreateVintageForm />} />
-        <Route path="/booking" element={<BookingPage/>} />
-        <Route path="/flight" element={<FlightBooking/>} />
+        <Route path="/book-services" element={<BookServicesPage/>} />
+        {/* <Route path="/flight" element={<FlightBooking/>} /> */}
         <Route path="/flight-details/:id" element={<FlightDetailsPage/>} />
-        <Route path="/hotels" element={<HotelBooking/>} />
+        {/* <Route path="/hotels" element={<HotelBooking/>} /> */}
         <Route path="/map" element={<TransportationSearch/>} />  
         <Route path="/sellerProfile" element={<SellerProfile userId={localStorage.getItem("id")} />} />
+        <Route path="/change-password" element={<Pass/>} />
+        <Route path="/upload" element={<UploadDocumentsPage/>} />
+
         <Route path="/checkout/:type/:id" element={<PaymentCheckout />} />
 
 
