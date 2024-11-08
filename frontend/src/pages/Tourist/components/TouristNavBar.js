@@ -17,7 +17,7 @@ import { Link } from 'react-router-dom';
 
 
 
-const pages = ['Suggested For You','Activities', 'Itinerary', 'Historical Places','Products','File Complaint'];
+const pages = ['Suggested For You','Activities', 'Itinerary', 'Historical Places','Products','File Complaint','Book Services'];
 const settings = ['My Profile', 'Logout','change password']; // Updated settings
 
 
@@ -89,6 +89,10 @@ function TouristNB() {
   const loadFileComplaint = () => {
     handleCloseNavMenu();
     navigate('/tourist/file-complaint'); 
+  };
+  const loadBookServices = () => {
+    handleCloseNavMenu();
+    navigate('/book-services');
   };
   return (
     <AppBar position="static" sx={{ backgroundColor: '#004c74' }}>
@@ -189,6 +193,9 @@ function TouristNB() {
             </Button>
               <Button onClick={loadFileComplaint} sx={{ my: 2, color: 'white', display: 'block' }}>
             {pages[5]}
+            </Button>
+            <Button onClick={loadBookServices} sx={{ my: 2, color: 'white', display: 'block' }}>
+            {pages[6]}
             </Button>
           </Box>
 
