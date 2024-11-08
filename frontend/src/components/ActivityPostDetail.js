@@ -1,14 +1,17 @@
 import ActivityPost from "./DetailedActivityPost";
-import { useState,useEffect } from "react";
-import { useParams,useNavigate } from "react-router-dom"; 
-import NavBar from"../Pages/Tourist/components/TouristNavBar";
-import { Button,Box } from "@mui/material";
+import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom"; 
+import NavBar from "../Pages/Tourist/components/TouristNavBar";
+import { Button, Box } from "@mui/material";
 
-
-
-export default function ActivityDetail(){
+export default function ActivityDetail() {
     const { id } = useParams({});
     const [activity, setActivities] = useState({});
+    const navigate = useNavigate();
+
+    const handleClick = () => {
+        navigate(`/checkout/activity/${id}`); // Update the navigation path
+    };
 
     useEffect(() => {
         // Fetch activities from the backend API
@@ -27,7 +30,7 @@ export default function ActivityDetail(){
         };
 
         fetchActivities(); // Call the function to fetch activities
-    }, []);
+    }, [id]);
 
     const StringDate = (date) => {
         const d = new Date(date);
@@ -36,8 +39,8 @@ export default function ActivityDetail(){
         const year = d.getFullYear();
         return `${day}/${month}/${year}`;
     };
-  
-    const calculateDuration=(date1,date2)=>{
+
+    const calculateDuration = (date1, date2) => {
         const start = new Date(date1);
         const end = new Date(date2);
         
@@ -49,42 +52,48 @@ export default function ActivityDetail(){
       
         // Determine the largest unit
         if (years > 0) {
-          return `${years} year${years > 1 ? 's' : ''}`;
+            return `${years} year${years > 1 ? 's' : ''}`;
         } else if (months > 0) {
-          return `${months} month${months > 1 ? 's' : ''}`;
+            return `${months} month${months > 1 ? 's' : ''}`;
         } else if (weeks > 0) {
-          return `${weeks} week${weeks > 1 ? 's' : ''}`;
+            return `${weeks} week${weeks > 1 ? 's' : ''}`;
         } else {
-          return `${days} day${days > 1 ? 's' : ''}`;
+            return `${days} day${days > 1 ? 's' : ''}`;
         }
-    }
-    const navigate = useNavigate();
-    return(
-        <div>
-    <NavBar/>
-    <Box sx={{display: "flex", flexDirection :'column', marginLeft:'15%'}}>
-    <Button  onClick={() => navigate(`/activities`)}
-     sx={{backgroundColor:"#126782" , color:'white', cornerRadius:'8px',width:'80px',margin:'30px',marginBottom:'10px'}}>
-        Back</Button>
-    <ActivityPost 
-        id={activity._id}
-        start_date={StringDate(activity.start_date)}
-        end_date={StringDate(activity.end_date)}
-        location={activity.locations}
-        duration={calculateDuration(activity.start_date, activity.end_date)}
-        price={activity.price}
-        category={activity.Category}
-        rating={activity.ratingsAverage}
-        discount={activity.discount}
-        isOpened={activity.isOpened ? 'open' : 'closed'}
-        title={activity.title}
-        tag={activity.tag}
-        description={activity.description}
-        img={activity.img}
+    };
 
-        sx={{display:'flex', position: 'relative', justifyContent:'center'}}
-    />
-    </Box>
-    </div>
-    )
+    return (
+        <div>
+            <NavBar />
+            <Box sx={{ display: "flex", flexDirection: 'column', marginLeft: '15%' }}>
+                <Button onClick={() => navigate(`/activities`)}
+                    sx={{ backgroundColor: "#126782", color: 'white', borderRadius: '8px', width: '80px', margin: '30px', marginBottom: '10px' }}>
+                    Back
+                </Button>
+                <ActivityPost 
+                    id={activity._id}
+                    start_date={StringDate(activity.start_date)}
+                    end_date={StringDate(activity.end_date)}
+                    location={activity.locations}
+                    duration={calculateDuration(activity.start_date, activity.end_date)}
+                    price={activity.price}
+                    category={activity.Category}
+                    rating={activity.ratingsAverage}
+                    discount={activity.discount}
+                    isOpened={activity.isOpened ? 'open' : 'closed'}
+                    title={activity.title}
+                    tag={activity.tag}
+                    description={activity.description}
+                    img={activity.img}
+                    sx={{ display: 'flex', position: 'relative', justifyContent: 'center' }}
+                />
+                {/* Place the button below the ActivityPost */}
+                <Box sx={{ display: "flex", justifyContent: "center", marginTop: '20px' }}>
+                    <Button variant="contained" color="primary" onClick={handleClick}>
+                        Book Now
+                    </Button>
+                </Box>
+            </Box>
+        </div>
+    );
 }
