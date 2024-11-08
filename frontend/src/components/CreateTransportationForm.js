@@ -14,36 +14,47 @@ export default function CreateTransportationForm() {
   const [carType, setCarType] = useState('');
   const [plateNumber, setPlateNumber] = useState('');
   const [departureHour, setDepartureHour] = useState('');
-  const [departureMinute, setDepartureMinute] = useState('');
-  const [departureAmPm, setDepartureAmPm] = useState('AM');
-  const [departureLocation, setDepartureLocation] = useState({ lat: 40.7128, lng: -74.0060 }); // Default coordinates for departure (New York City)
-  const [arrivalLocation, setArrivalLocation] = useState({ lat: 34.0522, lng: -118.2437 }); // Default coordinates for arrival (Los Angeles)
+  const [departureMinutes, setDepartureMinutes] = useState('');
+  const [departureDayTime, setDepartureDayTime] = useState('am');
 
+  // Departure and arrival locations stored as lat/lng coordinates
+  const [departureLan, setDepartureLan] = useState(40.7128);
+  const [departureLon, setDepartureLon] = useState(-74.0060);
+  const [arrivalLan, setArrivalLan] = useState(34.0522);
+  const [arrivalLon, setArrivalLon] = useState(-118.2437);
+
+  // Location descriptions
+  const [departureLocationDisc, setDepartureLocationDisc] = useState('');
+  const [arrivalLocationDisc, setArrivalLocationDisc] = useState('');
+
+  // Other fields
   const [price, setPrice] = useState(0);
   const [discount, setDiscount] = useState(0);
   const [ac, setAc] = useState(false);
   const [bookingOpened, setBookingOpened] = useState(true);
 
+  // Error handling
   const [errorMessages, setErrorMessages] = useState({});
   const [isMapVisible, setIsMapVisible] = useState(false); // State to toggle map visibility
-  const [isMapVisible1, setIsMapVisible1] = useState(false); 
+  const [isMapVisible1, setIsMapVisible1] = useState(false);
   const [locationType, setLocationType] = useState(''); // Track if we're choosing departure or arrival location
 
-  // Validate fields
+  // Validate form fields
   const validateFields = () => {
     const errors = {};
     if (!driverNumber) errors.driverNumber = "Driver number is required.";
     if (!carType) errors.carType = "Car type is required.";
     if (!plateNumber) errors.plateNumber = "Plate number is required.";
-    if (!departureHour || !departureMinute || !departureAmPm) errors.departureTime = "Departure time is required.";
-    if (!departureLocation) errors.departureLocation = "Departure location is required.";
-    if (!arrivalLocation) errors.arrivalLocation = "Arrival location is required.";
+    if (!departureHour || !departureMinutes || !departureDayTime) errors.departureTime = "Departure time is required.";
+    if (!departureLan || !departureLon) errors.departureLocation = "Departure location is required.";
+    if (!arrivalLan || !arrivalLon) errors.arrivalLocation = "Arrival location is required.";
     if (price < 0) errors.price = "Price cannot be negative.";
     if (discount < 0) errors.discount = "Discount cannot be negative.";
 
     return errors;
   };
 
+  // Handle form submission
   const handleCreate = async (e) => {
     e.preventDefault();
 
@@ -56,15 +67,19 @@ export default function CreateTransportationForm() {
     }
 
     // Combine the departure time into a formatted string
-    const departureTime = `${departureHour}:${departureMinute} ${departureAmPm}`;
+    //const departureTime = `${departureHour}:${departureMinutes} ${departureDayTime}`;
 
     const transportation = {
       driverNumber,
       carType,
       plateNumber,
-      departureTime,
-      departureLocation,
-      arrivalLocation,
+      departureHour,
+      departureMinutes,
+      departureDayTime,
+      departureLan,
+      departureLon,
+      arrivalLan,
+      arrivalLon,
       price: parseFloat(price),
       discount: parseFloat(discount),
       ac,
@@ -77,9 +92,9 @@ export default function CreateTransportationForm() {
       setErrorMessages({ general: "No token found. Please log in." });
       return;
     }
-
+    console.log(transportation);
     try {
-      const response = await fetch("http://localhost:4000/Carigo/Transportation/create", {
+      const response = await fetch("http://localhost:4000/cariGo/transportation/createTransportation", {
         method: 'POST',
         body: JSON.stringify(transportation),
         headers: {
@@ -93,16 +108,18 @@ export default function CreateTransportationForm() {
         setErrorMessages({ general: json.error || "An error occurred while creating the transportation." });
         return;
       }
-
-      // Reset form fields
+      
+      // Reset form fields after successful submission
       setDriverNumber('');
       setCarType('');
       setPlateNumber('');
       setDepartureHour('');
-      setDepartureMinute('');
-      setDepartureAmPm('AM');
-      setDepartureLocation({ lat: 40.7128, lng: -74.0060 });
-      setArrivalLocation({ lat: 34.0522, lng: -118.2437 });
+      setDepartureMinutes('');
+      setDepartureDayTime('am');
+      setDepartureLan(40.7128);  // Reset to default coordinates
+      setDepartureLon(-74.0060);
+      setArrivalLan(34.0522);    // Reset to default coordinates
+      setArrivalLon(-118.2437);
       setPrice(0);
       setDiscount(0);
       setAc(false);
@@ -121,16 +138,13 @@ export default function CreateTransportationForm() {
   const handleDone = () => {
     setIsMapVisible(false); // Hide the map
   };
+
   const handleDone1 = () => {
     setIsMapVisible1(false); // Hide the map
   };
 
   return (
-    <Box sx={{
-      display: 'flex', flexDirection: 'column', width: '560px', padding: '10px',
-      color: '#ff4d4d', borderRadius: '15px', boxShadow: '0px 1px 3px rgba(0, 0, 0, 0.1)',
-      gap: '5px', margin: '20px', border: '2px solid #126782', paddingLeft: '30px',
-    }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', width: '560px', padding: '10px', color: '#ff4d4d', borderRadius: '15px', boxShadow: '0px 1px 3px rgba(0, 0, 0, 0.1)', gap: '5px', margin: '20px', border: '2px solid #126782', paddingLeft: '30px' }}>
       <Box sx={{ marginLeft: '50px' }}>
         <h3 style={{ color: '#ff4d4d' }}>CREATE A NEW TRANSPORTATION</h3>
         <Box sx={{ width: '100%', padding: '5px', paddingBottom: '20px' }}>
@@ -146,7 +160,7 @@ export default function CreateTransportationForm() {
             {errorMessages.driverNumber && <HelperText>{errorMessages.driverNumber}</HelperText>}
           </FormControl>
 
-          {/* Car Type Dropdown */}
+          {/* Car Type */}
           <FormControl required>
             <Label>Car Type</Label>
             <StyledSelect onChange={(e) => setCarType(e.target.value)} value={carType}>
@@ -178,16 +192,16 @@ export default function CreateTransportationForm() {
                   <option key={i} value={i + 1}>{i + 1}</option>
                 ))}
               </StyledSelect>
-              <StyledSelect onChange={(e) => setDepartureMinute(e.target.value)} value={departureMinute}>
+              <StyledSelect onChange={(e) => setDepartureMinutes(e.target.value)} value={departureMinutes}>
                 <option value="">Minute</option>
                 <option value="00">00</option>
                 <option value="15">15</option>
                 <option value="30">30</option>
                 <option value="45">45</option>
               </StyledSelect>
-              <StyledSelect onChange={(e) => setDepartureAmPm(e.target.value)} value={departureAmPm}>
-                <option value="AM">AM</option>
-                <option value="PM">PM</option>
+              <StyledSelect onChange={(e) => setDepartureDayTime(e.target.value)} value={departureDayTime}>
+                <option value="am">am</option>
+                <option value="pm">pm</option>
               </StyledSelect>
             </Box>
             {errorMessages.departureTime && <HelperText>{errorMessages.departureTime}</HelperText>}
@@ -195,57 +209,50 @@ export default function CreateTransportationForm() {
 
           {/* Departure Location */}
           <FormControl required>
-            <Label>Departure Location</Label>
+            <Label>Departure Location Description</Label>
             <StyledInput
-              placeholder="Enter departure location"
-              onChange={(e) => setDepartureLocation(e.target.value)}
-              value={departureLocation}
+              placeholder="Enter departure location description"
+              onChange={(e) => setDepartureLocationDisc(e.target.value)}
+              value={departureLocationDisc}
             />
             <Button onClick={() => { setIsMapVisible(true); setLocationType('departure'); }}>Choose Location on Map</Button>
             {errorMessages.departureLocation && <HelperText>{errorMessages.departureLocation}</HelperText>}
             {isMapVisible && (
-        <Box sx={{ marginTop: '20px' }}>
-          <MyMapComponent
-            initialCoordinates={locationType === 'departure' ? departureLocation : arrivalLocation}
-            onLocationChange={(location) => {
-              if (locationType === 'departure') {
-                setDepartureLocation(location);
-              } else {
-                setArrivalLocation(location);
-              }
-            }}
-          />
-          <Button onClick={handleDone}>Done</Button>
-        </Box>
-      )}
+              <Box sx={{ marginTop: '20px' }}>
+                <MyMapComponent
+                  initialCoordinates={{ lat: departureLan, lng: departureLon }}
+                  onLocationChange={(location) => {
+                    setDepartureLan(location.lat);
+                    setDepartureLon(location.lng);
+                  }}
+                />
+                <Button onClick={handleDone}>Done</Button>
+              </Box>
+            )}
           </FormControl>
 
           {/* Arrival Location */}
           <FormControl required>
-            <Label>Arrival Location</Label>
+            <Label>Arrival Location Description</Label>
             <StyledInput
-              placeholder="Enter arrival location"
-              onChange={(e) => setArrivalLocation(e.target.value)}
-              value={arrivalLocation}
+              placeholder="Enter arrival location description"
+              onChange={(e) => setArrivalLocationDisc(e.target.value)}
+              value={arrivalLocationDisc}
             />
             <Button onClick={() => { setIsMapVisible1(true); setLocationType('arrival'); }}>Choose Location on Map</Button>
             {errorMessages.arrivalLocation && <HelperText>{errorMessages.arrivalLocation}</HelperText>}
             {isMapVisible1 && (
-        <Box sx={{ marginTop: '20px' }}>
-          <MyMapComponent
-            initialCoordinates={locationType === 'departure' ? departureLocation : arrivalLocation}
-            onLocationChange={(location) => {
-              if (locationType === 'departure') {
-                setDepartureLocation(location);
-              } else {
-                setArrivalLocation(location);
-              }
-            }}
-          />
-          <Button onClick={handleDone1}>Done</Button>
-        </Box>
-               
-              )}
+              <Box sx={{ marginTop: '20px' }}>
+                <MyMapComponent
+                  initialCoordinates={{ lat: arrivalLan, lng: arrivalLon }}
+                  onLocationChange={(location) => {
+                    setArrivalLan(location.lat);
+                    setArrivalLon(location.lng);
+                  }}
+                />
+                <Button onClick={handleDone1}>Done</Button>
+              </Box>
+            )}
           </FormControl>
 
           {/* Price */}
@@ -300,13 +307,11 @@ export default function CreateTransportationForm() {
         <Button onClick={handleCreate}>CREATE TRANSPORTATION</Button>
       </Box>
 
-      {/* Map Component */}
-
     </Box>
   );
 }
 
-// Styled components (same as your previous code)
+// Styled components
 const StyledInput = styled('input')(({ theme }) => ({
   width: '400px',
   padding: '8px 12px',
