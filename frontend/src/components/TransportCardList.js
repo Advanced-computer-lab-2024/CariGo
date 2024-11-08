@@ -30,7 +30,7 @@ const TransportCardList = ({transports}) => {
   // }, []);
 
 
-  if (!Array.isArray(transports)  ) {
+  if (!Array.isArray(transports) || transports.length == 0) {
     console.log(transports);
     return (
       <Typography variant="h6" sx={{ textAlign: 'center', mt: 4 }}>
@@ -64,8 +64,7 @@ const TransportCardList = ({transports}) => {
       }}
     > 
        {transports.map((transport) =>         
-                    <TransportCard  Transportation={transport} />
-                    
+                    <TransportCard  Transportation={transport} />    
             )
             
             }
