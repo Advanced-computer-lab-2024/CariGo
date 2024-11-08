@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import LocationCityIcon from '@mui/icons-material/LocationCity';
@@ -7,10 +7,10 @@ import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
-import {Box,Button,Typography,Link,List,ListItem,ClickAwayListener,Menu,MenuItem,TextField,InputAdornment} from "@mui/material";
+import {Box,Button,Typography,Link,List,ListItem,ClickAwayListener,Menu,MenuItem,TextField,InputAdornment,CircularProgress} from "@mui/material";
 
-import HotelsList from "../../components/HotelsList"; 
-//import HotelCardList from "../../components/HotelsList";
+import HotelsList from "./HotelsList"; 
+
 
 
 
@@ -18,7 +18,7 @@ export default function BookHotels(){
         const [City, setCity] = useState("");
         const [CityCode, setCityCode] = useState("");
         const [checkIn, setCheckIn] = useState(dayjs()); // Initialize with current date
-        const [checkOut, setCheckOut] = useState(dayjs()); // Initialize with current date
+        const [checkOut, setCheckOut] = useState(checkIn.add(1, 'day')); // Initialize with current date
         const [adults, setAdults] = useState(1); // Initialize adults count
         const[children, setChildren] = useState(0);
 
@@ -34,7 +34,6 @@ export default function BookHotels(){
             else setToSuggestions([]);
             return;
           }
-          setIsLoading(true);
           try {
             const response = await fetch(`http://localhost:4000/cariGo/flights/cities?keyword=${keyword}`);
             const data = await response.json();
@@ -42,9 +41,7 @@ export default function BookHotels(){
             else setToSuggestions(data);
           } catch (error) {
             console.error("Error fetching cities:", error);
-          } finally {
-            setIsLoading(false);
-          }
+          } 
         };
       
         const handleCityInputChange = (event) => {
@@ -86,7 +83,7 @@ export default function BookHotels(){
           };
 
         const handleSearchClick = async () => {
-          if (!City || !checkIn || !checkOut) {
+          if (!City || !checkIn || !checkOut ) {
             alert("Please fill in all fields");
             return;
           }
@@ -94,7 +91,7 @@ export default function BookHotels(){
           const fromIATA = CityCode; // Assuming the IATA code is part of the selected city object
           const formattedCheckIn = checkIn.format("YYYY-MM-DD");
           const formattedCheckOut = checkOut.format("YYYY-MM-DD");
-
+          setIsLoading(true);
           try {
               console.log(`http://localhost:4000/cariGo/flights/hotels?keyword=${City}&checkIn=${formattedCheckIn}&checkOut=${formattedCheckOut}&adults=${adults}&children=${children}`);
             const response = await fetch(`http://localhost:4000/cariGo/flights/hotels?keyword=${City}&checkIn=${formattedCheckIn}&checkOut=${formattedCheckOut}&adults=${adults}&children=${children}`);
@@ -103,8 +100,15 @@ export default function BookHotels(){
             setHotels(data.data);// Handle the hotel data as needed
           } catch (error) {
             console.error("Error fetching hotel:", error);
+          }finally {
+            setIsLoading(false);
           }
         };
+
+        useEffect (() => {
+          if(checkOut <= checkIn)
+            setCheckOut(checkIn.add(1,'day'))
+        },[checkIn])
       
         return (
           <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -177,7 +181,10 @@ export default function BookHotels(){
                         />
                       )}
                       value={checkIn}
-                      onChange={(newValue) => setCheckIn(newValue)}
+                      onChange={(newValue) => {
+                        setCheckIn(newValue);
+                        
+                        }}
                     />
                   </Box>
       
@@ -253,9 +260,11 @@ export default function BookHotels(){
       
                {/* Render HotelCard if hotels are available */}
                <Box sx={{padding:"20px", marginLeft:"10%" , overflow:'auto',marginTop:'4%',}}>
-               {hotels.length > 0 && (
+               {isLoading ? <CircularProgress sx={{color:'#126782', margin:'70px'}} /> :
+               hotels.length > 0 && (
                   <HotelsList hotels={hotels} />
-                )}
+                )
+                }
                 </Box>
             </Box>
           </LocalizationProvider>

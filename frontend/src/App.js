@@ -83,7 +83,7 @@ import FlightBooking from './Pages/FlightBooking.jsx';
 import FlightDetailsPage from "./Pages/FlightDetailsCard.jsx";
 import FileComplaintForm from "./Pages/Tourist/FileComplaintForm";
 import ActivityPostDetail from "./components/ActivityPostDetail.js";
-import HotelBooking from "./Pages/Tourist/HotelBooking.js";
+import HotelBooking from "./components/HotelBooking.js";
 import BookingPage from "./Pages/Tourist/Booking.js";
 import TransportationSearch from "./Pages/TransportationSearch.js" ;
 

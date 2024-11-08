@@ -75,7 +75,7 @@ const createTransportation = async (req, res) => {
     });
 
     res.status(200).json(transportation);
-    console.log("Activity created successfully");
+    console.log("Transportation created successfully");
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

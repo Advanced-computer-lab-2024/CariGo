@@ -1,25 +1,18 @@
-import React from "react";
+import React,{useState} from "react";
 import { useNavigate } from 'react-router-dom';
-import { Box, Typography, CircularProgress } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import TransportCard from "./TransportCard";
 
-const TransportCardList = ({ hotels = [], loading = false }) => {
+const TransportCardList = ({transports}) => {
   const navigate = useNavigate();
 
   
-  if (loading) {
-    return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-        <CircularProgress />
-        <Typography sx={{ ml: 2 }}>Loading hotels...</Typography>
-      </Box>
-    );
-  }
 
-  if (!Array.isArray(transports) ) {
+  if (!Array.isArray(transports)  ) {
+    console.log(transports);
     return (
       <Typography variant="h6" sx={{ textAlign: 'center', mt: 4 }}>
-        No hotel available.
+        No transportations available.
       </Typography>
     );
   }
@@ -33,7 +26,7 @@ const TransportCardList = ({ hotels = [], loading = false }) => {
         display: 'flex',
         flexDirection: 'column',
         overflowX: 'hidden', 
-        maxHeight:'600px',
+        maxHeight:'950px',
         '&::-webkit-scrollbar': {
           width: '8px', // Width of the scrollbar
         
@@ -47,13 +40,13 @@ const TransportCardList = ({ hotels = [], loading = false }) => {
           borderRadius: '10px', // Rounded corners for the scrollbar track
         },
       }}
-    >
-      
-       {transports.map((transport) => 
-                transport.map(() => (
-                    <TransportCard  transport={transport} />
-                ))
-            )}
+    > 
+       {transports.map((transport) =>         
+                    <TransportCard  Transportation={transport} />
+                    
+            )
+            
+            }
     </Box>
   );
 };
