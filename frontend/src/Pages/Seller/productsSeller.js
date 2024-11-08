@@ -97,6 +97,10 @@ export default function ViewProductsSeller() {
     }
   };
   
+  const handleDetatils2 = (id) => {
+    // Navigating to a page with the id in the URL
+    navigate(`/Seller/productDetails/${id}`);
+  };
 
   const archiveProduct = async (product) => {
     try {
@@ -295,7 +299,7 @@ const navigate = useNavigate();
 
         </Select> */}
         <Tooltip title="Sort By Rating" placement="top">
-              <IconButton onClick={() => setFilter(`?author=${localStorage.getItem('id')}&sort=ratingsAverage['avgSoFar']`)}>
+              <IconButton onClick={() => setFilter(`?author=${localStorage.getItem('id')}&sort=ratingsAverage`)}>
                 <SortIcon />
               </IconButton>
             </Tooltip>
@@ -312,7 +316,7 @@ const navigate = useNavigate();
       
         <ProductTable hover>
           <TableHead>
-            <TableRow>
+            <TableRow >
               <TableCell colSpan={2} sx={{ px: 8 }}>
                 Name
               </TableCell>
@@ -339,7 +343,7 @@ const navigate = useNavigate();
       
           <TableBody hover>
             {products.map((product,index) => (
-              <TableRow key={product._id} hover>
+              <TableRow key={product._id} hover onClick={() => handleDetatils2(product._id)}>
                 <TableCell colSpan={2} align="left" sx={{ px: 0, textTransform: "capitalize" }}>
                   <Box display="flex" alignItems="center" gap={4}>
                     <img src={product.imgUrl} alt="p"  />
@@ -367,7 +371,7 @@ const navigate = useNavigate();
                   {/* <IconButton onClick={() => console.log(2)}>
                     <Edit color="primary" />
                   </IconButton> */}
-                  <Rating name="read-only" value={product['ratingsAverage'].avgSoFar} readOnly size="small" precision={0.5} defaultValue={4} />
+                  <Rating name="read-only" value={product['ratingsAverage']} readOnly size="small" precision={0.5} defaultValue={4} />
                 </TableCell>
                 <TableCell sx={{ px: 7 }} colSpan={1}>
                   <IconButton onClick={() =>handleDetatils(product._id)}>
