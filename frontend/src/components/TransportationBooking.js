@@ -1,82 +1,137 @@
-// import React from "react";
-// import { Box ,Typography,Card,Button,Divider,Link} from "@mui/material";
-// import DirectionsBusIcon from '@mui/icons-material/DirectionsBus';
-// import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
-// export default function TransportationBooking(transport){
+import React, { useEffect, useState } from "react";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
+import LocationCityIcon from '@mui/icons-material/LocationCity';
 
+import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
+import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
+import {Box,Button,Typography,Link,List,ListItem,ClickAwayListener,Menu,MenuItem,TextField,InputAdornment,CircularProgress} from "@mui/material";
+import PinDropIcon from '@mui/icons-material/PinDrop';
+import TransportCard from"./TransportCard";
+import TransportCardList from "./TransportCardList";
+import MyMapComponent from './Map.js';
 
+export default function TransportBooking(){
+    const [departureLocation, setDepartureLocation] = useState({ lat: 37.7749, lng: -122.4194 });
+    const [arrivalLocation, setArrivalLocation] = useState({ lat: 37.7749, lng: -122.4194 });
+    const [departureDescription, setDepartureDescription] = useState('m');
+    const [arrivalDescription, setArrivalDescription] = useState('m');
+    const [date, setDate] = useState('2024-03-28T00:00:00.000Z');
+    const [transports, setTransports] = useState([]); 
+      
+    // const handleClickAway = () => {
+    //   setIsFromDropdownOpen(false);
+    //   setIsToDropdownOpen(false);
+    //   setFromSuggestions([]);
+    //   setToSuggestions([]);
+    // };
 
-//         return (
-//             <Card variant="outlined"  sx={{
-//               border: '2px solid #126782', 
-//               borderColor:'#126782',
-//               borderRadius:'10px', 
-//              // height:'10px',
-//               maxHeight:'600px',
-//               display: 'flex', 
-//               flexDirection:'column', 
-//               maxWidth: '450px',
-//               margin:'20px',
-//               marginTop:'20px',
-//               marginRight:'60px',
-//               }}>
-//                 <Box sx={{width:'90%',margin:'20px'}}>
-//                 <Typography 
-//                 sx={{color:'#126782', fontSize:'26px', fontWeight:'bold',padding:'10px',}}
-//                 >Hotel name</Typography>
-//               <Divider sx={{borderBottomWidth: 3}} />
+    const [isLoading, setIsLoading] = useState(false);
+  
         
-//               {/*INFO BOX*/}
-//               <Box sx={{margin: "10px",marginLeft:'10px',}}>
-//               <Typography sx={{color:'#126782',padding:'1px',fontWeight:'bold'}}>Duration</Typography>
-//                 {/*PUTS CHECK IN AND OUT NEXT TO EACH OTHER*/}
-//               <Box sx={{display:'flex',gap:'50px', marginLeft:'20px',padding:'5px' }}>
-//               <Box>
-//               <Typography sx={{color:'#126782',padding:'1px'}}>from</Typography>
-//               {/*check in*/}
-//              <Box sx={{display:'flex',padding:'5px',gap:'10px',}}> 
-//               <CalendarMonthIcon fontSize="medium" sx={{fill:"#126782"}}/>
-//               <Typography type="date" sx={{color:'#126782',padding:'1px'}}>4/11/2024</Typography> 
-//              </Box>
-//              </Box>
-        
-//              <Box>
-//              <Typography sx={{color:'#126782',padding:'1px'}}>to</Typography>
-//             {/*check out*/}
-//             <Box sx={{display:'flex',padding:'5px',gap:'10px',}}> 
-//               <CalendarMonthIcon fontSize="medium" sx={{fill:"#126782"}}/>
-//               <Typography type="date" sx={{color:'#126782',padding:'1px'}}>9/11/2024</Typography> 
-//              </Box>
-//              </Box>
-//              </Box>
-//              {/*END OF DATES BOX*/}
-//              {/*number of beds*/}
-//             <Box sx={{display:'flex',gap:'10px', padding:'5px', marginLeft:'-10px'}}> 
-//               <BedIcon fontSize="medium" sx={{fill:"#126782"}}/>
-//               <Typography sx={{color:'#126782',padding:'1px'}}>2 king size beds</Typography> 
-//              </Box>
-//               {/*location link*/}
-//             <Box sx={{display:'flex',gap:'10px', padding:'5px', marginLeft:'-10px'}}> 
-//               <PinDropIcon fontSize="medium" sx={{fill:"#126782"}}/>
-//               <Link  href="https://www.example.com"  sx={{color: '#126782',padding: '1px',cursor: 'pointer',textDecoration: 'none',
-//                 '&:hover': {textDecoration: 'underline',}}}
-//                 >location link</Link> 
-//              </Box>
-//              </Box>
-//              {/*for price and booking button*/}
-//              <Box sx={{position:'relative',padding:'10px',}}>
-//               <Box sx={{display:'flex', marginLeft:'-10px',padding:'5px',marginBottom:'10px',bottom:'10px'}}>
-//                 <AttachMoneyIcon sx={{marginTop:'0px', color: '#126782'}}/>
-//               <Typography sx={{color:'#126782', fontSize:'16px',marginLeft:'5px'}}
-//               >price</Typography> {/* Display price */}
-              
-//               </Box>
-//               <Button 
-//               sx={{color:'white',  backgroundColor:'#ff4d4d', borderRadius:'5px',position:'absolute',right:'0px', bottom:'10px',}} 
-//               >Book</Button> {/* Add Book button */}
-//               </Box>
-//               </Box>
-              
-//             </Card>
-//           );
-// }
+    // Function to handle the search button click
+    const handleSearchClick = async () => {
+      const queryParams = new URLSearchParams({
+        depLon: departureLocation.lng,
+        depLat: departureLocation.lat,
+        arrLon: arrivalLocation.lng,
+        arrLat: arrivalLocation.lat,
+        date: date,
+        depDesc: departureDescription,
+        arrDesc: arrivalDescription,
+      });
+      console.log(`http://localhost:4000/cariGo/transportation/?${queryParams.toString()}`);
+      setIsLoading(true);
+      try {
+        const response = await fetch(`http://localhost:4000/cariGo/transportation/?${queryParams.toString()}`, {
+          method: 'GET',  // Use GET request as per the new request format
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        const data = await response.json();
+        setTransports(data);
+        console.log(queryParams.toString());
+        //console.log(transports);
+        console.log('Search result:', data);
+        // Handle the data, such as displaying it to the user
+      } catch (error) {
+          console.error('Error fetching transportation data:', error);
+      }
+      finally {
+        console.log('fetched transports',transports);    
+        setIsLoading(false);
+      }
+    };
+
+        // useEffect(()=>{
+        //   console.log('fetched transports',transports);
+        // },[transports])
+
+    return (
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <Box sx={{display:"flex",marginLeft:"10%"}} >
+              {/* VERTICAL BOX */}
+            <Box  bgcolor="white" 
+            sx={{display:"flex", flexDirection:"column",gap:'30px', marginTop:'5%',padding:'10px',marginBottom:'12%'}} >
+                
+                {/* Departure*/}
+                  <Box sx={{display:'flex',flexDirection:'column', gap:'10px', width:'600px'}}>
+                    <Typography variant="body2" color="#126782">Start Location</Typography>
+                    {/* <ClickAwayListener onClickAway={handleClickAway}>
+                      </ClickAwayListener> */}
+                      <MyMapComponent 
+                      onLocationChange={(newLocation) => setDepartureLocation(newLocation)} 
+                      initialCoordinates={departureLocation}
+                    />
+                  </Box>
+                  
+                  {/* Arrival*/}
+                  <Box sx={{display:'flex',flexDirection:'column', gap:'10px', width:'600px'}}>
+                    <Typography variant="body2" color="#126782">Destination</Typography>
+                    {/* <ClickAwayListener onClickAway={handleClickAway}>
+                      </ClickAwayListener> */}
+                      <MyMapComponent 
+                      onLocationChange={(newLocation) => setArrivalLocation(newLocation)} 
+                      initialCoordinates={arrivalLocation}
+                    />
+                    
+                  </Box>
+                    
+                  {/* </Box> */}
+
+              <Button
+                variant="contained"
+                color="white"
+                sx={{
+                  padding: "8px 16px",
+                  borderRadius: "4px",
+                  textTransform: "none",
+                  marginTop:'10px', 
+                  backgroundColor:"#126782",
+                  width:'250px',
+                }} onClick={handleSearchClick}
+              >
+                <Typography variant="h6" color="white">
+                  Search Transportations
+                </Typography>
+              </Button >
+            </Box >
+      
+               {/* Render HotelCard if hotels are available */}
+               <Box sx={{padding:"20px", marginLeft:"10%" , overflow:'auto',marginTop:'4%',}}>
+               {isLoading ? <CircularProgress sx={{color:'#126782', margin:'70px'}} /> :
+               transports.length > 0 && (
+                  <TransportCardList transports={transports} />
+                )
+              }
+                </Box>
+                {/* <TransportCard/> */}
+            </Box>
+          </LocalizationProvider>
+          
+        );
+      };

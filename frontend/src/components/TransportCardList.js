@@ -1,20 +1,18 @@
-import React from "react";
+import React,{useState} from "react";
 import { useNavigate } from 'react-router-dom';
 import { Box, Typography } from "@mui/material";
-import HotelCard from "./HotelCard";
+import TransportCard from "./TransportCard";
 
-  const HotelCardList = ({ hotels = [], loading = false }) => {
+const TransportCardList = ({transports}) => {
   const navigate = useNavigate();
 
-  const handleCardClick = (hotel) => {
-    navigate(`/flight-details/${hotel.id}`, { state: { hotel } });
-  };
+  
 
-
-  if (!Array.isArray(hotels) ) {
+  if (!Array.isArray(transports)  ) {
+    console.log(transports);
     return (
       <Typography variant="h6" sx={{ textAlign: 'center', mt: 4 }}>
-        No hotel available.
+        No transportations available.
       </Typography>
     );
   }
@@ -28,7 +26,7 @@ import HotelCard from "./HotelCard";
         display: 'flex',
         flexDirection: 'column',
         overflowX: 'hidden', 
-        maxHeight:'600px',
+        maxHeight:'950px',
         '&::-webkit-scrollbar': {
           width: '8px', // Width of the scrollbar
         
@@ -42,19 +40,15 @@ import HotelCard from "./HotelCard";
           borderRadius: '10px', // Rounded corners for the scrollbar track
         },
       }}
-    >
-      {/* {hotels.map((hotel) => (
-        <Box key={hotel.id} sx={{ marginBottom: '10px' }}>
-          <HotelCard hotel={hotel} onClick={() => handleCardClick(hotel)} />
-        </Box>
-      ))} */}
-       {hotels.map((hotel) => 
-                hotel.offers.map((offer) => (
-                    <HotelCard  hotel={hotel} offer={offer} />
-                ))
-            )}
+    > 
+       {transports.map((transport) =>         
+                    <TransportCard  Transportation={transport} />
+                    
+            )
+            
+            }
     </Box>
   );
 };
 
-export default HotelCardList;
+export default TransportCardList;
