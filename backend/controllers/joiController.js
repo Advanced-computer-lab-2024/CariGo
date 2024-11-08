@@ -68,7 +68,11 @@ const roleSchemas = {
     experience: Joi.array().items(Joi.string()).required().messages({
       "array.base": "Experience must be an array of strings.🫡",
       "any.required": "Experience is a required field for Tour Guide role.🫡",
-    }),
+    })
+    // ,
+    // selectedTags: Joi.required().messages({
+    //   "any.required": "Job is a required field for Tourist role.🫡",
+    // }),
   }),
   Advertiser: Joi.object({
     website_link: Joi.string().uri().required().messages({
@@ -84,7 +88,11 @@ const roleSchemas = {
     }),
     about: Joi.string().required().messages({
       "any.required": "About is a required field for Advertiser role.🧾",
-    }),
+    })
+    // ,
+    // selectedTags: Joi.required().messages({
+    //   "any.required": "Job is a required field for Tourist role.🫡",
+    // }),
   }),
   Seller: Joi.object({
     sellerName: Joi.string().required().messages({
@@ -92,7 +100,11 @@ const roleSchemas = {
     }),
     description: Joi.string().required().messages({
       "any.required": "Description is a required field for Seller role.🧾",
-    }),
+    })
+    ,
+    // selectedTags: Joi.required().messages({
+    //   "any.required": "Job is a required field for Tourist role.🫡",
+    // }),
   }),
   Tourism_Governer: Joi.object({}),
 };

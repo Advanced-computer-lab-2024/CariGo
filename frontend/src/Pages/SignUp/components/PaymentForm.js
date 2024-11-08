@@ -94,6 +94,7 @@ export default function PaymentForm({onPreferencesSubmit}) {
   const [expirationDate, setExpirationDate] = React.useState("");
   const [tags, setTags] = React.useState([]);
   const [selectedTags, setSelectedTags] = React.useState([]);
+  const [tagName, setTagName] = React.useState([]);
   const colors = [
     "success",
     "warning",
@@ -111,6 +112,7 @@ export default function PaymentForm({onPreferencesSubmit}) {
           setTags(response.data);
           // console.log(response.data);
           setSelectedTags([])
+          setTagName([]);
         } else {
           console.error("Unexpected response data format:", response.data);
         }
@@ -156,6 +158,7 @@ export default function PaymentForm({onPreferencesSubmit}) {
     // Move selected tag from tags to selectedTags
     setTags(tags.filter((t) => t._id !== tag._id));
     setSelectedTags([...selectedTags, tag._id]); // Add selected tag to selectedTags
+    setTagName([...tagName, tag]);
     console.log(selectedTags);
   };
 
@@ -252,8 +255,8 @@ export default function PaymentForm({onPreferencesSubmit}) {
               <CreditCardRoundedIcon sx={{ color: "text.secondary" }} />
             </Box>
             <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
-              {selectedTags.length > 0 &&
-                selectedTags.map((tag) => (
+              {tagName.length > 0 &&
+                tagName.map((tag) => (
                   <Tag
                     key={tag._id}
                     value={tag.title}

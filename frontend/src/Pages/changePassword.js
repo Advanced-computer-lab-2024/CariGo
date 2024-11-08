@@ -21,6 +21,7 @@ export default function Pass() {
   });
 
   const [isPasswordChange, setIsPasswordChange] = useState(false); // Step 2: State to track password change phase
+  const [passwordError, setPasswordError] = useState(''); // Step 2: State for password match error
 
 
   const navigate = useNavigate();
@@ -82,6 +83,13 @@ export default function Pass() {
   // Step 4: Function to handle submitting the new password
   const handleSubmitNewPassword = async (event) => {
     event.preventDefault();
+
+    if (formData.newPassword !== formData.confirmNewPassword) {
+      setPasswordError("Passwords do not match.");
+      return;
+    }
+    setPasswordError(''); // Clear error if passwords match
+
 
     try {
         const userId = localStorage.getItem("id"); // Retrieve user ID from localStorage
@@ -185,6 +193,22 @@ export default function Pass() {
                 required
               />
             </FormControl>
+            <FormControl>
+              <FormLabel>Confirm New Password</FormLabel>
+              <Input
+                name="confirmNewPassword"
+                type="password"
+                value={formData.confirmNewPassword}
+                onChange={handleChange}
+                placeholder="Confirm new password"
+                required
+              />
+            </FormControl>
+            {passwordError && (
+              <Typography sx={{ color: 'red', mt: 1 }}>
+                {passwordError}
+              </Typography>
+            )}
             <Button sx={{ mt: 1 }} type="submit">
               Submit
             </Button>

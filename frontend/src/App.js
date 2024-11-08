@@ -97,6 +97,7 @@ import ProductAnalysis from "./Pages/products/ProductAnalysis.jsx";
 import ProductDetails2 from "./Pages/products/ProductDetails2.jsx";
 import MyBookings from "./Pages/Tourist/MyBookings.js";
 import MyBookedActivities from "./Pages/Tourist/MyBookedActivities.js"
+import CreateTransportation from "./components/CreateTransportationForm.js"
 //const dotenv = require('dotenv')
 
 function App() {
@@ -161,7 +162,8 @@ function App() {
         <Route path="/Tourist-History" element={<TouristHistory />} />
         <Route path="/tourist/file-complaint" element={<FileComplaintForm />} />
         {/* <Route path="/guest-places" element={<GuestViewVintage/>} /> */}
-        <Route path="/createActivity" element={<CreateActivityForm userId={localStorage.getItem("id")} />} /> 
+        <Route path="/createActivity" element={<CreateActivityForm userId={localStorage.getItem("id")} />} />
+        <Route path="/createTransportation" element={<CreateTransportation userId={localStorage.getItem("id")} />} /> 
         <Route path="/Register-Tourist" element={<Checkout role={"Tourist"}/>} />
         {/* <Route path="/Register-Tourist" element={<SignUp/>} /> */}
         <Route path="/Register-Seller" element={<Checkout role={"Seller"}/>} />

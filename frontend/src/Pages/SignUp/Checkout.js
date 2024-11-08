@@ -42,7 +42,8 @@ function Checkout({ role, preferences }) {
     about:"",
     sellerName:"",
     description:"",
-    selectedTags:""});
+    selectedTags:""
+  });
   const [imageData, setImageData] = useState(null);
   const [activeStep, setActiveStep] = React.useState(0);
   const handleNext = () => {
@@ -86,7 +87,7 @@ function Checkout({ role, preferences }) {
       // Optionally redirect the user or perform another action
       // For example, using react-router:
       // history.push('/dashboard');
-      //window.location.href = '/login';
+      
       console.log(token);
       const image = new FormData();
       image.append("photo", imageData.file);
@@ -104,7 +105,7 @@ function Checkout({ role, preferences }) {
       );
       //  if(response){
       console.log(imageResponse);
-
+      window.location.href = '/login';
       //console.log(response.json().username+"  res")
       // Check if the response is okay
       if (!imageResponse.ok) {
@@ -139,12 +140,16 @@ function Checkout({ role, preferences }) {
         );
       case 1:
         // console.log(formData.myFile);
+        if(role==="Tourist"){
+          console.log(role)
         return (
           <PaymentForm
             onPreferencesSubmit={handlePreferencesSubmit}
             preferences={preferences}
           />
         );
+      }
+        return <Review/>
       case 2:
         //handleSignUp();
         //break;
@@ -160,10 +165,10 @@ function Checkout({ role, preferences }) {
     setActiveStep(activeStep + 1);
   };
   
-  // Using useEffect to log the updated formData
-  useEffect(() => {
-    //console.log("Updated selectedTags:", formData);
-  }, [formData.selectedTags]);
+  //Using useEffect to log the updated formData
+  // useEffect(() => {
+  //   //console.log("Updated selectedTags:", formData);
+  // }, [formData.selectedTags]);
 
   const handleFormSubmit = (data) => {
     console.log("Form Data Received:", data);
