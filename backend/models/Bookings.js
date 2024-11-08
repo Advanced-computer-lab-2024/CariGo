@@ -1,5 +1,6 @@
 const { boolean } = require("joi");
 const mongoose = require("mongoose");
+const Transportation = require("./Transportation");
 const schema = mongoose.Schema;
 
 const BookingSchema = new schema({
@@ -14,6 +15,16 @@ const BookingSchema = new schema({
   ItineraryId: {
     type: mongoose.Schema.ObjectId,
     ref: "Itinerary",
+  },
+  TransportationId :{
+    type: mongoose.Schema.ObjectId,
+    ref: "Transportation",
+  },
+  HotelId :{
+    type :String
+  },
+FlightId :{
+    type :String
   },
   Status: {
     type:Boolean,

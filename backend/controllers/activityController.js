@@ -137,10 +137,11 @@ const getActivities = async (req, res) => {
   // Initialize the query with base conditions
   const query = Activity.find({
     start_date: { $gte: today },
-    isFlagged: false, // Only include activities that are not flagged
+    isFlagged: false,
+    isActive: true // Only include activities that are not flagged and are active
   });
   
-
+console.log(query.data);
   // Add category filter if it exists
   if (req.query.Category) {
     query.where({ Category: req.query.Category });
@@ -562,7 +563,10 @@ const BookActivity = async (req, res) => {
           Status: true,
         });
       }
-
+      await Activity.updateOne(
+        { _id: ActivityId}, 
+        { $set: { isBooked: true } }
+      );
       // Add loyalty points
       user.addLoyaltyPoints(activity.price.range.min);
       await user.save({ validateBeforeSave: false });
@@ -619,10 +623,15 @@ const CancelActivityBooking = async (req, res) => {
                       { UserId, ActivityId }, // Filter to find documents with both UserId and ActivityId
                       { $set: { Status: false } } // Update to set Status to false
                   );
+                  await Activity.updateOne(
+                    { _id: ActivityId }, 
+                    { $set: { isBooked: false } }
+                  );
                   res.status(200).json({
                       message: "Bookings canceled successfully",
                       updatedBookingsCount: bookings.modifiedCount // shows how many bookings were updated
                   });
+
               } else {
                   res.status(400).json({ message: "Cannot book/cancel within 48 hours of the activity date" });
               }

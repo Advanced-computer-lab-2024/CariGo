@@ -75,6 +75,10 @@ const activitySchema = new mongoose.Schema(
     isBooked:{
       type: Boolean,
       default: false,
+    },
+    isActive :{
+      type :Boolean,
+      default :true
     }
   },
   { timestamps: true }
