@@ -161,6 +161,7 @@ export default function TransportBooking(){
                       }}
                     />
                 </Box>
+                {/* end of trip date*/}
               <Button
                 variant="contained"
                 color="white"
@@ -187,7 +188,6 @@ export default function TransportBooking(){
             transports.length > 0 && <TransportCardList transports={transports} />
           )}
                 </Box>
-                {/* <TransportCard/> */}
             </Box>
           </LocalizationProvider>
           
