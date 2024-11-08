@@ -8,8 +8,7 @@ import InputBase from "@mui/material/InputBase";
 import MyBookedActivityCard from "./components/MyBookedActivityCard";
 import RateReviewIcon from '@mui/icons-material/RateReview'; // Review icon for activity
 import PersonPinIcon from '@mui/icons-material/PersonPin'; // New icon for Tour Guide review
-import ActivityReviewForm from "frontend/src/components/itineraryReviewForm.js"; // Renamed to ActivityReviewForm
-import ItineraryReviewForm from "frontend/src/components/itineraryReviewForm.js"; // Import the itinerary review form
+import ActivityReviewForm from "frontend/src/components/ActivityReviewForm.js"; // Renamed to ActivityReviewForm
 import TourGuideReviewForm from "frontend/src/components/TourGuideReviewForm.js";
 
 const Search = styled("div")(({ theme }) => ({
@@ -136,21 +135,21 @@ const MyBookedActivities = () => {
     setOpenActivityReviewForm(true); // Renamed to setOpenActivityReviewForm
   };
 
-  const openTourGuideReviewFormHandler = (tourGuideId) => {
-    console.log("Opening review form for tour guide id:", tourGuideId);
-    setSelectedTourGuideId(tourGuideId);
-    setOpenTourGuideReviewForm(true);
-  };
+  // const openTourGuideReviewFormHandler = (tourGuideId) => {
+  //   console.log("Opening review form for tour guide id:", tourGuideId);
+  //   setSelectedTourGuideId(tourGuideId);
+  //   setOpenTourGuideReviewForm(true);
+  // };
 
   const closeActivityReviewFormHandler = () => { // Renamed from closeReviewFormHandler
     setOpenActivityReviewForm(false); // Renamed to setOpenActivityReviewForm
     setSelectedActivityId(null); // Changed from setSelectedItineraryId to setSelectedActivityId
   };
 
-  const closeTourGuideReviewFormHandler = () => {
-    setOpenTourGuideReviewForm(false);
-    setSelectedTourGuideId(null);
-  };
+  // const closeTourGuideReviewFormHandler = () => {
+  //   setOpenTourGuideReviewForm(false);
+  //   setSelectedTourGuideId(null);
+  // };
 
   return (
     <div>
@@ -230,9 +229,9 @@ const MyBookedActivities = () => {
                 <RateReviewIcon />
               </IconButton>
               {/* Add a separate icon button for the tour guide review */}
-              <IconButton onClick={() => openTourGuideReviewFormHandler(activity.ActivityId.author)}>
+              {/* <IconButton onClick={() => openTourGuideReviewFormHandler(activity.ActivityId.author)}>
                 <PersonPinIcon />
-              </IconButton>
+              </IconButton> */}
               </Grid>
             ))}
           </Grid>
@@ -250,13 +249,13 @@ const MyBookedActivities = () => {
       )}
 
       {/* Render the tour guide review form dialog */}
-      {selectedTourGuideId && (
+      {/* {selectedTourGuideId && (
         <TourGuideReviewForm
           open={openTourGuideReviewForm}
           onClose={closeTourGuideReviewFormHandler}
           tourGuideId={selectedTourGuideId}
         />
-      )}
+      )} */}
 
     </div>
   );
