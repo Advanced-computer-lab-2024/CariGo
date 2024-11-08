@@ -341,6 +341,25 @@ const readMyItineraries = async (req, res) => {
   }
 };
 
+const suggestedItineraries = async (req, res) => {
+  // Check if tags is an array; if it's not, make it an array (even if it's a single string)
+  const tags = Array.isArray(req.query.tags) ? req.query.tags : [req.query.tags];
+
+  try {
+    // Find itineraries with matching tags
+    const itineraries = await itineraryModel.find({
+      isActive: true,
+      isFlagged: false,
+      tags: { $in: tags }
+    }).populate("tags");
+    res.json(itineraries);
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching itineraries' });
+  }
+};
+
+
+
 const deleteItinerary = async (req, res) => {
   const { id } = req.params;
   if (mongoose.Types.ObjectId.isValid(id)) {
@@ -556,7 +575,7 @@ const shareVintage = async (req, res) => {
 
 const BookItinerary = async (req, res) => {
   const { ItineraryId } = req.params; // Event ID from URL parameters
-  const { PaymentMethod } = req.body; // User ID from request body
+  const { PaymentMethod,TotalPrice,NumberOfTickets } = req.body; // User ID from request body
   const UserId = req.user.id;
   let CardNumber;
   let booking; // Declare booking outside of if-else to use in response
@@ -584,13 +603,19 @@ const BookItinerary = async (req, res) => {
           PaymentMethod: PaymentMethod,
           Status: true,
           CardNumber: CardNumber,
+          NumberOfTickets:NumberOfTickets,
+          TotalPrice:TotalPrice
         });
       } else {
+
         booking = await bookingModel.create({
+
           ItineraryId: ItineraryId,
           UserId: UserId,
           PaymentMethod: PaymentMethod,
           Status: true,
+          NumberOfTickets:NumberOfTickets,
+          TotalPrice:TotalPrice
         });
       }
 
@@ -694,7 +719,8 @@ const dotenv = require("dotenv");
 dotenv.config({ path: "../.env" });
 const currencyConversion = async (req, res) => {
   try {
-    const { currency } = req.body;
+    const { currency } = req.query;
+    console.log(currency);
     const key = process.env.currencyConversionKey;
     const url = `https://v6.exchangerate-api.com/v6/${key}/pair/EGP/${currency}`;
     const response = await axios.get(url);
@@ -738,5 +764,6 @@ module.exports = {
   BookItinerary,
   MyItineraryBookings,
   CancelItineraryBooking,
-  currencyConversion
+  currencyConversion,
+  suggestedItineraries
 };

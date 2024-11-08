@@ -1,12 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect , useRef} from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { Box, TextField ,InputAdornment,} from '@mui/material';
 import axios from 'axios';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+import PinDropIcon from '@mui/icons-material/PinDrop';
+
 
 const MyMapComponent = ({ initialCoordinates, onLocationChange }) => {
   const [marker, setMarker] = useState(initialCoordinates);
   const [searchTerm, setSearchTerm] = useState('');
+  const mapRef = useRef(null); // Reference to the map instance
+  const[Location, setLocation] = useState(initialCoordinates)
 
   useEffect(() => {
     setMarker(initialCoordinates);
@@ -25,23 +30,39 @@ const MyMapComponent = ({ initialCoordinates, onLocationChange }) => {
         },
       });
 
+      console.log(response);
       if (response.data.length > 0) {
         const { lat, lon } = response.data[0];
-        const newLocation = { lat, lng: lon };
+        const newLocation = { lat: parseFloat(lat), lng: parseFloat(lon) };
+
         setMarker(newLocation); // Set the new marker position
         onLocationChange(newLocation); // Notify parent of the change
+        //Move the map to the new location
+        if (mapRef.current) {
+          mapRef.current.flyTo([Marker.lat, Marker.lon ], 13, { animate: true });
+        }
       } else {
         alert('Location not found.');
       }
     } catch (error) {
       console.error('Error fetching location:', error);
     }
+    finally{
+      
+    }
   };
 
   const handleMarkerDrag = (event) => {
     const { lat, lng } = event.target.getLatLng();
-    setMarker({ lat, lng });
-    onLocationChange({ lat, lng });
+    const newPosition = { lat, lng };
+    
+    // Update marker position and move the map center
+    setMarker(newPosition);
+    onLocationChange(newPosition);
+
+    if (mapRef.current) {
+      mapRef.current.flyTo([Marker.lat, Marker.lon], 13, { animate: true });
+    }
   };
 
   const handleInputChange = (e) => {
@@ -55,34 +76,39 @@ const MyMapComponent = ({ initialCoordinates, onLocationChange }) => {
   };
 
   return (
-    <div>
-      <input
+    
+    <Box sx={{display:'flex', flexDirection:'column', gap:'15px',}}>
+      {/*WHEN USING PUT IN Box COMPONENT TO DECIDE WIDTH */}
+      <TextField
+        variant='outlined'
         type="text"
         placeholder="Search for a location"
         value={searchTerm}
         onChange={handleInputChange}
         onKeyPress={handleInputKeyPress}
-        style={{
-          position: 'absolute',
-          zIndex: 1000,
-          top: 20,
-          left: '50%',
-          transform: 'translateX(-50%)',
-          padding: '10px',
-          width: '250px',
-          borderRadius: '5px',
-          border: '1px solid #ccc',
+        sx={{width: '250px',}}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <PinDropIcon />
+            </InputAdornment>
+          ),
+          
         }}
       />
+      {/*map box */}
+      <Box sx={{ height: '300px', width: '100%' }}>
       <MapContainer
         center={[marker.lat, marker.lng]}
         zoom={13}
-        style={{ height: '400px', width: '100%' }}
+        style={{ height: '300px', width: '100%' }}
         whenCreated={(mapInstance) => {
+          mapRef.current = mapInstance; ; // Assign map instance to mapRef
           mapInstance.on('click', (e) => {
             const { lat, lng } = e.latlng;
             setMarker({ lat, lng });
             onLocationChange({ lat, lng });
+            mapRef.current.flyTo([lat, lng], 13, { animate: true });
           });
         }}
       >
@@ -107,7 +133,8 @@ const MyMapComponent = ({ initialCoordinates, onLocationChange }) => {
           </Popup>
         </Marker>
       </MapContainer>
-    </div>
+      </Box>{/*end of map box*/}
+    </Box>
   );
 };
 

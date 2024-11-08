@@ -90,7 +90,7 @@ const FormGrid = styled('div')(() => ({
 
 export default function AddressForm({ onFormSubmit,step,role,data,onImageSubmit,image }) {
     const x = null;
-    
+      
   const [postImage, setPostImage] = useState({ myFile:image && image.myFile?image.myFile:"" ,
     file:image && image.file?image.file:""});
   const [formData, setFormData] = useState({
@@ -109,6 +109,7 @@ export default function AddressForm({ onFormSubmit,step,role,data,onImageSubmit,
     about:data && data.about?data.about:"",
     sellerName:data && data.sellerName?data.sellerName:"",
     description:data && data.description?data.description:"",
+    selectedTags:[]
      //myFile: data && data.myFile?data.myFile:""
   });
 //  console.log(postImage.myFile)

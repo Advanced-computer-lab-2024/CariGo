@@ -16,7 +16,7 @@ import { useNavigate } from "react-router-dom";
 
 // Updated pages without "Activities"
 const pages = ["Itineraries", "Inactive Itineraries"];
-const settings = ["Profile", "Logout"];
+const settings = ["Profile", "Logout",'Change Password'];
 
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -161,6 +161,9 @@ function ResponsiveAppBar() {
                     handleCloseUserMenu();
                     if (setting === "Profile") {
                       navigate("/tour_guide/profile");
+                    }
+                    else if(setting==="Change Password") {
+                      navigate("/change-password");
                     }else if (setting === "Logout") {
                       localStorage.removeItem("id");
                       localStorage.removeItem("token");

@@ -137,10 +137,11 @@ const getActivities = async (req, res) => {
   // Initialize the query with base conditions
   const query = Activity.find({
     start_date: { $gte: today },
-    isFlagged: false, // Only include activities that are not flagged
+    isFlagged: false,
+    isActive: true // Only include activities that are not flagged and are active
   });
   
-
+console.log(query.data);
   // Add category filter if it exists
   if (req.query.Category) {
     query.where({ Category: req.query.Category });
@@ -523,7 +524,7 @@ const shareActivity = async (req, res) => {
 
 const BookActivity = async (req, res) => {
   const { ActivityId } = req.params;
-  const { PaymentMethod } = req.body;
+  const { PaymentMethod,TotalPrice,NumberOfTickets } = req.body;
   const UserId = req.user.id;
   console.log(UserId);
   let CardNumber;
@@ -553,6 +554,8 @@ const BookActivity = async (req, res) => {
           PaymentMethod: PaymentMethod,
           Status: true,
           CardNumber: CardNumber,
+          NumberOfTickets:NumberOfTickets,
+          TotalPrice:TotalPrice
         });
       } else {
         booking = await bookingModel.create({
@@ -560,9 +563,14 @@ const BookActivity = async (req, res) => {
           UserId: UserId,
           PaymentMethod: PaymentMethod,
           Status: true,
+          NumberOfTickets:NumberOfTickets,
+          TotalPrice:TotalPrice
         });
       }
-
+      await Activity.updateOne(
+        { _id: ActivityId}, 
+        { $set: { isBooked: true } }
+      );
       // Add loyalty points
       user.addLoyaltyPoints(activity.price.range.min);
       await user.save({ validateBeforeSave: false });
@@ -585,7 +593,7 @@ const BookActivity = async (req, res) => {
 };
 
 const MyActivityBookings = async (req, res) => {
-  const { UserId } = req.body; // User ID from request body
+  const  UserId  = req.user.id; // User ID from request body
   if (mongoose.Types.ObjectId.isValid(UserId)) {
     try {
       const bookings = await bookingModel.find({UserId,ActivityId: { $ne: null }}).sort({createdAt: -1});
@@ -600,7 +608,7 @@ const MyActivityBookings = async (req, res) => {
 };
 
 const CancelActivityBooking = async (req, res) => {
-  const { UserId } = req.body; // User ID from request body
+  const UserId  = req.user.id; // User ID from request body
   const { ActivityId } = req.body; // Event ID from URL parameters
   if (mongoose.Types.ObjectId.isValid(ActivityId) && mongoose.Types.ObjectId.isValid(UserId)) {
       try {
@@ -619,10 +627,15 @@ const CancelActivityBooking = async (req, res) => {
                       { UserId, ActivityId }, // Filter to find documents with both UserId and ActivityId
                       { $set: { Status: false } } // Update to set Status to false
                   );
+                  await Activity.updateOne(
+                    { _id: ActivityId }, 
+                    { $set: { isBooked: false } }
+                  );
                   res.status(200).json({
                       message: "Bookings canceled successfully",
                       updatedBookingsCount: bookings.modifiedCount // shows how many bookings were updated
                   });
+
               } else {
                   res.status(400).json({ message: "Cannot book/cancel within 48 hours of the activity date" });
               }

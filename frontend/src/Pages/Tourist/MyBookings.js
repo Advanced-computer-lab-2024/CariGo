@@ -202,31 +202,42 @@ const MyBookings = () => {
           },
         }}
       >
-        <Grid container spacing={0} sx={{ flexDirection: "column", width: "100vw" }}>
-          {filteredActivities.map((itinerary, index) => (
-            <Grid item key={index} sx={{ justifyContent: "left" }}>
-              <BookingCard
-                id={itinerary.ItineraryId._id}
-                author={itinerary.ItineraryId.author}
-                name={itinerary.ItineraryId.title}
-                img={"frontend/public/assets/images/itirenary.png"}
-                startDate={itinerary.ItineraryId.start_date}
-                endDate={itinerary.ItineraryId.end_date}
-                location={itinerary.ItineraryId.locations}
-                status={itinerary.Status}
-                price={itinerary.ItineraryId.price}
-              />
-              {/* Add an icon button to open the itinerary review form */}
-              <IconButton onClick={() => openReviewFormHandler(itinerary.ItineraryId._id)}>
+
+        <Box
+          sx={{
+            height: "100%",
+            width: "100%",
+            "&::-webkit-scrollbar": { display: "none" },
+          }}
+        >
+          <Grid container spacing={0} sx={{ flexDirection: "column", width: "100vw" }}>
+            {filteredActivities.map((itinerary, index) => (
+              <Grid item key={index} sx={{ justifyContent: "left" }}>
+                <BookingCard
+                  id={itinerary.ItineraryId._id}
+                  author={itinerary.ItineraryId.author}
+                  name={itinerary.ItineraryId.title}
+                  img={"frontend/public/assets/images/itirenary.png"}
+                  startDate={itinerary.ItineraryId.start_date}
+                  endDate={itinerary.ItineraryId.end_date}
+                  location={itinerary.ItineraryId.locations}
+                  status={itinerary.Status}
+                  NumberOfTickets={itinerary.NumberOfTickets}
+                  TotalPrice={itinerary.TotalPrice}
+                  price={itinerary.ItineraryId.price}
+                />
+                    <IconButton onClick={() => openReviewFormHandler(itinerary.ItineraryId._id)}>
                 <RateReviewIcon />
               </IconButton>
               {/* Add a separate icon button for the tour guide review */}
               <IconButton onClick={() => openTourGuideReviewFormHandler(itinerary.ItineraryId.author)}>
                 <PersonPinIcon />
               </IconButton>
-            </Grid>
-          ))}
-        </Grid>
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
+
       </Box>
 
       {/* Render the itinerary review form dialog */}

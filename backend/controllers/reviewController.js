@@ -15,7 +15,7 @@ exports.setEntityUserIds = (entityName) => (req, res, next) => {
 // Generic Handler to get all reviews for any entity
 exports.getAllReviewsForEntity = (entityName) =>
   catchAsync(async (req, res, next) => {
-    const entityId = req.params[`${entityName}Id`];
+    const entityId = req.params.id;
 
     if (!entityId) {
       return next(
@@ -51,6 +51,8 @@ exports.getReview = factory.getOne(Review);
 
 exports.createReview = catchAsync(async (req, res, next) => {
   const userId = req.user._id;
+  let booking;
+
   if (req.body.activity) {
     const activityId = req.body.activity;
     const booking = await Booking.find({
@@ -93,14 +95,16 @@ exports.createReview = catchAsync(async (req, res, next) => {
     if (!booking) {
       return next(
         new AppError(
-          `You cannot review this tour guide because you have not completed it.`,
+          `You cannot review this tour guide because you have not completed a tour with him.`,
           400
         )
       );
     }
   }
+
   const doc = await Review.create(req.body);
   res.status(201).json({ status: "success", data: { data: doc } });
 });
+
 exports.deleteReview = factory.deleteOne(Review);
 exports.updateReview = factory.updateOne(Review);

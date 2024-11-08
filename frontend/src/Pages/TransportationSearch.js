@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import MyMapComponent from '../components/Map.js'; // assuming MyMapComponent is in the same directory
-
+import { Box } from '@mui/material';
 const TransportationSearch = () => {
   // State to store coordinates and description for both maps
   const [departureLocation, setDepartureLocation] = useState({ lat: 37.7749, lng: -122.4194 });
@@ -41,7 +41,7 @@ const TransportationSearch = () => {
   return (
     <div style={{ display: 'flex', justifyContent: 'space-around', padding: '20px' }}>
       {/* Left Map */}
-      <div style={{ flex: 1, marginRight: '20px', position: 'relative' }}>
+      <Box sx={{ flex: 1, marginRight: '20px', position: 'relative' }}>
         <h2>Departure Location (Map 1)</h2>
         {/* Search Bar for Map 1 */}
         <input
@@ -65,7 +65,7 @@ const TransportationSearch = () => {
           onLocationChange={(newLocation) => setDepartureLocation(newLocation)} 
           initialCoordinates={departureLocation}
         />
-      </div>
+      </Box>
 
       {/* Right Map */}
       <div style={{ flex: 1, position: 'relative' }}>
