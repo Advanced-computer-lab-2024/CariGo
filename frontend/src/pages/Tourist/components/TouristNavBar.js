@@ -11,6 +11,10 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
+// import bronzeBadge from '../../../assets/bronze badge.png'
+// import silverBadge from '../../../assets/silver badge.jpeg'
+// import goldBadge from '../../../assets/gold badge.jpeg'
+import UserBadge from '../../badge';
 import logoImage from '../../../assets/cropped_image.png'; // Correct relative path
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
@@ -22,6 +26,7 @@ const settings = ['My Profile', 'Logout','change password']; // Updated settings
 function TouristNB() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const userId = localStorage.getItem("id"); // Assumes user ID is stored in localStorage
 
   const navigate = useNavigate();
 
@@ -177,6 +182,9 @@ function TouristNB() {
             {pages[4]}
             </Button>
           </Box>
+
+          {/* User Badge */}
+          <UserBadge userId={userId} />
 
           {/* User Settings Menu */}
           <Box sx={{ flexGrow: 0 }}>
