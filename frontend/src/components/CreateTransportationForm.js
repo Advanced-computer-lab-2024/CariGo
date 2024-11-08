@@ -5,6 +5,9 @@ import { Box } from '@mui/material';
 import { Button as BaseButton } from '@mui/base/Button';
 import { useNavigate } from 'react-router-dom';
 import MyMapComponent from './Map'; // Import your Map Component
+import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
 
 export default function CreateTransportationForm() {
   const navigate = useNavigate();
@@ -37,7 +40,8 @@ export default function CreateTransportationForm() {
   const [errorMessages, setErrorMessages] = useState({});
   const [isMapVisible, setIsMapVisible] = useState(false); // State to toggle map visibility
   const [isMapVisible1, setIsMapVisible1] = useState(false);
-  const [locationType, setLocationType] = useState(''); // Track if we're choosing departure or arrival location
+  const [locationType, setLocationType] = useState('');
+  const [date, setStartDate] = useState(dayjs()); // Default to current date
 
   // Validate form fields
   const validateFields = () => {
@@ -66,9 +70,6 @@ export default function CreateTransportationForm() {
       setErrorMessages({});
     }
 
-    // Combine the departure time into a formatted string
-    //const departureTime = `${departureHour}:${departureMinutes} ${departureDayTime}`;
-
     const transportation = {
       driverNumber,
       carType,
@@ -83,7 +84,8 @@ export default function CreateTransportationForm() {
       price: parseFloat(price),
       discount: parseFloat(discount),
       ac,
-      bookingOpened
+      bookingOpened,
+      date: date.format('YYYY-MM-DD'), // Format the start date
     };
 
     // Mock token and API request
@@ -92,6 +94,7 @@ export default function CreateTransportationForm() {
       setErrorMessages({ general: "No token found. Please log in." });
       return;
     }
+
     console.log(transportation);
     try {
       const response = await fetch("http://localhost:4000/cariGo/transportation/createTransportation", {
@@ -108,7 +111,7 @@ export default function CreateTransportationForm() {
         setErrorMessages({ general: json.error || "An error occurred while creating the transportation." });
         return;
       }
-      
+
       // Reset form fields after successful submission
       setDriverNumber('');
       setCarType('');
@@ -125,9 +128,9 @@ export default function CreateTransportationForm() {
       setAc(false);
       setBookingOpened(true);
       setErrorMessages({});
-      
+
       console.log("Transportation created successfully");
-      navigate('/transportation');
+ //     navigate('/transportation');
     } catch (err) {
       setErrorMessages({ general: "Failed to create transportation. Please try again." });
       console.error(err);
@@ -165,8 +168,8 @@ export default function CreateTransportationForm() {
             <Label>Car Type</Label>
             <StyledSelect onChange={(e) => setCarType(e.target.value)} value={carType}>
               <option value="">Select Car Type</option>
-              <option value="Car">Car</option>
-              <option value="Bus">Bus</option>
+              <option value="car">Car</option>
+              <option value="bus">Bus</option>
             </StyledSelect>
             {errorMessages.carType && <HelperText>{errorMessages.carType}</HelperText>}
           </FormControl>
@@ -180,6 +183,19 @@ export default function CreateTransportationForm() {
               value={plateNumber}
             />
             {errorMessages.plateNumber && <HelperText>{errorMessages.plateNumber}</HelperText>}
+          </FormControl>
+
+          {/* Start Date */}
+          <FormControl required>
+            <Label>Start Date</Label>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                value={date}
+                onChange={(newValue) => setStartDate(newValue)}
+                renderInput={(params) => <StyledInput {...params} />}
+              />
+            </LocalizationProvider>
+            {errorMessages.startDate && <HelperText>{errorMessages.startDate}</HelperText>}
           </FormControl>
 
           {/* Departure Time */}
@@ -200,8 +216,8 @@ export default function CreateTransportationForm() {
                 <option value="45">45</option>
               </StyledSelect>
               <StyledSelect onChange={(e) => setDepartureDayTime(e.target.value)} value={departureDayTime}>
-                <option value="am">am</option>
-                <option value="pm">pm</option>
+                <option value="am">AM</option>
+                <option value="pm">PM</option>
               </StyledSelect>
             </Box>
             {errorMessages.departureTime && <HelperText>{errorMessages.departureTime}</HelperText>}
@@ -306,7 +322,6 @@ export default function CreateTransportationForm() {
         {/* Submit Button */}
         <Button onClick={handleCreate}>CREATE TRANSPORTATION</Button>
       </Box>
-
     </Box>
   );
 }
