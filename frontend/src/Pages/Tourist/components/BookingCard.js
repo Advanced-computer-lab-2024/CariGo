@@ -55,7 +55,7 @@ const BookingCard = ({ id, name, startDate, endDate, location, status, img,price
         // Add a 5-second delay before reloading the page
       setTimeout(() => {
         window.location.reload();
-      }, 5000); // 5000 ms = 5 seconds
+      }, 1000); // 5000 ms = 5 seconds
       } catch (error) {
         console.error('Failed to cancel itinerary booking:', error.response ? error.response.data : error.message);
         alert(`An error occurred while canceling the booking. Details: ${error.message},${error.response.data.message}`);

@@ -148,6 +148,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "Bronze",
     },
+    pointsAvailable: {
+      type: Number,
+      default: 0,
+    },
     selectedTags: {
       type: [
         {
@@ -239,6 +243,26 @@ userSchema.methods.addLoyaltyPoints = function (amountPaid) {
 
   this.loyaltyPoints += Math.floor(amountPaid * pointsMultiplier);
   this.updateLevelAndBadge();
+};
+
+userSchema.methods.addAvailablePoints = function (amountPaid) {
+  let pointsMultiplier;
+  switch (this.level) {
+    case 1:
+      pointsMultiplier = 0.5;
+      break;
+    case 2:
+      pointsMultiplier = 1;
+      break;
+    case 3:
+      pointsMultiplier = 1.5;
+      break;
+    default:
+      pointsMultiplier = 0.5;
+  }
+
+  this.pointsAvailable += Math.floor(amountPaid * pointsMultiplier);
+  // this.updateLevelAndBadge();
 };
 
 userSchema.methods.updateLevelAndBadge = function () {
