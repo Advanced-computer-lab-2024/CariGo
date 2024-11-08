@@ -17,7 +17,6 @@ import Info from "./components/Info";
 import InfoMobile from "./components/InfoMobile";
 import PaymentForm from "./components/PaymentForm";
 import Review from "./components/Review";
-import SitemarkIcon from "./components/SitemarkIcon";
 import AppTheme from "./theme/AppTheme";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
@@ -241,6 +240,7 @@ export default function Checkout(props, { activityId },) {
           },
         }}
       >
+        
         <Grid
           size={{ xs: 12, sm: 5, lg: 4 }}
           sx={{

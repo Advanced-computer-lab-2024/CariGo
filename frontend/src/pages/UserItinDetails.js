@@ -8,11 +8,18 @@ import NavBar from "../components/NavBar";
 import UserAcList from "../components/UserAcList"; // Import the new MarkerList component
 import "../components/styles/CompanyInfo.css";
 import logoImage from "../assets/itinerary.png"; // Correct relative path
+import { useNavigate } from "react-router-dom";
+import Button from '@mui/material/Button';
 import axios from "axios";
 
 const ItineraryDetails = () => {
   const { id } = useParams(); // Get the itinerary ID from the URL
   const [itinerary, setItinerary] = useState(null);
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate(`/checkout/itinerary/${id}`); // Update the navigation path
+  };
 
   useEffect(() => {
     const fetchItineraryDetails = async () => {
@@ -207,6 +214,11 @@ const ItineraryDetails = () => {
               <strong>Activities:</strong>
             </Typography>
             <UserAcList activities={formattedActivities} />
+          </Box>
+          <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+            <Button variant="contained" color="primary" onClick={handleClick}>
+              Book Now
+            </Button>
           </Box>
         </div>
       </Box>

@@ -109,7 +109,7 @@ export default function AddressForm({ onFormSubmit,step,role,data,onImageSubmit,
     about:data && data.about?data.about:"",
     sellerName:data && data.sellerName?data.sellerName:"",
     description:data && data.description?data.description:"",
-    selectedTags:[]
+    //selectedTags:[]
      //myFile: data && data.myFile?data.myFile:""
   });
 //  console.log(postImage.myFile)
