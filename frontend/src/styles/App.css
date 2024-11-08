@@ -14,7 +14,25 @@
     animation: App-logo-spin infinite 20s linear;
   }
 }
+input[type="file"] {
+  display: none;
+}
+.App-link {
+  color: #61dafb;
+}
+.custom-file-upload {
 
+  border: 1px solid #ccc;
+  display: inline-block;
+  width: 102px;
+  height: 102px;
+  border-radius: 100%;
+  cursor: pointer;
+}
+.custom-file-upload > img{
+  width: 100px;
+  height: 100px;
+}
 .App-header {
   background-color: #282c34;
   min-height: 100vh;

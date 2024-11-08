@@ -12,7 +12,7 @@ const router = express.Router();
 
 
 
-router.post('/createReq',[authController.protect ,authController.restrictTo("Advertiser")], DeleteRequestController.createDeleteRequest);
+router.post('/createReq',[authController.protect ,authController.restrictTo("Advertiser","Seller","Tour_Guide","Tourist")], DeleteRequestController.createDeleteRequest);
 router.get('/getReq', DeleteRequestController.getAllRequests);
 router.delete('/delReq', DeleteRequestController.deleteRequest);
 module.exports = router;

@@ -1,5 +1,6 @@
 const Activity = require("../models/Activity");
 const itinerary = require("../models/Itinerary");
+const Transportation= require("../models/Transportation");
 const Category = require("../models/Category");
 const Tag = require("../models/Tag");
 const APIFeatures = require("../utils/apiFeatures");
@@ -13,47 +14,53 @@ const DeleteRequest = require("../models/DeleteRequest");
 const moment = require("moment"); 
 
 const createDeleteRequest = async (req, res) => {
-    try {
-      // Get today's date
-      const today = new Date(); let allowDelete=true;
- // Get today's date
+  try {
+    // Get today's date
+    const today = new Date();
+    let allowDelete = true;
 
-      // Query for upcoming Activities
-      const activities = await Activity.find({
-        start_date: { $gte: today }, // filter for activities with startDate >= today
-      }).lean();  // Using .lean() for better performance if no Mongoose methods are needed
-  
-      // Query for upcoming Itineraries
-      const itineraries = await itinerary.find({
-        start_date: { $gte: today }, // filter for itineraries with startDate >= today
-      }).lean();  // Using .lean() for better performance if no Mongoose methods are needed
-  
-      // Combine activities and itineraries
-      const upcomingItems = [...activities, ...itineraries];
-  
-      // Iterate over each item and set allowDelete to false if the user is the author
-      upcomingItems.forEach(item => {
-        
-        if (item.author  == req.user.id) {
-          allowDelete = false;
+    // Initialize an array of models to check
+    const modelsToCheck = [Activity, itinerary, Transportation];
+
+    // Iterate over the models
+    for (let model of modelsToCheck) {
+      // Query to find all documents in the model (no date filter)
+      const items = await model.find().lean();
+
+      // Iterate over each item to check conditions
+      for (let item of items) {
+        if (item.author == req.user.id) {
+          if (item.isBooked === false) {
+            // If isBooked is false, delete the document
+            await model.deleteOne({ _id: item._id });
+            console.log(`${model.modelName} with ID ${item._id} deleted due to isBooked=false`);
+          } else if (item.isBooked === true) {
+            // If isBooked is true, set isActive to false
+            await model.updateOne({ _id: item._id }, { $set: { isActive: false } });
+            console.log(`${model.modelName} with ID ${item._id} updated: isActive set to false`);
+          }
         }
-      });  // Define `today` as the current date
-  
-      // Create the delete request with the username and start_date
-      const deleteRequest = await DeleteRequest.create({
-        username: req.user.username,
-        start_date: today,allowDelete :allowDelete
-      });
-  
-      // Respond with the created request
-      res.status(200).json(deleteRequest);
-      console.log(" Delete Request created successfully");
-    } catch (error) {
-      // Log the error and send the error message in the response
-      console.error(error);  // Log the error for debugging
-      res.status(400).json({ error: error.message });
+      }
     }
-  };
+
+    // After processing all models, proceed to delete the user
+    await User.deleteOne({ _id: req.user.id });
+    console.log(`User with ID ${req.user.id} deleted`);
+
+
+
+    // Respond with the created request
+    res.status(200).json(deleteRequest);
+    console.log("Delete Request created successfully");
+
+  } catch (error) {
+    // Log the error and send the error message in the response
+    console.error(error);  // Log the error for debugging
+    res.status(400).json({ error: error.message });
+  }
+};
+
+
   
 
 const deleteRequest = async (req, res) => {

@@ -142,7 +142,25 @@ export default function LoginPage() {
           </Button>
         </form>
         <Typography
-          endDecorator={<Link href="/signup">Sign up</Link>}
+          endDecorator={<Link href="/Register-Tourist">Tourist</Link>}
+          sx={{ fontSize: 'sm', alignSelf: 'center' }}
+        >
+          Don&apos;t have an account?
+        </Typography>
+        <Typography
+          endDecorator={<Link href="/Register-Seller">Seller</Link>}
+          sx={{ fontSize: 'sm', alignSelf: 'center' }}
+        >
+          Don&apos;t have an account?
+        </Typography>
+        <Typography
+          endDecorator={<Link href="/Register-Advertiser">Advertiser</Link>}
+          sx={{ fontSize: 'sm', alignSelf: 'center' }}
+        >
+          Don&apos;t have an account?
+        </Typography>
+        <Typography
+          endDecorator={<Link href="/Register-TourGuide">Tour Guide</Link>}
           sx={{ fontSize: 'sm', alignSelf: 'center' }}
         >
           Don&apos;t have an account?
