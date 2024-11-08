@@ -29,10 +29,11 @@ const HotelCard = ({ hotel,offer }) => {
       border: '2px solid #126782', 
       borderColor:'#126782',
       borderRadius:'10px', 
-      //height:'400px',
-      maxHheight:'600px',
+      height:'400px',
+      maxHeight:'600px',
       display: 'flex', 
       flexDirection:'column', 
+      flexShrink: '0',
       maxWidth: '450px',
       margin:'20px',
       marginTop:'20px',
@@ -124,5 +125,8 @@ const HotelCard = ({ hotel,offer }) => {
     </Card>
   );
 };
+
+
+
 
 export default HotelCard;

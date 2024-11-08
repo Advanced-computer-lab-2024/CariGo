@@ -1,12 +1,34 @@
-import React,{useState} from "react";
+import React,{useRef,useEffect} from "react";
 import { useNavigate } from 'react-router-dom';
 import { Box, Typography } from "@mui/material";
 import TransportCard from "./TransportCard";
 
 const TransportCardList = ({transports}) => {
-  const navigate = useNavigate();
 
-  
+  // useEffect(() => {
+  //   const handleScroll = () => {
+  //     const scrollPosition = document.querySelector('.scrollableList').scrollTop;
+  //     sessionStorage.setItem('scrollPosition', scrollPosition);
+  //   };
+
+  //   const listElement = document.querySelector('.scrollableList');
+  //   listElement.addEventListener('scroll', handleScroll);
+
+  //   // Clean up the event listener when the component unmounts
+  //   return () => {
+  //     listElement.removeEventListener('scroll', handleScroll);
+  //   };
+  // }, []);
+
+  // useEffect(() => {
+  //   const listElement = document.querySelector('.scrollableList');
+  //   const savedScrollPosition = sessionStorage.getItem('scrollPosition');
+    
+  //   if (savedScrollPosition) {
+  //     listElement.scrollTop = savedScrollPosition;
+  //   }
+  // }, []);
+
 
   if (!Array.isArray(transports)  ) {
     console.log(transports);
@@ -18,7 +40,7 @@ const TransportCardList = ({transports}) => {
   }
 
   return (
-    <Box
+    <Box className="scrollableList"
       sx={{
         gap: '10px',
         margin: '30px',

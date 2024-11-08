@@ -14,9 +14,7 @@ const FlightCard = ({ flight, onClick }) =>{
     // Function to format the duration string
     const navigate = useNavigate();
 
-    const handleClick = () => {
-      navigate(`/flight-details/${flight.id}`, { state: { flight } });
-    };
+    
     const formatDuration = (duration) => {
       if (!duration) return ""; // Handle cases where duration might be undefined
   
