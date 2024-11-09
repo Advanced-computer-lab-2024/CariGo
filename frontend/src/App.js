@@ -81,7 +81,7 @@ import AdminItineraryDetails from "./Pages/itineraries/AdminItinDetails.js";
 import AdminViewItineraries from "./Pages/itineraries/AdminViewItineraries.js"
 import TouristHistory from "./Pages/Tourist/TouristHistory.js";
 //import FlightBooking from './Pages/FlightBooking.jsx';
-import FlightDetailsPage from "./Pages/FlightDetailsCard.jsx";
+import FlightDetailsPage from "./components/FlightDetails.js";
 import FileComplaintForm from "./Pages/Tourist/FileComplaintForm";
 import ActivityPostDetail from "./components/ActivityPostDetail.js";
 //import HotelBooking from "./components/HotelBooking.js";

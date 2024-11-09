@@ -10,8 +10,9 @@ import Typography from "@mui/material/Typography";
 
 export default function Review({ orderData, activityDetails, totalPrice }) {
   const { quantity, paymentMethod, cardDetails } = orderData;
-
+  const conversionRate = localStorage.getItem("conversionRate") || 1;
   return (
+    
     <Stack spacing={2}>
       <List disablePadding>
         <ListItem sx={{ py: 1, px: 0 }}>
@@ -23,7 +24,7 @@ export default function Review({ orderData, activityDetails, totalPrice }) {
         <ListItem sx={{ py: 1, px: 0 }}>
           <ListItemText primary="Total" />
           <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-            ${totalPrice}
+            ${(totalPrice*conversionRate).toFixed(2)}
           </Typography>
         </ListItem>
       </List>

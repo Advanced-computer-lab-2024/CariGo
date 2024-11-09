@@ -43,7 +43,7 @@ const MyBookedActivityCard = ({ id, name, startDate, endDate, location, status, 
         await axios.patch(`/cariGo/users/UpdateWallet`, {
           numOfTickets:NumberOfTickets,
           price:price,
-          conversionRate:rate
+          conversionRate:1
         },
         {
           headers: {
@@ -62,7 +62,7 @@ const MyBookedActivityCard = ({ id, name, startDate, endDate, location, status, 
       }
     }
   };
-
+  const conversionRate = localStorage.getItem("conversionRate")||1;
   return (
     //console.log("price: "+price),
     //console.log("author: "+author),
@@ -79,7 +79,7 @@ const MyBookedActivityCard = ({ id, name, startDate, endDate, location, status, 
         </p>
         <p className="booking-card__location">Location: {location}</p>
         <p className="booking-card__status">
-        TotalPrice: {TotalPrice}
+        TotalPrice: {(TotalPrice*conversionRate).toFixed(2)}
         </p>
         <p className="booking-card__status">
           Status: {isPast&&status ? "Done" : status ? "Booked" : "Canceled Bookings"}

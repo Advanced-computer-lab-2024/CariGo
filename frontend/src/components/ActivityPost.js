@@ -32,6 +32,7 @@ export default function ActivityPost({ id,author, img, start_date, end_date, dur
 
 const navigate = useNavigate();
 
+const conversionRate = localStorage.getItem("conversionRate")||1;
 
   return (
     // <Link 
@@ -152,8 +153,8 @@ const navigate = useNavigate();
                 //discount>0 ? '#ff4d4d' : '#126782',
                 marginRight: '5px',
             }}> {
-              price != null? 
-              (price.range?.max+"-"+price.range?.min )
+              price != null?
+              ((price.range?.max*conversionRate).toFixed(2)+"-"+(price.range?.min*conversionRate).toFixed(2) )
               :'no specified price'}
               </Typography>
 

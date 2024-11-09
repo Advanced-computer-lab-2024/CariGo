@@ -53,7 +53,7 @@ const UserVintageDetails = () => {
       nation: { country: "Not specified", city: "Not specified" },
     },
     ticket_price = {
-      foreigner: "Not specified",
+      foriegner: "Not specified",
       native: "Not specified",
       student: "Not specified",
     },
@@ -63,7 +63,7 @@ const UserVintageDetails = () => {
       closing: "Not specified",
     },
   } = vintage;
-
+  const conversionRate = localStorage.getItem("conversionRate")||1;
   return (
     <div>
       <NavBar />
@@ -132,7 +132,7 @@ const UserVintageDetails = () => {
             >
               <AttachMoneyIcon sx={{ marginRight: "5px" }} />
               <Typography variant="body1">
-                <strong>Ticket Price:</strong> Foreigner: {ticket_price.foreigner}, Native: {ticket_price.native}, Student: {ticket_price.student}
+              Ticket Prices :<br/> Foreigner: {(ticket_price.foriegner*conversionRate).toFixed(2)}<br/> Native: {(ticket_price.native*conversionRate).toFixed(2)}<br/> Student: {(ticket_price.student*conversionRate).toFixed(2)}
               </Typography>
             </Box>
             <Typography variant="body1" sx={{ fontSize: "18px", marginBottom: "10px" }}>

@@ -16,6 +16,8 @@ import logoImage from '../../../assets/cropped_image.png';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 
+import CurrencyConversion from '../../../components/CurrencyConversion';
+
 const pages = [
   'Suggested For You', 'Activities', 'Itinerary', 'Historical Places', 
   'Products', 'File Complaint'
@@ -26,6 +28,16 @@ function TouristNB() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const [anchorElBookings, setAnchorElBookings] = React.useState(null);
+  const [openCurrencyDialog, setOpenCurrencyDialog] = React.useState(false); // State for dialog
+  // Open and Close Dialog Functions
+  const handleOpenCurrencyDialog = () => {
+    setOpenCurrencyDialog(true);
+  };
+
+  const handleCloseCurrencyDialog = () => {
+    setOpenCurrencyDialog(false);
+    };
+
   const userId = localStorage.getItem("id");
 
   const navigate = useNavigate();
@@ -179,6 +191,12 @@ function TouristNB() {
               <MenuItem onClick={loadProfile}><Typography sx={{ textAlign: 'center' }}>My Profile</Typography></MenuItem>
               <MenuItem onClick={handleLogout}><Typography sx={{ textAlign: 'center' }}>Logout</Typography></MenuItem>
               <MenuItem onClick={handleChangePass}><Typography sx={{ textAlign: 'center' }}>Change Password</Typography></MenuItem>
+              <MenuItem onClick={handleOpenCurrencyDialog}><Typography sx={{ textAlign: 'center' }}>Choose Currency</Typography></MenuItem>
+              {/* Button to Open Currency Dialog */}
+         
+         
+          {/* Currency Conversion Dialog */}
+          <CurrencyConversion open={openCurrencyDialog} onClose={handleCloseCurrencyDialog} />
             </Menu>
           </Box>
         </Toolbar>

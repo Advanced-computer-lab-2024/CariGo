@@ -4,7 +4,7 @@ import FlightInfo from "./FlightInfo";
 import FlightDate from "./FlightDate"; // You might need to adapt this if it doesn't match the data format.
 import FlightDuration from "./FlightDuration";
 import { useNavigate } from 'react-router-dom';
-import { Box ,Typography,Button} from "@mui/material";
+import { Box ,Typography,Button,} from "@mui/material";
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import FlightIcon from '@mui/icons-material/Flight';
 import LuggageIcon from '@mui/icons-material/Luggage';
@@ -75,9 +75,10 @@ const FlightCard = ({ flight, onClick }) =>{
           <AttachMoneyIcon sx={{marginTop:'0px', color: '#126782'}}/>
           <Price>{`${price.total}   ${price.currency}`}</Price> {/* Display price */}
         </Box>
+        
         <Button onClick={handleClick} 
-        sx={{color:'white',  backgroundColor:'#126782', borderRadius:'5px',position:'absolute',right:'5px', bottom:'0px',}} 
-        >Book</Button> {/* Add Book button */}
+        sx={{color:'white',  backgroundColor:'#ff4d4d', borderRadius:'5px',position:'absolute',right:'0px', bottom:'0px',}} 
+        >View Details</Button> {/* Add Book button */}
       </Box>
     </Box>
     </Box>
