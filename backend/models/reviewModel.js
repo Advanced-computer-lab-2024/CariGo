@@ -55,10 +55,13 @@ reviewSchema.pre(/^find/, function (next) {
     next();
 });
 
-// Generic function to calculate average ratings
+
 async function calcAverageRatings(model, refField, refId) {
+    // Ensure refId is properly converted to string for comparison
+    const id = refId.toString();
+
     const stats = await Review.aggregate([
-        { $match: { [refField]: refId } },
+        { $match: { [refField]: mongoose.Types.ObjectId(id) } },  // Dynamic field reference
         {
             $group: {
                 _id: `$${refField}`,
@@ -69,16 +72,21 @@ async function calcAverageRatings(model, refField, refId) {
     ]);
 
     if (stats.length > 0) {
-        await model.findByIdAndUpdate(refId, {
+        await model.findByIdAndUpdate(id, {
             ratingsQuantity: stats[0].nRating,
             ratingsAverage: stats[0].avgRating,
         });
     } else {
-        await model.findByIdAndUpdate(refId, {
+        await model.findByIdAndUpdate(id, {
             ratingsQuantity: 0,
             ratingsAverage: 4.5,
         });
     }
+
+    // const thing = await model.findById(refId);
+    // thing.save({ validateBeforeSave: false });
+
+    // console.log(await model.findbyId(refId).ratingsQuantity);
 }
 
 // Middleware to update average ratings after saving a review
@@ -87,6 +95,7 @@ reviewSchema.post('save', function () {
     if (this.activity) calcAverageRatings(Activity, 'activity', this.activity);
     if (this.itinerary) calcAverageRatings(Itinerary, 'itinerary', this.itinerary);
     if (this.tourGuide) calcAverageRatings(TourGuide, 'tourGuide', this.tourGuide);
+    console.log(this.product);
 });
 
 // Middleware to update average ratings after updating or deleting a review
