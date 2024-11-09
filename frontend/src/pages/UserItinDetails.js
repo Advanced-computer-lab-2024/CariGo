@@ -90,7 +90,7 @@ const ItineraryDetails = () => {
     startDate: formatDateTime(activity.start_date),
     endDate: formatDateTime(activity.end_date),
   }));
-
+  const conversionRate = localStorage.getItem("conversionRate")||1;
   return (
     <div>
       <NavBar />
@@ -183,7 +183,7 @@ const ItineraryDetails = () => {
               <AttachMoneyIcon sx={{ marginRight: "5px" }} />
               <Typography variant="body1">
                 <strong>Price:</strong>{" "}
-                {price ? `$${price}` : "Price not specified"}
+                {price ? `$${(price*conversionRate).toFixed(2)}` : "Price not specified"}
               </Typography>
             </Box>
             <Typography variant="body1" sx={{ fontSize: "18px" }}>

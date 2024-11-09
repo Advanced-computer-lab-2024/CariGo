@@ -26,7 +26,7 @@ export default function VintagePost({
   pictures = [], // Default as an empty array
   location = null, // Default is null for the location
   ticket_price = {
-    foreigner: "Not specified",
+    foriegner: "Not specified",
     native: "Not specified",
     student: "Not specified"
   },
@@ -137,7 +137,7 @@ export default function VintagePost({
             <Box sx={{ display: 'flex', marginTop: '5px' }}>
               <AttachMoneyIcon />
               <Typography sx={{ marginLeft: '5px', color: '#126782' }}>
-                Ticket Prices :<br/> Foreigner: {ticket_price.foreigner}<br/> Native: {ticket_price.native}<br/> Student: {ticket_price.student}
+                Ticket Prices :<br/> Foreigner: {ticket_price.foriegner}<br/> Native: {ticket_price.native}<br/> Student: {ticket_price.student}
               </Typography>
             </Box>
 

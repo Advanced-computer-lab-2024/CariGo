@@ -29,32 +29,48 @@ const products = [
   },
 ];
 
-function Info({ totalPrice ,activityDetails, type}) {
+
+function Info({ totalPrice = 0, activityDetails, type }) {
+  const conversionRate = parseFloat(localStorage.getItem("conversionRate")) || 1;
+
+  // Clean totalPrice by removing non-numeric characters
+  const cleanedTotalPrice = parseFloat(totalPrice.toString().replace(/[^0-9.]/g, ''));
+
+  const newTotal = !isNaN(cleanedTotalPrice) && !isNaN(conversionRate)
+    ? (cleanedTotalPrice * conversionRate).toFixed(2)
+    : "0.00"; // Default display if `NaN`
+    
+  console.log("Cleaned Total Price:", cleanedTotalPrice);
+  console.log("Conversion Rate:", conversionRate);
+  console.log("New Total:", newTotal);
+
   return (
     <React.Fragment>
       <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>
         Total
       </Typography>
       <Typography variant="h4" gutterBottom>
-        {totalPrice}
+        {newTotal}
       </Typography>
       <List disablePadding>
-          <ListItem key={activityDetails?.title} sx={{ py: 1, px: 0 }}>
-            <ListItemText
-              sx={{ mr: 2 }}
-              primary={activityDetails?.title}
-              secondary={activityDetails?.description}
-            />
-            <Typography variant="body1" sx={{ fontWeight: 'medium' }}>
-            {type === 'activity' 
-                ? activityDetails?.price?.range?.min 
-                : activityDetails?.price}
-            </Typography>
-          </ListItem>
+        <ListItem key={activityDetails?.title} sx={{ py: 1, px: 0 }}>
+          <ListItemText
+            sx={{ mr: 2 }}
+            primary={activityDetails?.title}
+            secondary={activityDetails?.description}
+          />
+          <Typography variant="body1" sx={{ fontWeight: 'medium' }}>
+            {type === 'activity'
+              ? (parseFloat(activityDetails?.price?.range?.min) * conversionRate || 0).toFixed(2)
+              : (parseFloat(activityDetails?.price) * conversionRate || 0).toFixed(2)}
+          </Typography>
+        </ListItem>
       </List>
     </React.Fragment>
   );
 }
+
+
 
 Info.propTypes = {
   totalPrice: PropTypes.string.isRequired,
