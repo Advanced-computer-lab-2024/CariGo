@@ -153,8 +153,8 @@ const conversionRate = localStorage.getItem("conversionRate")||1;
                 //discount>0 ? '#ff4d4d' : '#126782',
                 marginRight: '5px',
             }}> {
-              price != null? 
-              ((price.range.max*conversionRate).toFixed(2)+"-"+(price.range.min*conversionRate).toFixed(2) )
+              price != null?
+              ((price.range?.max*conversionRate).toFixed(2)+"-"+(price.range?.min*conversionRate).toFixed(2) )
               :'no specified price'}
               </Typography>
 

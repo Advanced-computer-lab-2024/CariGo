@@ -21,6 +21,7 @@ const {
   CancelItineraryBooking,
   currencyConversion,
   suggestedItineraries,
+  suggestedActivities
 } = require("../controllers/eventController");
 const authController = require("../controllers/authController");
 const router = express.Router();
@@ -63,6 +64,7 @@ router.get(
 ); // itineraries
 
 router.get("/suggested", suggestedItineraries);
+router.get("/suggestedActivities", suggestedActivities);
 // router.post('/createActivity', createActivity);
 router.get("/viewAllVintage", authController.protect, viewAllVintage);
 

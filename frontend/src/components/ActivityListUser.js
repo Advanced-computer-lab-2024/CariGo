@@ -1,13 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import ActivityPost from "./ActivityPost.js";
 import { Box, Typography } from '@mui/material';
 
+export default function ActivityList({ fetchedActivities }) {
 
-
-export default function ActivityList({fetchedActivities}) {
-    
-   
-   
     const StringDate = (date) => {
         const d = new Date(date);
         const day = String(d.getDate()).padStart(2, '0');
@@ -15,58 +11,43 @@ export default function ActivityList({fetchedActivities}) {
         const year = d.getFullYear();
         return `${day}/${month}/${year}`;
     };
-  
-    const calculateDuration=(date1,date2)=>{
+
+    const calculateDuration = (date1, date2) => {
+        if (!date1 || !date2) return "Unknown duration";
         const start = new Date(date1);
         const end = new Date(date2);
-        
-        // Calculate differences
-        const years = end.getFullYear() - start.getFullYear();
-        const months = end.getMonth() - start.getMonth() + (years * 12);
-        const days = Math.floor((end - start) / (1000 * 60 * 60 * 24));
-        const weeks = Math.floor(days / 7);
-      
-        // Determine the largest unit
-        if (years > 0) {
-          return `${years} year${years > 1 ? 's' : ''}`;
-        } else if (months > 0) {
-          return `${months} month${months > 1 ? 's' : ''}`;
-        } else if (weeks > 0) {
-          return `${weeks} week${weeks > 1 ? 's' : ''}`;
-        } else {
-          return `${days} day${days > 1 ? 's' : ''}`;
-        }
-    }
- 
+        const diffTime = Math.abs(end - start);
+        const days = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+        return days > 0 ? `${days} days` : "Less than a day";
+    };
+
     return (
         <Box sx={{ width: '100vw' }}>
-           
-            {/* Activity List */}
-            {fetchedActivities.length > 0 ? (
-            <Box>
-                {fetchedActivities.map((activity) => (
-                    <Box item key={activity._id}>
-                        <ActivityPost
-                            id={activity._id}
-                            start_date={StringDate(activity.start_date)}
-                            end_date={StringDate(activity.end_date)}
-                            location={activity.locations}
-                            duration={calculateDuration(activity.start_date, activity.end_date)}
-                            price={activity.price}
-                            category={activity.Category}
-                            rating={activity.ratingsAverage}
-                            discount={activity.discount}
-                            isOpened={activity.isOpened ? 'open' : 'closed'}
-                            title={activity.title}
-                            tag={activity.tag}
-                            description={activity.description}
-                            img={activity.img}
-                        />
-                    </Box>
-                        ))}
-                    </Box>
-                    ) : (
-                    <Typography>No activities found.</Typography>
+            {fetchedActivities && fetchedActivities.length > 0 ? (
+                <Box>
+                    {fetchedActivities.map((activity) => (
+                        <Box item key={activity._id}>
+                            <ActivityPost
+                                id={activity._id}
+                                title={activity.title || "No title available"}
+                                start_date={StringDate(activity.start_date)}
+                                end_date={StringDate(activity.end_date)}
+                                location={activity.locations ? `${activity.locations.lon}, ${activity.locations.lan}` : "Location unavailable"}
+                                duration={calculateDuration(activity.start_date, activity.end_date)}
+                                price={activity.price?.range ? `From ${activity.price.range.min} to ${activity.price.range.max}` : "Price not available"}
+                                category={activity.Category?.title || "Uncategorized"}
+                                rating={activity.ratingsAverage ?? "No rating"}
+                                discount={activity.discount ?? 0}
+                                isOpened={activity.bookingOpened ? 'open' : 'closed'}
+                                tag={activity.tag?.title || "No tag available"}
+                                description={activity.description || "No description available"}
+                                img={activity.img || "default-image.jpg"}
+                            />
+                        </Box>
+                    ))}
+                </Box>
+            ) : (
+                <Typography>No activities found.</Typography>
             )}
         </Box>
     );

@@ -358,6 +358,30 @@ const suggestedItineraries = async (req, res) => {
   }
 };
 
+const suggestedActivities = async (req, res) => {
+  try {
+    // Ensure `tags` is always an array, even if a single tag is passed in the query
+    const tags = Array.isArray(req.query.tags) ? req.query.tags : [req.query.tags];
+    console.log(tags);
+
+    // Convert `tags` to ObjectId format if they are strings, since the tag field references ObjectIds
+    const tagIds = tags.map(tag => new mongoose.Types.ObjectId(tag)); // Use `new` to create ObjectId instances
+
+    // Fetch activities that match any tag in the `tags` array
+    const itineraries = await activityModel.find({
+      isActive: true,
+      isFlagged: false,
+      tag: { $in: tagIds } // Check if activity's tag is in the provided tags list
+    }).populate("tag"); // Ensure populated tag information is returned
+    console.log(itineraries);
+    res.json(itineraries);
+  } catch (error) {
+    console.error("Error fetching suggested activities:", error);
+    res.status(500).json({ error: "Error fetching suggested activities" });
+  }
+};
+
+
 
 
 const deleteItinerary = async (req, res) => {
@@ -772,5 +796,6 @@ module.exports = {
   MyItineraryBookings,
   CancelItineraryBooking,
   currencyConversion,
-  suggestedItineraries
+  suggestedItineraries,
+  suggestedActivities
 };
