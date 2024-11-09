@@ -9,6 +9,7 @@ import profileImage from '../../assets/profile.png';
 import TouristInfoEdit from '../../components/TouristInfoEdit';
 import TouristNB from './components/TouristNavBar';
 import {jwtDecode} from "jwt-decode";
+import MyPurchases from './MyPurchases';
 //import profilePic from '../../../../backend/public/img/users/'
 const TouristProfile = ({ userId }) => {
   const [profile, setProfile] = useState(null);
@@ -87,7 +88,7 @@ const TouristProfile = ({ userId }) => {
         />
         
         <TouristInfoEdit profile={profile} setProfile={setProfile} setRefreshKey={setRefreshKey} /> 
-        
+        <MyPurchases/>
       </div>
     </div>
   );

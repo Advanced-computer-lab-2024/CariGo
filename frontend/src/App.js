@@ -95,6 +95,7 @@ import UploadDocumentsPage from "./Pages/UploadDocuments.js";
 
 import ProductAnalysis from "./Pages/products/ProductAnalysis.jsx";
 import ProductDetails2 from "./Pages/products/ProductDetails2.jsx";
+import ProductDetailsSeller from "./Pages/products/ProductDetailsSeller.jsx";
 import MyBookings from "./Pages/Tourist/MyBookings.js";
 import MyBookedActivities from "./Pages/Tourist/MyBookedActivities.js"
 import CreateTransportation from "./components/CreateTransportationForm.js"
@@ -152,6 +153,7 @@ function App() {
       <Route path="/Seller" element={<SellerProfile />} />
       <Route path="/Seller/products" element={<ViewProductsSeller />} />
       <Route path="/Seller/products/:id" element={<EditProductD />} />
+      <Route path="/Seller/productDetails/:id" element={<ProductDetailsSeller />} />
       <Route path="/Seller/products/addProduct" element={<AddProductSeller />} />
         {<Route path="/activities" element={<UserViewActivities />} /> }
         <Route path="/tourist-activities" element={<TouristActivities/>} />

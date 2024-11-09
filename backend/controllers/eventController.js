@@ -617,10 +617,15 @@ const BookItinerary = async (req, res) => {
           NumberOfTickets:NumberOfTickets,
           TotalPrice:TotalPrice
         });
+        const newWalletValue = user.wallet - TotalPrice;
+        user.wallet = newWalletValue;
+        await user.save({ validateBeforeSave: false });
       }
 
       // Add loyalty points
-      user.addLoyaltyPoints(itinerary.price);
+      // user.addLoyaltyPoints(itinerary.price);
+      user.addLoyaltyPoints(TotalPrice);
+      user.addAvailablePoints(TotalPrice)
       await user.save({ validateBeforeSave: false });
 
       res.status(200).json({
@@ -630,6 +635,8 @@ const BookItinerary = async (req, res) => {
         newTotalPoints: user.loyaltyPoints,
         newLevel: user.level,
         newBadge: user.badge,
+        newPoints: user.pointsAvailable,
+        newWallet: user.wallet
       });
     } catch (error) {
       res.status(500).json({ error: "Failed to book" });

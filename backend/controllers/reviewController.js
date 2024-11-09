@@ -64,7 +64,7 @@ exports.createReview = catchAsync(async (req, res, next) => {
       ActivityId: activityId,
       Status: true,
     });
-    // console.log(booking);
+    console.log(booking);
 
     if (booking.length == 0) {
       return next(
