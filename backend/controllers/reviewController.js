@@ -75,15 +75,7 @@ exports.createReview = catchAsync(async (req, res, next) => {
       );
     }
 
-    // Check if at least one booking is finished
-    if (!booking.some(isBookingFinished)) {
-      return next(
-        new AppError(
-          `You cannot review this activity because you have not finished it.`,
-          400
-        )
-      );
-    }
+
   } else if (req.body.itinerary) {
     const itineraryId = req.body.itinerary;
     const booking = await Booking.find({
@@ -100,15 +92,6 @@ exports.createReview = catchAsync(async (req, res, next) => {
       );
     }
 
-    // Check if at least one booking is finished
-    if (!booking.some(isBookingFinished)) {
-      return next(
-        new AppError(
-          `You cannot review this itinerary because you have not finished it.`,
-          400
-        )
-      );
-    }
   } else if (req.body.tourGuide) {
     const tourGuideId = req.body.tourGuide;
     // console.log(tourGuideId,"ana hena");
@@ -128,14 +111,14 @@ exports.createReview = catchAsync(async (req, res, next) => {
     }
 
     // Check if at least one booking is finished
-    if (!booking.some(isBookingFinished)) {
-      return next(
-        new AppError(
-          `You cannot review this tour guide because you have not completed a tour with him.`,
-          400
-        )
-      );
-    }
+    // if (!booking.some(isBookingFinished)) {
+    //   return next(
+    //     new AppError(
+    //       You cannot review this tour guide because you have not completed a tour with him.,
+    //       400
+    //     )
+    //   );
+    // }
   }
 
   const doc = await Review.create(req.body);
