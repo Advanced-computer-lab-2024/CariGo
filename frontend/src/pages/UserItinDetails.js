@@ -4,7 +4,7 @@ import { Box, Typography, Chip, Avatar } from "@mui/material";
 import PinDropIcon from "@mui/icons-material/PinDrop";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import StarIcon from "@mui/icons-material/Star";
-import NavBar from "../components/NavBar";
+import ResponsiveAppBar from "./Tourist/components/TouristNavBar";
 import UserAcList from "../components/UserAcList"; // Import the new MarkerList component
 import "../components/styles/CompanyInfo.css";
 import logoImage from "../assets/itinerary.png"; // Correct relative path
@@ -93,7 +93,7 @@ const ItineraryDetails = () => {
   const conversionRate = localStorage.getItem("conversionRate")||1;
   return (
     <div>
-      <NavBar />
+      <ResponsiveAppBar />
       <Box sx={{ padding: "20px", maxWidth: "1200px", margin: "auto" }}>
         <Box
           sx={{

@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { Box, Typography, Chip, Avatar } from "@mui/material";
 import PinDropIcon from "@mui/icons-material/PinDrop";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-import NavBar from "../components/NavBar";
+import ResponsiveAppBar from "./Tourist/components/TouristNavBar";
 
 const UserVintageDetails = () => {
   const { id } = useParams(); // Get the vintage ID from the URL
@@ -66,7 +66,7 @@ const UserVintageDetails = () => {
   const conversionRate = localStorage.getItem("conversionRate")||1;
   return (
     <div>
-      <NavBar />
+      <ResponsiveAppBar />
       <Box sx={{ padding: "20px", maxWidth: "1200px", margin: "auto" }}>
         <Box
           sx={{

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../styles/index.css";
-import NavBar from "../components/NavBarTourist";
+import ResponsiveAppBar from "./Tourist/components/TouristNavBar";
 import { Box, Grid, TextField, Button, MenuItem } from "@mui/material";
 import { styled, alpha } from '@mui/material/styles';
 import SearchIcon from '@mui/icons-material/Search';
@@ -220,7 +220,7 @@ const handleSearch = () => {
 
   return (
     <div>
-      <NavBar/>
+      <ResponsiveAppBar/>
         {/*Search bar*/}
         <Box sx={{display:'flex',}}>
             <Search>

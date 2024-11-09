@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios'; // Import axios for HTTP requests
 import { FaPencilAlt, FaStickyNote, FaCalendarAlt } from 'react-icons/fa';
 
+import ResponsiveAppBar from "./components/TouristNavBar";
 const FileComplaintForm = () => {
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
@@ -35,6 +36,8 @@ const FileComplaintForm = () => {
   };
 
   return (
+    <>
+    <ResponsiveAppBar />
     <div style={styles.container}>
       <h2 style={styles.heading}>File a Complaint</h2>
       <form onSubmit={handleSubmit} style={styles.form}>
@@ -76,6 +79,7 @@ const FileComplaintForm = () => {
       {successMessage && <p style={styles.successMessage}>{successMessage}</p>}
       {errorMessage && <p style={styles.errorMessage}>{errorMessage}</p>}
     </div>
+    </>
   );
 };
 
