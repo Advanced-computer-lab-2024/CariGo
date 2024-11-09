@@ -36,7 +36,7 @@ function TouristNB() {
 
   const handleCloseCurrencyDialog = () => {
     setOpenCurrencyDialog(false);
-    };
+  };
 
   const userId = localStorage.getItem("id");
 
@@ -56,7 +56,7 @@ function TouristNB() {
   const loadHistoricalPlaces = () => { handleCloseNavMenu(); navigate('/allVintages'); };
   const loadProducts = () => { handleCloseNavMenu(); navigate('/Tourist/Products'); };
   const loadFileComplaint = () => { handleCloseNavMenu(); navigate('/tourist/file-complaint'); };
-  const loadBookServices = () => { handleCloseBookingsMenu(); navigate('/book-services'); };
+  const loadBookServices = () => { handleCloseBookingsMenu(); navigate('/book-services'); sessionStorage.clear(); };
   const loadBookedActivities = () => { handleCloseBookingsMenu(); navigate('/tourist/MyBookedActivities'); };
   const loadBookedItineraries = () => { handleCloseBookingsMenu(); navigate('/tourist/MyBookings'); };
   const loadProfile = () => { handleCloseUserMenu(); navigate('/tourist-profile'); };
