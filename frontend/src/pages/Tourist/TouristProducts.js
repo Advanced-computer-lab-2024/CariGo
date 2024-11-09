@@ -105,6 +105,10 @@ export default function ViewProductsTourist() {
   const [age, setAge] = React.useState("");
   const [selectedProductId, setSelectedProductId] = useState(null); // To store product ID for modal
 
+  const handleDetatils2 = (id) => {
+    // Navigating to a page with the id in the URL
+    navigate(`/tourist/view-products/${id}`);
+  };
   //   const handleChange = (event: SelectChangeEvent) => {
   //     setAge(event.target.value as string);
   //   };
@@ -294,7 +298,7 @@ export default function ViewProductsTourist() {
 
                 <TableBody hover>
                   {products.map((product, index) => (
-                    <TableRow key={product._id} hover>
+                    <TableRow key={product._id} hover onClick={() => handleDetatils2(product._id)}
                       <TableCell
                         colSpan={2}
                         align="left"
@@ -330,9 +334,10 @@ export default function ViewProductsTourist() {
                           <Small bgcolor={bgError}>out of stock</Small>
                         )}
                       </TableCell>
-
-                      <TableCell sx={{ px: 6 }} colSpan={2}>
-                        {/* <IconButton onClick={() => console.log(2)}>
+                          <TableCell sx={{ px: 6 }} colSpan={2} onClick={() => {
+                          handleDetatils2(product._id);
+                        }}>
+               {/* <IconButton onClick={() => console.log(2)}>
                     <Edit color="primary" />
                   </IconButton> */}
                         <Rating
