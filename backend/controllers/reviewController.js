@@ -3,11 +3,6 @@ const Review = require("./../models/reviewModel");
 const Booking = require("./../models/Bookings");
 const factory = require("./handlerFactory");
 const AppError = require("./../utils/appError");
-const mongoose = require('mongoose');
-const Product = require("./../models/Product");
-const TourGuide = require("./../models/User");
-const Itinerary = require("./../models/Itinerary");
-const Activity = require("./../models/Activity");
 
 // Generic Middleware to set entity and user IDs
 exports.setEntityUserIds = (entityName) => (req, res, next) => {
@@ -81,26 +76,13 @@ exports.createReview = catchAsync(async (req, res, next) => {
     }
 
 
-
-    // Check if at least one booking is finished
-    // if (!booking.some(isBookingFinished)) {
-    //   return next(
-    //     new AppError(
-    //       `You cannot review this activity because you have not finished it.`,
-    //       400
-    //     )
-    //   );
-    // }
   } else if (req.body.itinerary) {
     const itineraryId = req.body.itinerary;
-    console.log(itineraryId);
-    console.log(userId);
     const booking = await Booking.find({
       UserId: userId,
-      ItineraryId: new mongoose.Types.ObjectId(itineraryId),
+      ItineraryId: itineraryId,
       Status: true,
     });
-    console.log(booking);
     if (booking.length == 0) {
       return next(
         new AppError(
@@ -110,15 +92,6 @@ exports.createReview = catchAsync(async (req, res, next) => {
       );
     }
 
-    // Check if at least one booking is finished
-    // if (!booking.some(isBookingFinished)) {
-    //   return next(
-    //     new AppError(
-    //       `You cannot review this itinerary because you have not finished it.`,
-    //       400
-    //     )
-    //   );
-    // }
   } else if (req.body.tourGuide) {
     const tourGuideId = req.body.tourGuide;
     // console.log(tourGuideId,"ana hena");
@@ -141,15 +114,12 @@ exports.createReview = catchAsync(async (req, res, next) => {
     // if (!booking.some(isBookingFinished)) {
     //   return next(
     //     new AppError(
-    //       `You cannot review this tour guide because you have not completed a tour with him.`,
+    //       You cannot review this tour guide because you have not completed a tour with him.,
     //       400
     //     )
     //   );
     // }
-  }else if (req.body.product){
-
   }
-
 
   const doc = await Review.create(req.body);
   res.status(201).json({ status: "success", data: { data: doc } });

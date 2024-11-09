@@ -6,6 +6,7 @@ import './components/BookingCard.css';
 
 const MyPurchases = () => {
   const [purchases, setPurchases] = useState([]);
+  const [counter, setCounter] = useState(0);
 
   useEffect(() => {
     const fetchPurchases = async () => {
@@ -28,7 +29,10 @@ const MyPurchases = () => {
     };
 
     fetchPurchases();
-  }, []);
+  }, [counter]);
+
+  // Function to trigger a re-fetch by updating the counter
+  const triggerRefresh = () => setCounter((prevCounter) => prevCounter + 1);
 
   return (
     <div className="purchases-page">
@@ -36,13 +40,14 @@ const MyPurchases = () => {
       {purchases.map((purchase) => (
         <PurchaseCard
           key={purchase._id}
-          id={purchase._id}
+          id={purchase.ProductId._id}
           name={purchase.ProductId.name}
           description={purchase.ProductId.description}
           price={purchase.ProductId.price}
           quantity={purchase.Quantity}
           ratingsAverage={purchase.ProductId.ratingsAverage}
           createdAt={purchase.createdAt}
+          triggerRefresh={triggerRefresh}  // Pass the trigger function to PurchaseCard
         />
       ))}
     </div>
