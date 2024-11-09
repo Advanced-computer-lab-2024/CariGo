@@ -153,7 +153,7 @@ const navigate = useNavigate();
                 marginRight: '5px',
             }}> {
               price != null? 
-              (price.range.max+"-"+price.range.min )
+              (price.range?.max+"-"+price.range?.min )
               :'no specified price'}
               </Typography>
 
