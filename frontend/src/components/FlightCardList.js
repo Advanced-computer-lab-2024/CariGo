@@ -4,7 +4,7 @@ import FlightCard from "./FlightCard";
 import { useNavigate } from 'react-router-dom';
 import { Box, Typography } from "@mui/material";
 const FlightCardList = ({ flights = [], loading = false }) => {
-  
+  const listRef = useRef(null);
   const navigate = useNavigate();
   const handleCardClick = (flight) => {
     navigate(`/flight-details/${flight.id}`, { state: { flight } });
@@ -22,6 +22,7 @@ const FlightCardList = ({ flights = [], loading = false }) => {
     // Clean up the event listener when the component unmounts
     return () => {
       listElement.removeEventListener('scroll', handleScroll);
+      //window.scrollTo(0, 0);
     };
   }, []);
 
@@ -44,7 +45,7 @@ const FlightCardList = ({ flights = [], loading = false }) => {
 
   return (
     <Box  className="scrollableList"
-      //ref={listRef} 
+      ref={listRef} 
       sx={{
       gap: '10px',
       margin:'30px',

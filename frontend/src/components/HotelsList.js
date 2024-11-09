@@ -22,6 +22,7 @@ import HotelCard from "./HotelCard";
     // Clean up the event listener when the component unmounts
     return () => {
       listElement.removeEventListener('scroll', handleScroll);
+      //window.scrollTo(0, 0);
     };
   }, []);
 

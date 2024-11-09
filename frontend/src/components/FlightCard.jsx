@@ -16,7 +16,9 @@ const FlightCard = ({ flight, onClick }) =>{
 
     const handleClick = () => {
       navigate(`/flight-details/${flight.id}`, { state: { flight } });
+      window.scrollTo(0, 0);
     };
+    
     const formatDuration = (duration) => {
       if (!duration) return ""; // Handle cases where duration might be undefined
   

@@ -10,7 +10,7 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import AirlinesIcon from '@mui/icons-material/Airlines';
 import TimelapseIcon from '@mui/icons-material/Timelapse';
 
-const FlightCard = () =>{
+const FlightDetails = () =>{
   const { state } = useLocation();
   const flightData = state.flight;
 
@@ -35,13 +35,18 @@ const FlightCard = () =>{
       return durationString.replace(/H/g, ' hours ').replace(/M/g, ' minutes ').trim();
     };
 
-    const handleBookClick=() =>{
+    const handleBackCLick=() =>{
+      navigate(`/book-services`);
+      window.scrollTo(0, 0);
+    }
 
+    const handleBookClick=() =>{
+      
     };
 
   return (
     <Box sx={{display:'flex', flexDirection:'column', gap:'0px', margin:'20px', marginLeft:'10%'}}>
-      <Button onClick={() => navigate(`/book-services`)}
+      <Button onClick={handleBackCLick}
           sx={{ backgroundColor: "#126782", color: 'white', borderRadius: '8px', width: '80px', fontSize:'18px', marginLeft:'20px' }}>
           Back
       </Button>
@@ -70,7 +75,7 @@ const FlightCard = () =>{
       {/* info box */}
       <Box sx={{ margin:'10px',marginLeft:'20px',position:'relative', display:'flex', flexDirection:'column'}}>
       <Typography sx={{fontSize:'16px', fontWeight:'bold',marginLeft:'10px'}}>
-        {noOfFlights} trip(s)
+        {noOfFlights} trip{noOfFlights > 1 ? 's' : ''}
       </Typography>
       {/*segments box*/}
       <Box sx={{marginLeft:'10px', padding:'10px', display:'flex', flexDirection:'column', gap:'20px'}}>
@@ -187,39 +192,6 @@ const FlightCard = () =>{
           </Button>
           </Box>
       </Box>
-      {/* end of info box */}
-      {/* 
-      <FlightDate date={new Date(segments[0].departure.time).toLocaleDateString()}  />
-        <FlightDuration duration={formatDuration(segments[0].duration)}/>
-      <Box sx={{display:'flex',flexDirection:'row', height:"80px"}}>
-      <FlightDetails>
-        {segments.map((segment, index) => (
-          <FlightInfo
-            key={index}
-            time1={new Date(segment.departure.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-            time2={new Date(segment.arrival.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-            code={segment.flightNumber}
-            city={`${segment.departure.airport} to ${segment.arrival.airport}`} // Displaying the route
-            
-          />
-        ))}
-      </FlightDetails>
-      </Box> */}
-      
-      {/* <Box sx={{display:'flex', flexDirection:'row', marginTop:'-120px',marginLeft:'12px',}}>
-        <LuggageIcon sx={{ fill:'#126782'}}/>
-      <Typography>{flight.includedCheckedBagsOnly}</Typography>
-      </Box> */}
-      {/*PUTS PRICE AND BOOK BUTTON AT BOTTOM */}
-      {/* <Box sx={{position:'relative',  display:'flex',}}>
-        <Box sx={{display:'flex', padding:'0px',}}>
-          <AttachMoneyIcon sx={{marginTop:'0px', color: '#126782'}}/>
-          <Price>{`${price.total}   ${price.currency}`}</Price> 
-        </Box>
-        <Button onClick={handleClick} 
-        sx={{color:'white',  backgroundColor:'#126782', borderRadius:'5px',position:'absolute',right:'5px', bottom:'0px',}} 
-        >Book</Button> 
-      </Box> */}
       
     </Box>
     </Box>
@@ -239,4 +211,4 @@ const Price = styled.p`
 
 
 
-export default FlightCard;
+export default FlightDetails;

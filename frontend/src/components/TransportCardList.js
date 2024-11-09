@@ -5,29 +5,30 @@ import TransportCard from "./TransportCard";
 
 const TransportCardList = ({transports}) => {
 
-  // useEffect(() => {
-  //   const handleScroll = () => {
-  //     const scrollPosition = document.querySelector('.scrollableList').scrollTop;
-  //     sessionStorage.setItem('scrollPosition', scrollPosition);
-  //   };
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = document.querySelector('.scrollableList').scrollTop;
+      sessionStorage.setItem('scrollPosition', scrollPosition);
+    };
 
-  //   const listElement = document.querySelector('.scrollableList');
-  //   listElement.addEventListener('scroll', handleScroll);
+    const listElement = document.querySelector('.scrollableList');
+    listElement.addEventListener('scroll', handleScroll);
 
-  //   // Clean up the event listener when the component unmounts
-  //   return () => {
-  //     listElement.removeEventListener('scroll', handleScroll);
-  //   };
-  // }, []);
+    // Clean up the event listener when the component unmounts
+    return () => {
+      listElement.removeEventListener('scroll', handleScroll);
+      window.scrollTo(0, 0);
+    };
+  }, []);
 
-  // useEffect(() => {
-  //   const listElement = document.querySelector('.scrollableList');
-  //   const savedScrollPosition = sessionStorage.getItem('scrollPosition');
+  useEffect(() => {
+    const listElement = document.querySelector('.scrollableList');
+    const savedScrollPosition = sessionStorage.getItem('scrollPosition');
     
-  //   if (savedScrollPosition) {
-  //     listElement.scrollTop = savedScrollPosition;
-  //   }
-  // }, []);
+    if (savedScrollPosition) {
+      listElement.scrollTop = savedScrollPosition;
+    }
+  }, []);
 
 
   if (!Array.isArray(transports) || transports.length == 0) {

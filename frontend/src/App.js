@@ -81,7 +81,7 @@ import AdminItineraryDetails from "./Pages/itineraries/AdminItinDetails.js";
 import AdminViewItineraries from "./Pages/itineraries/AdminViewItineraries.js"
 import TouristHistory from "./Pages/Tourist/TouristHistory.js";
 //import FlightBooking from './Pages/FlightBooking.jsx';
-import FlightDetailsPage from "./components/FlightDetails.js";
+import FlightDetails from "./components/FlightDetails.js";
 import FileComplaintForm from "./Pages/Tourist/FileComplaintForm";
 import ActivityPostDetail from "./components/ActivityPostDetail.js";
 //import HotelBooking from "./components/HotelBooking.js";
@@ -99,6 +99,7 @@ import ProductDetailsSeller from "./Pages/products/ProductDetailsSeller.jsx";
 import MyBookings from "./Pages/Tourist/MyBookings.js";
 import MyBookedActivities from "./Pages/Tourist/MyBookedActivities.js"
 import CreateTransportation from "./components/CreateTransportationForm.js"
+import HotelDetails from "./components/HotelDetails.js";
 //const dotenv = require('dotenv')
 
 function App() {
@@ -216,8 +217,9 @@ function App() {
         <Route path="/createVintage" element={<CreateVintageForm />} />
         <Route path="/book-services" element={<BookServicesPage/>} />
         {/* <Route path="/flight" element={<FlightBooking/>} /> */}
-        <Route path="/flight-details/:id" element={<FlightDetailsPage/>} />
+        <Route path="/flight-details/:id" element={<FlightDetails/>} />
         {/* <Route path="/hotels" element={<HotelBooking/>} /> */}
+        <Route path="/hotel-details/:id" element={<HotelDetails/>} />
         <Route path="/map" element={<TransportationSearch/>} />  
         <Route path="/sellerProfile" element={<SellerProfile userId={localStorage.getItem("id")} />} />
         <Route path="/change-password" element={<Pass/>} />

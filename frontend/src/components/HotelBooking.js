@@ -2,17 +2,11 @@ import React, { useEffect, useState } from "react";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import LocationCityIcon from '@mui/icons-material/LocationCity';
-
-import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import {Box,Button,Typography,Link,List,ListItem,ClickAwayListener,Menu,MenuItem,TextField,InputAdornment,CircularProgress} from "@mui/material";
-
 import HotelsList from "./HotelsList"; 
-
-
-
 
 export default function BookHotels(){
         const [City, setCity] = useState(()=> sessionStorage.getItem('hotelCity')||"");
@@ -88,8 +82,17 @@ export default function BookHotels(){
           };
         
           const decrementChildren = () => {
-            setChildren((prev) => (prev > 1 ? prev - 1 : 1)); // Prevent going below 1
+            setChildren((prev) => (prev > 0 ? prev - 1 : 0)); // Prevent going below 0
           };
+
+           // Check if there are any hotels in sessionStorage & Load from sessionStorage if available
+          useEffect(() => {
+            // Check if there are any hotels in sessionStorage
+            const savedHotels = sessionStorage.getItem('hotels');
+            if (savedHotels) {
+              setHotels(JSON.parse(savedHotels)); // Load from sessionStorage if available
+            }
+          }, []);
 
         const handleSearchClick = async () => {
           if (!City || !checkIn || !checkOut ) {
@@ -110,6 +113,7 @@ export default function BookHotels(){
             const data = await response.json();
             console.log("Hotel data:", data); 
             setHotels(data.data);// Handle the hotel data as needed
+            sessionStorage.setItem('hotels', JSON.stringify(data.data)); 
           } catch (error) {
             console.error("Error fetching hotel:", error);
           }finally {
