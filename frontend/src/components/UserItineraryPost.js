@@ -77,7 +77,7 @@ export default function UserItineraryPost({
       }
     }
   };
-
+  const conversionRate = localStorage.getItem("conversionRate")||1;
   return (
     <Card
       sx={{
@@ -152,7 +152,7 @@ export default function UserItineraryPost({
             <Box sx={{ display: 'flex', marginTop: '5px' }}>
               <AttachMoneyIcon />
               <Typography sx={{ marginLeft: '5px', color: price ? '#126782' : '#ff4d4d' }}>
-                {price ? `$${price}` : "Price not specified"}
+                {price ? `$${(price*conversionRate).toFixed(2)}` : "Price not specified"}
               </Typography>
             </Box>
           </Box>

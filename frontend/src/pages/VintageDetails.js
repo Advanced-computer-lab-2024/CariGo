@@ -65,7 +65,7 @@ const VintageDetails = () => {
       nation: { country: "Not specified", city: "Not specified" },
     }, // Handle missing location
     ticket_price = {
-      foreigner: "Not specified",
+      foriegner: "Not specified",
       native: "Not specified",
       student: "Not specified",
     },
@@ -208,7 +208,7 @@ const VintageDetails = () => {
             >
               <AttachMoneyIcon sx={{ marginRight: "5px" }} />
               <Typography variant="body1">
-                <strong>Ticket Price:</strong> Foreigner: {ticket_price.foreigner}, Native: {ticket_price.native}, Student: {ticket_price.student}
+                <strong>Ticket Price:</strong> Foreigner: {ticket_price.foriegner}, Native: {ticket_price.native}, Student: {ticket_price.student}
               </Typography>
             </Box>
             <Typography variant="body1" sx={{ fontSize: "18px", marginBottom: "10px" }}>

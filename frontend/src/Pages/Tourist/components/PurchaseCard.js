@@ -4,7 +4,7 @@ import { Modal } from '@mui/material'; // Importing modal from Material UI
 import RateReviewIcon from '@mui/icons-material/RateReview'; // Importing review icon
 import ProductReviewForm from './ProductReviewForm'; // Import ProductReviewForm component
 
-const PurchaseCard = ({ id, name, description, price, quantity, ratingsAverage, createdAt }) => {
+const PurchaseCard = ({ id, name, description, price, quantity, ratingsAverage, createdAt,triggerRefresh }) => {
   const totalCost = price * quantity;
   const [userRating, setUserRating] = useState(ratingsAverage);
   const [isReviewFormOpen, setIsReviewFormOpen] = useState(false);
@@ -15,16 +15,6 @@ const PurchaseCard = ({ id, name, description, price, quantity, ratingsAverage, 
       const token = localStorage.getItem('jwt');
       if (!token) throw new Error("Please log in to submit a rating.");
 
-      await axios.post(
-        `/api/purchases/rate/${id}`,
-        { rating },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
       alert("Thank you for rating this product!");
     } catch (error) {
       console.error("Failed to submit rating:", error);
@@ -36,7 +26,9 @@ const PurchaseCard = ({ id, name, description, price, quantity, ratingsAverage, 
   const toggleReviewForm = () => {
     setIsReviewFormOpen(!isReviewFormOpen);
   };
-
+  const handleAction = () => {
+    triggerRefresh();
+  };
   return (
     <div style={styles.purchaseCard}>
       <div style={styles.details}>
