@@ -151,7 +151,7 @@ const UserBadge = ({ userId }) => {
     error
     id="cash"
     label="cash"
-    value={cash*conversionRate}
+    value={(cash*conversionRate).toFixed(2)}
     helperText={`10 points = ${conversionRate} 💵`}
     disabled
   />

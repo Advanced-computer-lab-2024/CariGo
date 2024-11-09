@@ -62,11 +62,11 @@ const VintageList = () => {
                                         }
                                     } : null} // Handle missing location by setting it to null
                                     ticket_price={vintage.ticket_price ? {
-                                        foreigner: vintage.ticket_price.foreigner || 'Not specified',
+                                        foriegner: vintage.ticket_price.foriegner || 'Not specified', 
                                         native: vintage.ticket_price.native || 'Not specified',
                                         student: vintage.ticket_price.student || 'Not specified',
                                     } : {
-                                        foreigner: 'Not specified',
+                                        foriegner: 'Not specified',
                                         native: 'Not specified',
                                         student: 'Not specified',
                                     }} // Handle missing ticket_price safely

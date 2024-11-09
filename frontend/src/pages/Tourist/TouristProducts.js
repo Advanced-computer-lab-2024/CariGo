@@ -127,6 +127,7 @@ export default function ViewProductsTourist() {
     }),
   }));
   const Paragraph = ({ children, className, ellipsis, ...props }) => {
+    
     return (
       <StyledBox
         mb={0}
@@ -172,6 +173,7 @@ export default function ViewProductsTourist() {
   const handleDetails2 = () => {
     setShowPurchaseForm(true); // Show the purchase form when the icon is clicked
   };
+  const conversionRate = localStorage.getItem("conversionRate")||1;
   return (
     <Layout style={{ height: "100vh" }}>
       <Layout>
@@ -209,7 +211,7 @@ export default function ViewProductsTourist() {
                         setFilter("?price=19");
                       }}
                     >
-                      Less Than $19
+                      Less Than {`${(19*conversionRate).toFixed(2)}`}
                     </MenuItem>
                     <MenuItem
                       value="2"
@@ -217,7 +219,7 @@ export default function ViewProductsTourist() {
                         setFilter("?price[gte]=19&price[lte]=59");
                       }}
                     >
-                      $19 - $59
+                      {`${(19*conversionRate).toFixed(2)} - ${(59*conversionRate).toFixed(2)}`}
                     </MenuItem>
                     <MenuItem
                       value="3"
@@ -225,7 +227,7 @@ export default function ViewProductsTourist() {
                         setFilter("?price[gte]=59&price[lte]=99");
                       }}
                     >
-                      $59 - $99
+                      {`${(59*conversionRate).toFixed(2)} - ${(99*conversionRate).toFixed(2)}`}
                     </MenuItem>
                     <MenuItem
                       value="4"
@@ -233,7 +235,7 @@ export default function ViewProductsTourist() {
                         setFilter("?price[gte]=99&price[lte]=149");
                       }}
                     >
-                      $99 - $149
+                      {`${(99*conversionRate).toFixed(2)} - ${(149*conversionRate).toFixed(2)}`}
                     </MenuItem>
                     <MenuItem
                       value="5"
@@ -241,7 +243,7 @@ export default function ViewProductsTourist() {
                         setFilter("?price[gte]=149");
                       }}
                     >
-                      More Than $149
+                      More Than {`${(149*conversionRate).toFixed(2)}`}
                     </MenuItem>
                   </Select>
                 </FormControl>
@@ -310,9 +312,9 @@ export default function ViewProductsTourist() {
                         sx={{ px: 8, mr: 10, textTransform: "capitalize" }}
                       >
                         $
-                        {product.price > 999
-                          ? (product.price / 1000).toFixed(1) + "k"
-                          : product.price}
+                        {((product.price *conversionRate).toFixed(2))> 999
+                          ? (((product.price *conversionRate).toFixed(2)) / 1000).toFixed(1) + "k"
+                          : ((product.price *conversionRate).toFixed(2))}
                       </TableCell>
 
                       <TableCell sx={{ px: 5 }} align="left" colSpan={2}>

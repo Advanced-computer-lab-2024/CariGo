@@ -91,7 +91,8 @@ export default function Component({ userDetails, paymentTotal, onPaymentDetailsC
   const [expirationDate, setExpirationDate] = React.useState(cardDetails.expirationDate || "");
   const userWallet = userDetails.wallet;
   const bookingPayment = paymentTotal;
-  const walletAfterPurchase = userWallet - bookingPayment;
+  const conversionRate = localStorage.getItem("conversionRate") || 1;
+  const walletAfterPurchase = ((userWallet*conversionRate) - (bookingPayment*conversionRate)).toFixed(2);
 
   const handlePaymentTypeChange = (event) => {
     const newPaymentType = event.target.value;
