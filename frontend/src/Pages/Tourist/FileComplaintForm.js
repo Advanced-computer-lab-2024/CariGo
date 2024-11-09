@@ -9,6 +9,7 @@ const FileComplaintForm = () => {
   const [date, setDate] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const token = localStorage.getItem("jwt");
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -19,6 +20,10 @@ const FileComplaintForm = () => {
         title,
         body,
         date,
+      },{
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
       });
 
       if (response.data.status === 'success') {
