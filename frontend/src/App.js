@@ -73,6 +73,7 @@ import ViewProductTourist from "./Pages/Tourist/prodDetails.js";
 import EditProductD from "./Pages/Seller/prodD.js";
 import AddProductSeller from "./Pages/Seller/addP.js";
 import UpdateActivityForm from "./components/UpdateActivityForm.js";
+import UpdateTransportationForm from "./components/UpdateTransportationForm.js";
 import ComplaintsList from './Pages/ComplaintsList';
 import ComplaintDetails from './Pages/ComplaintDetails';
 import InactiveItineraries from "./Pages/itineraries/InactiveItineraries.js"
@@ -97,6 +98,9 @@ import ProductAnalysis from "./Pages/products/ProductAnalysis.jsx";
 import ProductDetails2 from "./Pages/products/ProductDetails2.jsx";
 import MyBookings from "./Pages/Tourist/MyBookings.js";
 import MyBookedActivities from "./Pages/Tourist/MyBookedActivities.js"
+import MyBookedTransportation from "./Pages/Tourist/MyBookedTransportation.js"
+import MyBookedFlights from "./Pages/Tourist/MyBookedFlights.js"
+import MyBookedHotels from "./Pages/Tourist/MyBookedHotels.js"
 import CreateTransportation from "./components/CreateTransportationForm.js"
 //const dotenv = require('dotenv')
 
@@ -128,6 +132,9 @@ function App() {
         <Route path="/" element={<Home />} /> {/* Default route */}
         <Route path="/tourist/MyBookings" element={<MyBookings />} /> {/* Default route */}
         <Route path="/tourist/MyBookedActivities" element={<MyBookedActivities />} /> {/* Default route */}
+        <Route path="/tourist/MyBookedTransportation" element={<MyBookedTransportation />} /> 
+        <Route path="/tourist/MyBookedFlights" element={<MyBookedFlights />} /> 
+        <Route path="/tourist/MyBookedHotels" element={<MyBookedHotels />} /> 
         <Route path="/login" element={<LoginPage />} />
       <Route
         path="tour_guide/profile"
@@ -175,6 +182,7 @@ function App() {
         <Route path="/touristHome" element={<TouristHome/>} />
         <Route path="/guestHome" element={<GuestHome/>} />
         <Route path="/activities/update/:id" element={<UpdateActivityForm/>} />
+        <Route path="/trans/update/:id" element={<UpdateTransportationForm/>} />
         <Route path="/myVintages" element={<UserViewVintages />} />
         <Route path="/vintage/:id" element={<VintageDetails />} />
         <Route path="/allVintages" element={<TouristViewVintage />} />

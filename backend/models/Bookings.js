@@ -20,12 +20,8 @@ const BookingSchema = new schema({
     type: mongoose.Schema.ObjectId,
     ref: "Transportation",
   },
-  HotelId :{
-    type :String
-  },
-FlightId :{
-    type :String
-  },
+  hotelData: Object,
+  flightData: Object,
   Status: {
     type: Boolean,
     default: true,
@@ -61,6 +57,13 @@ BookingSchema.pre(/^find/, function (next) {
       path: "ActivityId", // Correcting the path to match the field name
     });
   next();
+});
+
+BookingSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: "TransportationId", // Correcting the path to match the field name
+  });
+next();
 });
 
 const Bookings = mongoose.model("Bookings", BookingSchema);
