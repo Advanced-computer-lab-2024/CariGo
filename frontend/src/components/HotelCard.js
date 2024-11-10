@@ -9,6 +9,8 @@ import PinDropIcon from '@mui/icons-material/PinDrop';
 
 const HotelCard = ({ hotel,offer }) => {
   const navigate = useNavigate();
+  const token = localStorage.getItem('jwt');
+
 
   function calculateStayDuration(checkInDate, checkOutDate) {
     // Convert the input dates to Date objects

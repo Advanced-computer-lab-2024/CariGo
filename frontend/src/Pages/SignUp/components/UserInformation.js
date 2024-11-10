@@ -88,7 +88,7 @@ const FormGrid = styled('div')(() => ({
   flexDirection: 'column',
 }));
 
-export default function AddressForm({ onFormSubmit,step,role,data,onImageSubmit,image }) {
+export default function UserInformation({ onFormSubmit,step,role,data,onImageSubmit,image }) {
     const x = null;
       
   const [postImage, setPostImage] = useState({ myFile:image && image.myFile?image.myFile:"" ,

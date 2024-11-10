@@ -182,7 +182,8 @@ exports.processGuestDocuments = catchAsync(async (req, res, next) => {
 
 exports.uploadGuestDocs = catchAsync(async (req, res, next) => {
   const filteredBody = filterObj(req.body, "name", "email"); // Optional fields
-
+    
+    console.log("dddddddddddddddd")
   // console.log("Received files:", req.files); // Log all received files
 
   // Function to save file and return filename
@@ -193,7 +194,7 @@ exports.uploadGuestDocs = catchAsync(async (req, res, next) => {
     await fs.writeFile(filepath, file.buffer);
     return filename;
   };
-
+  console.log(req.files) 
   // Add file paths to the filteredBody if documents are uploaded
   if (req.files && req.files.id) {
     filteredBody.idDocument = await saveFile(req.files.id[0], 'id');

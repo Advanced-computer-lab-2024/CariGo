@@ -1,5 +1,14 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState, useEffect } from 'react'; 
+import axios from 'axios'; 
+import TouristHeader from '../../components/TouristHeader';
+
+import './styles/TouristProfile.css'; 
+
+
+import {jwtDecode} from "jwt-decode";
+//import profilePic from '../../../../backend/public/img/users/'
+
+
 import {
   Button,
   Modal,
@@ -9,7 +18,7 @@ import {
   FormControlLabel,
   Grid,
 } from "@mui/material";
-import TouristHeader from "../../components/TouristHeader";
+
 import TouristInfo from "../../components/TouristInfo";
 import CenteredTabs from "../../components/CenteredTabs";
 import "./styles/TouristProfile.css";
@@ -18,7 +27,7 @@ import profileImage from "../../assets/profile.png";
 import TouristInfoEdit from "../../components/TouristInfoEdit";
 import TouristNB from "./components/TouristNavBar";
 import MyPurchases from "./MyPurchases";
-import { jwtDecode } from "jwt-decode";
+
 
 const TouristProfile = ({ userId }) => {
   const [profile, setProfile] = useState(null);

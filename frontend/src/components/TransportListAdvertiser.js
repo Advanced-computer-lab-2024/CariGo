@@ -1,91 +1,101 @@
-// import React,{useState} from "react";
-// import { useNavigate } from 'react-router-dom';
-// import { Box, Typography ,circularProgress} from "@mui/material";
-// import TransportCard from "./TransportCard";
+import React from "react";
+import ActivityPostAdvertiser from "./ActivityPostAdvertiser";
+import { Box } from "@mui/material";
+import { useState, useEffect } from 'react';
+import { Grid } from '@mui/material';
+import { jwtDecode } from "jwt-decode";
+import TransportCard from "./TransportCard";
+import TransportCardAdv from "./TransportCardAdv";
+export default function TransportListAdvertiser({advertiserPosts}){
 
-// const TransportListAdvertiser = ({transports}) => {
-//   const navigate = useNavigate();
+    const [activities, setActivities] = useState([]);
+    //const id=localStorage.getItem("id");
+    useEffect(() => {
+        // Fetch activities from the backend API
+        const fetchActivities = async () => {
 
-//   // Function to handle the selecting transports
-//   const fetchTransports = async () => {
-//     const [transports, setTransports] = useState([]); 
-//     const [isLoading, setIsLoading] = useState(false);
+            const token = localStorage.getItem('jwt'); // Get the token from local storage
+            const userId = localStorage.getItem("id"); // Get user ID if needed
+            console.log(userId);
+            console.log(token);
 
-//     const token = localStorage.getItem('jwt'); // Get the token from local storage
-//     const userId = localStorage.getItem("id"); // Get user ID if needed
-//     console.log(userId);
-//     console.log(token);
+            try {
+                const response = await fetch("http://localhost:4000/cariGo/transportation/getadvTrans", {
+                    method: "GET", // Change this to "POST" if your backend expects it
+                    headers: {
+                        "Authorization": `Bearer ${token}`, // Send the token in the Authorization header
+                        
+                    }
+                });
 
-    
-//     console.log(`http://localhost:4000/cariGo/transportation/getadvTrans`);
-//     setIsLoading(true);
-//     try {
-//       const response = await fetch(`http://localhost:4000/cariGo/transportation/getadvTrans`, {
-//         method: 'GET',  // Use GET request as per the new request format
-//         headers: {
-//             "Authorization": `Bearer ${token}`,
-//         },
-//       });
+                // console.log(Request.json())
 
-//       const data = await response.json();
-//       setTransports(data);
-//       console.log(queryParams.toString());
-//       //console.log(transports);
-//       console.log('Search result:', data);
-//       // Handle the data, such as displaying it to the user
-//     } catch (error) {
-//         console.error('Error fetching transportation data:', error);
-//     }
-//     finally {
-//       console.log('fetched transports',transports);    
-//       setIsLoading(false);
-//     }
-//   };
+                if (!response.ok) {
+                    console.log(response)
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
 
+                const json = await response.json().catch((err) => {
+                    console.error('Error parsing JSON:', err);
+                    throw new Error('Invalid JSON response');
+                });
 
-//   if (!Array.isArray(transports)  ) {
-//     console.log(transports);
-//     return (
-//       <Typography variant="h6" sx={{ textAlign: 'center', mt: 4 }}>
-//         No transportations available.
-//       </Typography>
-//     );
-//   }
+                console.log("Fetched activities:", json);
+                setActivities(json); // Set activities if response is okay
+            } catch (error) {
+                console.log('Error fetching activities:', error);
+            }
+        };
 
-//   return (
-//     <Box
-//       sx={{
-//         gap: '10px',
-//         margin: '30px',
-//         overflowY: 'auto',
-//         display: 'flex',
-//         flexDirection: 'column',
-//         overflowX: 'hidden', 
-//         maxHeight:'950px',
-//         '&::-webkit-scrollbar': {
-//           width: '8px', // Width of the scrollbar
+        fetchActivities(); // Call the function to fetch activities
+    }, []);
+
+//     const StringDate = (date) => {
+//         // Ensure date is a Date object
+//         const d = new Date(date);
         
-//           },
-//         '&::-webkit-scrollbar-thumb': {
-//           backgroundColor: '#126782', // Color of the scrollbar thumb
-//           borderRadius: '10px', // Rounded corners for the scrollbar thumb
-//           },
-//         '&::-webkit-scrollbar-track': {
-//           backgroundColor: '#f1f1f1', // Color of the scrollbar track
-//           borderRadius: '10px', // Rounded corners for the scrollbar track
-//         },
-//       }}
-//     > 
-//         <Box sx={{padding:"20px", marginLeft:"10%" , overflow:'auto',marginTop:'4%',}}>
-//             {/* loading before ist shows up */}
-//             {isLoading ? <CircularProgress sx={{color:'#126782', margin:'70px'}} /> :
-//             transports.map((transport) =>         
-//                 <TransportCard  Transportation={transport} />        
-//             )
-//             }
-//         </Box>
-//     </Box>
-//   );
-// };
+//         // Get day, month, and year
+//         const day = String(d.getDate()).padStart(2, '0'); // Pad with leading zero if needed
+//         const month = String(d.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+//         const year = d.getFullYear();
+    
+//         // Return formatted string
+//         return `${day}/${month}/${year}`;
+//     };
+//  const calculateDuration=(date1,date2)=>{
+//         const start = new Date(date1);
+//         const end = new Date(date2);
+        
+//         // Calculate differences
+//         const years = end.getFullYear() - start.getFullYear();
+//         const months = end.getMonth() - start.getMonth() + (years * 12);
+//         const days = Math.floor((end - start) / (1000 * 60 * 60 * 24));
+//         const weeks = Math.floor(days / 7);
+      
+//         // Determine the largest unit
+//         if (years > 0) {
+//           return `${years} year${years > 1 ? 's' : ''}`;
+//         } else if (months > 0) {
+//           return `${months} month${months > 1 ? 's' : ''}`;
+//         } else if (weeks > 0) {
+//           return `${weeks} week${weeks > 1 ? 's' : ''}`;
+//         } else {
+//           return `${days} day${days > 1 ? 's' : ''}`;
+//         }
+//     }
+    
 
-// export default TransportCardList;
+    return (
+        <Grid container spacing={2} sx={{display: 'flex',
+            flexDirection: 'column', width: '100vw'}}>
+            {activities.map((transport) => 
+                
+            (
+                <Grid size ={4} >
+                     <TransportCardAdv  Transportation={transport} />
+                </Grid>
+            ))}
+        </Grid>
+        
+    );
+};

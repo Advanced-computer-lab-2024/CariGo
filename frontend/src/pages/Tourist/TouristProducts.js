@@ -37,10 +37,14 @@ import { Content, Header } from "antd/es/layout/layout";
 import TopBar from "../TopBar.jsx";
 import { TablePagination } from "@mui/material";
 import { ToastContainer } from "react-toastify";
-import PurchaseForm from "../../components/Purchase.js";
+import avatar from "../../assets/profilePic.png";
 import { Navigate, useLocation } from "react-router-dom";
 import { ArrowRightAlt, Edit } from "@mui/icons-material";
-import SearchIcon from "@mui/icons-material/Search";
+import SearchIcon from '@mui/icons-material/Search';
+import PurchaseForm from "../../components/Purchase.js";
+const folderPics = `http://localhost:4000/public/img/products/`;
+
+
 export default function ViewProductsTourist() {
   const [products, setProducts] = useState([]); // State to hold fetched categories
   const [loading, setLoading] = useState(false); // Loading state
@@ -105,6 +109,10 @@ export default function ViewProductsTourist() {
   const [age, setAge] = React.useState("");
   const [selectedProductId, setSelectedProductId] = useState(null); // To store product ID for modal
 
+  const handleDetatils2 = (id) => {
+    // Navigating to a page with the id in the URL
+    navigate(`/tourist/view-products/${id}`);
+  };
   //   const handleChange = (event: SelectChangeEvent) => {
   //     setAge(event.target.value as string);
   //   };
@@ -265,7 +273,7 @@ export default function ViewProductsTourist() {
               </div>
             </CardHeader>
             <Box overflow="auto">
-              <ProductTable hover>
+            <ProductTable hover>
                 <TableHead>
                   <TableRow>
                     <TableCell colSpan={2} sx={{ px: 8 }}>
@@ -294,14 +302,23 @@ export default function ViewProductsTourist() {
 
                 <TableBody hover>
                   {products.map((product, index) => (
-                    <TableRow key={product._id} hover>
+                    <TableRow
+                      key={product._id}
+                      hover
+                      onClick={() => handleDetatils2(product._id)}
+                    >                      
                       <TableCell
                         colSpan={2}
                         align="left"
                         sx={{ px: 0, textTransform: "capitalize" }}
                       >
                         <Box display="flex" alignItems="center" gap={4}>
-                          <img src={product.imgUrl} alt="p" />
+                        <label
+                            htmlFor="file-upload"
+                            className="custom-file-upload"
+                          >
+                            <img src={product.mainImage?folderPics + product.mainImage:avatar} alt="p" disabled />
+                          </label>
                           <Paragraph>{product.name}</Paragraph>
                         </Box>
                       </TableCell>
@@ -330,11 +347,10 @@ export default function ViewProductsTourist() {
                           <Small bgcolor={bgError}>out of stock</Small>
                         )}
                       </TableCell>
-
-                      <TableCell sx={{ px: 6 }} colSpan={2}>
-                        {/* <IconButton onClick={() => console.log(2)}>
-                    <Edit color="primary" />
-                  </IconButton> */}
+                          <TableCell sx={{ px: 6 }} colSpan={2} onClick={() => {
+                          handleDetatils2(product._id);
+                        }}>
+               
                         <Rating
                           name="read-only"
                           value={product["ratingsAverage"]}

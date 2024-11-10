@@ -23,9 +23,12 @@ import Sider from "antd/es/layout/Sider";
 import { Layout } from "antd";
 import { Content, Header } from "antd/es/layout/layout";
 import TopBar from "../TopBar";
+import avatar from "../../assets/profilePic.png";
 
-
-
+const FormGrid = styled('div')(() => ({
+  display: 'flex',
+  flexDirection: 'column',
+}));
 const FormContainer = styled(Paper)(({ theme }) => ({
     padding: theme.spacing(3),
     display: 'flex',
@@ -37,7 +40,7 @@ const FormContainer = styled(Paper)(({ theme }) => ({
     borderRadius: '8px',
     backgroundColor: '#f5f5f5',
   }));
-
+let flag = false
   export default function AddProductSeller() {
     const handle = () =>{
       navigate('/Seller')
@@ -51,23 +54,48 @@ const FormContainer = styled(Paper)(({ theme }) => ({
       quantity: '',
       author: `${localStorage.getItem('id')}`
     });
-  
+    const [postImage, setPostImage] = useState({ myFile:"" ,
+      mainImage:""});
     const handleChange = (e) => {
       setFormData({ ...formData, [e.target.name]: e.target.value });
     };
-  
+    const handleFileUpload = async (e) => {
+      const file = e.target.files[0];
+      flag = true
+      //console.log(file);
+     const base64 = await convertToBase64(file);
+     console.log(base64);
+      //setFormData({ ...formData,mainImage:file});
+      setPostImage({myFile:base64,mainImage:file})
+    };
     const handleSubmit = async (e) => {
       e.preventDefault();
       try {
         const token = localStorage.getItem('jwt')
+        //const id = localStorage.getItem('id')
         console.log(formData)
         const response = await axios.post('http://localhost:4000/cariGo/products/createProduct', formData,{
             headers:{
                 authorization :`Bearer ${token}`
         }});
+        const id = response.data.data.product._id
+        console.log(id)
+        console.log(flag)
+        if(flag){
+        console.log(id)
+        const image = new FormData();
+      image.append('mainImage',postImage.mainImage)
+      const imageResponse = await axios.patch(`http://localhost:4000/cariGo/products/updateProduct/${id}`, image,{
+        headers:{
+            authorization :`Bearer ${token}`
+    
+          }
+        });
       //  if(response){
-        console.log(response)
-         toast.success("Product Added Successfully"); // Show success toast
+        console.log(imageResponse)
+         
+      }
+      toast.success("Product Added Successfully"); // Show success toast
          setFormData({
           name: '',
           price: '',
@@ -75,6 +103,10 @@ const FormContainer = styled(Paper)(({ theme }) => ({
           quantity: '',
           
         });
+        setPostImage({
+          myFile:'',mainImage:''
+        })
+       // navigate("/Seller")
   //  }
       } catch (err) {
         const errors = err.response?.data?.errors || [err.response?.data?.error || 'An error occurred'];
@@ -95,6 +127,19 @@ const FormContainer = styled(Paper)(({ theme }) => ({
       <FormContainer>
         <h2 style={{ marginBottom: '10px' }}>Add Product</h2>
         <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+        <FormGrid size={{ xs: 12, md: 12 }} style={{ marginLeft: "130px" }}>
+            <label htmlFor="file-upload" className="custom-file-upload">
+              <img src={ postImage.myFile?postImage.myFile:avatar} alt="Uploaded avatar" />
+            </label>
+            <input
+              type="file"
+              name="myFile"
+              
+              id="file-upload"
+              accept=".jpeg, .png, .jpg"
+              onChange={handleFileUpload}
+            />
+          </FormGrid>
           <TextField
             type="text"
             name="name"
@@ -151,4 +196,11 @@ const FormContainer = styled(Paper)(({ theme }) => ({
     </Layout>
     );
   }
-  
+  function convertToBase64(file) {
+    return new Promise((resolve, reject) => {
+      const fileReader = new FileReader();
+      fileReader.readAsDataURL(file);
+      fileReader.onload = () => resolve(fileReader.result);
+      fileReader.onerror = (error) => reject(error);
+    });
+  }
