@@ -7,6 +7,7 @@ import NavBar from "./components/NavBarAdvertiser";
 import SmallButton from "./components/smallButton"; // Import SmallButton here
 import "./styles/AdvertiserProfile.css";
 import coverImage from "./assets/header.png";
+import profileImage from "./assets/profilePic.png"
 import logoImage from "./assets/profile.png";
 import { jwtDecode } from "jwt-decode";
 
@@ -62,7 +63,7 @@ const AdvertiserProfile = ({ userId }) => {
   if (!profile) {
     return <div>No profile found.</div>;
   }
-
+  const logoImage =  profile.photo?`http://localhost:4000/public/img/logos/`+profile.photo:profileImage ;
   return (
     <div>
       <NavBar/>

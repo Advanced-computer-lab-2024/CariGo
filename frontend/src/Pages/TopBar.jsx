@@ -5,7 +5,14 @@ import { UserOutlined, MessageOutlined } from '@ant-design/icons'; // Import the
 import logo from '../assests/logo.png';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-
+import MenuItem from '@mui/material/MenuItem';
+import Typography from '@mui/material/Typography';
+import MenuIcon from '@mui/icons-material/Menu';
+import IconButton from '@mui/material/IconButton';
+import Avatar from '@mui/material/Avatar';
+import Tooltip from '@mui/material/Tooltip';
+import Box from '@mui/material/Box';
+import Menu from '@mui/material/Menu';
 const TopBar = () => {
    const navigate  = useNavigate()
   const handleLogout = () =>{
@@ -14,7 +21,26 @@ const TopBar = () => {
     
   }
   const [username, setUsername] = useState(localStorage.getItem('username'))
-  console.log(localStorage.getItem('username'))
+  const [anchorElNav, setAnchorElNav] = React.useState(null);
+  const [anchorElUser, setAnchorElUser] = React.useState(null);
+
+  //const navigate = useNavigate();
+
+  
+
+  const handleOpenUserMenu = (event) => {
+    setAnchorElUser(event.currentTarget);
+  };
+
+  const handleChangePass=()=>{
+    handleCloseUserMenu();
+
+    navigate('/change-password');
+  }
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
+  //console.log(localStorage.getItem('username'))
   return (
     <div style={{ 
       backgroundColor: '#001529', 
@@ -36,15 +62,31 @@ const TopBar = () => {
       <p style={{marginLeft:"650px"}}>Hi  {username}</p>
       <div style={{ display: 'flex', alignItems: 'center' }}>
         
-        <UserOutlined 
-          style={{ fontSize: '20px', color: '#fff', marginRight: '20px', cursor: 'pointer' }} 
-          onClick={handleLogout} // Add your click handler
-        />
-        <MessageOutlined 
-          style={{ fontSize: '20px', color: '#fff', cursor: 'pointer' }} 
-          onClick={() => console.log('Message clicked')} // Add your click handler
-        />
-      </div>
+      <Box sx={{ flexGrow: 0 }}>
+            <Tooltip title="Open settings">
+              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                <Avatar alt="User Avatar" />
+              </IconButton>
+            </Tooltip>
+            <Menu
+              sx={{ mt: '45px' }}
+              id="menu-appbar"
+              anchorEl={anchorElUser}
+              anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+              keepMounted
+              transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+              open={Boolean(anchorElUser)}
+              onClose={handleCloseUserMenu}
+            >
+              
+              <MenuItem onClick={handleLogout}>
+                <Typography sx={{ textAlign: 'center' }}>Logout</Typography>
+              </MenuItem>
+              <MenuItem onClick={handleChangePass}>
+                <Typography sx={{ textAlign: 'center' }}>Change Password</Typography>
+              </MenuItem>
+            </Menu>
+          </Box>      </div>
     </div>
   );
 };

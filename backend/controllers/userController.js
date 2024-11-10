@@ -4,7 +4,7 @@ const productModel = require("../models/Product.js");
 
 // get all users
 const getUsers = async (req, res) => {
-  const users = await User.find({isActive: true}).sort({ createdAt: -1 });
+  const users = await User.find({isActive: true,documentApprovalStatus:"Pending", role: { $ne: "Tourist" }}).sort({ createdAt: -1 });
 
   res.status(200).json(users);
 };

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 // import ProfileHeader from '../components/ProfileHeader';
-import Profile_Header from './Profile_Header';
+import ProfileHeader from './Profile_Header';
 // import CompanyInfo from '../components/CompanyInfo';
 // import TourGuideInfo from '../components/TourGuideInfo';
 import SellerInfo from './SellerInfo';
@@ -12,10 +12,11 @@ import NavBar from '../../components/NavBarAdvertiser';
 // import SmallButtonTG from '../components/smallButtonTG';
 import SmallButtonS from './smallButtonS';
 import '../../styles/AdvertiserProfile.css';
+import profileImage from '../../assets/profilePic.png';
 import coverImage from '../../assets/cover.jpg'; 
 import { Button } from '@mui/base/Button';
 import { useNavigate } from 'react-router-dom';
-import logoImage from '../../assets/travel.jpg'; 
+ 
 
 const SellerProfile = ({ userId }) => {
   const [profile, setProfile] = useState(null);
@@ -23,6 +24,7 @@ const SellerProfile = ({ userId }) => {
   const [error, setError] = useState(null);
   const [refreshKey, setRefreshKey] = useState(0); // Add refreshKey state
   const navigate = useNavigate()
+
   const handleProducts = ()=>{
   
     console.log(2)
@@ -73,14 +75,14 @@ const SellerProfile = ({ userId }) => {
   if (!profile) {
     return <div>No profile found.</div>;
   }
-
+  const logoImage =  profile.photo?`http://localhost:4000/public/img/logos/`+profile.photo:profileImage ;
   return (
     <div>
       <NavBar/>
       <div className="advertiser-profile">
         <header className="profile-header">
-          <Profile_Header 
-            companyName={profile.username  /*companyName || 'CariGo'*/} 
+          <ProfileHeader 
+            companyName={logoImage  /*companyName || 'CariGo'*/} 
             coverImage={coverImage} 
             logo={logoImage} 
           />
