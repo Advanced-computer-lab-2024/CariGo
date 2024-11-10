@@ -83,11 +83,11 @@ import AdminItineraryDetails from "./Pages/itineraries/AdminItinDetails.js";
 import AdminViewItineraries from "./Pages/itineraries/AdminViewItineraries.js"
 import TouristHistory from "./Pages/Tourist/TouristHistory.js";
 import FlightBooking from './Pages/FlightBooking.jsx';
-import FlightDetailsPage from "./Pages/FlightDetailsCard.jsx";
+import FlightDetails from "./components/FlightDetails";
 import FileComplaintForm from "./Pages/Tourist/FileComplaintForm";
 import ActivityPostDetail from "./components/ActivityPostDetail.js";
 // import HotelBooking from "./Pages/Tourist/HotelBooking.js";
-import BookingPage from "./Pages/Tourist/Booking.js";
+import BookingServices from "./Pages/Tourist/Booking.js";
 import TransportationSearch from "./Pages/TransportationSearch.js" ;
 
 import AdminViewActivity from "./Pages/activities/AdminViewActivity.js";
@@ -226,16 +226,15 @@ function App() {
         <Route path="/guest-places" element={<GuestViewVintage/>} />
         <Route path="/tourist-places" element={<TouristViewVintage />} />
         <Route path="/createVintage" element={<CreateVintageForm />} />
-        <Route path="/booking" element={<BookingPage/>} />
-        <Route path="/flight" element={<FlightBooking/>} />
-        <Route path="/flight-details/:id" element={<FlightDetailsPage/>} />
+        <Route path="/book-services" element={<BookingServices/>} />
+        {/* <Route path="/flight" element={<FlightBooking/>} /> */}
+        <Route path="/flight-details/:id" element={<FlightDetails/>} />
         {/* <Route path="/hotels" element={<HotelBooking/>} /> */}
+        <Route path="/hotel-details/:id" element={<HotelDetails/>} />
         <Route path="/map" element={<TransportationSearch/>} />  
         <Route path="/sellerProfile" element={<SellerProfile userId={localStorage.getItem("id")} />} />
         <Route path="/change-password" element={<Pass/>} />
         <Route path="/upload" element={<UploadDocumentsPage/>} />
-
-
 
         {/* Add more routes as needed */}
       </Routes>

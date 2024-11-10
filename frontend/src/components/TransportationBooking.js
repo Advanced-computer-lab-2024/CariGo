@@ -182,11 +182,19 @@ export default function TransportBooking(){
       
                {/* Render HotelCard if hotels are available */}
                <Box sx={{padding:"20px", marginLeft:"10%" , overflow:'auto',marginTop:'4%',}}>
-               {isLoading ? (
-            <CircularProgress sx={{ color: '#126782', margin: '70px' }} />
-          ) : (
-            transports.length > 0 && <TransportCardList transports={transports} />
-          )}
+              {isLoading ? (
+                      <CircularProgress sx={{ color: '#126782', margin: '70px' }} />
+                    ) : (
+                      transports ? (
+                        transports.length > 0 ? (
+                          <TransportCardList transports={transports} />
+                        ) : (
+                          <Typography color="#126782" variant="h6" sx={{ textAlign: 'center', mt: 4 , marginTop:'60px'}}>No transportaions available</Typography>
+                        )
+                      ) : (
+                        <Typography color="#126782" variant="h6" sx={{ textAlign: 'center', mt: 4 , marginTop:'60px'}}>No transportaions available</Typography>
+                      )
+                    )}
                 </Box>
             </Box>
           </LocalizationProvider>

@@ -282,11 +282,19 @@ export default function BookHotels(){
       
                {/* Render HotelCard if hotels are available */}
                <Box sx={{padding:"20px", marginLeft:"10%" , overflow:'auto',marginTop:'4%',}}>
-               {isLoading ? <CircularProgress sx={{color:'#126782', margin:'70px'}} /> :
-               hotels.length > 0 && (
-                  <HotelsList  hotels={hotels} />
-                )
-                }
+                {isLoading ? (
+                  <CircularProgress sx={{ color: '#126782', margin: '70px' }} />
+                ) : (
+                  hotels ? (
+                    hotels.length > 0 ? (
+                      <HotelsList hotels={hotels} />
+                    ) : (
+                      <Typography color="#126782" variant="h6" sx={{ textAlign: 'center', mt: 4 , marginTop:'60px'}}>No Hotels available</Typography>
+                    )
+                  ) : (
+                    <Typography color="#126782" variant="h6" sx={{ textAlign: 'center', mt: 4 , marginTop:'60px'}}>No Hotels available</Typography>
+                  )
+                )}
                 </Box>
             </Box>
           </LocalizationProvider>
