@@ -93,8 +93,20 @@ exports.getComplaintsByStatus = catchAsync(async (req, res, next) => {
 });
 
 exports.getMyComplaints = catchAsync(async (req, res, next) => {
-    const complaints = await Complaint.find({ user: req.user._id });
+    // Fetch complaints where user._id matches the logged-in user's ID
+    const userId = req.user._id;
+    console.log("userId: " + userId);
+    const complaints = await Complaint.find({ user: userId });
+    console.log("complaints: " + complaints);
+    // Check if the user has any complaints
+    if (!complaints || complaints.length === 0) {
+        return res.status(404).json({
+            status: 'fail',
+            message: 'No complaints found for this user.',
+        });
+    }
 
+    // Send success response with the complaints data
     res.status(200).json({
         status: 'success',
         results: complaints.length,

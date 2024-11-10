@@ -4,7 +4,7 @@ const authController = require("../controllers/authController");
 const joinController = require("../controllers/joiController");
 const multerController = require("../controllers/multerController");
 const adminController = require("../controllers/adminController");
-
+const complaintsController = require("../controllers/complaintsController");
 const router = express.Router();
 
 // GET all users
@@ -63,5 +63,6 @@ router.patch(
   authController.restrictTo("Tourist"),
   userController.RedeemPoints
 );
+
 
 module.exports = router;

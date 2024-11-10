@@ -17,8 +17,7 @@ import  TouristVintage from "./Pages/Tourist/TouristPlaces.js";
 import CreateVintageForm from "./Pages/CreateVintageForm.js";
 
 import './styles/index.css';
-import Checkout from "./Pages/SignUp/Checkout";
-import PaymentCheckout from './Pages/checkout/Checkout';
+import Checkout from "./Pages/SignUp/Checkout.js";
 import UserViewActivities from "./Pages/Tourist/TouristActivities.js";
 import AdminHome from './Pages/Home.js';
 import React, { lazy, Suspense } from 'react'; // Keep this line
@@ -80,12 +79,12 @@ import AdminViewEvents from "./Pages/AdminViewEvents.js"
 import AdminItineraryDetails from "./Pages/itineraries/AdminItinDetails.js";
 import AdminViewItineraries from "./Pages/itineraries/AdminViewItineraries.js"
 import TouristHistory from "./Pages/Tourist/TouristHistory.js";
-//import FlightBooking from './Pages/FlightBooking.jsx';
-import FlightDetails from "./components/FlightDetails.js";
+import FlightBooking from './Pages/FlightBooking.jsx';
+import FlightDetailsPage from "./Pages/FlightDetailsCard.jsx";
 import FileComplaintForm from "./Pages/Tourist/FileComplaintForm";
 import ActivityPostDetail from "./components/ActivityPostDetail.js";
-//import HotelBooking from "./components/HotelBooking.js";
-import BookServicesPage from "./Pages/Tourist/Booking.js";
+// import HotelBooking from "./Pages/Tourist/HotelBooking.js";
+import BookingPage from "./Pages/Tourist/Booking.js";
 import TransportationSearch from "./Pages/TransportationSearch.js" ;
 
 import AdminViewActivity from "./Pages/activities/AdminViewActivity.js";
@@ -95,12 +94,9 @@ import UploadDocumentsPage from "./Pages/UploadDocuments.js";
 
 import ProductAnalysis from "./Pages/products/ProductAnalysis.jsx";
 import ProductDetails2 from "./Pages/products/ProductDetails2.jsx";
-import ProductDetailsSeller from "./Pages/products/ProductDetailsSeller.jsx";
-import ProductDetailsTour from "./Pages/Tourist/productdetailsT.js";
 import MyBookings from "./Pages/Tourist/MyBookings.js";
 import MyBookedActivities from "./Pages/Tourist/MyBookedActivities.js"
-import CreateTransportation from "./components/CreateTransportationForm.js"
-import HotelDetails from "./components/HotelDetails.js";
+import ComplaintHistory from "./Pages/Tourist/ComplaintHistory.js";
 //const dotenv = require('dotenv')
 
 function App() {
@@ -155,7 +151,6 @@ function App() {
       <Route path="/Seller" element={<SellerProfile />} />
       <Route path="/Seller/products" element={<ViewProductsSeller />} />
       <Route path="/Seller/products/:id" element={<EditProductD />} />
-      <Route path="/Seller/productDetails/:id" element={<ProductDetailsSeller />} />
       <Route path="/Seller/products/addProduct" element={<AddProductSeller />} />
         {<Route path="/activities" element={<UserViewActivities />} /> }
         <Route path="/tourist-activities" element={<TouristActivities/>} />
@@ -165,9 +160,9 @@ function App() {
         <Route path="/activity/:id" element={<ActivityPostDetail />} />
         <Route path="/Tourist-History" element={<TouristHistory />} />
         <Route path="/tourist/file-complaint" element={<FileComplaintForm />} />
+        <Route path="/tourist/complaint-history" element={<ComplaintHistory />} />
         {/* <Route path="/guest-places" element={<GuestViewVintage/>} /> */}
-        <Route path="/createActivity" element={<CreateActivityForm userId={localStorage.getItem("id")} />} />
-        <Route path="/createTransportation" element={<CreateTransportation userId={localStorage.getItem("id")} />} /> 
+        <Route path="/createActivity" element={<CreateActivityForm userId={localStorage.getItem("id")} />} /> 
         <Route path="/Register-Tourist" element={<Checkout role={"Tourist"}/>} />
         {/* <Route path="/Register-Tourist" element={<SignUp/>} /> */}
         <Route path="/Register-Seller" element={<Checkout role={"Seller"}/>} />
@@ -199,7 +194,6 @@ function App() {
               <Route path="/update-tag" element={<UpdateTag />} />
               <Route path='/admin/view-products' element={<ViewProducts/>}/>
               <Route path='/admin/view-products/:id' element={<ProductDetails2/>}/>
-              <Route path='/tourist/view-products/:id' element={<ProductDetailsTour/>}/>
               <Route path="/create-tag" element={<CreateTag />} />
               <Route path="/delete-tag" element={<DeleteTag />} />
               <Route path="/add-admin" element={<AddAdmin />} />
@@ -217,17 +211,15 @@ function App() {
         <Route path="/guest-places" element={<GuestViewVintage/>} />
         <Route path="/tourist-places" element={<TouristViewVintage />} />
         <Route path="/createVintage" element={<CreateVintageForm />} />
-        <Route path="/book-services" element={<BookServicesPage/>} />
-        {/* <Route path="/flight" element={<FlightBooking/>} /> */}
-        <Route path="/flight-details/:id" element={<FlightDetails/>} />
+        <Route path="/booking" element={<BookingPage/>} />
+        <Route path="/flight" element={<FlightBooking/>} />
+        <Route path="/flight-details/:id" element={<FlightDetailsPage/>} />
         {/* <Route path="/hotels" element={<HotelBooking/>} /> */}
-        <Route path="/hotel-details/:id" element={<HotelDetails/>} />
         <Route path="/map" element={<TransportationSearch/>} />  
         <Route path="/sellerProfile" element={<SellerProfile userId={localStorage.getItem("id")} />} />
         <Route path="/change-password" element={<Pass/>} />
         <Route path="/upload" element={<UploadDocumentsPage/>} />
 
-        <Route path="/checkout/:type/:id" element={<PaymentCheckout />} />
 
 
         {/* Add more routes as needed */}
