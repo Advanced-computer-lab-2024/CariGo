@@ -17,7 +17,7 @@ import  TouristVintage from "./Pages/Tourist/TouristPlaces.js";
 import CreateVintageForm from "./Pages/CreateVintageForm.js";
 
 import './styles/index.css';
-import Checkout from "./Pages/SignUp/Checkout.js";
+// import Checkout from "./Pages/SignUp/Checkout.js";
 import SignIn from "./Pages/SignUp/SignIn.js";
 import PaymentCheckout from './Pages/checkout/Checkout';
 import UserViewActivities from "./Pages/Tourist/TouristActivities.js";
@@ -88,6 +88,7 @@ import FileComplaintForm from "./Pages/Tourist/FileComplaintForm";
 import ActivityPostDetail from "./components/ActivityPostDetail.js";
 // import HotelBooking from "./Pages/Tourist/HotelBooking.js";
 import BookingPage from "./Pages/Tourist/Booking.js";
+
 import TransportationSearch from "./Pages/TransportationSearch.js" ;
 
 import AdminViewActivity from "./Pages/activities/AdminViewActivity.js";
@@ -105,8 +106,11 @@ import MyBookedFlights from "./Pages/Tourist/MyBookedFlights.js"
 import MyBookedHotels from "./Pages/Tourist/MyBookedHotels.js"
 import CreateTransportation from "./components/CreateTransportationForm.js"
 import HotelDetails from "./components/HotelDetails.js";
+import BookServicesPage from "./Pages/Tourist/Booking.js";
 //const dotenv = require('dotenv')
 import ReviewAccounts from "./Pages/accounts/docsReview.jsx";
+import ProductDetailsT from "./Pages/Tourist/ProductDetailsT.js"
+import FlightDetails from "./components/FlightDetails.js";
 function App() {
   
   const token = localStorage.getItem("jwt");
@@ -163,6 +167,7 @@ function App() {
       <Route path="/Seller/products" element={<ViewProductsSeller />} />
       <Route path="/Seller/products/:id" element={<EditProductD />} />
       <Route path="/Seller/products/addProduct" element={<AddProductSeller />} />
+      <Route path="/hotel-details/:id" element={<HotelDetails/>} />
         {<Route path="/activities" element={<UserViewActivities />} /> }
         <Route path="/tourist-activities" element={<TouristActivities/>} />
         <Route path="/tourist-itineraries" element={< TouristItineraries/>} />
@@ -190,6 +195,7 @@ function App() {
         <Route path="/myVintages" element={<UserViewVintages />} />
         <Route path="/vintage/:id" element={<VintageDetails />} />
         <Route path="/allVintages" element={<TouristViewVintage />} />
+        <Route path="/checkout/:type/:id" element={<PaymentCheckout />} />
         <Route path="/viewingAllvintage/:id" element={<UserVintageDetails />} />
         <Route element={< ProtectedRoute/>}>
         <Route path="/admin" element={<Dashboard/> } />
@@ -209,6 +215,7 @@ function App() {
               <Route path="/update-tag" element={<UpdateTag />} />
               <Route path='/admin/view-products' element={<ViewProducts/>}/>
               <Route path='/admin/view-products/:id' element={<ProductDetails2/>}/>
+              <Route path="/tourist/view-products/:id" element={<ProductDetailsT/>} />
               <Route path="/create-tag" element={<CreateTag />} />
               <Route path="/delete-tag" element={<DeleteTag />} />
               <Route path="/add-admin" element={<AddAdmin />} />
@@ -226,9 +233,9 @@ function App() {
         <Route path="/guest-places" element={<GuestViewVintage/>} />
         <Route path="/tourist-places" element={<TouristViewVintage />} />
         <Route path="/createVintage" element={<CreateVintageForm />} />
-        <Route path="/booking" element={<BookingPage/>} />
+        <Route path="/book-services" element={<BookServicesPage/>} />
         <Route path="/flight" element={<FlightBooking/>} />
-        <Route path="/flight-details/:id" element={<FlightDetailsPage/>} />
+        <Route path="/flight-details/:id" element={<FlightDetails/>} />
         {/* <Route path="/hotels" element={<HotelBooking/>} /> */}
         <Route path="/map" element={<TransportationSearch/>} />  
         <Route path="/sellerProfile" element={<SellerProfile userId={localStorage.getItem("id")} />} />
