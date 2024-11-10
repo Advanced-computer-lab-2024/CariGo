@@ -141,6 +141,7 @@ function SignIn({ role, preferences }) {
         if(role==="Tour_Guide")
           selectedFiles.certificates.forEach((file) => {
             docsData.append("certificates", file); // Add each certificate file individually
+            console.log(file);
       });
     
       else

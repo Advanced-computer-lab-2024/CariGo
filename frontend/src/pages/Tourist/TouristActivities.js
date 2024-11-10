@@ -4,14 +4,15 @@ import {  Box, Menu, TextField, Button, CircularProgress, Typography, MenuItem ,
 import SearchIcon from '@mui/icons-material/Search';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import NavBar from './components/TouristNavBar.js';
+import GuestNavBar from "../../components/NavBarTourist";
 
 export default function TouristViewActivities (){
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-  
+    
     const [activities, setActivities] = useState([]);
-  
+    const [tourist, setTourist] = useState(true);
   //to show user typed in values
     const [filterInputValues, setFilterInputValues] = useState({
         minPrice: "",
@@ -118,6 +119,8 @@ export default function TouristViewActivities (){
                 console.log("Fetched activities:", json);
                 setActivities(json);
                 setFilteredActivities(json); // Initialize filteredActivities with all activities
+                const token = localStorage.getItem('jwt');
+                if (!token) setTourist(false);
             } catch (error) {
                 console.log('Error fetching activities:', error);
                 //setError('Failed to fetch activities. Please try again later.');
@@ -150,7 +153,8 @@ export default function TouristViewActivities (){
   
     return(
       <div>
-      <NavBar/>
+        
+      {!tourist? <GuestNavBar/>: <NavBar/>}
   
       <Box sx={{
         width:'1150px' ,
