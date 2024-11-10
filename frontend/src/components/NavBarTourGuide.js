@@ -51,6 +51,16 @@ function ResponsiveAppBar() {
     navigate("/tour_guide/inactive_itineraries");
   };
 
+  const handleDeleteAccount = async () => {
+    try{
+    const response = await fetch(`http://localhost:4000/cariGo/delReq/createReq`);
+    console.log(response.json);
+    }
+    catch(error){
+      console.error("Error deleting account:", error);
+    }
+  }
+
   return (
     <AppBar position="static" sx={{ backgroundColor: "#004c74" }}>
       <Container maxWidth="xl">
