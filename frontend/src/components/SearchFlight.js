@@ -34,6 +34,8 @@ const Frame = () => {
   const [isToDropdownOpen, setIsToDropdownOpen] = useState(false);
   const [flights, setFlights] = useState([]); 
 
+  const errorMsg ="no flights availadle";
+
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const inputRef = useRef(null); //refrence class field to deselect on click away
 
@@ -167,6 +169,7 @@ const Frame = () => {
 
 
   return (
+    
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Box sx={{display:"flex",marginLeft:"10%"}} >
         {/* VERTICAL BOX */}
@@ -346,11 +349,19 @@ const Frame = () => {
 
          {/* Render FlightCard if flights are available */}
          <Box sx={{padding:"20px", marginLeft:"10%" , overflow:'auto',marginTop:'4%',}}>
-         {isLoading ? <CircularProgress sx={{color:'#126782', margin:'70px'}} /> :
-         flights.length > 0 && (
-            <FlightCardList  flights={flights} />
+         {isLoading ? (
+          <CircularProgress sx={{ color: '#126782', margin: '70px' }} />
+        ) : (
+          flights ? (
+            flights.length > 0 ? (
+              <FlightCardList flights={flights} />
+            ) : (
+              <Typography color="#126782" variant="h6" sx={{ textAlign: 'center', mt: 4 , marginTop:'60px'}}>No Flights available</Typography>
+            )
+          ) : (
+            <Typography color="#126782" variant="h6" sx={{ textAlign: 'center', mt: 4 , marginTop:'60px'}}>No Flights available</Typography>
           )
-          }
+        )}
           </Box>
       </Box>
     </LocalizationProvider>

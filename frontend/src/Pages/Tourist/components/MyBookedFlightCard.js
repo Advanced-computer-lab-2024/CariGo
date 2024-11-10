@@ -3,18 +3,25 @@ import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import logoImage from '../../../assets/itinerary.png'; // Correct relative path
+import styled from "styled-components";
+import FlightInfo from '../../../components/FlightInfo';
+import FlightDate from '../../../components/FlightDate';
+import FlightDuration from '../../../components/FlightDuration';
+import { Box ,Typography,Button,} from "@mui/material";
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import FlightIcon from '@mui/icons-material/Flight';
+import LuggageIcon from '@mui/icons-material/Luggage';
 
-const MyBookedFlightCard = ({ 
-   
+const MyBookedFlightCard = ({  
   airline, 
   airlinename, 
   segments, 
   way, 
- 
   status, 
   img, 
   price, 
-   flightData,
+  currency,
+  flightData,
   NumberOfTickets, 
   TotalPrice 
 }) => {
@@ -81,6 +88,16 @@ const MyBookedFlightCard = ({
     }
   };
 
+  const formatDuration = (duration) => {
+    if (!duration) return ""; // Handle cases where duration might be undefined
+
+    // Ignore the first two characters
+    const durationString = duration.substring(2);
+    
+    // Replace 'h' with ' hours' and 'm' with ' minutes'
+    return durationString.replace(/H/g, ' hours ').replace(/M/g, ' minutes ').trim();
+  };
+
   return (
     <div className="booking-card">
       <img
@@ -94,9 +111,25 @@ const MyBookedFlightCard = ({
         <p className="booking-card__location">airline: {airline}</p>
         <p className="booking-card__location">airlineName: {airlinename}</p>
         <p className="booking-card__time">oneWay: { way ? "yes" : "no"}</p>
-        <p className="booking-card__time">segemets: {segments}</p>
+        <p className="booking-card__time">segemets: </p>
+        <Box sx={{display:'flex',flexDirection:'row', height:"120px", margin:'10px',marginTop:'-20px', gap:'30px'}}>
+        <FlightDetails>
+          {segments.length > 0  && segments.map((segment, index) => (
+            <Box>
+            <FlightInfo
+              key={index}
+              time1={new Date(segment.departure.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+              time2={new Date(segment.arrival.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+              code={segment.flightNumber}
+              city={`${segment.departure.airport} to ${segment.arrival.airport}`} // Displaying the route 
+            />
+            <Typography color = "#126782">{formatDuration(segment.duration)}</Typography>
+            </Box>
+          ))}
+        </FlightDetails>
+        </Box>
         <p className="booking-card__status">
-          Total Price: {TotalPrice }
+          Total Price: {TotalPrice } {currency}
         </p>
         <p className="booking-card__status">
           Status: {isPast && status ? "Done" : status ? "Booked" : "Canceled Bookings"}
@@ -115,5 +148,30 @@ const MyBookedFlightCard = ({
     </div>
   );
 };
+
+const Divider = styled.hr`
+  align-self: stretch;
+  margin: 21px 0 17px;
+  border: none;
+  //width: 80%;
+  border-top: 3px solid #dcdcdc;
+`;
+
+const FlightDetails = styled.section`
+  display: flex;
+  width: 100%;
+  max-width: 299px;
+  gap: 40px 77px;
+  margin-left: 10px;
+  height:200px;
+`;
+const Price = styled.p`
+  font-size: 16px;
+  font-weight: bold;
+  color: #126782;
+  margin-top:0px;
+  margin-bottom: 10px;
+  right:0;
+`;
 
 export default MyBookedFlightCard;
