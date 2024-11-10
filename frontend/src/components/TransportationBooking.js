@@ -44,6 +44,7 @@ export default function TransportBooking(){
     // };
 
     const [isLoading, setIsLoading] = useState(false);
+    const[error, setError] = useState("");
   
         
     // Function to handle the search button click
@@ -72,14 +73,17 @@ export default function TransportBooking(){
             'Content-Type': 'application/json',
           },
         });
-
         const data = await response.json();
         setTransports(data);
         console.log('Search result:', data);
+        if(transports.length == 0) {
+          setError("no Transportaions available");
+        }
         // Save the flight data to sessionStorage
         sessionStorage.setItem('transports', JSON.stringify(data)); 
       } catch (error) {
           console.error('Error fetching transportation data:', error);
+          setError("no Transportaions available");
       }
       finally {
         console.log('fetched transports',transports);    
@@ -104,7 +108,7 @@ export default function TransportBooking(){
 
     return (
       <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <Box sx={{display:"flex",marginLeft:"10%"}} >
+            <Box sx={{display:"flex",marginLeft:"10%", width:'100vw'}} >
               {/* VERTICAL BOX */}
             <Box  bgcolor="white" 
             sx={{display:"flex", flexDirection:"column",gap:'30px', marginTop:'5%',padding:'10px',marginBottom:'12%'}} >
@@ -189,10 +193,10 @@ export default function TransportBooking(){
                         transports.length > 0 ? (
                           <TransportCardList transports={transports} />
                         ) : (
-                          <Typography color="#126782" variant="h6" sx={{ textAlign: 'center', mt: 4 , marginTop:'60px'}}>No transportaions available</Typography>
+                          <Typography color="#126782" variant="h6" sx={{ textAlign: 'center', mt: 4 , marginTop:'60px'}}>{error}</Typography>
                         )
                       ) : (
-                        <Typography color="#126782" variant="h6" sx={{ textAlign: 'center', mt: 4 , marginTop:'60px'}}>No transportaions available</Typography>
+                        <Typography color="#126782" variant="h6" sx={{ textAlign: 'center', mt: 4 , marginTop:'60px'}}>{error}</Typography>
                       )
                     )}
                 </Box>

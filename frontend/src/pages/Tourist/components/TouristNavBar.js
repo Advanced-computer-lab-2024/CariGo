@@ -106,6 +106,17 @@ function TouristNB() {
     handleCloseUserMenu();
     navigate("/change-password");
   };
+
+  const handleDeleteAccount = async () => {
+    try{
+    const response = await fetch(`http://localhost:4000/cariGo/delReq/createReq`);
+    console.log(response.json);
+    }
+    catch(error){
+      console.error("Error deleting account:", error);
+    }
+  }
+  
   // const loadFileComplaint = () => { handleCloseComplaintsMenu(); navigate('/tourist/file-complaint'); }; // Route to file complaint
   const loadComplaintHistory = () => { handleCloseComplaintsMenu(); navigate('/tourist/complaint-history'); }; // Route to complaint history
   const handleOpenComplaintsMenu = (event) => setAnchorElComplaints(event.currentTarget); // Open complaints menu
@@ -310,6 +321,11 @@ const handleCloseComplaintsMenu = () => setAnchorElComplaints(null); // Close co
               <MenuItem onClick={handleOpenCurrencyDialog}>
                 <Typography sx={{ textAlign: "center" }}>
                   Choose Currency
+                </Typography>
+              </MenuItem>
+              <MenuItem onClick={handleDeleteAccount}>
+                <Typography sx={{ textAlign: "center", color:'#ff4d4d' }}>
+                  delete account
                 </Typography>
               </MenuItem>
               {/* Button to Open Currency Dialog */}

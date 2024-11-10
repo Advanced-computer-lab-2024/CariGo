@@ -177,6 +177,9 @@ function ResponsiveAppBar() {
                   </Typography>
                 </MenuItem>
               ))}
+               <Button onClick={handleDeleteAccount} sx={{ textAlign: "center", color:'white' , backgroundColor:'#ff4d4d' }}>
+                  delete account
+              </Button>
             </Menu>
           </Box>
         </Toolbar>
