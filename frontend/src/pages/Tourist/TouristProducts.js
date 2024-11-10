@@ -298,7 +298,7 @@ export default function ViewProductsTourist() {
 
                 <TableBody hover>
                   {products.map((product, index) => (
-                    <TableRow key={product._id} hover onClick={() => handleDetatils2(product._id)}
+                    <TableRow key={product._id} hover onClick={() => handleDetatils2(product._id)}>
                       <TableCell
                         colSpan={2}
                         align="left"
