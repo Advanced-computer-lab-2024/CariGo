@@ -58,4 +58,10 @@ router.patch(
   userController.UpdateWallet
 );
 
+router.patch(
+  "/RedeemPoints",
+  authController.restrictTo("Tourist"),
+  userController.RedeemPoints
+);
+
 module.exports = router;

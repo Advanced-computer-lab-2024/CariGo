@@ -25,8 +25,9 @@ const StyledRating = styled(Rating)({
 const ItineraryReviewForm = ({ itineraryId, open, onClose }) => {
   const [reviewData, setReviewData] = useState({
     itinerary: itineraryId,
-    content: '',
-    rating: 0
+    review: '',
+    rating: 0,
+    user: localStorage.getItem('id')
   });
   const [error, setError] = useState('');
 
@@ -42,7 +43,7 @@ const ItineraryReviewForm = ({ itineraryId, open, onClose }) => {
     e.preventDefault();
     const token = localStorage.getItem("jwt");
 
-    if (!reviewData.rating || !reviewData.content.trim()) {
+    if (!reviewData.rating || !reviewData.review.trim()) {
       setError('Please provide both a rating and a review.');
       return;
     }
@@ -86,12 +87,12 @@ const ItineraryReviewForm = ({ itineraryId, open, onClose }) => {
             margin="normal"
             required
             fullWidth
-            id="content"
+            id="review"
             label="Your Review"
-            name="content"
+            name="review"
             multiline
             rows={4}
-            value={reviewData.content}
+            value={reviewData.review}
             onChange={handleChange}
           />
           {error && (

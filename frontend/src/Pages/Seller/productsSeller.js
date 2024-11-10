@@ -36,11 +36,12 @@ import { Content, Header } from "antd/es/layout/layout";
 import TopBar from "../TopBar";
 import { TablePagination } from '@mui/material';
 import { ToastContainer, toast } from "react-toastify";
-
+import avatar from "../../assets/profilePic.png";
 import { Navigate, useLocation } from "react-router-dom";
 import ArchiveIcon from "@mui/icons-material/Archive";
 import UnarchiveIcon from "@mui/icons-material/Unarchive";
 import { ArrowRightAlt, Edit } from "@mui/icons-material";
+import { Button } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 export default function ViewProductsSeller() {
   const [products, setProducts] = useState([]); // State to hold fetched categories
@@ -52,7 +53,8 @@ export default function ViewProductsSeller() {
   const bgPrimary = palette.success.main;
   const bgSecondary = palette.warning.light;
   const token = localStorage.getItem("jwt");
-
+  const folderPics = `http://localhost:4000/public/img/products/`;
+  
   // Fetch categories function
   const fetchProducts = async () => {
     setLoading(true); // Start loading
@@ -97,6 +99,10 @@ export default function ViewProductsSeller() {
     }
   };
   
+  const handleDetatils2 = (id) => {
+    // Navigating to a page with the id in the URL
+    navigate(`/Seller/productDetails/${id}`);
+  };
 
   const archiveProduct = async (product) => {
     try {
@@ -159,8 +165,8 @@ export default function ViewProductsSeller() {
       );
     }
   };
-const onChange = () =>{
-
+const handle = () =>{
+    navigate("/Seller")
 }
 const navigate = useNavigate();
   // useEffect to run fetchCategories when component mounts
@@ -260,9 +266,11 @@ const navigate = useNavigate();
          
           <Content style={{ padding: '20px', overflowY: 'auto' }}>
       {loading && <p>Loading categories...</p>}
-     
+      
     <Card elevation={3} sx={{ pt: "20px", mb: 3 }}>
-        
+    <Button type="submit" variant="contained" onClick={handle} color="primary" style={{ marginTop: '16px' ,marginLeft:"10px"}}>
+            Back
+          </Button>  
       <SearchBar placeholder="Search By Name" onChange={(event) =>handleChange(event.target.value)} onClick={handleRequest}/>
     
       <CardHeader>
@@ -295,7 +303,7 @@ const navigate = useNavigate();
 
         </Select> */}
         <Tooltip title="Sort By Rating" placement="top">
-              <IconButton onClick={() => setFilter(`?author=${localStorage.getItem('id')}&sort=ratingsAverage['avgSoFar']`)}>
+              <IconButton onClick={() => setFilter(`?author=${localStorage.getItem('id')}&sort=ratingsAverage`)}>
                 <SortIcon />
               </IconButton>
             </Tooltip>
@@ -312,7 +320,7 @@ const navigate = useNavigate();
       
         <ProductTable hover>
           <TableHead>
-            <TableRow>
+            <TableRow >
               <TableCell colSpan={2} sx={{ px: 8 }}>
                 Name
               </TableCell>
@@ -339,10 +347,13 @@ const navigate = useNavigate();
       
           <TableBody hover>
             {products.map((product,index) => (
-              <TableRow key={product._id} hover>
+              <TableRow key={product._id} hover onClick={() => handleDetatils2(product._id)}>
                 <TableCell colSpan={2} align="left" sx={{ px: 0, textTransform: "capitalize" }}>
                   <Box display="flex" alignItems="center" gap={4}>
-                    <img src={product.imgUrl} alt="p"  />
+                  <label htmlFor="file-upload" className="custom-file-upload">
+              <img src={product.mainImage?folderPics+product.mainImage:avatar} alt="" />
+            </label>
+                    
                     <Paragraph>{product.name}</Paragraph>
                   </Box>
                 </TableCell>
@@ -367,7 +378,7 @@ const navigate = useNavigate();
                   {/* <IconButton onClick={() => console.log(2)}>
                     <Edit color="primary" />
                   </IconButton> */}
-                  <Rating name="read-only" value={product['ratingsAverage'].avgSoFar} readOnly size="small" precision={0.5} defaultValue={4} />
+                  <Rating name="read-only" value={product.ratingsAverage} readOnly size="small" precision={0.5} defaultValue={4} />
                 </TableCell>
                 <TableCell sx={{ px: 7 }} colSpan={1}>
                   <IconButton onClick={() =>handleDetatils(product._id)}>

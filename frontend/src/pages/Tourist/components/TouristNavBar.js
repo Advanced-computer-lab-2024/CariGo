@@ -11,94 +11,58 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-// import bronzeBadge from '../../../assets/bronze badge.png'
-// import silverBadge from '../../../assets/silver badge.jpeg'
-// import goldBadge from '../../../assets/gold badge.jpeg'
 import UserBadge from '../../badge';
-import logoImage from '../../../assets/cropped_image.png'; // Correct relative path
+import logoImage from '../../../assets/cropped_image.png';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 
+import CurrencyConversion from '../../../components/CurrencyConversion';
 
-
-const pages = ['Suggested For You','Activities', 'Itinerary', 'Historical Places','Products','File Complaint','Book Services'];
-const settings = ['My Profile', 'Logout','change password']; // Updated settings
-
+const pages = [
+  'Suggested For You', 'Activities', 'Itinerary', 'Historical Places', 
+  'Products', 'File Complaint'
+];
+const settings = ['My Profile', 'Logout', 'Change Password'];
 
 function TouristNB() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-  const userId = localStorage.getItem("id"); // Assumes user ID is stored in localStorage
+  const [anchorElBookings, setAnchorElBookings] = React.useState(null);
+  const [openCurrencyDialog, setOpenCurrencyDialog] = React.useState(false); // State for dialog
+  // Open and Close Dialog Functions
+  const handleOpenCurrencyDialog = () => {
+    setOpenCurrencyDialog(true);
+  };
+
+  const handleCloseCurrencyDialog = () => {
+    setOpenCurrencyDialog(false);
+  };
+
+  const userId = localStorage.getItem("id");
 
   const navigate = useNavigate();
 
-  const handleOpenNavMenu = (event) => {
-    setAnchorElNav(event.currentTarget);
-  };
-
-  const handleOpenUserMenu = (event) => {
-    setAnchorElUser(event.currentTarget);
-  };
-
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
-  };
-
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-  };
+  const handleOpenNavMenu = (event) => setAnchorElNav(event.currentTarget);
+  const handleOpenUserMenu = (event) => setAnchorElUser(event.currentTarget);
+  const handleOpenBookingsMenu = (event) => setAnchorElBookings(event.currentTarget);
+  const handleCloseNavMenu = () => setAnchorElNav(null);
+  const handleCloseUserMenu = () => setAnchorElUser(null);
+  const handleCloseBookingsMenu = () => setAnchorElBookings(null);
 
   // Navigation functions
+  const loadSuggestedForYou = () => { handleCloseNavMenu(); navigate('/Tourist'); };
+  const loadActivities = () => { handleCloseNavMenu(); navigate('/tourist-activities'); };
+  const loadItinerary = () => { handleCloseNavMenu(); navigate('/Tourist-itineraries'); };
+  const loadHistoricalPlaces = () => { handleCloseNavMenu(); navigate('/allVintages'); };
+  const loadProducts = () => { handleCloseNavMenu(); navigate('/Tourist/Products'); };
+  const loadFileComplaint = () => { handleCloseNavMenu(); navigate('/tourist/file-complaint'); };
+  const loadBookServices = () => { handleCloseBookingsMenu(); navigate('/book-services'); sessionStorage.clear(); };
+  const loadBookedActivities = () => { handleCloseBookingsMenu(); navigate('/tourist/MyBookedActivities'); };
+  const loadBookedItineraries = () => { handleCloseBookingsMenu(); navigate('/tourist/MyBookings'); };
+  const loadProfile = () => { handleCloseUserMenu(); navigate('/tourist-profile'); };
+  const handleLogout = () => { handleCloseUserMenu(); navigate('/login'); };
+  const handleChangePass = () => { handleCloseUserMenu(); navigate('/change-password'); };
 
-  const loadSuggestedForYou = () => {
-    handleCloseNavMenu();
-    navigate('/Tourist');
-  };
-  const loadActivities = () => {
-    handleCloseNavMenu();
-    navigate('/tourist-activities');
-  };
-
-  const loadItinerary = () => {
-    handleCloseNavMenu();
-    navigate('/Tourist-itineraries');
-  };
-
-  const loadHistoricalPlaces = () => {
-    handleCloseNavMenu();
-
-    navigate('/allVintages');
-
-  };
-
-  const loadProfile = () => {
-    handleCloseUserMenu();
-    navigate('/tourist-profile');
-  };
-
-  const handleLogout = () => {
-    handleCloseUserMenu();
-    // Add your logout logic here
-    navigate('/login'); // Example navigation after logout
-  };
-  const handleChangePass=()=>{
-    handleCloseUserMenu();
-
-    navigate('/change-password');
-  }
-  const loadProducts = () =>{
-    handleCloseUserMenu();
-    // Add your logout logic here
-    navigate('/Tourist/Products')
-  }
-  const loadFileComplaint = () => {
-    handleCloseNavMenu();
-    navigate('/tourist/file-complaint'); 
-  };
-  const loadBookServices = () => {
-    handleCloseNavMenu();
-    navigate('/book-services');
-  };
   return (
     <AppBar position="static" sx={{ backgroundColor: '#004c74' }}>
       <Container maxWidth="xl">
@@ -112,7 +76,7 @@ function TouristNB() {
             variant="h6"
             noWrap
             component={Link}
-            to="/tgHome" 
+            to="/tgHome"
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
@@ -125,7 +89,7 @@ function TouristNB() {
           >
             CariGO
           </Typography>
-          
+
           {/* Mobile Menu */}
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
@@ -148,60 +112,60 @@ function TouristNB() {
               onClose={handleCloseNavMenu}
               sx={{ display: { xs: 'block', md: 'none' } }}
             >
-              <MenuItem onClick={loadActivities}>
-                <Typography sx={{ textAlign: 'center' }}>{pages[0]}</Typography>
+              {pages.map((page, index) => (
+                <MenuItem key={index} onClick={handleCloseNavMenu}>
+                  <Typography sx={{ textAlign: 'center' }}>{page}</Typography>
+                </MenuItem>
+              ))}
+              {/* Bookings Dropdown in Mobile View */}
+              <MenuItem onClick={handleOpenBookingsMenu}>
+                <Typography sx={{ textAlign: 'center' }}>Bookings</Typography>
               </MenuItem>
-              <MenuItem onClick={loadItinerary}>
-                <Typography sx={{ textAlign: 'center' }}>{pages[1]}</Typography>
-              </MenuItem>
-              <MenuItem onClick={loadHistoricalPlaces}>
-                <Typography sx={{ textAlign: 'center' }}>{pages[2]}</Typography>
-              </MenuItem>
-              <MenuItem onClick={loadFileComplaint}>
-                <Typography sx={{ textAlign: 'center' }}>{pages[4]}</Typography>
-              </MenuItem>
+              <Menu
+                id="bookings-menu-mobile"
+                anchorEl={anchorElBookings}
+                open={Boolean(anchorElBookings)}
+                onClose={handleCloseBookingsMenu}
+                anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+                transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+              >
+                <MenuItem onClick={loadBookServices}><Typography>Book Services</Typography></MenuItem>
+                <MenuItem onClick={loadBookedActivities}><Typography>Booked Activities</Typography></MenuItem>
+                <MenuItem onClick={loadBookedItineraries}><Typography>Booked Itineraries</Typography></MenuItem>
+              </Menu>
             </Menu>
           </Box>
 
           {/* Desktop Menu */}
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            <Button
-              onClick={loadSuggestedForYou}
-              sx={{ my: 2, color: 'white', display: 'block' }}
-            >
-              {pages[0]}
-            </Button>
-            {/* <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}> */}
-            <Button
-              onClick={loadActivities}
-              sx={{ my: 2, color: 'white', display: 'block' }}
-            >
-              {pages[1]}
-            </Button>
-            <Button
-              onClick={loadItinerary}
-              sx={{ my: 2, color: 'white', display: 'block' }}
-            >
-              {pages[2]}
-            </Button>
-            <Button
-              onClick={loadHistoricalPlaces}
-              sx={{ my: 2, color: 'white', display: 'block' }}
-            >
-              {pages[3]}
-            </Button>
-            <Button
-              onClick={loadProducts}
-              sx={{ my: 2, color: 'white', display: 'block' }}
-            >
-              {pages[4]}
-            </Button>
-              <Button onClick={loadFileComplaint} sx={{ my: 2, color: 'white', display: 'block' }}>
-            {pages[5]}
-            </Button>
-            <Button onClick={loadBookServices} sx={{ my: 2, color: 'white', display: 'block' }}>
-            {pages[6]}
-            </Button>
+            <Button onClick={loadSuggestedForYou} sx={{ my: 2, color: 'white', display: 'block' }}>{pages[0]}</Button>
+            <Button onClick={loadActivities} sx={{ my: 2, color: 'white', display: 'block' }}>{pages[1]}</Button>
+            <Button onClick={loadItinerary} sx={{ my: 2, color: 'white', display: 'block' }}>{pages[2]}</Button>
+            <Button onClick={loadHistoricalPlaces} sx={{ my: 2, color: 'white', display: 'block' }}>{pages[3]}</Button>
+            <Button onClick={loadProducts} sx={{ my: 2, color: 'white', display: 'block' }}>{pages[4]}</Button>
+            <Button onClick={loadFileComplaint} sx={{ my: 2, color: 'white', display: 'block' }}>{pages[5]}</Button>
+            
+            {/* Bookings Dropdown in Desktop View */}
+            <Box>
+              <Button
+                onClick={handleOpenBookingsMenu}
+                sx={{ my: 2, color: 'white', display: 'block' }}
+              >
+                Bookings
+              </Button>
+              <Menu
+                id="bookings-menu"
+                anchorEl={anchorElBookings}
+                open={Boolean(anchorElBookings)}
+                onClose={handleCloseBookingsMenu}
+                anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+                transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+              >
+                <MenuItem onClick={loadBookServices}><Typography>Book Services</Typography></MenuItem>
+                <MenuItem onClick={loadBookedActivities}><Typography>Booked Activities</Typography></MenuItem>
+                <MenuItem onClick={loadBookedItineraries}><Typography>Booked Itineraries</Typography></MenuItem>
+              </Menu>
+            </Box>
           </Box>
 
           {/* User Badge */}
@@ -224,15 +188,15 @@ function TouristNB() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              <MenuItem onClick={loadProfile}>
-                <Typography sx={{ textAlign: 'center' }}>My Profile</Typography>
-              </MenuItem>
-              <MenuItem onClick={handleLogout}>
-                <Typography sx={{ textAlign: 'center' }}>Logout</Typography>
-              </MenuItem>
-              <MenuItem onClick={handleChangePass}>
-                <Typography sx={{ textAlign: 'center' }}>Change Password</Typography>
-              </MenuItem>
+              <MenuItem onClick={loadProfile}><Typography sx={{ textAlign: 'center' }}>My Profile</Typography></MenuItem>
+              <MenuItem onClick={handleLogout}><Typography sx={{ textAlign: 'center' }}>Logout</Typography></MenuItem>
+              <MenuItem onClick={handleChangePass}><Typography sx={{ textAlign: 'center' }}>Change Password</Typography></MenuItem>
+              <MenuItem onClick={handleOpenCurrencyDialog}><Typography sx={{ textAlign: 'center' }}>Choose Currency</Typography></MenuItem>
+              {/* Button to Open Currency Dialog */}
+         
+         
+          {/* Currency Conversion Dialog */}
+          <CurrencyConversion open={openCurrencyDialog} onClose={handleCloseCurrencyDialog} />
             </Menu>
           </Box>
         </Toolbar>

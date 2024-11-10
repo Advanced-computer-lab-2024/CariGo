@@ -358,6 +358,30 @@ const suggestedItineraries = async (req, res) => {
   }
 };
 
+const suggestedActivities = async (req, res) => {
+  try {
+    // Ensure `tags` is always an array, even if a single tag is passed in the query
+    const tags = Array.isArray(req.query.tags) ? req.query.tags : [req.query.tags];
+    console.log(tags);
+
+    // Convert `tags` to ObjectId format if they are strings, since the tag field references ObjectIds
+    const tagIds = tags.map(tag => new mongoose.Types.ObjectId(tag)); // Use `new` to create ObjectId instances
+
+    // Fetch activities that match any tag in the `tags` array
+    const itineraries = await activityModel.find({
+      isActive: true,
+      isFlagged: false,
+      tag: { $in: tagIds } // Check if activity's tag is in the provided tags list
+    }).populate("tag"); // Ensure populated tag information is returned
+    console.log(itineraries);
+    res.json(itineraries);
+  } catch (error) {
+    console.error("Error fetching suggested activities:", error);
+    res.status(500).json({ error: "Error fetching suggested activities" });
+  }
+};
+
+
 
 
 const deleteItinerary = async (req, res) => {
@@ -617,10 +641,15 @@ const BookItinerary = async (req, res) => {
           NumberOfTickets:NumberOfTickets,
           TotalPrice:TotalPrice
         });
+        const newWalletValue = user.wallet - TotalPrice;
+        user.wallet = newWalletValue;
+        await user.save({ validateBeforeSave: false });
       }
 
       // Add loyalty points
-      user.addLoyaltyPoints(itinerary.price);
+      // user.addLoyaltyPoints(itinerary.price);
+      user.addLoyaltyPoints(TotalPrice);
+      user.addAvailablePoints(TotalPrice)
       await user.save({ validateBeforeSave: false });
 
       res.status(200).json({
@@ -630,6 +659,8 @@ const BookItinerary = async (req, res) => {
         newTotalPoints: user.loyaltyPoints,
         newLevel: user.level,
         newBadge: user.badge,
+        newPoints: user.pointsAvailable,
+        newWallet: user.wallet
       });
     } catch (error) {
       res.status(500).json({ error: "Failed to book" });
@@ -765,5 +796,6 @@ module.exports = {
   MyItineraryBookings,
   CancelItineraryBooking,
   currencyConversion,
-  suggestedItineraries
+  suggestedItineraries,
+  suggestedActivities
 };

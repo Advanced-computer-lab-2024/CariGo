@@ -4,7 +4,7 @@ const productModel = require("../models/Product.js");
 
 // get all users
 const getUsers = async (req, res) => {
-  const users = await User.find({isActive: true}).sort({ createdAt: -1 });
+  const users = await User.find({isActive: true,documentApprovalStatus:"Pending", role: { $ne: "Tourist" }}).sort({ createdAt: -1 });
 
   res.status(200).json(users);
 };
@@ -80,11 +80,43 @@ const UpdateWallet = async (req, res) => {
   }
 };
 
+const RedeemPoints = async (req, res) => {
+  const  UserId  = req.user.id; // User ID from request body
+  const {numOfPoints} = req.body; // Event ID from URL parameters
+  console.log(UserId);
+  if (mongoose.Types.ObjectId.isValid(UserId)) {
+    try {
+      const user = await User.findById(UserId);
+      //console.log(itinerary);
+          const cash = numOfPoints/10;
+          const cashBack = user.wallet + cash ;
+          const newPoints = user.pointsAvailable - numOfPoints ;
+          const updatedPoints = await User.updateOne(
+            { _id: UserId }, // Filter to find documents with both UserId and ItineraryId
+            { $set: { pointsAvailable: newPoints,wallet: cashBack  } }
+          );
+          res.status(200).json({
+            message: "Points redeemed successfully.",
+            updatedPoints: updatedPoints.modifiedCount, // shows how many bookings were updated
+          });
+        
+       
+    } catch(error) {
+      
+      res.status(500).json({ error: "Failed to fetch user" });
+      console.error("Error while redeeming:", error);
+    }
+  } else {
+    res.status(400).json({ error: "Invalid user ID format" });
+  }
+};
+
 module.exports = {
   getUsers,
   getUser,
   updateUserData,
-  UpdateWallet
+  UpdateWallet,
+  RedeemPoints
   //   deleteWorkout,
   //   updateWorkout
 };

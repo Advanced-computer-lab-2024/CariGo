@@ -138,10 +138,10 @@ const getActivities = async (req, res) => {
   const query = Activity.find({
     start_date: { $gte: today },
     isFlagged: false,
-    isActive: true // Only include activities that are not flagged and are active
+    isActive: true, // Only include activities that are not flagged and are active
   });
-  
-console.log(query.data);
+
+  console.log(query.data);
   // Add category filter if it exists
   if (req.query.Category) {
     query.where({ Category: req.query.Category });
@@ -319,7 +319,6 @@ const getActivitiesForAdmin = async (req, res) => {
       .json({ message: "Error retrieving activities", error: error.message });
   }
 };
-
 
 // const getAdvActivities = async (req, res) => {
 //     try {
@@ -524,7 +523,7 @@ const shareActivity = async (req, res) => {
 
 const BookActivity = async (req, res) => {
   const { ActivityId } = req.params;
-  const { PaymentMethod,TotalPrice,NumberOfTickets } = req.body;
+  const { PaymentMethod, TotalPrice, NumberOfTickets } = req.body;
   const UserId = req.user.id;
   console.log(UserId);
   let CardNumber;
@@ -554,8 +553,8 @@ const BookActivity = async (req, res) => {
           PaymentMethod: PaymentMethod,
           Status: true,
           CardNumber: CardNumber,
-          NumberOfTickets:NumberOfTickets,
-          TotalPrice:TotalPrice
+          NumberOfTickets: NumberOfTickets,
+          TotalPrice: TotalPrice,
         });
       } else {
         booking = await bookingModel.create({
@@ -563,25 +562,36 @@ const BookActivity = async (req, res) => {
           UserId: UserId,
           PaymentMethod: PaymentMethod,
           Status: true,
-          NumberOfTickets:NumberOfTickets,
-          TotalPrice:TotalPrice
+          NumberOfTickets: NumberOfTickets,
+          TotalPrice: TotalPrice,
         });
+        const newWalletValue = user.wallet - TotalPrice;
+        console.log(newWalletValue);
+        user.wallet = newWalletValue;
+        await user.save({ validateBeforeSave: false });
+        console.log(user.wallet);
       }
       await Activity.updateOne(
-        { _id: ActivityId}, 
+        { _id: ActivityId },
         { $set: { isBooked: true } }
       );
       // Add loyalty points
-      user.addLoyaltyPoints(activity.price.range.min);
+      //user.addLoyaltyPoints(activity.price.range.min);
+      user.addLoyaltyPoints(TotalPrice);
+      user.addAvailablePoints(TotalPrice);
       await user.save({ validateBeforeSave: false });
 
       res.status(200).json({
         message: "Booked successfully",
         booking,
-        loyaltyPointsEarned: Math.floor(activity.price * (user.level === 1 ? 0.5 : user.level === 2 ? 1 : 1.5)),
+        loyaltyPointsEarned: Math.floor(
+          activity.price * (user.level === 1 ? 0.5 : user.level === 2 ? 1 : 1.5)
+        ),
         newTotalPoints: user.loyaltyPoints,
         newLevel: user.level,
-        newBadge: user.badge
+        newBadge: user.badge,
+        newPoints: user.pointsAvailable,
+        newWallet: user.wallet,
       });
     } catch (error) {
       res.status(500).json({ error: "Failed to book", message: error.message });
@@ -593,10 +603,12 @@ const BookActivity = async (req, res) => {
 };
 
 const MyActivityBookings = async (req, res) => {
-  const  UserId  = req.user.id; // User ID from request body
+  const UserId = req.user.id; // User ID from request body
   if (mongoose.Types.ObjectId.isValid(UserId)) {
     try {
-      const bookings = await bookingModel.find({UserId,ActivityId: { $ne: null }}).sort({createdAt: -1});
+      const bookings = await bookingModel
+        .find({ UserId, ActivityId: { $ne: null } })
+        .sort({ createdAt: -1 });
       return res.status(200).json(bookings);
     } catch {
       res.status(500).json({ error: "Failed to fetch bookings" });
@@ -608,46 +620,52 @@ const MyActivityBookings = async (req, res) => {
 };
 
 const CancelActivityBooking = async (req, res) => {
-  const UserId  = req.user.id; // User ID from request body
+  const UserId = req.user.id; // User ID from request body
   const { ActivityId } = req.body; // Event ID from URL parameters
-  if (mongoose.Types.ObjectId.isValid(ActivityId) && mongoose.Types.ObjectId.isValid(UserId)) {
-      try {
-          
-          const activity = await activityModel.findById(ActivityId);
-          console.log(activity);
-          const activityDate = activity.start_date;
-          
-          if (activityDate) {
-              const currDate = new Date();
-              const timeDifference = activityDate.getTime() - currDate.getTime(); // Difference in milliseconds
-              const hoursDifference = timeDifference / (1000 * 60 * 60); // Convert to hours
+  if (
+    mongoose.Types.ObjectId.isValid(ActivityId) &&
+    mongoose.Types.ObjectId.isValid(UserId)
+  ) {
+    try {
+      const activity = await activityModel.findById(ActivityId);
+      console.log(activity);
+      const activityDate = activity.start_date;
 
-              if (hoursDifference >= 48) {
-                  const bookings = await bookingModel.updateMany(
-                      { UserId, ActivityId }, // Filter to find documents with both UserId and ActivityId
-                      { $set: { Status: false } } // Update to set Status to false
-                  );
-                  await Activity.updateOne(
-                    { _id: ActivityId }, 
-                    { $set: { isBooked: false } }
-                  );
-                  res.status(200).json({
-                      message: "Bookings canceled successfully",
-                      updatedBookingsCount: bookings.modifiedCount // shows how many bookings were updated
-                  });
+      if (activityDate) {
+        const currDate = new Date();
+        const timeDifference = activityDate.getTime() - currDate.getTime(); // Difference in milliseconds
+        const hoursDifference = timeDifference / (1000 * 60 * 60); // Convert to hours
 
-              } else {
-                  res.status(400).json({ message: "Cannot book/cancel within 48 hours of the activity date" });
-              }
-          } else {
-              res.status(404).json({ message: "Activity not found" });
-          }
-      } catch (error) {
-          res.status(500).json({ error: "Failed to fetch booking" });
-          console.error("Error while booking:", error);
+        if (hoursDifference >= 48) {
+          const bookings = await bookingModel.updateMany(
+            { UserId, ActivityId }, // Filter to find documents with both UserId and ActivityId
+            { $set: { Status: false } } // Update to set Status to false
+          );
+          await Activity.updateOne(
+            { _id: ActivityId },
+            { $set: { isBooked: false } }
+          );
+          res.status(200).json({
+            message: "Bookings canceled successfully",
+            updatedBookingsCount: bookings.modifiedCount, // shows how many bookings were updated
+          });
+        } else {
+          res
+            .status(400)
+            .json({
+              message:
+                "Cannot book/cancel within 48 hours of the activity date",
+            });
+        }
+      } else {
+        res.status(404).json({ message: "Activity not found" });
       }
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch booking" });
+      console.error("Error while booking:", error);
+    }
   } else {
-      res.status(400).json({ error: "Invalid event ID format" });
+    res.status(400).json({ error: "Invalid event ID format" });
   }
 };
 
@@ -663,5 +681,5 @@ module.exports = {
   shareActivity,
   BookActivity,
   MyActivityBookings,
-  CancelActivityBooking
+  CancelActivityBooking,
 };

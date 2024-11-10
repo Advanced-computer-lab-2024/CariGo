@@ -1,0 +1,66 @@
+.purchase-card {
+    border: 1px solid #ddd;
+    padding: 20px;
+    margin: 15px;
+    border-radius: 8px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* max-width: 400px; */
+    transition: transform 0.2s;
+  }
+  
+  .purchase-card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .purchase-card__details {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .purchase-card__name {
+    font-size: 22px;
+    font-weight: bold;
+    color: #f18c1b;
+  }
+  
+  .purchase-card__description {
+    font-size: 14px;
+    color: #666;
+  }
+  
+  .purchase-card__price,
+  .purchase-card__quantity,
+  .purchase-card__total-cost,
+  .purchase-card__date {
+    margin: 8px 0;
+    font-size: 16px;
+    color: #444;
+  }
+  
+  .purchase-card__rating {
+    display: flex;
+    align-items: center;
+    margin-top: 15px;
+  }
+  
+  .purchase-card__rating span {
+    font-size: 18px;
+    margin-right: 5px;
+  }
+  
+  .star {
+    font-size: 24px;
+    cursor: pointer;
+    color: #ddd;
+    transition: color 0.2s;
+  }
+  
+  .star.filled {
+    color: #ffcc00; /* Star color when filled */
+  }
+  
+  .star:hover {
+    color: #ffc107;
+  }
+  

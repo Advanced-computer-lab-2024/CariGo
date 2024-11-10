@@ -386,12 +386,15 @@ export default function ViewProducts() {
 
                 <TableBody hover>
                   {products.map((product, index) => (
-                    <TableRow key={product._id} hover>
+                    <TableRow
+                      key={product._id}
+                      hover
+                      onClick={() => handleDetatils2(product._id)}
+                    >
                       <TableCell
                         colSpan={2}
                         align="left"
                         sx={{ px: 0, textTransform: "capitalize" }}
-                        onClick={() => handleDetatils2(product._id)}
                       >
                         <Box display="flex" alignItems="center" gap={4}>
                           <label

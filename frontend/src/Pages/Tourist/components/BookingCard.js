@@ -43,7 +43,7 @@ const BookingCard = ({ id, name, startDate, endDate, location, status, img,price
         await axios.patch(`/cariGo/users/UpdateWallet`, {
           numOfTickets:NumberOfTickets,
           price:price,
-          conversionRate:rate
+          conversionRate:1
         },
         {
           headers: {
@@ -55,14 +55,14 @@ const BookingCard = ({ id, name, startDate, endDate, location, status, img,price
         // Add a 5-second delay before reloading the page
       setTimeout(() => {
         window.location.reload();
-      }, 5000); // 5000 ms = 5 seconds
+      }, 1000); // 5000 ms = 5 seconds
       } catch (error) {
         console.error('Failed to cancel itinerary booking:', error.response ? error.response.data : error.message);
         alert(`An error occurred while canceling the booking. Details: ${error.message},${error.response.data.message}`);
       }
     }
   };
-
+  const conversionRate = localStorage.getItem("conversionRate")||1;
   return (
     //console.log("price: "+price),
     //console.log("author: "+author),
@@ -79,7 +79,7 @@ const BookingCard = ({ id, name, startDate, endDate, location, status, img,price
         </p>
         <p className="booking-card__location">Location: {location}</p>
         <p className="booking-card__status">
-        TotalPrice: {TotalPrice}
+        TotalPrice: {(TotalPrice*conversionRate).toFixed(2)}
         </p>
         <p className="booking-card__status">
           Status: {isPast&&status ? "Done" : status ? "Booked" : "Canceled Bookings"}
