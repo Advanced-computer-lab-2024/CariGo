@@ -74,8 +74,6 @@ exports.createReview = catchAsync(async (req, res, next) => {
         )
       );
     }
-
-
   } else if (req.body.itinerary) {
     const itineraryId = req.body.itinerary;
     const booking = await Booking.find({
@@ -91,15 +89,18 @@ exports.createReview = catchAsync(async (req, res, next) => {
         )
       );
     }
-
   } else if (req.body.tourGuide) {
     const tourGuideId = req.body.tourGuide;
     // console.log(tourGuideId,"ana hena");
     const booking = await Booking.find({
       UserId: userId,
-      "ItineraryId.author": tourGuideId,
       Status: true,
+    }).populate({
+      path: "ItineraryId",
+      match: { author: tourGuideId },
     });
+    console.log(tourGuideId, "ana hena");
+    console.log(booking);
     // console.log(booking)
     if (booking.length == 0) {
       return next(
