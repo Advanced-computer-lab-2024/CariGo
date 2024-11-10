@@ -59,7 +59,7 @@ export default function ViewProductsTourist() {
     try {
       console.log(filter + " ffffffffffffff");
       const response = await axios.get(
-        `http://localhost:4000/cariGo/products/${filter}`
+        `http://localhost:4000/cariGo/products/tourist-products/${filter}`
       ); // Fetch from backend
       // console.log(response.data); // Log the response data
       setProducts(response.data); // Set the categories state
