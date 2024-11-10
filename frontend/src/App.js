@@ -17,7 +17,7 @@ import  TouristVintage from "./Pages/Tourist/TouristPlaces.js";
 import CreateVintageForm from "./Pages/CreateVintageForm.js";
 
 import './styles/index.css';
-import Checkout from "./Pages/SignUp/Checkout";
+import SignIn from "./Pages/SignUp/SignIn.js";
 import PaymentCheckout from './Pages/checkout/Checkout';
 import UserViewActivities from "./Pages/Tourist/TouristActivities.js";
 import AdminHome from './Pages/Home.js';
@@ -91,15 +91,15 @@ import TransportationSearch from "./Pages/TransportationSearch.js" ;
 import AdminViewActivity from "./Pages/activities/AdminViewActivity.js";
 
 import Pass from "./Pages/changePassword.js";
-import UploadDocumentsPage from "./Pages/UploadDocuments.js";
-
+//import UploadDocumentsPage from "./Pages/UploadDocuments.js";
+import UploadDocumentsPage from "./Pages/SignUp/components/UploadDocuments.js"
 import ProductAnalysis from "./Pages/products/ProductAnalysis.jsx";
 import ProductDetails2 from "./Pages/products/ProductDetails2.jsx";
 import MyBookings from "./Pages/Tourist/MyBookings.js";
 import MyBookedActivities from "./Pages/Tourist/MyBookedActivities.js"
 import CreateTransportation from "./components/CreateTransportationForm.js"
 //const dotenv = require('dotenv')
-
+import ReviewAccounts from "./Pages/accounts/docsReview.jsx";
 function App() {
   
   const token = localStorage.getItem("jwt");
@@ -164,11 +164,11 @@ function App() {
         {/* <Route path="/guest-places" element={<GuestViewVintage/>} /> */}
         <Route path="/createActivity" element={<CreateActivityForm userId={localStorage.getItem("id")} />} />
         <Route path="/createTransportation" element={<CreateTransportation userId={localStorage.getItem("id")} />} /> 
-        <Route path="/Register-Tourist" element={<Checkout role={"Tourist"}/>} />
+        <Route path="/Register-Tourist" element={<SignIn role={"Tourist"}/>} />
         {/* <Route path="/Register-Tourist" element={<SignUp/>} /> */}
-        <Route path="/Register-Seller" element={<Checkout role={"Seller"}/>} />
-        <Route path="/Register-TourGuide" element={<Checkout role={"Tour_Guide"}/>} />
-        <Route path="/Register-Advertiser" element={<Checkout role={"Advertiser"}/>} />
+        <Route path="/Register-Seller" element={<SignIn role={"Seller"}/>} />
+        <Route path="/Register-TourGuide" element={<SignIn role={"Tour_Guide"}/>} />
+        <Route path="/Register-Advertiser" element={<SignIn role={"Advertiser"}/>} />
         <Route path="/advertiser" element={<AdvertiserProfile userId={localStorage.getItem("id")} />} />
         <Route path="/tourist-profile" element={<TouristProfile userId={localStorage.getItem("id")} />} />
         <Route path="/tgHome" element={<TouristGuestHome/>} />
@@ -192,6 +192,8 @@ function App() {
               <Route path="/admin/manage-products" element={<ManageProducts />} />
               <Route path="/admin/manage-products/AddProduct" element={<AddProduct/>} />
               <Route path="/admin/manage-products/product-Details/:id" element={<ProductDetails/>} />
+              <Route path="/admin/manage-accounts/ReviewDocs" element={<ReviewAccounts/>} />
+
               <Route path="/update-tag" element={<UpdateTag />} />
               <Route path='/admin/view-products' element={<ViewProducts/>}/>
               <Route path='/admin/view-products/:id' element={<ProductDetails2/>}/>

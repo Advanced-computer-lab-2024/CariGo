@@ -65,6 +65,9 @@ export default function EditCategory() {
       case "Delete Users":
         navigate("/delete-user"); // Redirect to "Create" page
         break;
+      case "Accept/Reject Accounts":
+        navigate("/admin/manage-accounts/ReviewDocs")
+        break;
 
       default:
         console.log(`No route for ${product.name}`);
@@ -143,5 +146,6 @@ const productList = [
   {
     name: "Delete Users",
   },
+  {name: "Accept/Reject Accounts"}
 
 ];

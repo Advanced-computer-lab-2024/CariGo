@@ -5,7 +5,7 @@ import TouristInfo from '../../components/TouristInfo';
 import CenteredTabs from '../../components/CenteredTabs';
 import './styles/TouristProfile.css'; 
 import headerImage from '../../assets/header.png'; 
-import profileImage from '../../assets/profile.png';
+import profileImage from '../../assets/profilePic.png';
 import TouristInfoEdit from '../../components/TouristInfoEdit';
 import TouristNB from './components/TouristNavBar';
 import {jwtDecode} from "jwt-decode";

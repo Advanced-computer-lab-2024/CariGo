@@ -20,11 +20,17 @@ import {
 import { Typography } from '@mui/material';
 import { useNavigate, useParams } from "react-router-dom"; // Import useNavigate
 import Sidebar from "../Sidebar";
+import avatar from "../../assets/profilePic.png";
 import Sider from "antd/es/layout/Sider";
 import { Layout } from "antd";
 import { Content, Header } from "antd/es/layout/layout";
 import TopBar from "../TopBar";
 import { useEffect } from 'react';
+const folderPics = `http://localhost:4000/public/img/products/`;
+const FormGrid = styled('div')(() => ({
+  display: 'flex',
+  flexDirection: 'column',
+}));
 const FormContainer = styled(Paper)(({ theme }) => ({
     padding: theme.spacing(3),
     display: 'flex',
@@ -102,8 +108,21 @@ const FormContainer = styled(Paper)(({ theme }) => ({
               <ToastContainer />
               <Content style={{ padding: '20px', overflowY: 'auto' }}>
       <FormContainer>
-        <h2 style={{ marginBottom: '10px' }}>Update Product</h2>
+        <h2 style={{ marginBottom: '10px' }}>Product</h2>
         <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+        <FormGrid size={{ xs: 12, md: 12 }} style={{ marginLeft: "130px" }}>
+            <label htmlFor="file-upload" className="custom-file-upload">
+              <img src={ data.mainImage?folderPics+data.mainImage:avatar} alt="Uploaded avatar" />
+            </label>
+            <input
+              type="file"
+              name="myFile"
+              
+              id="file-upload"
+              accept=".jpeg, .png, .jpg"
+              disabled
+            />
+            </FormGrid>
           <TextField
             type="text"
             name="name"

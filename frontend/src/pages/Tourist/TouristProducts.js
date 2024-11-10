@@ -37,10 +37,11 @@ import { Content, Header } from "antd/es/layout/layout";
 import TopBar from "../TopBar.jsx";
 import { TablePagination } from '@mui/material';
 import { ToastContainer } from "react-toastify";
-
+import avatar from "../../assets/profilePic.png";
 import { Navigate, useLocation } from "react-router-dom";
 import { ArrowRightAlt, Edit } from "@mui/icons-material";
 import SearchIcon from '@mui/icons-material/Search';
+const folderPics = `http://localhost:4000/public/img/products/`;
 export default function ViewProductsTourist() {
   const [products, setProducts] = useState([]); // State to hold fetched categories
   const [loading, setLoading] = useState(false); // Loading state
@@ -246,7 +247,9 @@ const navigate = useNavigate();
               <TableRow key={product._id} hover>
                 <TableCell colSpan={2} align="left" sx={{ px: 0, textTransform: "capitalize" }}>
                   <Box display="flex" alignItems="center" gap={4}>
-                    <img src={product.imgUrl} alt="p"  />
+                  <label htmlFor="file-upload" className="custom-file-upload">
+              <img src={product.mainImage?folderPics+product.mainImage:avatar} alt="" />
+            </label>
                     <Paragraph>{product.name}</Paragraph>
                   </Box>
                 </TableCell>
@@ -271,7 +274,7 @@ const navigate = useNavigate();
                   {/* <IconButton onClick={() => console.log(2)}>
                     <Edit color="primary" />
                   </IconButton> */}
-                  <Rating name="read-only" value={product['ratingsAverage'].avgSoFar} readOnly size="small" precision={0.5} defaultValue={4} />
+                  <Rating name="read-only" value={product.ratingsAverage} readOnly size="small" precision={0.5} defaultValue={4} />
                 </TableCell>
                 <TableCell sx={{ px: 7 }} colSpan={1}>
                   <IconButton onClick={() =>handleDetatils(product._id)}>

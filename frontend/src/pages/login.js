@@ -9,7 +9,9 @@ import Button from '@mui/joy/Button';
 import Link from '@mui/joy/Link';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
+import Box from "@mui/material/Box";
+import { Flex } from 'antd';
 export default function LoginPage() {
   localStorage.clear();
  // console.log(localStorage.getItem('jwt') +"         d")
@@ -92,12 +94,33 @@ export default function LoginPage() {
 
   return (
     <main>
+       <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              flexGrow: 1,
+              width: "100%",
+              maxWidth: 500,
+            }}
+          >
+           <Button  style={{marginTop:"50px"}}
+                    variant="contained"
+                    startIcon={<ChevronLeftRoundedIcon />}
+                    onClick={()=>navigate("/")}
+                    fullWidth
+                    primary
+                    sx={{ width: { xs: "flex", sm: "fit-content" } }}
+                  >
+                    Return
+                  </Button>
+
+          </Box>
       <CssBaseline />
       <Sheet
         sx={{
           width: 300,
           mx: 'auto', // margin left & right
-          my: 4, // margin top & bottom
+          my: 0, // margin top & bottom
           py: 3, // padding top & bottom
           px: 2, // padding left & right
           display: 'flex',
@@ -141,13 +164,13 @@ export default function LoginPage() {
             Log in
           </Button>
         </form>
-        <Typography
-          endDecorator={<Link href="/Register-Tourist">Tourist</Link>}
+         <Typography
+          endDecorator={"Sign UP Below"}
           sx={{ fontSize: 'sm', alignSelf: 'center' }}
         >
           Don&apos;t have an account?
         </Typography>
-        <Typography
+        {/* <Typography
           endDecorator={<Link href="/Register-Seller">Seller</Link>}
           sx={{ fontSize: 'sm', alignSelf: 'center' }}
         >
@@ -164,8 +187,83 @@ export default function LoginPage() {
           sx={{ fontSize: 'sm', alignSelf: 'center' }}
         >
           Don&apos;t have an account?
-        </Typography>
+        </Typography>  */}
       </Sheet>
+      <Box sx={{display:'flex', padding:'20px', position:'relative', alignItems:'center', justifyContent:'center', marginTop:'50px', gap:'100px'}}>
+           <Button variant= "outlined" 
+           sx={{width:'200px', height:'180px', borderRadius:'15px',border:"2px solid #126782",
+            boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
+            transition: 'all 0.3s ease',
+            '&:hover':{
+                scale:'1.1',
+                borderColor:'#ff4d4d',
+                backgroundColor:'white',
+                
+                marginRight:'5px',
+                '& .insideIcon':{
+                fill:'#ff4d4d',
+            }}
+            }}
+            onClick={()=>navigate("/Register-Advertiser")}
+           >
+           <p className="insideIcon" fontSize="large" sx={{scale:'3', fill:'#126782',margin:'30px'}}>Advertiser</p>
+           </Button>
+
+           <Button variant= "outlined" 
+           sx={{width:'200px', height:'180px', borderRadius:'15px',border:"2px solid #126782",
+            boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
+            transition: 'all 0.3s ease',
+            '&:hover':{
+                scale:'1.1',
+                borderColor:'#ff4d4d',
+                backgroundColor:'white',
+                marginLeft:'5px',
+                marginRight:'5px',
+                '& .insideIcon':{
+                fill:'#ff4d4d',
+            }}
+            }}
+            onClick={()=>navigate("/Register-Tourist")}
+           >
+           <p className="insideIcon" fontSize="large" sx={{scale:'3', fill:'#126782',margin:'30px', }}>Tourist</p>
+           </Button>
+           <Button variant= "outlined" 
+           sx={{width:'200px', height:'180px', borderRadius:'15px',border:"2px solid #126782",
+            boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
+            transition: 'all 0.3s ease',
+            '&:hover':{
+                scale:'1.1',
+                borderColor:'#ff4d4d',
+                backgroundColor:'white',
+                marginLeft:'5px',
+                
+                '& .insideIcon':{
+                fill:'#ff4d4d',
+            }}
+            }}
+            onClick={()=>navigate("/Register-TourGuide")}
+           >
+           <p className="insideIcon" fontSize="large" sx={{scale:'3', fill:'#126782',margin:'30px', }}>Tour Guide</p>
+           </Button>
+           <Button variant= "outlined" 
+           sx={{width:'200px', height:'180px', borderRadius:'15px',border:"2px solid #126782",
+            boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
+            transition: 'all 0.3s ease',
+            '&:hover':{
+                scale:'1.1',
+                borderColor:'#ff4d4d',
+                backgroundColor:'white',
+                marginLeft:'5px',
+                
+                '& .insideIcon':{
+                fill:'#ff4d4d',
+            }}
+            }}
+            onClick={()=>navigate("/Register-Seller")}
+           >
+           <p className="insideIcon" fontSize="large" sx={{scale:'3', fill:'#126782',margin:'30px', }}>Seller</p>
+           </Button>
+           </Box>
     </main>
   );
 }
