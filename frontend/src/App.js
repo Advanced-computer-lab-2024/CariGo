@@ -17,7 +17,7 @@ import  TouristVintage from "./Pages/Tourist/TouristPlaces.js";
 import CreateVintageForm from "./Pages/CreateVintageForm.js";
 
 import './styles/index.css';
-import Checkout from "./Pages/SignUp/Checkout.js";
+//import Checkout from "./Pages/SignUp/Checkout.js";
 import SignIn from "./Pages/SignUp/SignIn.js";
 import PaymentCheckout from './Pages/checkout/Checkout';
 import UserViewActivities from "./Pages/Tourist/TouristActivities.js";
