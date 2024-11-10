@@ -3,7 +3,7 @@ import ImageModal from '../../components/ImageModal'; // Modal to display images
 // import SmallButton from './smallButton'; // Button component
 import '../../components/styles/ProfileHeader.css'; // Styles for ProfileHeader
 
-const Profile_Header = ({ companyName, logo, coverImage }) => {
+const ProfileHeader = ({ companyName, logo, coverImage }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentImage, setCurrentImage] = useState('');
 
@@ -44,4 +44,4 @@ const Profile_Header = ({ companyName, logo, coverImage }) => {
   );
 };
 
-export default Profile_Header;
+export default ProfileHeader;

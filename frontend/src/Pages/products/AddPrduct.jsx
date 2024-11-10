@@ -88,7 +88,7 @@ const FormContainer = styled(Paper)(({ theme }) => ({
           }
         });
       //  if(response){
-        console.log(response)
+        console.log(imageResponse)
          toast.success("Product Added Successfully"); // Show success toast
          setFormData({
           name: '',

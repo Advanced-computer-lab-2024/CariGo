@@ -6,8 +6,13 @@ import FormControl from '@mui/joy/FormControl';
 import FormLabel from '@mui/joy/FormLabel';
 import Button from '@mui/joy/Button';
 import { useState } from 'react';
-
-export default function UploadDocumentsPage() {
+import { styled } from '@mui/material/styles';
+import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
+const FormGrid = styled('div')(() => ({
+  display: 'flex',
+  flexDirection: 'column',
+}));
+export default function UploadDocumentsPage({onDocsSubmit}) {
   const [selectedFiles, setSelectedFiles] = useState({
     id: null,
     certificates: [],
@@ -61,38 +66,16 @@ console.log(userRole);
     if ((userRole === "Advertiser" || userRole === "Seller") && selectedFiles.taxationRegistryCard) {
       formData.append("taxationRegistryCard", selectedFiles.taxationRegistryCard);
     }
-
-
-    try {
-    const token = localStorage.getItem("jwt"); // Retrieve the token
+    console.log(formData)
+    console.log(selectedFiles)
+      onDocsSubmit(selectedFiles)
     
-      const response = await fetch("http://localhost:4000/cariGo/users/upload-documents", {
-        method: "POST",
-        body: formData,
-        headers: {
-            Authorization: `Bearer ${token}`, // Add token to headers
-            // "Content-Type": "application/json",
-          }
-
-
-      });
-      console.log("Response status:", response.status); // Logs the HTTP status
-
-      if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-      const data = await response.json();
-      console.log("Upload successful:", data);
-      alert("Documents uploaded successfully!");
-    } 
-    catch (error)
-    {
-      console.error("Upload failed:", error.message);
-      alert("Document upload failed: " + error.message);
-    }
   };
 
   return (
     <main>
       <CssBaseline />
+      <form onSubmit={handleSubmit} encType="multipart/form-data">
       <Sheet
         sx={{
           width: 400,
@@ -115,7 +98,7 @@ console.log(userRole);
           Upload your ID and additional documents based on your role.
         </Typography>
 
-        <form onSubmit={handleSubmit} encType="multipart/form-data">
+        
           {/* ID Document */}
           <FormControl>
             <FormLabel>ID Document</FormLabel>
@@ -179,11 +162,21 @@ console.log(userRole);
           </FormControl> 
            )}
 
-          <Button sx={{ mt: 2 }} type="submit" color="primary" variant="contained">
+          {/* <Button sx={{ mt: 2 }} type="submit" color="primary" variant="contained">
             Upload Documents
-          </Button>
-        </form>
+          </Button> */}
+          
+        
       </Sheet>
+      <FormGrid size={{ xs: 12 }} style={{marginTop:"30px",marginLeft:"300px"}}>
+            <Button variant="contained" type="submit" fullWidth
+            endIcon={<ChevronRightRoundedIcon />}
+            >
+              NEXT
+            </Button>
+          </FormGrid>
+      </form>
+      
     </main>
   );
 }

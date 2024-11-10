@@ -87,7 +87,7 @@ const FormGrid = styled("div")(() => ({
   flexDirection: "column",
 }));
 
-export default function PaymentForm({onPreferencesSubmit}) {
+export default function Preferences({onPreferencesSubmit}) {
   const [paymentType, setPaymentType] = React.useState("creditCard");
   const [cardNumber, setCardNumber] = React.useState("");
   const [cvv, setCvv] = React.useState("");
@@ -176,7 +176,7 @@ export default function PaymentForm({onPreferencesSubmit}) {
             gap: 2,
           }}
         >
-          <Card selected={paymentType === "creditCard"}>
+          {/* <Card selected={paymentType === "creditCard"}>
             <CardActionArea
               onClick={() => setPaymentType("creditCard")}
               sx={{
@@ -208,9 +208,9 @@ export default function PaymentForm({onPreferencesSubmit}) {
                 <Typography sx={{ fontWeight: "medium" }}>Card</Typography>
               </CardContent>
             </CardActionArea>
-          </Card>
+          </Card> */}
 
-          <Card selected={paymentType === "bankTransfer"}>
+          {/* <Card selected={paymentType === "bankTransfer"}>
             <CardActionArea
               onClick={() => setPaymentType("bankTransfer")}
               sx={{
@@ -244,14 +244,14 @@ export default function PaymentForm({onPreferencesSubmit}) {
                 </Typography>
               </CardContent>
             </CardActionArea>
-          </Card>
+          </Card> */}
         </RadioGroup>
       </FormControl>
       {paymentType === "creditCard" && (
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
           <PaymentContainer>
             <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-              <Typography variant="subtitle2">Credit card</Typography>
+              <Typography variant="subtitle2">Selected Preferences</Typography>
               <CreditCardRoundedIcon sx={{ color: "text.secondary" }} />
             </Box>
             <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
@@ -295,10 +295,10 @@ export default function PaymentForm({onPreferencesSubmit}) {
               </Box>
             </Box>
           </PaymentContainer>
-          <FormControlLabel
+          {/* <FormControlLabel
             control={<Checkbox name="saveCard" />}
             label="Remember credit card details for next time"
-          />
+          /> */}
         </Box>
       )}
       {paymentType === "bankTransfer" && (
@@ -338,8 +338,8 @@ export default function PaymentForm({onPreferencesSubmit}) {
           </Box>
         </Box>
       )}
-      <FormGrid size={{ xs: 12 }} style={{marginTop:"-10px",marginLeft:"420px"}}>
-            <Button variant="contained" type="submit" fullWidth
+      <FormGrid size={{ xs: 6 }} style={{marginTop:"40px",marginLeft:"420px",width:"100px"}}>
+            <Button variant="contained" type="submit"
             endIcon={<ChevronRightRoundedIcon />}
             onClick={handlePrefs}
             >

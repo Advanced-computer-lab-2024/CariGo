@@ -347,10 +347,10 @@ const getSeatmap = async (req, res) => {
 };
 
 const BookHotel = async (req, res) => {
-  const { hotelId } = req.params;
+  const { hotelData } = req.body;
   const { PaymentMethod ,price} = req.body;
   const UserId = req.user.id;
-  console.log(hotelId);
+
   console.log(1);
   let CardNumber;
   let booking;
@@ -371,7 +371,7 @@ const BookHotel = async (req, res) => {
       if (PaymentMethod === "Card") {
         CardNumber = req.body.CardNumber;
         booking = await bookingModel.create({
-          HotelId: hotelId,
+          hotelData: hotelData,
           UserId: UserId,
           PaymentMethod: PaymentMethod,
           Status: true,
@@ -379,7 +379,7 @@ const BookHotel = async (req, res) => {
         });
       } else {
         booking = await bookingModel.create({
-          HotelId: hotelId,
+          hotelData: hotelData,
           UserId: UserId,
           PaymentMethod: PaymentMethod,
           Status: true,
@@ -408,7 +408,7 @@ const BookHotel = async (req, res) => {
 };
 
 const BookFlight= async (req, res) => {
-  const { flightId } = req.params;
+  const { flightData } = req.body;
   
   const { PaymentMethod ,price} = req.body;
   const UserId = req.user.id;
@@ -432,7 +432,7 @@ const BookFlight= async (req, res) => {
       if (PaymentMethod === "Card") {
         CardNumber = req.body.CardNumber;
         booking = await bookingModel.create({
-          FlightId: flightId,
+          flightData: flightData,
           UserId: UserId,
           PaymentMethod: PaymentMethod,
           Status: true,
@@ -440,7 +440,7 @@ const BookFlight= async (req, res) => {
         });
       } else {
         booking = await bookingModel.create({
-          FlightId: flightId,
+          flightData: flightData,
           UserId: UserId,
           PaymentMethod: PaymentMethod,
           Status: true,
@@ -471,7 +471,7 @@ const MyHotelBookings = async (req, res) => {
    UserId  = req.user.id; // User ID from request body
   if (mongoose.Types.ObjectId.isValid(UserId)) {
     try {
-      const bookings = await bookingModel.find({UserId,HotelId: { $ne: null }}).sort({createdAt: -1});
+      const bookings = await bookingModel.find({UserId,hotelData: { $ne: null }}).sort({createdAt: -1});
       return res.status(200).json(bookings);
     } catch {
       res.status(500).json({ error: "Failed to fetch bookings" });
@@ -486,7 +486,7 @@ const MyFlightBookings = async (req, res) => {
   UserId  = req.user.id; // User ID from request body
  if (mongoose.Types.ObjectId.isValid(UserId)) {
    try {
-     const bookings = await bookingModel.find({UserId,FlightId: { $ne: null }}).sort({createdAt: -1});
+     const bookings = await bookingModel.find({UserId,flightData: { $ne: null }}).sort({createdAt: -1});
      return res.status(200).json(bookings);
    } catch {
      res.status(500).json({ error: "Failed to fetch bookings" });
@@ -499,11 +499,11 @@ const MyFlightBookings = async (req, res) => {
 
 const CancelhotelBooking = async (req, res) => {
   UserId  = req.user.id; // User ID from request body
- const { HotelId } = req.params; // Event ID from URL parameters
+ const { HotelData } = req.body; // Event ID from URL parameters
  if ( mongoose.Types.ObjectId.isValid(UserId)) {
      try {
          const bookings = await bookingModel.updateMany(
-             { UserId, HotelId }, // Filter to find documents with both UserId and ActivityId
+             { UserId, HotelData }, // Filter to find documents with both UserId and ActivityId
              { $set: { Status: false } } // Update to set Status to false
            );
            res.status(200).json({
@@ -521,11 +521,11 @@ const CancelhotelBooking = async (req, res) => {
 
 const CancelflightBooking = async (req, res) => {
   UserId  = req.user.id; // User ID from request body
- const { FlightId } = req.params; // Event ID from URL parameters
+ const { flightData } = req.body; // Event ID from URL parameters
  if ( mongoose.Types.ObjectId.isValid(UserId)) {
      try {
          const bookings = await bookingModel.updateMany(
-             { UserId, FlightId }, // Filter to find documents with both UserId and ActivityId
+             { UserId, flightData }, // Filter to find documents with both UserId and ActivityId
              { $set: { Status: false } } // Update to set Status to false
            );
            res.status(200).json({

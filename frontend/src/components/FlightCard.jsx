@@ -13,7 +13,7 @@ const FlightCard = ({ flight, onClick }) =>{
   const { airline, segments,price } = flight;
     // Function to format the duration string
     const navigate = useNavigate();
-
+    
     const handleClick = () => {
       navigate(`/flight-details/${flight.id}`, { state: { flight } });
       window.scrollTo(0, 0);

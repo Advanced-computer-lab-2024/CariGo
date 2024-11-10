@@ -210,7 +210,7 @@ const getTransportations = async (req, res) => {
 
 const BookTransportation = async (req, res) => {
   const { TransportationId } = req.params;
-  const { PaymentMethod } = req.body;
+  const { PaymentMethod ,TotalPrice,NumberOfTickets } = req.body;
   const UserId = req.user.id;
   console.log(UserId);
   let CardNumber;
@@ -240,6 +240,10 @@ const BookTransportation = async (req, res) => {
           PaymentMethod: PaymentMethod,
           Status: true,
           CardNumber: CardNumber,
+          
+         
+          NumberOfTickets:NumberOfTickets,
+          TotalPrice:TotalPrice
         });
       } else {
         booking = await bookingModel.create({
@@ -247,6 +251,9 @@ const BookTransportation = async (req, res) => {
           UserId: UserId,
           PaymentMethod: PaymentMethod,
           Status: true,
+         
+          NumberOfTickets:NumberOfTickets,
+          TotalPrice:TotalPrice
         });
       }
       await Transportation.updateOne(
@@ -294,10 +301,70 @@ const getAdvTransportation = async (req, res) => {
       .json({ message: "Error retrieving activities", error: error.message });
   }
 };
-
 const updateTransportation = async (req, res) => {
   const { id } = req.params; // Extract the ID from the URL parameters
-  const updates = req.body; // Get the updates from the request body
+  const {
+    driverNumber,
+    carType,
+    plateNumber,
+    departureHour,
+    departureMinutes,
+    departureDayTime,
+    duration,
+    arrivalHour,
+    arrivalMinutes,
+    arrivalDayTime,
+    price,
+    ac,
+    arrivalLon,
+    arrivalLan,
+    arrivalDescription,
+    departureLan,
+    departureLon,
+    departureDescription,
+    date,
+  } = req.body;
+
+  // Create location objects
+  const departureLocation = {
+    type: 'Point',
+    coordinates: [departureLon, departureLan],
+    description: departureDescription,
+  };
+
+  const arrivalLocation = {
+    type: 'Point',
+    coordinates: [arrivalLon, arrivalLan],
+    description: arrivalDescription,
+  };
+
+  // Create time objects
+  const departureTime = {
+    hours: departureHour,
+    minutes: departureMinutes,
+    dayTime: departureDayTime,
+  };
+
+  const arrivalTime = {
+    hours: arrivalHour,
+    minutes: arrivalMinutes,
+    dayTime: arrivalDayTime,
+  };
+
+  // Prepare the update object with the fields we want to update
+  const updates = {
+    driverNumber,
+    carType,
+    plateNumber,
+    departureTime,
+    duration,
+    arrivalTime,
+    price,
+    ac,
+    arrivalLocation,
+    departureLocation,
+    date, // Assuming date is directly passed in the body
+  };
 
   try {
     // Find the transportation document by ID and update it
@@ -322,6 +389,7 @@ const updateTransportation = async (req, res) => {
 };
 
 
+
 const getTransportation = async (req, res) => {
   const { id } = req.params;
   try {
@@ -342,7 +410,7 @@ const getTransportation = async (req, res) => {
 
 
 const MyBookings = async (req, res) => {
-  const { UserId } = req.body; // User ID from request body
+  const { UserId } = req.user.id; // User ID from request body
   if (mongoose.Types.ObjectId.isValid(UserId)) {
     try {
       const bookings = await bookingModel.find({UserId}).sort({createdAt: -1});

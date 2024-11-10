@@ -12,21 +12,30 @@ import Stepper from "@mui/material/Stepper";
 import Typography from "@mui/material/Typography";
 import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
-import AddressForm from "./components/AddressForm";
+import AddressForm from "./components/UserInformation";
 import Info from "./components/Info";
 import InfoMobile from "./components/InfoMobile";
-import PaymentForm from "./components/PaymentForm";
+import PaymentForm from "./components/Preferences";
 import Review from "./components/Review";
 import { useState } from "react";
 import SitemarkIcon from "./components/SitemarkIcon";
 import AppTheme from "./Theme/AppTheme";
+import TermsAndConditions from "./components/Review";
 import axios from "axios";
 import ColorModeIconDropdown from "./Theme/ColorModeIconDropdown";
+import UploadDocumentsPage from "./components/UploadDocuments";
 import { useEffect } from "react";
+import Preferences from "./components/Preferences";
+import UserInformation from "./components/UserInformation";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
+import { useNavigate } from "react-router-dom";
 // import avatar from "../../../public/profile.png"
-const steps = ["User Information", "Upload Documents", "Your Preference Tags"];
-function Checkout({ role, preferences }) {
+const steps = ["User Information", "Upload Documents", "Terms & Conditions"];
+function SignIn({ role, preferences }) {
   //console.log(role);
+  if(role==="Tourist")
+    steps[1] = "Select Your Preferences"
   const [formData, setFormData] = useState({username:"", // Change from 'email' to 'username'
     password:"",
     email:"",
@@ -44,8 +53,12 @@ function Checkout({ role, preferences }) {
     description:"",
     selectedTags:""
   });
+  const navigate = useNavigate();
   const [imageData, setImageData] = useState(null);
   const [activeStep, setActiveStep] = React.useState(0);
+  const [selectedFiles, setSelectedFiles] = useState(null);
+  const [checked , setChecked] = useState(false);
+  localStorage.setItem('role',role)
   const handleNext = () => {
     setActiveStep(activeStep + 1);
   };
@@ -64,7 +77,7 @@ function Checkout({ role, preferences }) {
           body: JSON.stringify(formData),
         }
       );
-
+    
       //console.log(response.json().username+"  res")
       // Check if the response is okay
       if (!formResponse.ok) {
@@ -89,40 +102,77 @@ function Checkout({ role, preferences }) {
       // history.push('/dashboard');
       
       console.log(token);
-      const image = new FormData();
-      image.append("photo", imageData.file);
-      //FormData image = new FormData(imageData.file);
-      //const token1 = localStorage.getItem('jwt')
-      console.log(formData);
-      const imageResponse = await axios.post(
-        "http://localhost:4000/cariGo/users/photo",
-        image,
-        {
-          headers: {
-            authorization: `Bearer ${token}`,
-          },
+      if(imageData.file){
+        const image = new FormData();
+        image.append("photo", imageData.file);
+        //FormData image = new FormData(imageData.file);
+        //const token1 = localStorage.getItem('jwt')
+        console.log(formData);
+        const imageResponse = await fetch(
+          "http://localhost:4000/cariGo/users/photo",
+          
+          {
+            method: "POST",
+            body: image,
+            headers: {
+                Authorization: `Bearer ${token}`, // Add token to headers
+                // "Content-Type": "application/json",
+              }
+       } );
+        console.log(imageResponse);
+        //window.location.href = '/login';
+        //console.log(response.json().username+"  res")
+        // Check if the response is okay
+        if (!imageResponse.ok) {
+          if (imageResponse.status === 401) {
+            throw new Error("Unauthorized: Incorrect Data");
+          }
+          throw new Error(`HTTP error! Status: ${imageResponse.status}`);
         }
-      );
-      //  if(response){
-      console.log(imageResponse);
-      window.location.href = '/login';
-      //console.log(response.json().username+"  res")
-      // Check if the response is okay
-      if (!imageResponse.ok) {
-        if (imageResponse.status === 401) {
-          throw new Error("Unauthorized: Incorrect Data");
-        }
-        throw new Error(`HTTP error! Status: ${imageResponse.status}`);
+        console.log("checked");
+        // Parse the JSON response
+        const bin = await imageResponse.json();
+        console.log("photo added successfully", bin); // Log success
       }
-      console.log("checked");
-      // Parse the JSON response
-      const bin = await imageResponse.json();
-      console.log("photo added successfully", bin); // Log success
-      window.location.href = "/login";
-    } catch (error) {
+      if(selectedFiles){
+        console.log(selectedFiles.certificates)
+        const docsData = new FormData()
+        docsData.append('id',selectedFiles.id)
+        if(role==="Tour_Guide")
+          selectedFiles.certificates.forEach((file) => {
+            docsData.append("certificates", file); // Add each certificate file individually
+      });
+    
+      else
+      docsData.append('taxationRegistryCard',selectedFiles.taxationRegistryCard)
+           console.log(docsData.get('certificates'))
+        const docsResponse = await fetch("http://localhost:4000/cariGo/users/upload-documents", {
+          method: "POST",
+          body:docsData,
+          headers: {
+              Authorization: `Bearer ${token}`, // Add token to headers
+              // "Content-Type": "application/json",
+            }
+  
+  
+        });
+        console.log("Response status:", docsResponse.status); // Logs the HTTP status
+  
+        if (!docsResponse.ok) throw new Error(`HTTP error! Status: ${docsResponse.status}`);
+        const Docs = await docsResponse.json();
+        console.log("Upload successful:", Docs);
+       
+      }
+      
+      // -----------------------------DOCS-----------------------------------------
+      
+      
+      
+    }catch (error) {
       console.error("Error:", error.message); // Log the error in console
       //alert("signup failed: " + error.message); // Show alert to the user
     }
+    window.location.href = "/login";
   };
   //console.log(formData)
   const getStepContent = (step) => {
@@ -130,7 +180,7 @@ function Checkout({ role, preferences }) {
       case 0:
         //  console.log("rrrr");
         return (
-          <AddressForm
+          <UserInformation
             onFormSubmit={handleFormSubmit}
             onImageSubmit={handleImageSubmit}
             role={role}
@@ -143,22 +193,27 @@ function Checkout({ role, preferences }) {
         if(role==="Tourist"){
           console.log(role)
         return (
-          <PaymentForm
+          <Preferences
             onPreferencesSubmit={handlePreferencesSubmit}
             preferences={preferences}
           />
         );
       }
-        return <Review/>
+      //return <Review/>
+        return <UploadDocumentsPage onDocsSubmit={handleDocsSubmit}/>
       case 2:
         //handleSignUp();
         //break;
-        return <Review />;
+        return <TermsAndConditions />;
       default:
         throw new Error("Unknown step");
     }
   };
-
+  const handleDocsSubmit = (data) =>{
+    setSelectedFiles(data)
+     console.log("From Docs recieved: ",data)
+     setActiveStep(activeStep + 1);
+  }
   const handlePreferencesSubmit = (data) => {
     console.log("Form Preferences Received:", data);
     setFormData((prevFormData) => ({ ...prevFormData, selectedTags: data })); // Use functional update to ensure consistency
@@ -214,7 +269,7 @@ function Checkout({ role, preferences }) {
             gap: 4,
           }}
         >
-          <SitemarkIcon />
+        
           <Box
             sx={{
               display: "flex",
@@ -224,7 +279,17 @@ function Checkout({ role, preferences }) {
               maxWidth: 500,
             }}
           >
-            <Info totalPrice={activeStep >= 2 ? "$144.97" : "$134.98"} />
+           <Button  style={{marginTop:"-50px"}}
+                    variant="contained"
+                    startIcon={<ChevronLeftRoundedIcon />}
+                    onClick={()=>navigate("/")}
+                    fullWidth
+                    
+                    sx={{ width: { xs: "flex", sm: "fit-content" } }}
+                  >
+                    Return
+                  </Button>
+
           </Box>
         </Grid>
         <Grid
@@ -331,7 +396,7 @@ function Checkout({ role, preferences }) {
                       ".MuiStepLabel-labelContainer": { maxWidth: "70px" },
                     }}
                   >
-                    {label}
+                    { label}
                   </StepLabel>
                 </Step>
               ))}
@@ -355,6 +420,10 @@ function Checkout({ role, preferences }) {
             ) : (
               <React.Fragment>
                 {getStepContent(activeStep)}
+                { activeStep===2 &&(<FormControlLabel
+            control={<Checkbox name="saveCard" required  checked={checked} onChange={()=>setChecked(!checked)} />}
+            label="Accept Terms & Conditions"
+          />)}
                 <Box
                   sx={[
                     {
@@ -362,9 +431,9 @@ function Checkout({ role, preferences }) {
                       flexDirection: { xs: "column-reverse", sm: "row" },
                       alignItems: "end",
                       flexGrow: 1,
-                      gap: 1,
-                      pb: { xs: 12, sm: 0 },
-                      mt: { xs: 2, sm: 0 },
+                      gap: 2,
+                      pb: { xs: 1, sm: 0 },
+                      mt: { xs:0, sm: -6 },
                       mb: "60px",
                     },
                     activeStep !== 0
@@ -375,6 +444,7 @@ function Checkout({ role, preferences }) {
                   {activeStep !== 0 && (
                     <Button
                       startIcon={<ChevronLeftRoundedIcon />}
+                      style={{marginTop:"-180px"}}
                       onClick={handleBack}
                       variant="text"
                       sx={{ display: { xs: "none", sm: "flex" } }}
@@ -384,6 +454,7 @@ function Checkout({ role, preferences }) {
                   )}
                   {activeStep !== 0 && (
                     <Button
+                    
                       startIcon={<ChevronLeftRoundedIcon />}
                       onClick={handleBack}
                       variant="outlined"
@@ -393,15 +464,18 @@ function Checkout({ role, preferences }) {
                       Previous
                     </Button>
                   )}
-                  <Button
-                    type="submit"
+                  {activeStep ===2 && checked &&
+                   (<Button type="submit"
                     variant="contained"
-                    endIcon={<ChevronRightRoundedIcon />}
+                    endIcon={(activeStep === steps.length - 1) && <ChevronRightRoundedIcon />}
                     onClick={handleSignUp}
-                    sx={{ width: { xs: "100%", sm: "fit-content" } }}
+                    fullWidth
+                    
+                    sx={{ width: { xs: "flex", sm: "fit-content" } }}
                   >
-                    {activeStep === steps.length - 1 ? "Register" : "Next"}
+                    Register
                   </Button>
+                )}
                 </Box>
               </React.Fragment>
             )}
@@ -411,4 +485,4 @@ function Checkout({ role, preferences }) {
     </>
   );
 }
-export default Checkout;
+export default SignIn;
