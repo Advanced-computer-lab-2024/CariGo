@@ -112,7 +112,7 @@ import BookServicesPage from "./Pages/Tourist/Booking.js";
 //const dotenv = require('dotenv')
 import ReviewAccounts from "./Pages/accounts/docsReview.jsx";
 import ProductDetailsT from "./Pages/Tourist/ProductDetailsT.js"
-import FlightDetails from "./components/FlightDetails.js";
+import ProductDetailsSeller from "./Pages/products/ProductDetailsSeller.jsx"
 function App() {
   
   const token = localStorage.getItem("jwt");
@@ -169,6 +169,7 @@ function App() {
       <Route path="/Seller/products" element={<ViewProductsSeller />} />
       <Route path="/Seller/products/:id" element={<EditProductD />} />
       <Route path="/Seller/products/addProduct" element={<AddProductSeller />} />
+      <Route path="/Seller/productDetails/:id" element={<ProductDetailsSeller />} />
       <Route path="/hotel-details/:id" element={<HotelDetails/>} />
         {<Route path="/activities" element={<UserViewActivities />} /> }
         <Route path="/tourist-activities" element={<TouristActivities/>} />
