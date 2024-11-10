@@ -29,6 +29,8 @@ export default function DetailedActivityPost({ id,author, img, start_date, end_d
   };
 
   const navigate = useNavigate();
+  const conversionRate = localStorage.getItem("conversionRate")||1;
+
   return (
     <Card
       sx={{
@@ -148,7 +150,7 @@ export default function DetailedActivityPost({ id,author, img, start_date, end_d
                 marginRight: '5px',
             }}> {
               price != null? 
-              (price.range.max+"-"+price.range.min )
+              ((price.range.max*conversionRate).toFixed(2)+"-"+(price.range.min*conversionRate).toFixed(2) )
               :'no specified price'}
               </Typography>
             <Box sx={{

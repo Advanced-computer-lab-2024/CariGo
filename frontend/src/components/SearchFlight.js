@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef,useEffect } from "react";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import FlightLandIcon from "@mui/icons-material/FlightLand";
@@ -13,14 +13,19 @@ import FlightCardList from "./FlightCardList";
 import FlightClassIcon from '@mui/icons-material/FlightClass';
 
 const Frame = () => {
-  const [fromCity, setFromCity] = useState("");
-  const [fromCityCode, setFromCityCode] = useState("");
-  const [toCityCode, settoCityCode] = useState("");
-  const [toCity, setToCity] = useState("");
-  const [date, setDate] = useState(dayjs()); // Initialize with current date
-  const [adults, setAdults] = useState(1); // Initialize adults count
-  const[children, setChildren] = useState(0);
-  const[Class, setClass] = useState("");
+  const [fromCity, setFromCity] = useState(() => sessionStorage.getItem("flight_fromCity") || "");
+  const [fromCityCode, setFromCityCode] = useState(sessionStorage.getItem("flight_fromCityCode") || "");
+  const [toCityCode, setToCityCode] = useState(sessionStorage.getItem("flight_toCityCode") || "");
+  const [toCity, setToCity] = useState(() => sessionStorage.getItem("flight_toCity") || "");
+
+  const [date, setDate] = useState(() => {
+  const storedDate = sessionStorage.getItem("flight_date");
+  return storedDate ? dayjs(storedDate) : dayjs();  // Fallback to current date if no stored date
+  });
+
+  const [adults, setAdults] = useState(() => parseInt(sessionStorage.getItem("flight_adults") || "1"));
+  const [children, setChildren] = useState(() => parseInt(sessionStorage.getItem("flight_children") || "0"));
+  const [Class, setClass] = useState(() => sessionStorage.getItem("flight_Class") || "ECONOMY");
 
   const [fromSuggestions, setFromSuggestions] = useState([]);
   const [toSuggestions, setToSuggestions] = useState([]);
@@ -79,7 +84,7 @@ const Frame = () => {
           setIsFromDropdownOpen(false);
         } else {
           setToCity(city.city);
-          settoCityCode(city.iataCode);
+          setToCityCode(city.iataCode);
           setToSuggestions([]);
           setIsToDropdownOpen(false);
         }
@@ -107,17 +112,28 @@ const Frame = () => {
       };
 
       const decrementChildren = () => {
-        setChildren((prev) => (prev > 1 ? prev - 1 : 1)); // Prevent going below 1
+        setChildren((prev) => (prev > 0 ? prev - 1 : 0)); // Prevent going below 0
       };
 
-      
+      // Check if there are any flights in sessionStorage & Load from sessionStorage if available
+      useEffect(() => {
+        // Check if there are any flights in sessionStorage
+        const savedFlights = sessionStorage.getItem('flights');
+        if (savedFlights) {
+          setFlights(JSON.parse(savedFlights)); // Load from sessionStorage if available
+        }
+      }, []);
 
       const handleSearchClick = async () => {
         if (!fromCity || !toCity || !date || !Class) {
           alert("Please fill in all fields");
           return;
         }
-
+        //to reset scroll bar position on new search
+        if (sessionStorage.getItem('scrollPosition')) {
+          sessionStorage.setItem('scrollPosition',0)
+        }
+        
         const fromIATA = fromCityCode; // Assuming the IATA code is part of the selected city object
         const toIATA = toCityCode; // Assuming the IATA code is part of the selected city object
         const formattedDate = date.format("YYYY-MM-DD");
@@ -128,12 +144,27 @@ const Frame = () => {
           const data = await response.json();
           console.log("Flight data:", data); 
           setFlights(data);// Handle the flight data as needed
+          // Save the flight data to sessionStorage
+          sessionStorage.setItem('flights', JSON.stringify(data)); 
         } catch (error) {
           console.error("Error fetching flights:", error);
         }finally {
           setIsLoading(false);
         }
       };
+
+      // Save input values to sessionStorage when they change
+      useEffect(() => {
+        sessionStorage.setItem("flight_fromCity", fromCity);
+        sessionStorage.setItem("flight_fromCityCode", fromCityCode);
+        sessionStorage.setItem("flight_toCity", toCity);
+        sessionStorage.setItem("flight_toCityCode", toCityCode);
+        sessionStorage.setItem("flight_date", date.format("YYYY-MM-DD"));
+        sessionStorage.setItem("flight_adults", adults);
+        sessionStorage.setItem("flight_children", children);
+        sessionStorage.setItem("flight_Class", Class);
+      }, [fromCity, fromCityCode, toCity, toCityCode, date, adults, children, Class]);
+
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -149,7 +180,7 @@ const Frame = () => {
               <Typography variant="body2" color="#126782">From</Typography>
               <ClickAwayListener onClickAway={handleClickAway}>
                 <div>
-                  <TextField
+                  <TextField className="input"
                     fullWidth
                     variant="outlined"
                     placeholder="type to select airport.."
@@ -186,7 +217,7 @@ const Frame = () => {
               <Typography variant="body2" color="#126782">To</Typography>
               <ClickAwayListener onClickAway={handleClickAway}>
                 <div>
-                  <TextField
+                  <TextField className="input"
                     fullWidth
                     variant="outlined"
                     placeholder="type to select airport.."
@@ -227,7 +258,7 @@ const Frame = () => {
               <Typography variant="body2" color="#126782">Date</Typography>
               <DatePicker
                 renderInput={(params) => (
-                  <TextField
+                  <TextField className="input"
                     {...params}
                     fullWidth
                     variant="outlined"
@@ -254,7 +285,7 @@ const Frame = () => {
               <Typography variant="body2" color="#126782">Class</Typography>
               <ClickAwayListener onClickAway={handleClickAway}>
               <div>
-              <FormControl  variant="outlined" label="select flight class" sx={{width:'250px'}}>
+              <FormControl  className="input" variant="outlined" label="select flight class" sx={{width:'250px'}}>
               <Select
                 value={Class}
                 onChange={handleClassSelect}
@@ -317,7 +348,7 @@ const Frame = () => {
          <Box sx={{padding:"20px", marginLeft:"10%" , overflow:'auto',marginTop:'4%',}}>
          {isLoading ? <CircularProgress sx={{color:'#126782', margin:'70px'}} /> :
          flights.length > 0 && (
-            <FlightCardList flights={flights} />
+            <FlightCardList  flights={flights} />
           )
           }
           </Box>

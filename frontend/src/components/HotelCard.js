@@ -24,15 +24,21 @@ const HotelCard = ({ hotel,offer }) => {
     return days;
   }
 
+  const handleClick = () => {
+    navigate(`/hotel-details/${hotel.id}`, { state: { hotel,offer } });
+    window.scrollTo(0, 0);
+  };
+
   return (
     <Card variant="outlined"  sx={{
       border: '2px solid #126782', 
       borderColor:'#126782',
       borderRadius:'10px', 
-      //height:'400px',
-      maxHheight:'600px',
+      height:'400px',
+      maxHeight:'600px',
       display: 'flex', 
       flexDirection:'column', 
+      flexShrink: '0',
       maxWidth: '450px',
       margin:'20px',
       marginTop:'20px',
@@ -95,7 +101,6 @@ const HotelCard = ({ hotel,offer }) => {
               }}
             >
               clickHereToChecKTheLocation
-             
             </Link>
           </Box>
         </Box>
@@ -104,10 +109,10 @@ const HotelCard = ({ hotel,offer }) => {
           <Box sx={{ display: 'flex', marginLeft: '-10px', padding: '5px', marginBottom: '10px', bottom: '10px' }}>
             <AttachMoneyIcon sx={{ marginTop: '0px', color: '#126782' }} />
             <Typography sx={{ color: '#126782', fontSize: '16px', marginLeft: '5px' }}>
-              {offer.price.total}
+              {offer.price.total} {offer.price.currency}
             </Typography>
           </Box>
-          <Button
+          <Button onClick={handleClick}
             sx={{
               color: 'white',
               backgroundColor: '#ff4d4d',
@@ -117,12 +122,15 @@ const HotelCard = ({ hotel,offer }) => {
               bottom: '10px',
             }}
           >
-            Book
+            View Details
           </Button>
         </Box>
       </Box>
     </Card>
   );
 };
+
+
+
 
 export default HotelCard;

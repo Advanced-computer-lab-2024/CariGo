@@ -22,9 +22,9 @@ const StyledRating = styled(Rating)({
   },
 });
 
-const ItineraryReviewForm = ({ itineraryId, open, onClose }) => {
+const ActivityReviewForm = ({ activityId, open, onClose }) => {
   const [reviewData, setReviewData] = useState({
-    itinerary: itineraryId,
+    activity: activityId,
     review: '',
     rating: 0,
     user: localStorage.getItem('id')
@@ -49,7 +49,7 @@ const ItineraryReviewForm = ({ itineraryId, open, onClose }) => {
     }
 
     try {
-      const response = await axios.post('http://localhost:4000/cariGo/review/itinerary', reviewData, {
+      const response = await axios.post('http://localhost:4000/cariGo/review/activity', reviewData, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -112,4 +112,4 @@ const ItineraryReviewForm = ({ itineraryId, open, onClose }) => {
   );
 };
 
-export default ItineraryReviewForm;
+export default ActivityReviewForm;

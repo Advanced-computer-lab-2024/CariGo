@@ -1,30 +1,38 @@
-import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
-import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
-import MenuItem from '@mui/material/MenuItem';
-import logoImage from '../assets/cropped_image.png'; // Correct relative path
-import { useNavigate } from 'react-router-dom';
-import { Link } from 'react-router-dom';
+import * as React from "react";
+import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import Toolbar from "@mui/material/Toolbar";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import Menu from "@mui/material/Menu";
+import MenuIcon from "@mui/icons-material/Menu";
+import Container from "@mui/material/Container";
+import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
+import Tooltip from "@mui/material/Tooltip";
+import MenuItem from "@mui/material/MenuItem";
+import logoImage from "../assets/cropped_image.png"; // Correct relative path
+import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
-
-const pages = ['Activities', 'Itinerary', 'Historical Places','Products','File Complaint'];
-const settings = ['Logout','Change Password']; // Updated settings
+const pages = [
+  "Activities",
+  "Itinerary",
+  "Historical Places",
+  "Products",
+  "File Complaint",
+];
+const settings = ["Logout", "Change Password"]; // Updated settings
 
 function TouristNB() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-
+  const [role, setRole] = React.useState(null);
   const navigate = useNavigate();
 
+  React.useEffect(() => {
+    setRole(localStorage.getItem("role"));
+  }, []);
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -42,77 +50,86 @@ function TouristNB() {
   };
 
   // Navigation functions
-//   const loadActivities = () => {
-//     handleCloseNavMenu();
-//     navigate('/tourist-activities');
-//   };
+  //   const loadActivities = () => {
+  //     handleCloseNavMenu();
+  //     navigate('/tourist-activities');
+  //   };
 
-//   const loadItinerary = () => {
-//     handleCloseNavMenu();
-//     navigate('/Tourist-itineraries');
-//   };
+  //   const loadItinerary = () => {
+  //     handleCloseNavMenu();
+  //     navigate('/Tourist-itineraries');
+  //   };
 
-//   const loadHistoricalPlaces = () => {
-//     handleCloseNavMenu();
+  //   const loadHistoricalPlaces = () => {
+  //     handleCloseNavMenu();
 
-//     navigate('/myVintages');
+  //     navigate('/myVintages');
 
-//   };
+  //   };
 
   const loadProfile = () => {
     handleCloseUserMenu();
-    navigate('/advertiser');
+    switch (role.toLowerCase()) {
+      case "advertiser":
+        navigate("/advertiser");
+        break;
+
+      default:
+        navigate("/Seller");
+        break;
+    }
   };
 
   const handleLogout = () => {
     handleCloseUserMenu();
     // Add your logout logic here
-    navigate('/login'); // Example navigation after logout
+    navigate("/login"); // Example navigation after logout
   };
-  const handleChangePass=()=>{
+  const handleChangePass = () => {
     handleCloseUserMenu();
     //naivgate to change password
-    navigate('/change-password');
-  }
-//   const loadProducts = () =>{
-//     handleCloseUserMenu();
-//     // Add your logout logic here
-//     navigate('/Tourist/Products')
-//   }
+    navigate("/change-password");
+  };
+  //   const loadProducts = () =>{
+  //     handleCloseUserMenu();
+  //     // Add your logout logic here
+  //     navigate('/Tourist/Products')
+  //   }
 
-//   const loadFileComplaint = () => {
-//     handleCloseNavMenu();
-//     navigate('/tourist/file-complaint'); 
-//   };
+  //   const loadFileComplaint = () => {
+  //     handleCloseNavMenu();
+  //     navigate('/tourist/file-complaint');
+  //   };
+
   return (
-    <AppBar position="static" sx={{ backgroundColor: '#004c74' }}>
+    <AppBar position="static" sx={{ backgroundColor: "#004c74" }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <Avatar 
+          <Avatar
             alt="Logo"
-            src={logoImage} 
-            sx={{ width: 40, height: 40, mr: 2 }} 
+            src={logoImage}
+            sx={{ width: 40, height: 40, mr: 2 }}
           />
           <Typography
             variant="h6"
             noWrap
             component={Link}
-            // to="/tgHome" 
+            // to="/tgHome"
             sx={{
               mr: 2,
-              display: { xs: 'none', md: 'flex' },
-              fontFamily: 'monospace',
+              display: { xs: "none", md: "flex" },
+              fontFamily: "monospace",
               fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
+              letterSpacing: ".3rem",
+              color: "inherit",
+              textDecoration: "none",
             }}
           >
             CariGO
           </Typography>
-          
+
           {/* Mobile Menu */}
-          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
               size="large"
               aria-label="open navigation menu"
@@ -126,12 +143,12 @@ function TouristNB() {
             <Menu
               id="menu-appbar"
               anchorEl={anchorElNav}
-              anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+              anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
               keepMounted
-              transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+              transformOrigin={{ vertical: "top", horizontal: "left" }}
               open={Boolean(anchorElNav)}
               onClose={handleCloseNavMenu}
-              sx={{ display: { xs: 'block', md: 'none' } }}
+              sx={{ display: { xs: "block", md: "none" } }}
             >
               {/* <MenuItem onClick={loadActivities}>
                 <Typography sx={{ textAlign: 'center' }}>{pages[0]}</Typography>
@@ -149,7 +166,7 @@ function TouristNB() {
           </Box>
 
           {/* Desktop Menu */}
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {/* <Button
               onClick={loadActivities}
               sx={{ my: 2, color: 'white', display: 'block' }}
@@ -187,23 +204,25 @@ function TouristNB() {
               </IconButton>
             </Tooltip>
             <Menu
-              sx={{ mt: '45px' }}
+              sx={{ mt: "45px" }}
               id="menu-appbar"
               anchorEl={anchorElUser}
-              anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+              anchorOrigin={{ vertical: "top", horizontal: "right" }}
               keepMounted
-              transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+              transformOrigin={{ vertical: "top", horizontal: "right" }}
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
               <MenuItem onClick={loadProfile}>
-                <Typography sx={{ textAlign: 'center' }}>My Profile</Typography>
+                <Typography sx={{ textAlign: "center" }}>My Profile</Typography>
               </MenuItem>
               <MenuItem onClick={handleLogout}>
-                <Typography sx={{ textAlign: 'center' }}>Logout</Typography>
+                <Typography sx={{ textAlign: "center" }}>Logout</Typography>
               </MenuItem>
               <MenuItem onClick={handleChangePass}>
-                <Typography sx={{ textAlign: 'center' }}>Change Password</Typography>
+                <Typography sx={{ textAlign: "center" }}>
+                  Change Password
+                </Typography>
               </MenuItem>
             </Menu>
           </Box>

@@ -25,7 +25,9 @@ const getUserPurchases = async (req, res) => {
     console.log(UserId);
 
     // Fetch purchases that match the UserId
-    const purchases = await purchaseModel.find({ UserId });
+    const purchases = await purchaseModel
+      .find({ UserId })
+      .populate("ProductId");
 
     // Send back the results
     res.status(200).json(purchases);

@@ -19,7 +19,7 @@ const DateContainer = styled.div`
   flex: 1;
   padding: 5px 4px;
   maxwidth: 50px;
-  margin-left:20px;
+  margin-left:2px;
   margin-top:10px;
 `;
 

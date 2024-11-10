@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Button, Badge, Card, Input, List, message } from 'antd';
+import { Button, Badge, Card, Input, List, message, Layout } from 'antd';
+import Sidebar from "./Sidebar";
+import TopBar from "./TopBar";
 
 const ComplaintDetails = () => {
   const { id } = useParams();
@@ -10,6 +12,7 @@ const ComplaintDetails = () => {
   const [reply, setReply] = useState('');
   const [replies, setReplies] = useState([]);
   const token = localStorage.getItem("jwt");
+  const { Sider, Content, Header } = Layout;
 
   useEffect(() => {
     // Fetch complaint data from the backend
@@ -73,7 +76,16 @@ const ComplaintDetails = () => {
   if (!complaint) return <div>Loading...</div>;
 
   return (
-    <Card title={`Complaint Details - ${complaint.title}`}>
+      <Layout style={{ minHeight: '100vh' }}>
+    <Sider width={256} style={{ background: '#001529' }}>
+      <Sidebar />
+    </Sider>
+    <Layout>
+      <Header style={{ background: '#001529', padding: 0 }}>
+        <TopBar />
+      </Header>
+      <Content style={{ padding: '20px' }}>
+      <Card title={`Complaint Details - ${complaint.title}`}>
       <p><strong>Date:</strong> {complaint.date}</p>
       <p><strong>Status:</strong> <Badge color={complaint.status === 'Resolved' ? 'green' : 'red'} text={complaint.status} /></p>
       <p><strong>Details:</strong> {complaint.body}</p>
@@ -108,6 +120,9 @@ const ComplaintDetails = () => {
         </Button>
       </div>
     </Card>
+ </Content>
+      </Layout>
+    </Layout>
   );
 };
 

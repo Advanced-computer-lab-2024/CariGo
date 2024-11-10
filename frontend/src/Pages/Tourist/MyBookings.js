@@ -1,13 +1,23 @@
 import React, { useState, useEffect } from "react";
 import "../../styles/index.css";
 import TouristNB from "./components/TouristNavBar";
-import { Box, Grid, Menu, TextField, Button, IconButton, CircularProgress, Typography, MenuItem } from '@mui/material';
+import {
+  Box,
+  Grid,
+  Menu,
+  TextField,
+  Button,
+  IconButton,
+  CircularProgress,
+  Typography,
+  MenuItem,
+} from "@mui/material";
 import { styled, alpha } from "@mui/material/styles";
 import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
 import BookingCard from "./components/BookingCard";
-import RateReviewIcon from '@mui/icons-material/RateReview'; // Review icon for itinerary
-import PersonPinIcon from '@mui/icons-material/PersonPin'; // New icon for Tour Guide review
+import RateReviewIcon from "@mui/icons-material/RateReview"; // Review icon for itinerary
+import PersonPinIcon from "@mui/icons-material/PersonPin"; // New icon for Tour Guide review
 import ItineraryReviewForm from "frontend/src/components/itineraryReviewForm.js"; // Import the itinerary review form
 import TourGuideReviewForm from "frontend/src/components/TourGuideReviewForm.js"; // Import the new Tour Guide review form
 
@@ -61,13 +71,14 @@ const MyBookings = () => {
   const [openTourGuideReviewForm, setOpenTourGuideReviewForm] = useState(false); // State for Tour Guide review form
   const [selectedItineraryId, setSelectedItineraryId] = useState(null); // For itinerary review
   const [selectedTourGuideId, setSelectedTourGuideId] = useState(null); // For Tour Guide review
-
+  const [option, setOption] = useState("");
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
     setFilters((prevFilters) => ({
       ...prevFilters,
       [name]: value,
     }));
+    // setOption(value);
   };
 
   const resetFilters = () => {
@@ -76,6 +87,7 @@ const MyBookings = () => {
     });
     setFilteredActivities(itineraries);
     setSearchTerm("");
+    setOption("");
   };
 
   const handleSearch = () => {
@@ -100,19 +112,23 @@ const MyBookings = () => {
       return matchesStatus && matchesSearchTerm;
     });
     setFilteredActivities(filtered);
+    setOption(filters.status);
   };
 
   useEffect(() => {
     const fetchItineraries = async () => {
       try {
         const token = localStorage.getItem("jwt");
-        const response = await fetch(`http://localhost:4000/Event/MyItineraryBookings`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
+        const response = await fetch(
+          `http://localhost:4000/Event/MyItineraryBookings`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -202,7 +218,6 @@ const MyBookings = () => {
           },
         }}
       >
-
         <Box
           sx={{
             height: "100%",
@@ -210,7 +225,11 @@ const MyBookings = () => {
             "&::-webkit-scrollbar": { display: "none" },
           }}
         >
-          <Grid container spacing={0} sx={{ flexDirection: "column", width: "100vw" }}>
+          <Grid
+            container
+            spacing={0}
+            sx={{ flexDirection: "column", width: "100vw" }}
+          >
             {filteredActivities.map((itinerary, index) => (
               <Grid item key={index} sx={{ justifyContent: "left" }}>
                 <BookingCard
@@ -226,18 +245,27 @@ const MyBookings = () => {
                   TotalPrice={itinerary.TotalPrice}
                   price={itinerary.ItineraryId.price}
                 />
-                    <IconButton onClick={() => openReviewFormHandler(itinerary.ItineraryId._id)}>
-                <RateReviewIcon />
-              </IconButton>
-              {/* Add a separate icon button for the tour guide review */}
-              <IconButton onClick={() => openTourGuideReviewFormHandler(itinerary.ItineraryId.author)}>
-                <PersonPinIcon />
-              </IconButton>
+                <IconButton
+                  onClick={() =>
+                    openReviewFormHandler(itinerary.ItineraryId._id)
+                  }
+                  disabled={option !== "Done"}
+                >
+                  <RateReviewIcon />
+                </IconButton>
+                {/* Add a separate icon button for the tour guide review */}
+                <IconButton
+                  onClick={() =>
+                    openTourGuideReviewFormHandler(itinerary.ItineraryId.author)
+                  }
+                  disabled={option !== "Done"}
+                >
+                  <PersonPinIcon />
+                </IconButton>
               </Grid>
             ))}
           </Grid>
         </Box>
-
       </Box>
 
       {/* Render the itinerary review form dialog */}

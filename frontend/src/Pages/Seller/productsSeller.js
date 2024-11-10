@@ -99,6 +99,10 @@ export default function ViewProductsSeller() {
     }
   };
   
+  const handleDetatils2 = (id) => {
+    // Navigating to a page with the id in the URL
+    navigate(`/Seller/productDetails/${id}`);
+  };
 
   const archiveProduct = async (product) => {
     try {
@@ -299,7 +303,7 @@ const navigate = useNavigate();
 
         </Select> */}
         <Tooltip title="Sort By Rating" placement="top">
-              <IconButton onClick={() => setFilter(`?author=${localStorage.getItem('id')}&sort=ratingsAverage['avgSoFar']`)}>
+              <IconButton onClick={() => setFilter(`?author=${localStorage.getItem('id')}&sort=ratingsAverage`)}>
                 <SortIcon />
               </IconButton>
             </Tooltip>
@@ -316,7 +320,7 @@ const navigate = useNavigate();
       
         <ProductTable hover>
           <TableHead>
-            <TableRow>
+            <TableRow >
               <TableCell colSpan={2} sx={{ px: 8 }}>
                 Name
               </TableCell>
@@ -343,7 +347,7 @@ const navigate = useNavigate();
       
           <TableBody hover>
             {products.map((product,index) => (
-              <TableRow key={product._id} hover>
+              <TableRow key={product._id} hover onClick={() => handleDetatils2(product._id)}>
                 <TableCell colSpan={2} align="left" sx={{ px: 0, textTransform: "capitalize" }}>
                   <Box display="flex" alignItems="center" gap={4}>
                   <label htmlFor="file-upload" className="custom-file-upload">

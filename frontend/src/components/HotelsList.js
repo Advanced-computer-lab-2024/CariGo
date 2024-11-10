@@ -1,4 +1,4 @@
-import React from "react";
+import React ,{useEffect}from "react";
 import { useNavigate } from 'react-router-dom';
 import { Box, Typography } from "@mui/material";
 import HotelCard from "./HotelCard";
@@ -10,6 +10,30 @@ import HotelCard from "./HotelCard";
     navigate(`/flight-details/${hotel.id}`, { state: { hotel } });
   };
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = document.querySelector('.scrollableList').scrollTop;
+      sessionStorage.setItem('scrollPosition', scrollPosition);
+    };
+
+    const listElement = document.querySelector('.scrollableList');
+    listElement.addEventListener('scroll', handleScroll);
+
+    // Clean up the event listener when the component unmounts
+    return () => {
+      listElement.removeEventListener('scroll', handleScroll);
+      //window.scrollTo(0, 0);
+    };
+  }, []);
+
+  useEffect(() => {
+    const listElement = document.querySelector('.scrollableList');
+    const savedScrollPosition = sessionStorage.getItem('scrollPosition');
+    
+    if (savedScrollPosition) {
+      listElement.scrollTop = savedScrollPosition;
+    }
+  }, []);
 
   if (!Array.isArray(hotels) ) {
     return (
@@ -20,7 +44,7 @@ import HotelCard from "./HotelCard";
   }
 
   return (
-    <Box
+    <Box className="scrollableList"
       sx={{
         gap: '10px',
         margin: '30px',

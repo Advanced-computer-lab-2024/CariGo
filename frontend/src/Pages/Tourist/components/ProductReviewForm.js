@@ -22,9 +22,10 @@ const StyledRating = styled(Rating)({
   },
 });
 
-const ItineraryReviewForm = ({ itineraryId, open, onClose }) => {
+
+const ProductReviewForm = ({ productId, open, onClose }) => {
   const [reviewData, setReviewData] = useState({
-    itinerary: itineraryId,
+    product: productId,
     review: '',
     rating: 0,
     user: localStorage.getItem('id')
@@ -49,12 +50,13 @@ const ItineraryReviewForm = ({ itineraryId, open, onClose }) => {
     }
 
     try {
-      const response = await axios.post('http://localhost:4000/cariGo/review/itinerary', reviewData, {
+      const response = await axios.post('http://localhost:4000/cariGo/review/product', reviewData, {
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
       console.log('Review submitted:', response.data);
+      console.log(response.data);
       onClose();
     } catch (err) {
       console.error('Error submitting review:', err);
@@ -70,7 +72,7 @@ const ItineraryReviewForm = ({ itineraryId, open, onClose }) => {
       fullWidth
       onClick={(e) => e.stopPropagation()} // Stop propagation here
     >
-      <DialogTitle>Leave a Review</DialogTitle>
+      <DialogTitle>Leave a Product Review</DialogTitle>
       <DialogContent>
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
           <Box sx={{ mb: 2 }}>
@@ -112,4 +114,4 @@ const ItineraryReviewForm = ({ itineraryId, open, onClose }) => {
   );
 };
 
-export default ItineraryReviewForm;
+export default ProductReviewForm;

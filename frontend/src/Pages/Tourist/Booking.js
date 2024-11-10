@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState  } from "react";
 import { Box,Button,Typography } from "@mui/material";
 import NavBar from"./components/TouristNavBar";
 import FlightIcon from '@mui/icons-material/Flight';
@@ -8,7 +8,40 @@ import FlightBooking from "../FlightBooking";
 import HotelBooking from "../../components/HotelBooking";
 import TransportationBooking from "../../components/TransportationBooking";
 export default function BookingPage(){
-    const[selectedBooking, setSelectedBooking]= useState("");
+
+    const[selectedBooking, setSelectedBooking]= useState(() => {
+        return sessionStorage.getItem("selectedBooking") || "";
+      });
+
+      // Save selectedBooking immediately to sessionStorage
+        useEffect(() => {
+            sessionStorage.setItem("selectedBooking", selectedBooking);
+       }, [selectedBooking]);
+
+
+    // Restore input values when component mounts
+    useEffect(() => {
+        document.querySelectorAll("input").forEach(input => {
+        input.value = sessionStorage.getItem(`${selectedBooking}_input_${input.name}`) || "";
+        });
+    }, [selectedBooking]);
+  
+    useEffect(() => {
+        // Clear session storage on page reload
+        const handleBeforeUnload = () => {
+          sessionStorage.clear(); // Clears all sessionStorage data
+        };
+    
+        // Add event listener for beforeunload
+        window.addEventListener('beforeunload', handleBeforeUnload);
+    
+        // Clean up the event listener when the component is unmounted
+        return () => {
+          window.removeEventListener('beforeunload', handleBeforeUnload);
+        };
+      }, []); // Empty dependency array ensures this runs once on mount
+    
+  
 
     return (
         <div>

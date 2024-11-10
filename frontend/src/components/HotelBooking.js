@@ -2,25 +2,28 @@ import React, { useEffect, useState } from "react";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import LocationCityIcon from '@mui/icons-material/LocationCity';
-
-import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import {Box,Button,Typography,Link,List,ListItem,ClickAwayListener,Menu,MenuItem,TextField,InputAdornment,CircularProgress} from "@mui/material";
-
 import HotelsList from "./HotelsList"; 
 
-
-
-
 export default function BookHotels(){
-        const [City, setCity] = useState("");
-        const [CityCode, setCityCode] = useState("");
-        const [checkIn, setCheckIn] = useState(dayjs()); // Initialize with current date
-        const [checkOut, setCheckOut] = useState(checkIn.add(1, 'day')); // Initialize with current date
-        const [adults, setAdults] = useState(1); // Initialize adults count
-        const[children, setChildren] = useState(0);
+        const [City, setCity] = useState(()=> sessionStorage.getItem('hotelCity')||"");
+        const [CityCode, setCityCode] = useState(()=> sessionStorage.getItem('hotelCityCode')||"");
+
+        const [checkIn, setCheckIn] = useState(() => {
+          const storedCheckIn = sessionStorage.getItem('hotelCheckIn');
+          return storedCheckIn ? dayjs(storedCheckIn) : dayjs(); // Parse as dayjs if value exists
+        });
+
+        const [checkOut, setCheckOut] = useState(() => {
+          const storedCheckOut = sessionStorage.getItem('hotelCheckOut');
+          return storedCheckOut ? dayjs(storedCheckOut) : checkIn.add(1, 'day'); // Parse as dayjs and add 1 day if not found
+        });
+
+        const [adults, setAdults] = useState(()=> sessionStorage.getItem('hotelAdults')||1); // Initialize adults count
+        const[children, setChildren] = useState(()=> sessionStorage.getItem('hotelChildren')||0);
 
         const [fromSuggestions, setFromSuggestions] = useState([]);
         const [toSuggestions, setToSuggestions] = useState([]);
@@ -79,15 +82,27 @@ export default function BookHotels(){
           };
         
           const decrementChildren = () => {
-            setChildren((prev) => (prev > 1 ? prev - 1 : 1)); // Prevent going below 1
+            setChildren((prev) => (prev > 0 ? prev - 1 : 0)); // Prevent going below 0
           };
+
+           // Check if there are any hotels in sessionStorage & Load from sessionStorage if available
+          useEffect(() => {
+            // Check if there are any hotels in sessionStorage
+            const savedHotels = sessionStorage.getItem('hotels');
+            if (savedHotels) {
+              setHotels(JSON.parse(savedHotels)); // Load from sessionStorage if available
+            }
+          }, []);
 
         const handleSearchClick = async () => {
           if (!City || !checkIn || !checkOut ) {
             alert("Please fill in all fields");
             return;
           }
-      
+           //to reset scroll bar position on new search
+          if (sessionStorage.getItem('scrollPosition')) {
+            sessionStorage.setItem('scrollPosition',0)
+          }
           const fromIATA = CityCode; // Assuming the IATA code is part of the selected city object
           const formattedCheckIn = checkIn.format("YYYY-MM-DD");
           const formattedCheckOut = checkOut.format("YYYY-MM-DD");
@@ -98,6 +113,7 @@ export default function BookHotels(){
             const data = await response.json();
             console.log("Hotel data:", data); 
             setHotels(data.data);// Handle the hotel data as needed
+            sessionStorage.setItem('hotels', JSON.stringify(data.data)); 
           } catch (error) {
             console.error("Error fetching hotel:", error);
           }finally {
@@ -109,6 +125,17 @@ export default function BookHotels(){
           if(checkOut <= checkIn)
             setCheckOut(checkIn.add(1,'day'))
         },[checkIn])
+
+        // Save input values to sessionStorage when they change
+        useEffect(() => {
+          sessionStorage.setItem("hotelCity", City);
+          sessionStorage.setItem("hotelCityCode", CityCode);
+          sessionStorage.setItem("hotelCheckIn", checkIn.format("YYYY-MM-DD"));
+          sessionStorage.setItem("hotelCheckOut", checkOut.format("YYYY-MM-DD"));
+          sessionStorage.setItem("hotelAdults", adults);
+          sessionStorage.setItem("hotelChildren", children);
+        }, [City, CityCode, checkIn, checkOut, adults, children]);
+
       
         return (
           <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -171,12 +198,7 @@ export default function BookHotels(){
                               <InputAdornment position="start">
                                 <CalendarTodayIcon />
                               </InputAdornment>
-                            ),
-                            endAdornment: (
-                              <InputAdornment position="end">
-                                <ArrowDropDownIcon />
-                              </InputAdornment>
-                            ),
+                            )
                           }}
                         />
                       )}
@@ -262,7 +284,7 @@ export default function BookHotels(){
                <Box sx={{padding:"20px", marginLeft:"10%" , overflow:'auto',marginTop:'4%',}}>
                {isLoading ? <CircularProgress sx={{color:'#126782', margin:'70px'}} /> :
                hotels.length > 0 && (
-                  <HotelsList hotels={hotels} />
+                  <HotelsList  hotels={hotels} />
                 )
                 }
                 </Box>

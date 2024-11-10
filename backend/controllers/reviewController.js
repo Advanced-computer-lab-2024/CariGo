@@ -53,6 +53,10 @@ exports.createReview = catchAsync(async (req, res, next) => {
   const userId = req.user._id;
   let booking;
 
+  const isBookingFinished = (booking) => {
+    return booking.end_date <= Date.now();
+  };
+
   if (req.body.activity) {
     const activityId = req.body.activity;
     const booking = await Booking.find({
@@ -60,14 +64,18 @@ exports.createReview = catchAsync(async (req, res, next) => {
       ActivityId: activityId,
       Status: true,
     });
-    if (!booking) {
+    console.log(booking);
+
+    if (booking.length == 0) {
       return next(
         new AppError(
-          `You cannot review this activity because you have not completed it.`,
+          `You cannot review this activity because you have not booked and completed it.`,
           400
         )
       );
     }
+
+
   } else if (req.body.itinerary) {
     const itineraryId = req.body.itinerary;
     const booking = await Booking.find({
@@ -75,24 +83,25 @@ exports.createReview = catchAsync(async (req, res, next) => {
       ItineraryId: itineraryId,
       Status: true,
     });
-    if (!booking) {
+    if (booking.length == 0) {
       return next(
         new AppError(
-          `You cannot review this itinerary because you have not completed it.`,
+          `You cannot review this itinerary because you have not booked and completed it.`,
           400
         )
       );
     }
+
   } else if (req.body.tourGuide) {
     const tourGuideId = req.body.tourGuide;
-    console.log(tourGuideId,"ana hena");
+    // console.log(tourGuideId,"ana hena");
     const booking = await Booking.find({
       UserId: userId,
       "ItineraryId.author": tourGuideId,
       Status: true,
     });
-    console.log(booking)
-    if (!booking) {
+    // console.log(booking)
+    if (booking.length == 0) {
       return next(
         new AppError(
           `You cannot review this tour guide because you have not completed a tour with him.`,
@@ -100,6 +109,16 @@ exports.createReview = catchAsync(async (req, res, next) => {
         )
       );
     }
+
+    // Check if at least one booking is finished
+    // if (!booking.some(isBookingFinished)) {
+    //   return next(
+    //     new AppError(
+    //       You cannot review this tour guide because you have not completed a tour with him.,
+    //       400
+    //     )
+    //   );
+    // }
   }
 
   const doc = await Review.create(req.body);

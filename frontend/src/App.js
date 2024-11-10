@@ -81,7 +81,7 @@ import AdminItineraryDetails from "./Pages/itineraries/AdminItinDetails.js";
 import AdminViewItineraries from "./Pages/itineraries/AdminViewItineraries.js"
 import TouristHistory from "./Pages/Tourist/TouristHistory.js";
 //import FlightBooking from './Pages/FlightBooking.jsx';
-import FlightDetailsPage from "./Pages/FlightDetailsCard.jsx";
+import FlightDetails from "./components/FlightDetails.js";
 import FileComplaintForm from "./Pages/Tourist/FileComplaintForm";
 import ActivityPostDetail from "./components/ActivityPostDetail.js";
 //import HotelBooking from "./components/HotelBooking.js";
@@ -95,9 +95,12 @@ import Pass from "./Pages/changePassword.js";
 import UploadDocumentsPage from "./Pages/SignUp/components/UploadDocuments.js"
 import ProductAnalysis from "./Pages/products/ProductAnalysis.jsx";
 import ProductDetails2 from "./Pages/products/ProductDetails2.jsx";
+import ProductDetailsSeller from "./Pages/products/ProductDetailsSeller.jsx";
+import ProductDetailsTour from "./Pages/Tourist/productdetailsT.js";
 import MyBookings from "./Pages/Tourist/MyBookings.js";
 import MyBookedActivities from "./Pages/Tourist/MyBookedActivities.js"
 import CreateTransportation from "./components/CreateTransportationForm.js"
+import HotelDetails from "./components/HotelDetails.js";
 //const dotenv = require('dotenv')
 import ReviewAccounts from "./Pages/accounts/docsReview.jsx";
 function App() {
@@ -152,6 +155,7 @@ function App() {
       <Route path="/Seller" element={<SellerProfile />} />
       <Route path="/Seller/products" element={<ViewProductsSeller />} />
       <Route path="/Seller/products/:id" element={<EditProductD />} />
+      <Route path="/Seller/productDetails/:id" element={<ProductDetailsSeller />} />
       <Route path="/Seller/products/addProduct" element={<AddProductSeller />} />
         {<Route path="/activities" element={<UserViewActivities />} /> }
         <Route path="/tourist-activities" element={<TouristActivities/>} />
@@ -197,6 +201,7 @@ function App() {
               <Route path="/update-tag" element={<UpdateTag />} />
               <Route path='/admin/view-products' element={<ViewProducts/>}/>
               <Route path='/admin/view-products/:id' element={<ProductDetails2/>}/>
+              <Route path='/tourist/view-products/:id' element={<ProductDetailsTour/>}/>
               <Route path="/create-tag" element={<CreateTag />} />
               <Route path="/delete-tag" element={<DeleteTag />} />
               <Route path="/add-admin" element={<AddAdmin />} />
@@ -216,8 +221,9 @@ function App() {
         <Route path="/createVintage" element={<CreateVintageForm />} />
         <Route path="/book-services" element={<BookServicesPage/>} />
         {/* <Route path="/flight" element={<FlightBooking/>} /> */}
-        <Route path="/flight-details/:id" element={<FlightDetailsPage/>} />
+        <Route path="/flight-details/:id" element={<FlightDetails/>} />
         {/* <Route path="/hotels" element={<HotelBooking/>} /> */}
+        <Route path="/hotel-details/:id" element={<HotelDetails/>} />
         <Route path="/map" element={<TransportationSearch/>} />  
         <Route path="/sellerProfile" element={<SellerProfile userId={localStorage.getItem("id")} />} />
         <Route path="/change-password" element={<Pass/>} />
