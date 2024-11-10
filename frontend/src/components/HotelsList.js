@@ -35,13 +35,13 @@ import HotelCard from "./HotelCard";
     }
   }, []);
 
-  if (!Array.isArray(hotels) ) {
-    return (
-      <Typography variant="h6" sx={{ textAlign: 'center', mt: 4 }}>
-        No hotel available.
-      </Typography>
-    );
-  }
+  // if (!Array.isArray(hotels) ) {
+  //   return (
+  //     <Typography variant="h6" sx={{ textAlign: 'center', mt: 4 }}>
+  //       No hotel available.
+  //     </Typography>
+  //   );
+  // }
 
   return (
     <Box className="scrollableList"

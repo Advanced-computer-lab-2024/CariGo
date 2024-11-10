@@ -101,6 +101,27 @@ function TouristNB() {
   //     navigate('/tourist/file-complaint');
   //   };
 
+  const handleDeleteAccount = async () => {
+    const token = localStorage.getItem('jwt');
+    try{
+      const response = await fetch(`http://localhost:4000/cariGo/delReq/createReq`, {
+        method: "POST", // Change this to "POST" if your backend expects it
+        headers: {
+            "Authorization": `Bearer ${token}`, // Send the token in the Authorization header 
+        }
+    });
+    if (response.ok) {
+      alert("Account delete request sent");
+    } else {
+        console.error("Failed to send delete request:", response.statusText);
+    }
+    console.log(response.json);
+    }
+    catch(error){
+      console.error("Error deleting account:", error);
+    }
+  }
+
   return (
     <AppBar position="static" sx={{ backgroundColor: "#004c74" }}>
       <Container maxWidth="xl">
@@ -222,6 +243,11 @@ function TouristNB() {
               <MenuItem onClick={handleChangePass}>
                 <Typography sx={{ textAlign: "center" }}>
                   Change Password
+                </Typography>
+              </MenuItem>
+              <MenuItem onClick={handleDeleteAccount}>
+                <Typography sx={{ textAlign: "center", color:'#ff4d4d' }}>
+                  delete account
                 </Typography>
               </MenuItem>
             </Menu>

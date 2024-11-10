@@ -20,7 +20,7 @@ import SellIcon from '@mui/icons-material/Sell';
 import StarIcon from '@mui/icons-material/Star';
 import Link from '@mui/material/Link';
 import { useNavigate } from 'react-router-dom';
-
+import TimelapseIcon from '@mui/icons-material/Timelapse';
 
 export default function ActivityPost({ id,author, img, start_date, end_date, duration, tag, description, title,location,
     price,category,discount,isOpened, rating}) {

@@ -10,13 +10,17 @@ const TransportCardList = ({transports}) => {
       const scrollPosition = document.querySelector('.scrollableList').scrollTop;
       sessionStorage.setItem('scrollPosition', scrollPosition);
     };
-
     const listElement = document.querySelector('.scrollableList');
-    listElement.addEventListener('scroll', handleScroll);
 
+    if(listElement){
+      listElement.addEventListener('scroll', handleScroll);
+    }
+    
     // Clean up the event listener when the component unmounts
     return () => {
+      if(listElement){
       listElement.removeEventListener('scroll', handleScroll);
+      }
       window.scrollTo(0, 0);
     };
   }, []);
@@ -31,10 +35,10 @@ const TransportCardList = ({transports}) => {
   }, []);
 
 
-  if (!Array.isArray(transports) || transports.length == 0) {
+  if (!Array.isArray(transports) ) {
     console.log(transports);
     return (
-      <Typography variant="h6" sx={{ textAlign: 'center', mt: 4 }}>
+      <Typography variant="h6" color='#126782' sx={{ textAlign: 'center', mt: 4 }}>
         No transportations available.
       </Typography>
     );

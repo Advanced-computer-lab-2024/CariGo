@@ -108,8 +108,19 @@ function TouristNB() {
   };
 
   const handleDeleteAccount = async () => {
+    const token = localStorage.getItem('jwt');
     try{
-    const response = await fetch(`http://localhost:4000/cariGo/delReq/createReq`);
+      const response = await fetch(`http://localhost:4000/cariGo/delReq/createReq`, {
+        method: "POST", // Change this to "POST" if your backend expects it
+        headers: {
+            "Authorization": `Bearer ${token}`, // Send the token in the Authorization header 
+        }
+    });
+    if (response.ok) {
+      alert("Account delete request sent");
+    } else {
+        console.error("Failed to send delete request:", response.statusText);
+    }
     console.log(response.json);
     }
     catch(error){

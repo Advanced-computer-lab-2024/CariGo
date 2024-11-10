@@ -328,7 +328,7 @@ export default function TouristViewActivities (){
   
   
       <Box sx={{ 
-        height: '100%',
+        height: '80vh',
         marginLeft: '100px',
         width: '100%',
         display: "flex",

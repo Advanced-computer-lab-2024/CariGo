@@ -31,6 +31,9 @@ export default function BookHotels(){
         const [isFromDropdownOpen, setIsFromDropdownOpen] = useState(false);
         const [isToDropdownOpen, setIsToDropdownOpen] = useState(false);
         const [hotels, setHotels] = useState([]); 
+
+        const[error, setError] = useState("");
+
         const fetchCities = async (keyword, type) => {
           if (keyword.length < 2) {
             if (type === 'from') setFromSuggestions([]);
@@ -113,9 +116,13 @@ export default function BookHotels(){
             const data = await response.json();
             console.log("Hotel data:", data); 
             setHotels(data.data);// Handle the hotel data as needed
+            if(hotels.length == 0) {
+              setError("no Hotels available");
+            }
             sessionStorage.setItem('hotels', JSON.stringify(data.data)); 
           } catch (error) {
             console.error("Error fetching hotel:", error);
+            setError("no Hotels available");
           }finally {
             setIsLoading(false);
           }
@@ -289,10 +296,10 @@ export default function BookHotels(){
                     hotels.length > 0 ? (
                       <HotelsList hotels={hotels} />
                     ) : (
-                      <Typography color="#126782" variant="h6" sx={{ textAlign: 'center', mt: 4 , marginTop:'60px'}}>No Hotels available</Typography>
+                      <Typography color="#126782" variant="h6" sx={{ textAlign: 'center', mt: 4 , marginTop:'60px'}}>{error}</Typography>
                     )
                   ) : (
-                    <Typography color="#126782" variant="h6" sx={{ textAlign: 'center', mt: 4 , marginTop:'60px'}}>No Hotels available</Typography>
+                    <Typography color="#126782" variant="h6" sx={{ textAlign: 'center', mt: 4 , marginTop:'60px'}}>{error}</Typography>
                   )
                 )}
                 </Box>

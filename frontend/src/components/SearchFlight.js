@@ -34,7 +34,7 @@ const Frame = () => {
   const [isToDropdownOpen, setIsToDropdownOpen] = useState(false);
   const [flights, setFlights] = useState([]); 
 
-  const errorMsg ="no flights availadle";
+  const[error, setError] = useState("");
 
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const inputRef = useRef(null); //refrence class field to deselect on click away
@@ -146,10 +146,14 @@ const Frame = () => {
           const data = await response.json();
           console.log("Flight data:", data); 
           setFlights(data);// Handle the flight data as needed
+          if(flights.length == 0) {
+            setError("no Flights available");
+          }
           // Save the flight data to sessionStorage
           sessionStorage.setItem('flights', JSON.stringify(data)); 
         } catch (error) {
           console.error("Error fetching flights:", error);
+          setError("no Flights available");
         }finally {
           setIsLoading(false);
         }
@@ -356,10 +360,10 @@ const Frame = () => {
             flights.length > 0 ? (
               <FlightCardList flights={flights} />
             ) : (
-              <Typography color="#126782" variant="h6" sx={{ textAlign: 'center', mt: 4 , marginTop:'60px'}}>No Flights available</Typography>
+              <Typography color="#126782" variant="h6" sx={{ textAlign: 'center', mt: 4 , marginTop:'60px'}}>{error}</Typography>
             )
           ) : (
-            <Typography color="#126782" variant="h6" sx={{ textAlign: 'center', mt: 4 , marginTop:'60px'}}>No Flights available</Typography>
+            <Typography color="#126782" variant="h6" sx={{ textAlign: 'center', mt: 4 , marginTop:'60px'}}>{error}</Typography>
           )
         )}
           </Box>
