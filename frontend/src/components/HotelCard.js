@@ -16,13 +16,10 @@ const HotelCard = ({ hotel,offer }) => {
     // Convert the input dates to Date objects
     const checkIn = new Date(checkInDate);
     const checkOut = new Date(checkOutDate);
-  
     // Calculate the difference in time (in milliseconds)
     const timeDifference = checkOut - checkIn;
-  
     // Calculate the number of days
     const days = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
-  
     return days;
   }
 
