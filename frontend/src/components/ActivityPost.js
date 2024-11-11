@@ -83,7 +83,6 @@ export default function ActivityPost({ id,author, img, start_date, end_date, dur
     setSnackbarOpen(false);
   };
 
-const navigate = useNavigate();
 
 const conversionRate = localStorage.getItem("conversionRate")||1;
 const code = localStorage.getItem("currencyCode")||"EGP";

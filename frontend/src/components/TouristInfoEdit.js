@@ -129,13 +129,13 @@ const TouristInfoEdit = ({ profile, setProfile, setRefreshKey }) => {
               onChange={handleChange}
               required
             />
-              <Input
+              {/* <Input
               placeholder="Wallet"
               name="wallet"
               value={formData.wallet}
               onChange={handleChange}
               required
-            />
+            /> */}
           
             <Button variant="contained" type="submit">
               Save
