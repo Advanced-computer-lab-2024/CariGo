@@ -66,7 +66,7 @@ export default function ExtraServicesCheckout(props,) {
   // }, []);
 
   React.useEffect(() => {
-    if (activityDetails && activityDetails.price.total) {
+    if (activityDetails ) {
       let price;
       if (type === "hotel") {
         price = offer.price.total
