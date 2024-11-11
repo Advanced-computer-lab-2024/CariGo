@@ -90,9 +90,9 @@ const MyBookedActivities = () => {
     setSearchTerm("");
     setOption("");
   };
-
+  const today = new Date();
   const handleSearch = () => {
-    const today = new Date();
+    
     const filtered = activities.filter((activity) => {
       // Changed from itineraries.filter to activities.filter
       const activityStartDate = new Date(activity.ActivityId.start_date); // Changed itineraryStartDate to activityStartDate
@@ -256,7 +256,7 @@ const MyBookedActivities = () => {
                     onClick={() =>
                       openActivityReviewFormHandler(activity.ActivityId._id)
                     }
-                    disabled={activity.Status !== "Done"}
+                    disabled={!(activity.Status && today > new Date(activity.ActivityId.end_date))}
                   >
                     <RateReviewIcon />
                   </IconButton>
