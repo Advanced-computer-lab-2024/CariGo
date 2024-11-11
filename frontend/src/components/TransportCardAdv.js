@@ -124,7 +124,7 @@ const TransportCardAdv = ({ Transportation }) => {
             {arrival && (
               <Box>
                 <Typography sx={{ color: '#126782', padding: '1px', fontWeight: 'bold' }}>
-                  {arrivalLocStr ? arrivalLocStr : 'Arrival Time'}
+                  {arrivalLocStr ? arrivalLocStr : 'Arrival location'}
                 </Typography>
                 <Typography sx={{ color: '#ff4d4d', padding: '1px' }}>
                   {`${Transportation.arrivalTime.hours}:${Transportation.arrivalTime.minutes} ${Transportation.arrivalTime.dayTime}`}
