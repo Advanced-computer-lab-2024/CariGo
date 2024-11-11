@@ -39,7 +39,7 @@ const CurrencyConversion = ({ open, onClose }) => {
       localStorage.setItem("currencyCode", JSON.stringify(code));
       console.log(localStorage.getItem("conversionRate"))
       alert("Currency saved successfully");
-      //window.location.reload();
+      window.location.reload();
     } catch (error) {
       console.error('Failed to retrieve conversion rate:', error.response ? error.response.data : error.message);
       setError('An error occurred while retrieving the currency conversion rate.');

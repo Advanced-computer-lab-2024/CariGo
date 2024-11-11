@@ -54,7 +54,8 @@ const ProductDetails = () => {
   if (!product) {
     return <div>Loading...</div>;
   }
-
+  const conversionRate = localStorage.getItem("conversionRate")||1;
+  const code = localStorage.getItem("currencyCode")||"EGP";
   return (
     <Layout style={{ height: "100vh" }}>
     <Layout>
@@ -88,7 +89,7 @@ const ProductDetails = () => {
                 {" "}{product.ratingsAverage || 0}/5 ({product.ratingsQuantity || 0} reviews)
               </Text>
               </Row>
-              <Title level={3}>${product.price}</Title>
+              <Title level={3}>${(product.price*conversionRate).toFixed(2)} {code}</Title>
               
               {/* Description Section */}
               <Paragraph style={{ marginTop: "16px" }}>
