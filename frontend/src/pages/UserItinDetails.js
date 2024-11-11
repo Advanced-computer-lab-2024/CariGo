@@ -9,7 +9,7 @@ import UserAcList from "../components/UserAcList"; // Import the new MarkerList 
 import "../components/styles/CompanyInfo.css";
 import logoImage from "../assets/itinerary.png"; // Correct relative path
 import { useNavigate } from "react-router-dom";
-import Button from '@mui/material/Button';
+import Button from "@mui/material/Button";
 import axios from "axios";
 
 const ItineraryDetails = () => {
@@ -18,7 +18,9 @@ const ItineraryDetails = () => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate(`/checkout/itinerary/${id}`); // Update the navigation path
+    if (token)
+      navigate(`/checkout/itinerary/${id}`); // Update the navigation path
+    else navigate(`/login`);
   };
 
   useEffect(() => {
@@ -84,14 +86,15 @@ const ItineraryDetails = () => {
   };
 
   // Format activities to include start and end dates in the correct format
-  const formattedActivities = activities.map(activity => ({
+  const formattedActivities = activities.map((activity) => ({
     name: activity.name,
     description: activity.description,
     startDate: formatDateTime(activity.start_date),
     endDate: formatDateTime(activity.end_date),
   }));
-  const conversionRate = localStorage.getItem("conversionRate")||1;
-  const code = localStorage.getItem("currencyCode")||"EGP";
+  const conversionRate = localStorage.getItem("conversionRate") || 1;
+  const code = localStorage.getItem("currencyCode") || "EGP";
+  const token = localStorage.getItem("jwt");
   return (
     <div>
       <ResponsiveAppBar />
@@ -134,7 +137,7 @@ const ItineraryDetails = () => {
             marginBottom: "20px",
           }}
         />
-        
+
         <div className="company-info">
           <Box sx={{ marginBottom: "20px" }}>
             <Box
@@ -184,7 +187,9 @@ const ItineraryDetails = () => {
               <AttachMoneyIcon sx={{ marginRight: "5px" }} />
               <Typography variant="body1">
                 <strong>Price:</strong>{" "}
-                {price ? `${(price*conversionRate).toFixed(2)} ${code}` : "Price not specified"}
+                {price
+                  ? `${(price * conversionRate).toFixed(2)} ${code}`
+                  : "Price not specified"}
               </Typography>
             </Box>
             <Typography variant="body1" sx={{ fontSize: "18px" }}>
@@ -209,7 +214,7 @@ const ItineraryDetails = () => {
               <strong>Accessibility:</strong>{" "}
               {accessibility || "No accessibility info"}
             </Typography>
-            
+
             {/* Using MarkerList to display activities */}
             <Typography variant="body1" sx={{ fontSize: "18px" }}>
               <strong>Activities:</strong>
