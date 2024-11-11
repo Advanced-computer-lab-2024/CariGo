@@ -198,7 +198,7 @@ const MyBookedFlights = () => {
         >
           <Grid container spacing={0} sx={{ flexDirection: "column", width: "100vw" }}>
           {filteredActivities.length > 0 ? (
-  filteredActivities.map((activity, index) => {
+              filteredActivities.map((activity, index) => {
 
 
     return (
@@ -210,12 +210,13 @@ const MyBookedFlights = () => {
           
           airlinename={activity.flightData.airlineName || " "}
           way={activity.flightData.oneway}
-          segemets={activity.flightData.segments || []}
+          segments={activity?.flightData.segments || []}
 
           status={activity.Status}
           NumberOfTickets={activity.NumberOfTickets ||1}
           TotalPrice={activity.TotalPrice|| 0}
           price={activity.flightData.price.total ||0}
+          currency = {activity.flightData.price.currency ||''}
           flightData={activity.flightData}
         />
         {/* <IconButton onClick={() => openActivityReviewFormHandler(activity.TransportationId._id)}>

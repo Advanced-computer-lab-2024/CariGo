@@ -9,6 +9,7 @@ import { Content, Header } from "antd/es/layout/layout";
 import { useState, useEffect } from "react";
 import ProductReviews from "../../components/ProductReviews";
 import NavBar from "../../components/NavBarAdvertiser";
+import ResponsiveAppBar from "./components/TouristNavBar";
 const { Title, Paragraph, Text } = Typography;
 
 const ProductDetails = () => {
@@ -58,7 +59,7 @@ const ProductDetails = () => {
     <Layout style={{ height: "100vh" }}>
     <Layout>
         <Header style={{ background: "#001529", padding: 0 }}>
-          <NavBar /> {/* Top bar added here */}
+          <ResponsiveAppBar /> {/* Top bar added here */}
         </Header>
         <ToastContainer />
         <Content style={{ padding: "20px", overflowY: "auto" }}>

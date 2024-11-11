@@ -3,18 +3,22 @@ import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import logoImage from '../../../assets/itinerary.png'; // Correct relative path
+import { Box, Typography, Card, Button, Divider, Link } from "@mui/material";
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import BedIcon from '@mui/icons-material/Bed';
+import PinDropIcon from '@mui/icons-material/PinDrop';
 
 const MyBookedHotelCard = ({ 
    
   hotelname, 
   checkInDate, 
   checkOutDate, 
- 
- 
   status, 
   img, 
+  offer,
   price, 
-   hotelData,
+  hotelData,
   NumberOfTickets, 
   TotalPrice 
 }) => {
@@ -80,6 +84,18 @@ const MyBookedHotelCard = ({
       }
     }
   };
+
+  function calculateStayDuration(checkInDate, checkOutDate) {
+    // Convert the input dates to Date objects
+    const checkIn = new Date(checkInDate);
+    const checkOut = new Date(checkOutDate);
+    // Calculate the difference in time (in milliseconds)
+    const timeDifference = checkOut - checkIn;
+    // Calculate the number of days
+    const days = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
+    return days;
+  }
+
   const rate = parseFloat(JSON.parse(localStorage.getItem("conversionRate")))||1;
   return (
     <div className="booking-card">
@@ -92,9 +108,60 @@ const MyBookedHotelCard = ({
         <h2 className="booking-card__name">{hotelname}</h2>
    
         <p className="booking-card__location">hotel name: {hotelname}</p>
-        <p className="booking-card__location">checkindate: {checkInDate}</p>
+        {/* <p className="booking-card__location">checkindate: {checkInDate}</p>
        
-        <p className="booking-card__time">checkoutdate: {checkOutDate}</p>
+        <p className="booking-card__time">checkoutdate: {checkOutDate}</p> */}
+        {/*INFO BOX*/}
+        <Box sx={{ margin: "10px", marginLeft: '10px' }}>
+          <Typography sx={{ color: '#126782', padding: '1px', fontWeight: 'bold' }}>
+            {calculateStayDuration(checkInDate,checkOutDate)} days
+            </Typography>
+          <Box sx={{ display: 'flex', gap: '50px', marginLeft: '20px', padding: '5px' }}>
+            <Box>
+              <Typography sx={{ color: '#126782', padding: '1px' }}>from</Typography>
+              <Box sx={{ display: 'flex', padding: '5px', gap: '10px', color:'#ff4d4d',}}>
+                <CalendarMonthIcon fontSize="medium" sx={{ }} />
+                <Typography type="date" sx={{ padding: '1px' }}>
+                  {checkInDate}
+                </Typography>
+              </Box>
+            </Box>
+
+            <Box>
+              <Typography sx={{ color: '#126782', padding: '1px' }}>to</Typography>
+              <Box sx={{ display: 'flex', padding: '5px', gap: '10px',color:'#ff4d4d', }}>
+                <CalendarMonthIcon fontSize="medium" sx={{ }} />
+                <Typography type="date" sx={{ padding: '1px' }}>
+                  {checkOutDate}
+                </Typography>
+              </Box>
+            </Box>
+          </Box>
+          {/*END OF DATES BOX*/}
+          {/*number of beds*/}
+          <Box sx={{ display: 'flex', gap: '10px', padding: '5px', marginLeft: '-10px' }}>
+            <BedIcon fontSize="medium" sx={{ fill: "#126782" }} />
+            <Typography sx={{ color: '#126782', padding: '1px' }}>
+              {offer.room.typeEstimated.beds} {offer.room.typeEstimated.bedType} bed{offer.room.beds > 1 ? 's' : ''}
+            </Typography>
+          </Box>
+          {/*location link*/}
+          {/* <Box sx={{ display: 'flex', gap: '10px', padding: '5px', marginLeft: '-10px' }}>
+            <PinDropIcon fontSize="medium" sx={{ fill: "#126782" }} />
+            <Link
+               href={hotelData.googleMapsLink}
+              sx={{
+                color: '#126782',
+                padding: '1px',
+                cursor: 'pointer',
+                textDecoration: 'none',
+                '&:hover': { textDecoration: 'underline' },
+              }}
+            >
+              clickHereToChecKTheLocation
+            </Link>
+          </Box> */}
+        </Box>
         <p className="booking-card__status">
           Total Price: {(TotalPrice*rate).toFixed(2) }
         </p>

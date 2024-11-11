@@ -35,13 +35,13 @@ const FlightCardList = ({ flights = [], loading = false }) => {
     }
   }, []);
 
-  if (!Array.isArray(flights) || flights.length == 0)  {
-    return (
-      <Typography variant="h6" sx={{ textAlign: 'center', mt: 4 }}>
-        No flights available.
-      </Typography>
-    );
-  }
+  // if (!Array.isArray(flights) || flights.length == 0)  {
+  //   return (
+  //     <Typography variant="h6" sx={{ textAlign: 'center', mt: 4 }}>
+  //       No flights available.
+  //     </Typography>
+  //   );
+  // }
 
   return (
     <Box  className="scrollableList"

@@ -89,28 +89,6 @@ const FlightCard = ({ flight, onClick }) =>{
   );
 };
 
-const Card = styled.article`
-  border-radius: 10px;
-  background-color: #fff;
-  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
-  align-self: center;
-  display: flex;
-  margin-top: 27px;
-  width: 100%;
-  max-width: 338px;
-  flex-direction: column;
-  align-items: center;
-  padding: 21px 9px 12px;
-`;
-
-const CardHeader = styled.header`
-  display: flex;
-  width: 100%;
-  max-width: 298px;
-  gap: 40px 100px;
-  color: #2f2f2f;
-  font: 500 9px Roboto, sans-serif;
-`;
 
 const Divider = styled.hr`
   align-self: stretch;

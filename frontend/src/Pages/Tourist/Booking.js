@@ -27,18 +27,21 @@ export default function BookingPage(){
     }, [selectedBooking]);
   
     useEffect(() => {
-        // Clear session storage on page reload
-        const handleBeforeUnload = () => {
-          sessionStorage.clear(); // Clears all sessionStorage data
-        };
-    
-        // Add event listener for beforeunload
-        window.addEventListener('beforeunload', handleBeforeUnload);
-    
-        // Clean up the event listener when the component is unmounted
-        return () => {
-          window.removeEventListener('beforeunload', handleBeforeUnload);
-        };
+        // Check if window is defined to prevent SSR issues
+        if (typeof window !== "undefined") {
+          // Clear session storage on page reload
+          const handleBeforeUnload = () => {
+            sessionStorage.clear(); // Clears all sessionStorage data
+          };
+
+          // Add event listener for beforeunload
+          window.addEventListener('beforeunload', handleBeforeUnload);
+
+          // Clean up the event listener when the component is unmounted
+          return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+          };
+        }
       }, []); // Empty dependency array ensures this runs once on mount
     
   

@@ -211,11 +211,9 @@ const MyBookedHotels = () => {
          
           hotelname={activity.hotelData.hotelName|| " "}
           img={"frontend/public/assets/images/itinerary.png"}
-          
           checkInDate={activity.hotelData.offer.checkInDate || " "}
           checkOutDate={activity.hotelData.offer.checkOutDate || " "}
-          
-
+          offer ={activity.hotelData.offer}
           status={activity.Status}
           NumberOfTickets={activity.NumberOfTickets ||1}
           TotalPrice={activity.TotalPrice|| 0}

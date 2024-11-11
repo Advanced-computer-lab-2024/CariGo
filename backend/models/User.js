@@ -70,6 +70,17 @@ const userSchema = new mongoose.Schema(
         required: [false],
       },
     ],
+    ratingsAverage: {
+      type: Number,
+      default: 4.5,
+      min: [1, "Rating must be above 1.0"],
+      max: [5, "Rating must be below 5.0"],
+      set: (val) => Math.round(val * 10) / 10, // Rounding ratings
+    },
+    ratingsQuantity: {
+      type: Number,
+      default: 0,
+    },
     previous_work: [String],
     years_of_experience: {
       type: Number,

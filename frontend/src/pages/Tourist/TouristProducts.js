@@ -40,10 +40,9 @@ import { ToastContainer } from "react-toastify";
 import avatar from "../../assets/profilePic.png";
 import { Navigate, useLocation } from "react-router-dom";
 import { ArrowRightAlt, Edit } from "@mui/icons-material";
-import SearchIcon from '@mui/icons-material/Search';
+import SearchIcon from "@mui/icons-material/Search";
 import PurchaseForm from "../../components/Purchase.js";
 const folderPics = `http://localhost:4000/public/img/products/`;
-
 
 export default function ViewProductsTourist() {
   const [products, setProducts] = useState([]); // State to hold fetched categories
@@ -60,7 +59,7 @@ export default function ViewProductsTourist() {
     try {
       console.log(filter + " ffffffffffffff");
       const response = await axios.get(
-        `http://localhost:4000/cariGo/products/${filter}`
+        `http://localhost:4000/cariGo/products/tourist-products/${filter}`
       ); // Fetch from backend
       // console.log(response.data); // Log the response data
       setProducts(response.data); // Set the categories state
@@ -135,7 +134,6 @@ export default function ViewProductsTourist() {
     }),
   }));
   const Paragraph = ({ children, className, ellipsis, ...props }) => {
-    
     return (
       <StyledBox
         mb={0}
@@ -181,7 +179,7 @@ export default function ViewProductsTourist() {
   const handleDetails2 = () => {
     setShowPurchaseForm(true); // Show the purchase form when the icon is clicked
   };
-  const conversionRate = localStorage.getItem("conversionRate")||1;
+  const conversionRate = localStorage.getItem("conversionRate") || 1;
   return (
     <Layout style={{ height: "100vh" }}>
       <Layout>
@@ -219,7 +217,7 @@ export default function ViewProductsTourist() {
                         setFilter("?price=19");
                       }}
                     >
-                      Less Than {`${(19*conversionRate).toFixed(2)}`}
+                      Less Than {`${(19 * conversionRate).toFixed(2)}`}
                     </MenuItem>
                     <MenuItem
                       value="2"
@@ -227,7 +225,9 @@ export default function ViewProductsTourist() {
                         setFilter("?price[gte]=19&price[lte]=59");
                       }}
                     >
-                      {`${(19*conversionRate).toFixed(2)} - ${(59*conversionRate).toFixed(2)}`}
+                      {`${(19 * conversionRate).toFixed(2)} - ${(
+                        59 * conversionRate
+                      ).toFixed(2)}`}
                     </MenuItem>
                     <MenuItem
                       value="3"
@@ -235,7 +235,9 @@ export default function ViewProductsTourist() {
                         setFilter("?price[gte]=59&price[lte]=99");
                       }}
                     >
-                      {`${(59*conversionRate).toFixed(2)} - ${(99*conversionRate).toFixed(2)}`}
+                      {`${(59 * conversionRate).toFixed(2)} - ${(
+                        99 * conversionRate
+                      ).toFixed(2)}`}
                     </MenuItem>
                     <MenuItem
                       value="4"
@@ -243,7 +245,9 @@ export default function ViewProductsTourist() {
                         setFilter("?price[gte]=99&price[lte]=149");
                       }}
                     >
-                      {`${(99*conversionRate).toFixed(2)} - ${(149*conversionRate).toFixed(2)}`}
+                      {`${(99 * conversionRate).toFixed(2)} - ${(
+                        149 * conversionRate
+                      ).toFixed(2)}`}
                     </MenuItem>
                     <MenuItem
                       value="5"
@@ -251,7 +255,7 @@ export default function ViewProductsTourist() {
                         setFilter("?price[gte]=149");
                       }}
                     >
-                      More Than {`${(149*conversionRate).toFixed(2)}`}
+                      More Than {`${(149 * conversionRate).toFixed(2)}`}
                     </MenuItem>
                   </Select>
                 </FormControl>
@@ -273,7 +277,7 @@ export default function ViewProductsTourist() {
               </div>
             </CardHeader>
             <Box overflow="auto">
-            <ProductTable hover>
+              <ProductTable hover>
                 <TableHead>
                   <TableRow>
                     <TableCell colSpan={2} sx={{ px: 8 }}>
@@ -306,18 +310,26 @@ export default function ViewProductsTourist() {
                       key={product._id}
                       hover
                       onClick={() => handleDetatils2(product._id)}
-                    >                      
+                    >
                       <TableCell
                         colSpan={2}
                         align="left"
                         sx={{ px: 0, textTransform: "capitalize" }}
                       >
                         <Box display="flex" alignItems="center" gap={4}>
-                        <label
+                          <label
                             htmlFor="file-upload"
                             className="custom-file-upload"
                           >
-                            <img src={product.mainImage?folderPics + product.mainImage:avatar} alt="p" disabled />
+                            <img
+                              src={
+                                product.mainImage
+                                  ? folderPics + product.mainImage
+                                  : avatar
+                              }
+                              alt="p"
+                              disabled
+                            />
                           </label>
                           <Paragraph>{product.name}</Paragraph>
                         </Box>
@@ -329,9 +341,11 @@ export default function ViewProductsTourist() {
                         sx={{ px: 8, mr: 10, textTransform: "capitalize" }}
                       >
                         $
-                        {((product.price *conversionRate).toFixed(2))> 999
-                          ? (((product.price *conversionRate).toFixed(2)) / 1000).toFixed(1) + "k"
-                          : ((product.price *conversionRate).toFixed(2))}
+                        {(product.price * conversionRate).toFixed(2) > 999
+                          ? (
+                              (product.price * conversionRate).toFixed(2) / 1000
+                            ).toFixed(1) + "k"
+                          : (product.price * conversionRate).toFixed(2)}
                       </TableCell>
 
                       <TableCell sx={{ px: 5 }} align="left" colSpan={2}>
@@ -347,10 +361,13 @@ export default function ViewProductsTourist() {
                           <Small bgcolor={bgError}>out of stock</Small>
                         )}
                       </TableCell>
-                          <TableCell sx={{ px: 6 }} colSpan={2} onClick={() => {
+                      <TableCell
+                        sx={{ px: 6 }}
+                        colSpan={2}
+                        onClick={() => {
                           handleDetatils2(product._id);
-                        }}>
-               
+                        }}
+                      >
                         <Rating
                           name="read-only"
                           value={product["ratingsAverage"]}
@@ -361,11 +378,19 @@ export default function ViewProductsTourist() {
                         />
                       </TableCell>
                       <TableCell sx={{ px: 7 }} colSpan={1}>
-                        <IconButton onClick={() => handleDetatils(product._id)}>
+                        <IconButton
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDetatils(product._id);
+                          }}
+                        >
                           <Edit color="primary" />
                         </IconButton>
                         <IconButton
-                          onClick={() => handlePurchaseClick(product._id)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handlePurchaseClick(product._id);
+                          }}
                         >
                           <ShoppingBasketIcon color="secondary" />
                         </IconButton>

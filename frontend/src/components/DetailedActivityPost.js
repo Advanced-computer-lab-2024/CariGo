@@ -18,6 +18,8 @@ import PinDropIcon from '@mui/icons-material/PinDrop';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import SellIcon from '@mui/icons-material/Sell';
 import StarIcon from '@mui/icons-material/Star';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import TimelapseIcon from '@mui/icons-material/Timelapse';
 import Link from '@mui/material/Link';
 import { useNavigate } from 'react-router-dom';
 export default function DetailedActivityPost({ id,author, img, start_date, end_date, duration, tag, description, title,location,
@@ -81,7 +83,7 @@ export default function DetailedActivityPost({ id,author, img, start_date, end_d
             {/* Tags below title */}
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginLeft: '15px' }}>
               {
-              tag != null ?
+              tag?
                 (<Chip label={tag} sx={{backgroundColor :'#126782', color: 'white' }} />)
               : ""}
             </Box>
@@ -96,7 +98,7 @@ export default function DetailedActivityPost({ id,author, img, start_date, end_d
           >
             <Typography>author : {author}</Typography>
             <Typography>
-              category: {category != null ? category:"no specified category"}
+              category: {category? category:"no specified category"}
             </Typography>
 
             <Box sx={{display:'flex', }}>
@@ -118,6 +120,20 @@ export default function DetailedActivityPost({ id,author, img, start_date, end_d
                 }}>
                 {isOpened || "status"}
                 </Typography>
+                </Box>
+
+                {/*timings box */}
+                <Box sx={{display:'flex', color:'#ff4d4d',padding:'5px', paddingLeft:'0px'}}>
+                <CalendarMonthIcon/>
+                <Typography sx={{marginTop:'2px'}}>{start_date}</Typography>
+                <Typography sx={{marginLeft:'10px',marginTop:'2px'}}>to</Typography>
+                <CalendarMonthIcon sx={{marginLeft:'10px'}}/>
+                <Typography sx={{marginTop:'2px',}}>{end_date}</Typography>
+                </Box>
+                {/*duration */}
+                <Box sx={{display:'flex',padding:'5px', paddingLeft:'0px'}}>
+                <TimelapseIcon/>
+                <Typography sx={{marginLeft:'5px'}}>{duration}</Typography>
                 </Box>
             <Box sx={{ display: 'flex',
                 marginTop: '5px',

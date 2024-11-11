@@ -1,13 +1,11 @@
-import React, { useState, useEffect } from 'react'; 
-import axios from 'axios'; 
-import TouristHeader from '../../components/TouristHeader';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import TouristHeader from "../../components/TouristHeader";
 
-import './styles/TouristProfile.css'; 
+import "./styles/TouristProfile.css";
 
-
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 //import profilePic from '../../../../backend/public/img/users/'
-
 
 import {
   Button,
@@ -23,11 +21,10 @@ import TouristInfo from "../../components/TouristInfo";
 import CenteredTabs from "../../components/CenteredTabs";
 import "./styles/TouristProfile.css";
 import headerImage from "../../assets/header.png";
-import profileImage from "../../assets/profile.png";
+import profileImage from "../../assets/profilePic.png";
 import TouristInfoEdit from "../../components/TouristInfoEdit";
 import TouristNB from "./components/TouristNavBar";
 import MyPurchases from "./MyPurchases";
-
 
 const TouristProfile = ({ userId }) => {
   const [profile, setProfile] = useState(null);
@@ -108,8 +105,9 @@ const TouristProfile = ({ userId }) => {
   if (!profile) return <div>No profile found.</div>;
 
   const coverImage = headerImage;
-  const logoImage =
-    `http://localhost:4000/public/img/users/` + profile.photo || profileImage;
+  const logoImage = profile.photo
+    ? `http://localhost:4000/public/img/users/` + profile.photo
+    : profileImage;
 
   return (
     <div className="tourist-profile">
@@ -139,7 +137,11 @@ const TouristProfile = ({ userId }) => {
           Edit Preferences
         </Button>
 
-        <TouristInfoEdit profile={profile} setProfile={setProfile} setRefreshKey={setRefreshKey} />
+        <TouristInfoEdit
+          profile={profile}
+          setProfile={setProfile}
+          setRefreshKey={setRefreshKey}
+        />
         <MyPurchases />
 
         {/* Modal for Editing Preferences */}
@@ -167,7 +169,9 @@ const TouristProfile = ({ userId }) => {
                         checked={selectedTags?.includes(tag._id)}
                         onChange={() => handleTagChange(tag._id)}
                         sx={{
-                          color: selectedTags.includes(tag._id) ? "primary.main" : "text.secondary",
+                          color: selectedTags.includes(tag._id)
+                            ? "primary.main"
+                            : "text.secondary",
                         }}
                       />
                     }

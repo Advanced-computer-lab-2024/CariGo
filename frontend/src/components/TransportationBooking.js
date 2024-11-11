@@ -44,6 +44,7 @@ export default function TransportBooking(){
     // };
 
     const [isLoading, setIsLoading] = useState(false);
+    const[error, setError] = useState("");
   
         
     // Function to handle the search button click
@@ -72,14 +73,17 @@ export default function TransportBooking(){
             'Content-Type': 'application/json',
           },
         });
-
         const data = await response.json();
         setTransports(data);
         console.log('Search result:', data);
+        if(transports.length == 0) {
+          setError("no Transportaions available");
+        }
         // Save the flight data to sessionStorage
         sessionStorage.setItem('transports', JSON.stringify(data)); 
       } catch (error) {
           console.error('Error fetching transportation data:', error);
+          setError("no Transportaions available");
       }
       finally {
         console.log('fetched transports',transports);    
@@ -182,11 +186,19 @@ export default function TransportBooking(){
       
                {/* Render HotelCard if hotels are available */}
                <Box sx={{padding:"20px", marginLeft:"10%" , overflow:'auto',marginTop:'4%',}}>
-               {isLoading ? (
-            <CircularProgress sx={{ color: '#126782', margin: '70px' }} />
-          ) : (
-            transports.length > 0 && <TransportCardList transports={transports} />
-          )}
+              {isLoading ? (
+                      <CircularProgress sx={{ color: '#126782', margin: '70px' }} />
+                    ) : (
+                      transports ? (
+                        transports.length > 0 ? (
+                          <TransportCardList transports={transports} />
+                        ) : (
+                          <Typography color="#126782" variant="h6" sx={{ textAlign: 'center', mt: 4 , marginTop:'60px'}}>{error}</Typography>
+                        )
+                      ) : (
+                        <Typography color="#126782" variant="h6" sx={{ textAlign: 'center', mt: 4 , marginTop:'60px'}}>{error}</Typography>
+                      )
+                    )}
                 </Box>
             </Box>
           </LocalizationProvider>

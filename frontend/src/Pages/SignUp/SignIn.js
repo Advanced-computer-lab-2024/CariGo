@@ -141,6 +141,7 @@ function SignIn({ role, preferences }) {
         if(role==="Tour_Guide")
           selectedFiles.certificates.forEach((file) => {
             docsData.append("certificates", file); // Add each certificate file individually
+            console.log(file);
       });
     
       else
@@ -167,12 +168,12 @@ function SignIn({ role, preferences }) {
       // -----------------------------DOCS-----------------------------------------
       
       
-      
+      window.location.href = "/login";
     }catch (error) {
       console.error("Error:", error.message); // Log the error in console
-      //alert("signup failed: " + error.message); // Show alert to the user
+      alert("signup failed: " + error.message); // Show alert to the user
     }
-    window.location.href = "/login";
+    
   };
   //console.log(formData)
   const getStepContent = (step) => {
