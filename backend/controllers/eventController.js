@@ -258,7 +258,8 @@ const readAllItineraries = async (req, res) => {
 
   try {
     // Initialize the query
-    let query = itineraryModel.find({isActive: true});
+    const today = new Date();
+    let query = itineraryModel.find({start_date: { $gte: today },isActive: true});
 
     // Check if a tag title is provided
     let itineraries = []; // Declare itineraries with let

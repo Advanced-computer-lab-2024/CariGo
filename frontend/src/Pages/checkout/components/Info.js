@@ -32,6 +32,7 @@ const products = [
 
 function Info({ totalPrice = 0, activityDetails, type }) {
   const conversionRate = parseFloat(localStorage.getItem("conversionRate")) || 1;
+  const code = localStorage.getItem("currencyCode")||"EGP";
 
   // Clean totalPrice by removing non-numeric characters
   const cleanedTotalPrice = parseFloat(totalPrice.toString().replace(/[^0-9.]/g, ''));
@@ -50,7 +51,7 @@ function Info({ totalPrice = 0, activityDetails, type }) {
         Total
       </Typography>
       <Typography variant="h4" gutterBottom>
-        {newTotal}
+        {newTotal}{"\u00A0\u00A0\u00A0"}{code}
       </Typography>
       <List disablePadding>
         <ListItem key={activityDetails?.title} sx={{ py: 1, px: 0 }}>

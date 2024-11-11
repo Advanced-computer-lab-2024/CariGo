@@ -256,7 +256,7 @@ const MyBookedActivities = () => {
                     onClick={() =>
                       openActivityReviewFormHandler(activity.ActivityId._id)
                     }
-                    disabled={option !== "Done"}
+                    disabled={activity.Status !== "Done"}
                   >
                     <RateReviewIcon />
                   </IconButton>
