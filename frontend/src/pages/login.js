@@ -179,6 +179,11 @@ export default function LoginPage() {
         >
           Don&apos;t have an account?
         </Typography>
+        <Typography
+          sx={{ fontSize: "sm", alignSelf: "center" }}
+        >
+          continue without login <a href="/" onClick={()=> navigate("/")}>here</a>
+        </Typography>
         {/* <Typography
           endDecorator={<Link href="/Register-Seller">Seller</Link>}
           sx={{ fontSize: 'sm', alignSelf: 'center' }}
