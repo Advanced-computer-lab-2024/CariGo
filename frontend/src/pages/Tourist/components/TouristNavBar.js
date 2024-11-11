@@ -58,7 +58,10 @@ function TouristNB() {
   const loadFileComplaint = () => { handleCloseNavMenu(); navigate('/tourist/file-complaint'); };
   const loadBookServices = () => { handleCloseBookingsMenu(); navigate('/book-services'); sessionStorage.clear(); };
   const loadBookedActivities = () => { handleCloseBookingsMenu(); navigate('/tourist/MyBookedActivities'); };
-  const loadBookedItineraries = () => { handleCloseBookingsMenu(); navigate('/tourist/MyBookings'); };
+  const loadBookedItineraries = () => { handleCloseBookingsMenu(); navigate('/tourist/MyBookings');};
+  const loadBookedHotels = () => { handleCloseBookingsMenu(); navigate('/tourist/MyBookedHotels'); };
+  const loadBookedFlights = () => { handleCloseBookingsMenu(); navigate('/tourist/MyBookedFlights'); };
+  const loadBookedTransportation = () => { handleCloseBookingsMenu(); navigate('/tourist/MyBookedTransportation'); };
   const loadProfile = () => { handleCloseUserMenu(); navigate('/tourist-profile'); };
   const handleLogout = () => { handleCloseUserMenu(); navigate('/login'); };
   const handleChangePass = () => { handleCloseUserMenu(); navigate('/change-password'); };
@@ -132,6 +135,7 @@ function TouristNB() {
                 <MenuItem onClick={loadBookServices}><Typography>Book Services</Typography></MenuItem>
                 <MenuItem onClick={loadBookedActivities}><Typography>Booked Activities</Typography></MenuItem>
                 <MenuItem onClick={loadBookedItineraries}><Typography>Booked Itineraries</Typography></MenuItem>
+
               </Menu>
             </Menu>
           </Box>
@@ -164,6 +168,9 @@ function TouristNB() {
                 <MenuItem onClick={loadBookServices}><Typography>Book Services</Typography></MenuItem>
                 <MenuItem onClick={loadBookedActivities}><Typography>Booked Activities</Typography></MenuItem>
                 <MenuItem onClick={loadBookedItineraries}><Typography>Booked Itineraries</Typography></MenuItem>
+                <MenuItem onClick={loadBookedHotels}><Typography>Booked Hotels</Typography></MenuItem>
+                <MenuItem onClick={loadBookedFlights}><Typography>Booked Flights</Typography></MenuItem>
+                <MenuItem onClick={loadBookedTransportation}><Typography>Booked Transportation</Typography></MenuItem>
               </Menu>
             </Box>
           </Box>

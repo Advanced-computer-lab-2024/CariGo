@@ -81,23 +81,19 @@ const MyBookedFlights = () => {
   const handleSearch = () => {
     const today = new Date();
     const filtered = activities.filter((activity) => { // Changed from itineraries.filter to activities.filter
-      const transportationStartDate = new Date(activity.TransportationId.date); // Changed itineraryStartDate to activityStartDate
-      const matchesStatus =
-        filters.status === ""
-          ? true
-          : filters.status === "Booked"
-          ? activity.Status === true && transportationStartDate >= today
-          : filters.status === "Canceled Bookings"
-          ? activity.Status === false
-          : filters.status === "Done"
-          ? activity.Status === true && transportationStartDate < today
-          : false;
-      const matchesSearchTerm =
-        activity.TransportationId.departureLocation.description &&
-        activity.TransportationId.arrivalLocation.description
-          .toLowerCase()
-          .includes(searchTerm.toLowerCase());
-      return matchesStatus && matchesSearchTerm;
+       // Changed itineraryStartDate to activityStartDate
+       const matchesStatus = filters.status === ""
+       ? true
+       : filters.status === "Booked"
+       ? activity.Status === true
+       : filters.status === "Canceled Bookings"
+       ? activity.Status === false
+       : true;  
+          
+          
+         
+
+      return matchesStatus ;
     });
     setFilteredActivities(filtered);
   };
@@ -155,7 +151,7 @@ const MyBookedFlights = () => {
           onChange={handleFilterChange}
           sx={{ mb: 2, mr: 2, width: "200px" }}
         >
-          <MenuItem value="Done">Done</MenuItem>
+         
           <MenuItem value="Booked">Booked</MenuItem>
           <MenuItem value="Canceled Bookings">Canceled Bookings</MenuItem>
         </TextField>
@@ -219,7 +215,7 @@ const MyBookedFlights = () => {
           status={activity.Status}
           NumberOfTickets={activity.NumberOfTickets ||1}
           TotalPrice={activity.TotalPrice|| 0}
-          price={activity.flightData.price ||0}
+          price={activity.flightData.price.total ||0}
           flightData={activity.flightData}
         />
         {/* <IconButton onClick={() => openActivityReviewFormHandler(activity.TransportationId._id)}>

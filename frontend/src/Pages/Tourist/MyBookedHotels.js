@@ -81,7 +81,7 @@ const MyBookedHotels = () => {
   const handleSearch = () => {
     const today = new Date();
     const filtered = activities.filter((activity) => { // Changed from itineraries.filter to activities.filter
-      const transportationStartDate = new Date(activity.TransportationId.date); // Changed itineraryStartDate to activityStartDate
+      const transportationStartDate = new Date(activity.hotelData.offer.checkInDate ); // Changed itineraryStartDate to activityStartDate
       const matchesStatus =
         filters.status === ""
           ? true
@@ -92,12 +92,12 @@ const MyBookedHotels = () => {
           : filters.status === "Done"
           ? activity.Status === true && transportationStartDate < today
           : false;
-      const matchesSearchTerm =
-        activity.TransportationId.departureLocation.description &&
-        activity.TransportationId.arrivalLocation.description
-          .toLowerCase()
-          .includes(searchTerm.toLowerCase());
-      return matchesStatus && matchesSearchTerm;
+    //   const matchesSearchTerm =
+    //     activity.TransportationId.departureLocation.description &&
+    //     activity.TransportationId.arrivalLocation.description
+    //       .toLowerCase()
+    //       .includes(searchTerm.toLowerCase());
+      return matchesStatus ;
     });
     setFilteredActivities(filtered);
   };
@@ -219,8 +219,8 @@ const MyBookedHotels = () => {
           status={activity.Status}
           NumberOfTickets={activity.NumberOfTickets ||1}
           TotalPrice={activity.TotalPrice|| 0}
-          price={activity.hotelData.offer.price ||0}
-          flightData={activity.hotelData}
+          price={activity.hotelData.offer.price.total ||0}
+          hotelData={activity.hotelData}
         />
         {/* <IconButton onClick={() => openActivityReviewFormHandler(activity.TransportationId._id)}>
           <RateReviewIcon />

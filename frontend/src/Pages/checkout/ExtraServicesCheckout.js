@@ -23,13 +23,15 @@ import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import logoImage from "../../assets/logo-no-background.png"; // Correct relative path
 import Avatar from "@mui/material/Avatar";
+import { useLocation } from 'react-router-dom';
 
 import ColorModeIconDropdown from "./theme/ColorModeIconDropdown";
+import { STATES } from "mongoose";
 const user = JSON.parse(localStorage.getItem("user"));
 
 const steps = ["Ticket details", "Payment details", "Review your order"];
 
-export default function Checkout(props, { activityId },) {
+export default function ExtraServicesCheckout(props,) {
   const disableCustomTheme = props;
   const [activeStep, setActiveStep] = React.useState(0);
   const [orderData, setOrderData] = React.useState({
@@ -43,13 +45,19 @@ export default function Checkout(props, { activityId },) {
 
    // === Step 1: Add state for checkbox tracking ===
    const [isTermsChecked, setIsTermsChecked] = React.useState(false);
-
+   const { state } = useLocation();
+   const { type, id } = useParams();
+   console.log(type);
+  const hotel = type==="hotel"? state.hotel :"";
+  const offer = type==="hotel" ? state.offer :"";
+  const flight =type==="flight" ?state.flightData :"";
    // === Step 2: Checkbox change handler ===
+   console.log(flight);
    const handleCheckboxChange = (event) => {
      setIsTermsChecked(event.target.checked);
    };
 
-  const { type, id } = useParams();
+
   const navigate = useNavigate();
 
   // React.useEffect(() => {
@@ -58,42 +66,43 @@ export default function Checkout(props, { activityId },) {
   // }, []);
 
   React.useEffect(() => {
-    if (activityDetails && activityDetails.price) {
+    if (activityDetails && activityDetails.price.total) {
       let price;
-      if (type === "activity") {
-        price = parseFloat(activityDetails.price.range.min);
+      if (type === "hotel") {
+        price = offer.price.total
       } else {
-        price = parseFloat(activityDetails.price);
+        price = flight.price.total
       }
+      console.log("zeft:" ,price);
       setTotalPrice((price * orderData.quantity).toFixed(2));
     }
-  }, [activityDetails, orderData.quantity]);
+  }, [orderData.quantity]);
 
   React.useEffect(() => {
-    const fetchDetails = async () => {
-      try {
-        const endpoint =
-          type === "activity"
-            ? `http://localhost:4000/cariGo/activity/getOne/${id}` : type=="transportation" ?
-            `http://localhost:4000/cariGo/Transportation/getOne/${id}`
-            : `http://localhost:4000/cariGo/Event/readSingleItinerary/${id}`;
+    // const fetchDetails = async () => {
+    //   try {
+    //     const endpoint =
+    //       type === "activity"
+    //         ? `http://localhost:4000/cariGo/activity/getOne/${id}`
+    //         : `http://localhost:4000/cariGo/Event/readSingleItinerary/${id}`;
 
-        // console.log(type);
-        const response = await axios.get(endpoint);
-        setItemDetails(response.data);
+    //     // console.log(type);
+ //       const response = await axios.get(endpoint);
+        const details = type==="hotel" ?{hotelName :hotel.hotel.name ,offer :offer}: flight
+        setItemDetails(details);
 
-        // // Calculate initial total price
-        // const basePrice = type === 'activity'
-        //   ? response.data.price.range.min
-        //   : response.data.price;
-        // setTotalPrice((basePrice * orderData.quantity).toFixed(2));
-      } catch (err) {
-        console.error("Error fetching details:", err);
-      }
-    };
+        // Calculate initial total price
+        const basePrice = type === "hotel"
+          ? offer.price.total
+          : flight.price.total;
+        setTotalPrice((basePrice * orderData.quantity).toFixed(2));
+    //   } catch (err) {
+    //     console.error("Error fetching details:", err);
+    //   }
+    // };
 
     fetchUser();
-    fetchDetails();
+ //   fetchDetails();
   }, [type, id]);
 
   const fetchUser = async () => {
@@ -117,9 +126,9 @@ export default function Checkout(props, { activityId },) {
 
   const navigateToOrders = () => {
     navigate(
-      type === "activity"
-        ? "/tourist/MyBookedActivities"
-        : type==="transportation" ? "/tourist/MyBookedTransportation" :"/tourist/MyBookings"
+      type === "hotel"
+        ? "/tourist/MyBookedHotels"
+        : "/tourist/MyBookedFlights"
     );
   };
   const handlePlaceOrder = async () => {
@@ -131,26 +140,32 @@ export default function Checkout(props, { activityId },) {
       }
 
       let price;
-      if (type === "activity") {
-        price = parseFloat(activityDetails.price.range.min);
-      } else if (type==="transportation"){
-        price = parseFloat(activityDetails.price);
-      }
-        else{
-        price = parseFloat(activityDetails.price);
+      if (type === "hotel") {
+        price = parseFloat(offer.price.total);
+      } else {
+        price = parseFloat(flight.price.total);
       }
 
       const endpoint =
-        type === "activity"
-          ? `http://localhost:4000/cariGo/activity/BookActivity/${id}` : type==="transportation"?
-            `http://localhost:4000/cariGo/Transportation/BookTransportation/${id}`
-          : `http://localhost:4000/cariGo/Event/BookItinerary/${id}`;
+        type === "hotel"
+          ? `http://localhost:4000/cariGo/flights//BookHotel`
+          : `http://localhost:4000/cariGo/flights//BookFlight`;
 
-      const payload = {
+      const payload = type==="hotel" ? {
         PaymentMethod:
           orderData.paymentMethod === "creditCard" ? "Card" : "Wallet",
         TotalPrice: orderData.quantity * price,
         NumberOfTickets: orderData.quantity,
+        hotelData : {
+            hotelName: hotel.hotel.name,  // Replace with actual property you need
+            offer: offer  // Assuming offer is a variable in your scope
+          }
+      } : {
+        PaymentMethod:
+          orderData.paymentMethod === "creditCard" ? "Card" : "Wallet",
+        TotalPrice: orderData.quantity * price,
+        NumberOfTickets: orderData.quantity,
+        flightData : flight
       };
 
       const response = await axios.post(endpoint, payload, {

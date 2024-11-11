@@ -28,7 +28,9 @@ const FlightCard = ({ flight, onClick }) =>{
       // Replace 'h' with ' hours' and 'm' with ' minutes'
       return durationString.replace(/H/g, ' hours ').replace(/M/g, ' minutes ').trim();
     };
-
+    const rate =localStorage.getItem("conversionRate") ||1 ;
+    const currency=localStorage.getItem("currencyCode") ||"EGP" ;
+    console.log(currency);
   return (
     <Box   sx={{
       border: '2px solid #126782', 
@@ -75,7 +77,7 @@ const FlightCard = ({ flight, onClick }) =>{
       <Box sx={{position:'relative',  display:'flex',}}>
         <Box sx={{display:'flex', padding:'0px',}}>
           <AttachMoneyIcon sx={{marginTop:'0px', color: '#126782'}}/>
-          <Price>{`${price.total}   ${price.currency}`}</Price> {/* Display price */}
+          <Price>{`${(price.total*rate).toFixed(2)}   ${currency}`}</Price> {/* Display price */}
         </Box>
         
         <Button onClick={handleClick} 

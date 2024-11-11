@@ -19,6 +19,7 @@ import CreateVintageForm from "./Pages/CreateVintageForm.js";
 import './styles/index.css';
 import SignIn from "./Pages/SignUp/SignIn.js";
 import PaymentCheckout from './Pages/checkout/Checkout';
+import ServicesCheckout from './Pages/checkout/ExtraServicesCheckout';
 import UserViewActivities from "./Pages/Tourist/TouristActivities.js";
 import AdminHome from './Pages/Home.js';
 import React, { lazy, Suspense } from 'react'; // Keep this line
@@ -238,6 +239,7 @@ function App() {
         <Route path="/upload" element={<UploadDocumentsPage/>} />
 
         <Route path="/checkout/:type/:id" element={<PaymentCheckout />} />
+        <Route path="/ExtraServicesCheckOut/:type" element={<ServicesCheckout />} />
 
 
         {/* Add more routes as needed */}

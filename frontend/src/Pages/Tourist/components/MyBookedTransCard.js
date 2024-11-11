@@ -86,7 +86,7 @@ const MyBookedTransCard = ({
       }
     }
   };
-
+  const rate = parseFloat(JSON.parse(localStorage.getItem("conversionRate")))||1;
   return (
     <div className="booking-card">
       <img
@@ -104,7 +104,7 @@ const MyBookedTransCard = ({
         <p className="booking-card__time">Start Time: {startTime}</p>
         <p className="booking-card__time">End Time: {endTime}</p>
         <p className="booking-card__status">
-          Total Price: {TotalPrice}
+          Total Price: {(TotalPrice*rate).toFixed(2)}
         </p>
         <p className="booking-card__status">
           Status: {isPast && status ? "Done" : status ? "Booked" : "Canceled Bookings"}

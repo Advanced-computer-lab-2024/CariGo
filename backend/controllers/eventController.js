@@ -753,6 +753,7 @@ const currencyConversion = async (req, res) => {
     const { currency } = req.query;
     console.log(currency);
     const key = process.env.currencyConversionKey;
+  
     const url = `https://v6.exchangerate-api.com/v6/${key}/pair/EGP/${currency}`;
     const response = await axios.get(url);
     const data = response.data;

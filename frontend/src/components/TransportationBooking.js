@@ -104,7 +104,7 @@ export default function TransportBooking(){
 
     return (
       <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <Box sx={{display:"flex",marginLeft:"10%"}} >
+            <Box sx={{display:"flex",marginLeft:"10%", width:'100vw'}} >
               {/* VERTICAL BOX */}
             <Box  bgcolor="white" 
             sx={{display:"flex", flexDirection:"column",gap:'30px', marginTop:'5%',padding:'10px',marginBottom:'12%'}} >

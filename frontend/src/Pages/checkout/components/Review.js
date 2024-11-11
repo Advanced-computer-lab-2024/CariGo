@@ -37,15 +37,55 @@ export default function Review({ orderData, activityDetails, totalPrice }) {
       >
         <div>
           <Typography variant="subtitle2" gutterBottom>
-            Activity details
+            details
           </Typography>
           <Grid container>
             <Grid item xs={12}>
               <Typography variant="body2">{activityDetails?.title}</Typography>
               <Typography variant="body2">{activityDetails?.description}</Typography>
+              <Typography variant="body2">{activityDetails?.hotelName}</Typography>
               <Typography variant="body2">
-                Date: {activityDetails?.start_date ? new Date(activityDetails.start_date).toLocaleDateString() : 'N/A'}
+                Date: {activityDetails?.start_date ? new Date(activityDetails.start_date).toLocaleDateString() :""}
               </Typography>
+              <Typography variant="body2">
+             {activityDetails?.date ?new Date(activityDetails?.date).toLocaleDateString() :""}
+              </Typography>
+              <Typography variant="body2">
+                 {activityDetails?.offer?.checkInDate }
+              </Typography>
+              <Typography variant="body2">
+                {activityDetails?.offer?.checkOutDate }
+              </Typography>
+              <Typography variant="body2">
+             {activityDetails?.airlineName }
+              </Typography>
+              <Typography variant="body2">
+             {activityDetails?.airlineName }
+              </Typography>
+              <Typography variant="body2">
+             {activityDetails?.carType }
+              </Typography>
+              <Typography variant="body2">
+             {activityDetails?.plateNumber }
+              </Typography>
+
+              <Typography variant="body2">
+             {activityDetails?.departureLocation?.description }
+              </Typography>
+              <Typography variant="body2">
+  {activityDetails?.departureTime?.hours && activityDetails?.departureTime?.minutes 
+    ? `${activityDetails?.departureTime?.hours} :${activityDetails?.departureTime?.minutes}${activityDetails?.departureTime?.dayTime}`
+    : ''}
+</Typography>
+              <Typography variant="body2">
+             {activityDetails?.arrivalLocation?.description }
+              </Typography>
+
+              <Typography variant="body2">
+  {activityDetails?.arrivalTime?.hours && activityDetails?.arrivalTime?.minutes 
+    ? `${activityDetails?.arrivalTime?.hours} :${activityDetails?.arrivalTime?.minutes}${activityDetails?.arrivalTime?.dayTime}`
+    : ''}
+</Typography>
             </Grid>
           </Grid>
         </div>

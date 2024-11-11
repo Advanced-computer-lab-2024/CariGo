@@ -36,6 +36,7 @@ const CurrencyConversion = ({ open, onClose }) => {
 
       // Save conversion rate in localStorage and reload the page
       localStorage.setItem("conversionRate", JSON.stringify(response.data.result));
+      localStorage.setItem("currencyCode", JSON.stringify(code));
       console.log(localStorage.getItem("conversionRate"))
       alert("Currency saved successfully");
       //window.location.reload();

@@ -58,9 +58,10 @@ const HotelDetails = () =>{
         navigate(`/book-services`);
         window.scrollTo(0, 0);
         }
-
+        const token = localStorage.getItem('jwt');
         const handleBookClick=() =>{
-        
+
+         navigate(`/ExtraServicesCheckOut/hotel`,{ state: { hotel,offer } }) ;
         };
 
   return (

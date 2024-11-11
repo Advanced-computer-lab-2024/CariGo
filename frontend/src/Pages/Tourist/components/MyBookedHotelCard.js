@@ -24,7 +24,7 @@ const MyBookedHotelCard = ({
   };
 
 
-  console.log(status);
+  console.log(hotelData);
   React.useEffect(() => {
     // const checkDate = () => {
     //   const today = new Date();
@@ -54,7 +54,7 @@ const MyBookedHotelCard = ({
         
 
         alert("Activity booking canceled successfully");
-        const rate = parseFloat(JSON.parse(localStorage.getItem("conversionRate"))) || 1;
+        const rate =  1;
         console.log(rate);
 
         await axios.patch('/cariGo/users/UpdateWallet', {
@@ -80,7 +80,7 @@ const MyBookedHotelCard = ({
       }
     }
   };
-
+  const rate = parseFloat(JSON.parse(localStorage.getItem("conversionRate")))||1;
   return (
     <div className="booking-card">
       <img
@@ -96,7 +96,7 @@ const MyBookedHotelCard = ({
        
         <p className="booking-card__time">checkoutdate: {checkOutDate}</p>
         <p className="booking-card__status">
-          Total Price: {TotalPrice }
+          Total Price: {(TotalPrice*rate).toFixed(2) }
         </p>
         <p className="booking-card__status">
           Status: {isPast && status ? "Done" : status ? "Booked" : "Canceled Bookings"}

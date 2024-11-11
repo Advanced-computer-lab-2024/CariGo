@@ -11,6 +11,7 @@ import AcUnitIcon from '@mui/icons-material/AcUnit';
 import CallIcon from '@mui/icons-material/Call';
 import NumbersIcon from '@mui/icons-material/Numbers';
 
+
 const TransportCard = ({Transportation}) =>{
 
   const departure= Transportation.departureTime;
@@ -46,7 +47,11 @@ const TransportCard = ({Transportation}) =>{
       // After the user is done viewing the map, use navigate(-1) to go back to the previous page
         // This acts like history.goBack()
     };
-
+    const navigate = useNavigate();
+    const handleBook=() =>{
+      navigate(`/checkout/transportation/${Transportation._id}`);
+    }
+const rate = localStorage.getItem("conversionRate")|| 1;
   return (
     <Card variant="outlined"  sx={{
       border: '2px solid #126782', 
@@ -176,13 +181,13 @@ const TransportCard = ({Transportation}) =>{
       <Box sx={{ display: 'flex', marginLeft: '-10px', marginBottom: '0px', bottom: '0px' }}>
         <AttachMoneyIcon sx={{ marginTop: '0px', color: '#126782' }} />
         <Typography sx={{ color: '#ff4d4d', fontSize: '20px', marginLeft: '0px',marginTop:'-3px' }}>
-          {Transportation.price} 
+          {(Transportation.price * rate ).toFixed(2)} 
         </Typography>
 
         {/* Discount Section (commented out, but ready for use) */}
       </Box>
     
-      <Button 
+      <Button onClick={handleBook}
       sx={{color:'white',  backgroundColor:'#ff4d4d', borderRadius:'5px',fontSize:'17px',
         position:'absolute' ,right:'-10px', bottom:'-5px',width:'70px',height:'40px'}} 
       >Book</Button> 

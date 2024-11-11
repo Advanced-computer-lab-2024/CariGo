@@ -153,34 +153,38 @@ const TransportCardAdv = ({ Transportation }) => {
           <Box sx={{ display: 'flex', gap: '10px', padding: '5px', marginLeft: '-10px' }}>
             <PinDropIcon fontSize="medium" sx={{ fill: "#126782" }} />
             <Link
-              href={Transportation.departureLocationMapLink}
-              sx={{
-                color: '#126782',
-                padding: '1px',
-                cursor: 'pointer',
-                textDecoration: 'none',
-                '&:hover': { textDecoration: 'underline' },
-              }}
-              target="_blank"
-            >
-              Departure Location Link
-            </Link>
+        href={Transportation.departureLocationMapLink}  // Corrected this line
+        sx={{
+          color: '#126782',
+          fontSize:'11px',
+          padding: '1px',
+          marginTop:'3px',
+          cursor: 'pointer',
+          textDecoration: 'underlined',
+          textDecorationColor: '#126782',
+        }}
+        target="_blank"
+      >
+        click to view exact depature location
+      </Link>
           </Box>
 
           <Box sx={{ display: 'flex', gap: '10px', padding: '5px', marginLeft: '-10px' }}>
             <PinDropIcon fontSize="medium" sx={{ fill: "#126782" }} />
-            <Link
-              href={Transportation.arrivalLocationMapLink}
-              sx={{
-                color: '#126782',
-                padding: '1px',
-                cursor: 'pointer',
-                textDecoration: 'none',
-                '&:hover': { textDecoration: 'underline' },
-              }}
-            >
-              Arrival Location Link
-            </Link>
+            <Link  href={Transportation.arrivalLocationMapLink}  
+         sx={{
+          color: '#126782',
+          fontSize:'11px',
+          padding: '1px',
+          marginTop:'3px',
+          cursor: 'pointer',
+          textDecoration: 'underlined',
+          textDecorationColor: '#126782',
+          }}
+          target="_blank"
+        >
+          click to view exact arrival location
+          </Link> 
           </Box>
 
           {/* AC Availability */}

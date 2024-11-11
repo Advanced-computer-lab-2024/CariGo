@@ -255,6 +255,11 @@ const BookTransportation = async (req, res) => {
           NumberOfTickets:NumberOfTickets,
           TotalPrice:TotalPrice
         });
+        const newWalletValue = user.wallet - TotalPrice;
+        console.log(newWalletValue);
+        user.wallet = newWalletValue;
+        await user.save({ validateBeforeSave: false });
+        console.log(user.wallet);
       }
       await Transportation.updateOne(
         { _id: TransportationId }, 
@@ -262,6 +267,7 @@ const BookTransportation = async (req, res) => {
       );
       // Add loyalty points
       user.addLoyaltyPoints(transportation.price);
+      user.addAvailablePoints(TotalPrice);
       await user.save({ validateBeforeSave: false });
 
       res.status(200).json({
@@ -293,7 +299,19 @@ const getAdvTransportation = async (req, res) => {
       return res.status(404).json({ message: "Transportations not found" });
     }
 
-    res.status(200).json(transportations);
+    const transportationWithLinks = transportations.map(option => {
+      // Construct Google Maps URLs
+      const depMapLink = `https://www.google.com/maps?q=${option.departureLocation.coordinates[1]},${option.departureLocation.coordinates[0]}`;
+      const arrMapLink = `https://www.google.com/maps?q=${option.arrivalLocation.coordinates[1]},${option.arrivalLocation.coordinates[0]}`;
+
+      return {
+        ...option.toObject(), // Convert mongoose object to plain JavaScript object
+        departureLocationMapLink: depMapLink,
+        arrivalLocationMapLink: arrMapLink,
+      };
+    });
+    // Send the response
+    res.status(200).json(transportationWithLinks);
   } catch (error) {
     console.error("Error retrieving activities:", error);
     res

@@ -41,7 +41,7 @@ const getCityByCode = async (req, res) => {
         adults: adults,
         children:children,
         nonStop:nonStop,
-        travelClass:travelClass
+        travelClass:travelClass,currencyCode :"EGP",max:100
       });
   
       // Collect all unique airline codes
@@ -348,7 +348,7 @@ const getSeatmap = async (req, res) => {
 
 const BookHotel = async (req, res) => {
   const { hotelData } = req.body;
-  const { PaymentMethod ,price} = req.body;
+  const { PaymentMethod ,price, TotalPrice, NumberOfTickets} = req.body;
   const UserId = req.user.id;
 
   console.log(1);
@@ -376,6 +376,7 @@ const BookHotel = async (req, res) => {
           PaymentMethod: PaymentMethod,
           Status: true,
           CardNumber: CardNumber,
+          TotalPrice :TotalPrice, NumberOfTickets:NumberOfTickets
         });
       } else {
         booking = await bookingModel.create({
@@ -383,11 +384,18 @@ const BookHotel = async (req, res) => {
           UserId: UserId,
           PaymentMethod: PaymentMethod,
           Status: true,
+          TotalPrice :TotalPrice, NumberOfTickets:NumberOfTickets
         });
+        const newWalletValue = user.wallet - TotalPrice;
+        
+        user.wallet = newWalletValue;
+        await user.save({ validateBeforeSave: false });
+        
       }
 
       // Add loyalty points
       user.addLoyaltyPoints(price);
+      user.addAvailablePoints(TotalPrice);
       await user.save({ validateBeforeSave: false });
 
       res.status(200).json({
@@ -410,7 +418,7 @@ const BookHotel = async (req, res) => {
 const BookFlight= async (req, res) => {
   const { flightData } = req.body;
   
-  const { PaymentMethod ,price} = req.body;
+  const { PaymentMethod ,price,TotalPrice, NumberOfTickets} = req.body;
   const UserId = req.user.id;
   console.log(UserId);
   let CardNumber;
@@ -437,18 +445,25 @@ const BookFlight= async (req, res) => {
           PaymentMethod: PaymentMethod,
           Status: true,
           CardNumber: CardNumber,
+          TotalPrice :TotalPrice, NumberOfTickets:NumberOfTickets
         });
       } else {
         booking = await bookingModel.create({
           flightData: flightData,
           UserId: UserId,
           PaymentMethod: PaymentMethod,
-          Status: true,
+          Status: true,TotalPrice :TotalPrice, NumberOfTickets:NumberOfTickets
         });
+        const newWalletValue = user.wallet - TotalPrice;
+        console.log(newWalletValue);
+        user.wallet = newWalletValue;
+        await user.save({ validateBeforeSave: false });
+        console.log(user.wallet);
       }
 
       // Add loyalty points
      user.addLoyaltyPoints(price);
+     user.addAvailablePoints(TotalPrice);
       await user.save({ validateBeforeSave: false });
 
       res.status(200).json({
@@ -499,11 +514,12 @@ const MyFlightBookings = async (req, res) => {
 
 const CancelhotelBooking = async (req, res) => {
   UserId  = req.user.id; // User ID from request body
- const { HotelData } = req.body; // Event ID from URL parameters
+ const { hotelData } = req.body; // Event ID from URL parameters
+ console.log(hotelData);
  if ( mongoose.Types.ObjectId.isValid(UserId)) {
      try {
          const bookings = await bookingModel.updateMany(
-             { UserId, HotelData }, // Filter to find documents with both UserId and ActivityId
+             { UserId, hotelData }, // Filter to find documents with both UserId and ActivityId
              { $set: { Status: false } } // Update to set Status to false
            );
            res.status(200).json({

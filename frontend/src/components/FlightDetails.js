@@ -13,14 +13,14 @@ import TimelapseIcon from '@mui/icons-material/Timelapse';
 const FlightDetails = () =>{
   const { state } = useLocation();
   const flightData = state.flight;
-
+  const rate = parseFloat(JSON.parse(localStorage.getItem("conversionRate")))||1;
   const segments = flightData.segments;
   const airlineName = flightData.airlineName;
   const noOfFlights= segments.length;
-  const price = flightData.price;
+  const price = (flightData.price.total*rate).toFixed(2);
   const availableSeats= flightData.numberOfBookableSeats;
   const bookBefore = flightData.lastTicketingDate;
-
+  const currency=localStorage.getItem("currencyCode") ||"EGP" ;
     // Function to format the duration string
     const navigate = useNavigate();
 
@@ -41,7 +41,7 @@ const FlightDetails = () =>{
     }
 
     const handleBookClick=() =>{
-      
+      navigate(`/ExtraServicesCheckOut/flight`,{ state: { flightData } }) ;
     };
 
   return (
@@ -176,7 +176,7 @@ const FlightDetails = () =>{
         <Box sx={{display:'flex', width:'100%',justifyContent: 'space-between',margin:'10px',marginBottom:'0px', marginTop:'20px'}}>{/*price and book box*/}
         <Box sx={{display:'flex', padding:'0px',marginTop:'-5px'}}>
           <AttachMoneyIcon sx={{marginTop:'0px', color: '#126782', fontSize:'30px'}}/>
-          <Price>{`${price.total}   ${price.currency}`}</Price> {/* Display price */}
+          <Price>{`${(price *rate).toFixed(2)}   ${currency}`}</Price> {/* Display price */}
         </Box>
         <Button onClick={handleBookClick}
             sx={{
