@@ -29,14 +29,16 @@ const PurchaseCard = ({ id, name, description, price, quantity, ratingsAverage, 
   const handleAction = () => {
     triggerRefresh();
   };
+  const conversionRate = localStorage.getItem("conversionRate")||1;
+  const code = localStorage.getItem("currencyCode")||"EGP";
   return (
     <div style={styles.purchaseCard}>
       <div style={styles.details}>
         <h2 style={styles.name}>{name}</h2>
         <p style={styles.description}>{description}</p>
-        <p style={styles.text}>Price per unit: ${price}</p>
+        <p style={styles.text}>Price per unit: ${(price*conversionRate).toFixed(2)} {code}</p>
         <p style={styles.text}>Quantity: {quantity}</p>
-        <p style={styles.text}>Total Cost: ${totalCost}</p>
+        <p style={styles.text}>Total Cost: ${(totalCost*conversionRate).toFixed(2)} {code}</p>
         <p style={styles.text}>Purchased on: {new Date(createdAt).toLocaleDateString()}</p>
 
         {/* Review Icon and Rating */}
