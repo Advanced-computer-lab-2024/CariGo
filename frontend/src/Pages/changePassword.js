@@ -38,6 +38,12 @@ export default function Pass() {
     event.preventDefault();
 
     try {
+      if(!(formData.username===localStorage.getItem("username")))
+      {
+        throw new Error('Unauthorized: Incorrect username or password');
+      }
+      else
+      {
       const response = await fetch("http://localhost:4000/cariGo/users/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -74,10 +80,12 @@ export default function Pass() {
       const id =  localStorage.getItem("id", data.data.user._id);
       console.log(id);
      
-    } catch (error) {
+    }} 
+    catch (error) {
       console.error("Error:", error.message);
       alert("Login failed: " + error.message);
     }
+    
   };
 
   // Step 4: Function to handle submitting the new password
