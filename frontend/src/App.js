@@ -112,7 +112,7 @@ import HotelDetails from "./components/HotelDetails.js";
 import BookServicesPage from "./Pages/Tourist/Booking.js";
 //const dotenv = require('dotenv')
 import ReviewAccounts from "./Pages/accounts/docsReview.jsx";
-import ProductDetailsT from "./Pages/Tourist/ProductDetailsT.js"
+import ProductDetailsT from "./Pages/Tourist/ProductdetailsT.js"
 import ProductDetailsSeller from "./Pages/products/ProductDetailsSeller.jsx"
 function App() {
   

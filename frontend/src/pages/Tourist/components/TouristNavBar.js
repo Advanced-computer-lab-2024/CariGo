@@ -199,10 +199,15 @@ const handleCloseComplaintsMenu = () => setAnchorElComplaints(null); // Close co
                 anchorOrigin={{ vertical: "top", horizontal: "left" }}
                 transformOrigin={{ vertical: "top", horizontal: "left" }}
               >
-                <MenuItem onClick={loadBookServices}><Typography>Book Services</Typography></MenuItem>
-                <MenuItem onClick={loadBookedActivities}><Typography>Booked Activities</Typography></MenuItem>
-                <MenuItem onClick={loadBookedItineraries}><Typography>Booked Itineraries</Typography></MenuItem>
-
+                <MenuItem onClick={loadBookServices}>
+                  <Typography>Book Services</Typography>
+                </MenuItem>
+                <MenuItem onClick={loadBookedActivities}>
+                  <Typography>Booked Activities</Typography>
+                </MenuItem>
+                <MenuItem onClick={loadBookedItineraries}>
+                  <Typography>Booked Itineraries</Typography>
+                </MenuItem>
               </Menu>
             </Menu>
           </Box>
@@ -279,12 +284,16 @@ const handleCloseComplaintsMenu = () => setAnchorElComplaints(null); // Close co
                 transformOrigin={{ vertical: "top", horizontal: "left" }}
                 sx={{marginTop:'30px'}}
               >
-                <MenuItem onClick={loadBookServices}><Typography>Book Services</Typography></MenuItem>
-                <MenuItem onClick={loadBookedActivities}><Typography>Booked Activities</Typography></MenuItem>
-                <MenuItem onClick={loadBookedItineraries}><Typography>Booked Itineraries</Typography></MenuItem>
-                <MenuItem onClick={loadBookedHotels}><Typography>Booked Hotels</Typography></MenuItem>
-                <MenuItem onClick={loadBookedFlights}><Typography>Booked Flights</Typography></MenuItem>
-                <MenuItem onClick={loadBookedTransportation}><Typography>Booked Transportation</Typography></MenuItem>
+                <MenuItem onClick={loadBookServices}>
+                  <Typography>Book Services</Typography>
+                </MenuItem>
+                <MenuItem onClick={loadBookedActivities}>
+                  <Typography>Booked Activities</Typography>
+                </MenuItem>
+                <MenuItem onClick={loadBookedItineraries}>
+                  <Typography>Booked Itineraries</Typography>
+                </MenuItem>
+                
               </Menu>
             </Box>
           </Box>
