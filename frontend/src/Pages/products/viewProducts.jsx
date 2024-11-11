@@ -435,7 +435,8 @@ export default function ViewProducts() {
                       <TableCell
                         sx={{ px: 6 }}
                         colSpan={2}
-                        onClick={() => {
+                        onClick={(e) => {
+                          e.stopPropagation();
                           handleDetatils2(product._id);
                         }}
                       >
@@ -451,13 +452,21 @@ export default function ViewProducts() {
                         />{" "}
                       </TableCell>
                       <TableCell sx={{ px: 7 }} colSpan={1}>
-                        <IconButton onClick={() => handleDetatils(product._id)}>
+                        <IconButton
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDetatils(product._id);
+                          }}
+                        >
                           <Edit color="primary" />
                         </IconButton>
                         {product.archived ? (
                           <Tooltip title="Unarchive Product" placement="top">
                             <IconButton
-                              onClick={() => unarchiveProduct(product)}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                unarchiveProduct(product);
+                              }}
                               style={{ color: "red" }}
                             >
                               <UnarchiveIcon />
@@ -466,21 +475,16 @@ export default function ViewProducts() {
                         ) : (
                           <Tooltip title="Archive Product" placement="top">
                             <IconButton
-                              onClick={() => archiveProduct(product)}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                archiveProduct(product);
+                              }}
                               style={{ color: "green" }}
                             >
                               <ArchiveIcon />
                             </IconButton>
                           </Tooltip>
                         )}
-                        <Tooltip title="Product Analysis" placement="top">
-                          <IconButton
-                            onClick={() => navigate("/admin/analysis")}
-                            style={{ color: "green" }}
-                          >
-                            <QueryStatsIcon />
-                          </IconButton>
-                        </Tooltip>
                       </TableCell>
                     </TableRow>
                   ))}
