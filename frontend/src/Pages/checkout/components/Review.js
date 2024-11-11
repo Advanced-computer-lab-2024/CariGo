@@ -57,10 +57,29 @@ export default function Review({ orderData, activityDetails, totalPrice }) {
                 {activityDetails?.offer?.checkOutDate }
               </Typography>
               <Typography variant="body2">
+             {activityDetails?.airline }
+              </Typography>
+
+              <Typography variant="body2">
              {activityDetails?.airlineName }
               </Typography>
               <Typography variant="body2">
-             {activityDetails?.airlineName }
+             {activityDetails?.segments?.[0]?.departure?.airport
+             }
+              </Typography>
+              <Typography variant="body2">
+             {activityDetails?.segments?.[0]?.departure?.time
+             }
+              </Typography>
+              <Typography variant="body2">
+             {activityDetails?.segments?.[activityDetails.segments.length - 1]?.arrival?.airport
+
+             }
+              </Typography>
+              <Typography variant="body2">
+             {activityDetails?.segments?.[activityDetails.segments.length - 1]?.arrival?.time
+
+             }
               </Typography>
               <Typography variant="body2">
              {activityDetails?.carType }

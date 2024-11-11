@@ -174,6 +174,8 @@ export default function Checkout(props, { activityId },) {
   };
 
   const handleBack = () => {
+    setOrderData({ ...orderData, paymentMethod: "creditCard" });
+
     setActiveStep(activeStep - 1);
   };
 
@@ -204,8 +206,8 @@ export default function Checkout(props, { activityId },) {
           <QuantityForm
             quantity={orderData.quantity}
             onQuantityChange={handleQuantityChange}
-            isTermsChecked={isTermsChecked}          // <--- Pass checkbox state
-            onCheckboxChange={handleCheckboxChange}  // <--- Pass checkbox handler
+            isTermsChecked={isTermsChecked}
+            onCheckboxChange={handleCheckboxChange}
           />
         );
       case 1:
@@ -213,13 +215,15 @@ export default function Checkout(props, { activityId },) {
           <PaymentForm
             userDetails={userDetails}
             paymentTotal={totalPrice}
+            paymentMethod={orderData.paymentMethod}
             onPaymentDetailsChange={handlePaymentDetailsChange}
+            onPaymentTypeChange={handlePaymentTypeChange} // Pass method change handler
           />
         );
       case 2:
         return (
           <Review
-            orderData={orderData}
+            orderData={orderData}  // Make sure orderData is up to date
             activityDetails={activityDetails}
             totalPrice={`${totalPrice}`}
           />
@@ -228,6 +232,7 @@ export default function Checkout(props, { activityId },) {
         throw new Error("Unknown step");
     }
   }
+  
 
   return (
     <AppTheme {...props}>

@@ -26,7 +26,7 @@ import Avatar from "@mui/material/Avatar";
 import { useLocation } from 'react-router-dom';
 
 import ColorModeIconDropdown from "./theme/ColorModeIconDropdown";
-import { STATES } from "mongoose";
+// import { STATES } from "mongoose";
 const user = JSON.parse(localStorage.getItem("user"));
 
 const steps = ["Ticket details", "Payment details", "Review your order"];
@@ -66,7 +66,7 @@ export default function ExtraServicesCheckout(props,) {
   // }, []);
 
   React.useEffect(() => {
-    if (activityDetails && activityDetails.price.total) {
+    if (activityDetails ) {
       let price;
       if (type === "hotel") {
         price = offer.price.total
