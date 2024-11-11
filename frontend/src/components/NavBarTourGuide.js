@@ -16,7 +16,7 @@ import { useNavigate } from "react-router-dom";
 
 // Updated pages without "Activities"
 const pages = ["Itineraries", "Inactive Itineraries"];
-const settings = ["Profile", "Logout"];
+const settings = ["Profile", "Logout",'Change Password'];
 
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -50,6 +50,27 @@ function ResponsiveAppBar() {
     handleCloseNavMenu();
     navigate("/tour_guide/inactive_itineraries");
   };
+
+  const handleDeleteAccount = async () => {
+    const token = localStorage.getItem('jwt');
+    try{
+      const response = await fetch(`http://localhost:4000/cariGo/delReq/createReq`, {
+        method: "POST", // Change this to "POST" if your backend expects it
+        headers: {
+            "Authorization": `Bearer ${token}`, // Send the token in the Authorization header 
+        }
+    });
+    if (response.ok) {
+      alert("Account delete request sent");
+    } else {
+        console.error("Failed to send delete request:", response.statusText);
+    }
+    console.log(response.json);
+    }
+    catch(error){
+      console.error("Error deleting account:", error);
+    }
+  }
 
   return (
     <AppBar position="static" sx={{ backgroundColor: "#004c74" }}>
@@ -161,6 +182,9 @@ function ResponsiveAppBar() {
                     handleCloseUserMenu();
                     if (setting === "Profile") {
                       navigate("/tour_guide/profile");
+                    }
+                    else if(setting==="Change Password") {
+                      navigate("/change-password");
                     }else if (setting === "Logout") {
                       localStorage.removeItem("id");
                       localStorage.removeItem("token");
@@ -174,6 +198,11 @@ function ResponsiveAppBar() {
                   </Typography>
                 </MenuItem>
               ))}
+               <MenuItem onClick={handleDeleteAccount}>
+                <Typography sx={{ textAlign: "center", color:'#ff4d4d' }}>
+                  delete account
+                </Typography>
+              </MenuItem>
             </Menu>
           </Box>
         </Toolbar>

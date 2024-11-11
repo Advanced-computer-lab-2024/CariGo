@@ -1,140 +1,171 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { toast } from "react-toastify";
-import { Layout } from 'antd';
-import Sider from 'antd/es/layout/Sider';
-import Sidebar from '../Sidebar';
-import { ToastContainer } from "react-toastify";
-import { Content, Header } from 'antd/es/layout/layout';
-import TopBar from '../TopBar';
-export default function UpdateCategory() {
-  const [categories, setCategories] = useState([]); // State to hold fetched categories
-  const [loading, setLoading] = useState(false); // Loading state
-  const [selectedCategory, setSelectedCategory] = useState(null); // State to hold the selected category for update
-  const [newName, setNewName] = useState(""); // State to hold new name input
-  const [newDescription, setNewDescription] = useState(""); // State to hold new description input
+import { toast, ToastContainer } from "react-toastify";
+import { Layout, Table, Button, Input, Spin, Modal } from "antd";
+import Sider from "antd/es/layout/Sider";
+import Sidebar from "../Sidebar";
+import { Content, Header } from "antd/es/layout/layout";
+import TopBar from "../TopBar";
 
-  // Fetch categories on component mount
+const UpdateCategory = () => {
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [newName, setNewName] = useState("");
+  const [newDescription, setNewDescription] = useState("");
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [categoryToDelete, setCategoryToDelete] = useState(null);
+
+  const token = localStorage.getItem("jwt");
+
   useEffect(() => {
     fetchCategories();
   }, []);
 
-  // Fetch all categories
   const fetchCategories = async () => {
-    setLoading(true); // Start loading
+    setLoading(true);
     try {
-      const response = await axios.get("http://localhost:4000/Admin/getCategories",{
-        headers:{
-            authorization :`Bearer ${token}`
-    }}); // Fetch categories from backend
-      setCategories(response.data); // Set the categories state
+      const response = await axios.get("http://localhost:4000/Admin/getCategories", {
+        headers: { authorization: `Bearer ${token}` },
+      });
+      setCategories(response.data);
     } catch (error) {
-      console.error("Error fetching categories:", error);
-      toast.error("Error fetching categories."); // Show error message
+      toast.error("Error fetching categories.");
     } finally {
-      setLoading(false); // Stop loading
+      setLoading(false);
     }
   };
 
-  // Function to select a category for updating
   const selectCategory = (category) => {
-    setSelectedCategory(category); // Set the selected category for updating
-    setNewName(category.name); // Pre-fill with current name
-    setNewDescription(category.description); // Pre-fill with current description
+    setSelectedCategory(category);
+    setNewName(category.name);
+    setNewDescription(category.description || "");
   };
-  const token = localStorage.getItem('jwt')
-  // Function to update the selected category
+
   const updateCategory = async () => {
     if (!selectedCategory) return;
 
     try {
-      await axios.put(`http://localhost:4000/Admin/updateCategory/${selectedCategory._id}`, {
-        name: newName, // New name entered
-        description: newDescription, // New description entered
-      },
-      {
-        headers:{
-            authorization :`Bearer ${token}`
-    }});
-      toast.success("Category updated successfully!"); // Show success message
-
-      // After update, clear selected category and refresh the category list
+      await axios.put(
+        `http://localhost:4000/Admin/updateCategory/${selectedCategory._id}`,
+        { name: newName, description: newDescription },
+        { headers: { authorization: `Bearer ${token}` } }
+      );
+      toast.success("Category updated successfully!");
       setSelectedCategory(null);
       setNewName("");
       setNewDescription("");
       fetchCategories();
     } catch (error) {
-      console.error("Error updating category:", error);
-      const errorMessage = error.response?.data?.message || "Error updating category"; // Access the message from error response
-      toast.error(errorMessage); // Show error message
+      toast.error(error.response?.data?.message || "Error updating category");
     }
   };
 
+  const confirmDelete = (category) => {
+    setCategoryToDelete(category);
+    setIsModalVisible(true);
+  };
+
+  const deleteCategory = async () => {
+    if (!categoryToDelete) return;
+    try {
+      await axios.delete(`http://localhost:4000/Admin/deleteCategory/${categoryToDelete._id}`, {
+        headers: { authorization: `Bearer ${token}` },
+      });
+      toast.success("Category deleted successfully!");
+      fetchCategories();
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Error deleting category");
+    } finally {
+      setIsModalVisible(false);
+      setCategoryToDelete(null);
+    }
+  };
+
+  const columns = [
+    {
+      title: "Name",
+      dataIndex: "name",
+      render: (text, record) =>
+        selectedCategory && selectedCategory._id === record._id ? (
+          <Input value={newName} onChange={(e) => setNewName(e.target.value)} />
+        ) : (
+          text
+        ),
+    },
+    {
+      title: "Description",
+      dataIndex: "description",
+      render: (text, record) =>
+        selectedCategory && selectedCategory._id === record._id ? (
+          <Input value={newDescription} onChange={(e) => setNewDescription(e.target.value)} />
+        ) : (
+          text || "No description"
+        ),
+    },
+    {
+      title: "Actions",
+      dataIndex: "actions",
+      render: (_, record) =>
+        selectedCategory && selectedCategory._id === record._id ? (
+          <>
+            <Button type="primary" onClick={updateCategory} style={{ marginRight: 8 }}>
+              Save
+            </Button>
+            <Button onClick={() => setSelectedCategory(null)}>Cancel</Button>
+          </>
+        ) : (
+          <Button type="link" onClick={() => selectCategory(record)}>
+            Edit
+          </Button>
+        ),
+    },
+    {
+      title: "Delete",
+      dataIndex: "delete",
+      render: (_, record) => (
+        <Button type="primary" danger onClick={() => confirmDelete(record)}>
+          Delete
+        </Button>
+      ),
+    },
+  ];
+
   return (
-    <Layout style={{ height: '100vh' }}>
-    <Sider width={256} style={{ background: '#001529' }}>
-          <Sidebar />
-        </Sider>
-        <Layout>
-        <Header style={{ background: '#001529', padding: 0 }}>
-            <TopBar /> {/* Top bar added here */}
-            
-          </Header>
-          <ToastContainer />
-          <Content style={{ padding: '20px', overflowY: 'auto' }}>
-    <div>
-      <h1>Update Categories</h1>
+    <Layout style={{ height: "100vh" }}>
+      <Sider width={256} style={{ background: "#001529" }}>
+        <Sidebar />
+      </Sider>
+      <Layout>
+        <Header style={{ background: "#001529", padding: 0 }}>
+          <TopBar />
+        </Header>
+        <ToastContainer />
+        <Content style={{ padding: "20px", overflowY: "auto" }}>
+          <h1>Update Categories</h1>
+          {loading ? (
+            <Spin tip="Loading categories..." />
+          ) : (
+            <Table columns={columns} dataSource={categories} rowKey="_id" />
+          )}
 
-      {/* Display loading message while fetching categories */}
-      {loading && <p>Loading categories...</p>}
-
-      {/* Display list of categories */}
-      <ul>
-        {categories.map((category) => (
-          <li key={category._id}>
-            <strong>Name:</strong> {category.name} <br />
-            <strong>Description:</strong> {category.description || "No description"} <br />
-            <button onClick={() => selectCategory(category)}>Edit</button> {/* Select category for update */}
-          </li>
-        ))}
-      </ul>
-
-      {/* Form to update category */}
-      {selectedCategory && (
-        <div>
-          <h2>Update Category: {selectedCategory.name}</h2>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault(); // Prevent form submission refresh
-              updateCategory(); // Call update function
-            }}
+          {/* Delete Confirmation Modal */}
+          <Modal
+            title="Confirm Deletion"
+            visible={isModalVisible}
+            onOk={deleteCategory}
+            onCancel={() => setIsModalVisible(false)}
+            okText="Yes, Delete"
+            okButtonProps={{ danger: true }}
           >
-            <label>
-              Name:
-              <input
-                type="text"
-                value={newName}
-                onChange={(e) => setNewName(e.target.value)} // Update name in state
-                required
-              />
-            </label>
-            <br />
-            <label>
-              Description:
-              <input
-                type="text"
-                value={newDescription}
-                onChange={(e) => setNewDescription(e.target.value)} // Update description in state
-              />
-            </label>
-            <br />
-            <button type="submit">Update Category</button>
-          </form>
-        </div>
-      )}
-    </div>
- </Content>
- </Layout>
- </Layout>
+            <p>
+              Are you sure you want to delete the category <strong>{categoryToDelete?.name}</strong>?
+            </p>
+          </Modal>
+        </Content>
+      </Layout>
+    </Layout>
   );
-}
+};
+
+export default UpdateCategory;

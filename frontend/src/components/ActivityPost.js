@@ -19,11 +19,9 @@ import SellIcon from '@mui/icons-material/Sell';
 import StarIcon from '@mui/icons-material/Star';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-
-export default function ActivityPost({ 
-  id, author, img, start_date, end_date, duration, tag, description, title, location,
-  price, category, discount, isOpened, rating
-}) {
+import TimelapseIcon from '@mui/icons-material/Timelapse';
+export default function ActivityPost({ id,author, img, start_date, end_date, duration, tag, description, title,location,
+    price,category,discount,isOpened, rating}) {
   const [expanded, setExpanded] = React.useState(false);
   const [snackbarOpen, setSnackbarOpen] = React.useState(false);
   const [snackbarMessage, setSnackbarMessage] = React.useState('');
@@ -85,11 +83,17 @@ export default function ActivityPost({
     setSnackbarOpen(false);
   };
 
+const navigate = useNavigate();
+
+const conversionRate = localStorage.getItem("conversionRate")||1;
+const code = localStorage.getItem("currencyCode")||"EGP";
+
   return (
     <Card
       sx={{
-        width: '100%',
-        maxWidth: '900px',
+        width: '100%', // Use full width of the container
+        maxWidth: '900px', // Set a max width
+        height:'350px',
         maxHeight: '500px',
         color: '#126782',
         fontSize: '18px',
@@ -105,7 +109,7 @@ export default function ActivityPost({
           cursor: 'pointer',
         },
       }}
-      onClick={() => navigate(`/activities/${id}`)}
+      onClick={() => navigate(`/activity/${id}`)}
     >
       <Box sx={{ display: 'flex', flexDirection: 'row', flexGrow: 1 }}>
         <CardMedia
@@ -132,7 +136,8 @@ export default function ActivityPost({
             }}
           >
             <CardHeader
-              avatar={<Avatar sx={{ bgcolor: red[500] }}>R</Avatar>}
+//               avatar={<Avatar sx={{ bgcolor: red[500] }}>R</Avatar>}
+
               title={
                 <Typography variant="h5" sx={{ width: '300px', fontWeight: 'bold', fontSize: '24px' }}>
                   {title}
@@ -145,12 +150,22 @@ export default function ActivityPost({
             </Box>
           </Box>
           
-          <Box sx={{ display: 'flex', flexFlow: 'column', marginLeft: '30px' }}>
-            <Typography>author : {author}</Typography>
-            <Typography>category: {category != null ? category : "no specified category"}</Typography>
-            <Box sx={{display:'flex'}}>
-              <StarIcon sx={{scale:'0.9'}}/>
-              <Typography sx={{fontSize: '16px', marginTop:'1px'}}>{rating}</Typography>
+          {/* Data Stuff */}
+          <Box
+            sx={{
+              display: 'flex',
+              flexFlow: 'column',
+              marginLeft: '30px',
+            }}
+          >
+            <Typography>
+              category: {category != null ? category:"no specified category"}
+              
+            </Typography>
+
+            <Box sx={{display:'flex', }}>
+            <StarIcon sx={{scale:'0.9'}}/>
+            <Typography sx={{fontSize: '16px',marginTop:'1px'}}>{""+rating+""}</Typography>
             </Box>
             <Box sx={{
               fontSize: '16px',
@@ -162,36 +177,23 @@ export default function ActivityPost({
             }}>
               <Typography sx={{ marginLeft: '6px', marginBottom: '2px' }}>
                 {isOpened || "status"}
-              </Typography>
-            </Box>
-            <Typography sx={{fontSize: '16px'}}>{category}</Typography>
-            <Typography sx={{fontSize: '16px'}}>From: {start_date}</Typography>
-            <Typography sx={{fontSize: '16px'}}>To: {end_date}</Typography>
-            <Typography sx={{fontSize: '16px', marginLeft: '30px'}}>{duration}</Typography>
-            <Box sx={{ display: 'flex', marginTop: '5px', marginLeft:'-10px' }}>
-              <PinDropIcon sx={{marginTop:'0px'}}/>
-              <Typography sx={{marginLeft:'5px'}}>
-                {location != null ? (
-                  <>
-                    lan: {location.lan}<br />
-                    lon: {location.lon}
-                  </>
-                ) : (
-                  'no location specified'
-                )}
-              </Typography>
-            </Box>
-            
-            <Box sx={{ display: 'flex', marginTop: '5px', marginLeft:'-10px' }}>
-              <AttachMoneyIcon />
-              <Typography sx={{
+                </Typography>
+                </Box>
+        
+            <Box sx={{ display: 'flex',
+                marginTop: '5px',
+                margoinLeft:'-10px' ,
+                
+                }}>
+            <AttachMoneyIcon />
+            <Typography sx={{
                 marginLeft:'5px',
                 color: '#126782',
                 marginRight: '5px',
-              }}>
-                {price != null ? 
-                  (price.range.max+"-"+price.range.min)
-                  : 'no specified price'}
+            }}> {
+              price != null?
+              ((price.range?.max*conversionRate).toFixed(2)+"-"+(price.range?.min*conversionRate).toFixed(2) ) +` ${code}`
+              :'no specified price'}
               </Typography>
 
               <Box sx={{
@@ -208,7 +210,8 @@ export default function ActivityPost({
           </Box>
         </Box>
       </Box>
-
+      <Box sx={{display:'flex', flexDirection:'column', }}>
+      {/* Description */}
       <CardContent sx={{ flexGrow: 1 }}>
         <Typography
           variant="body2"
@@ -254,6 +257,7 @@ export default function ActivityPost({
         onClose={handleSnackbarClose}
         message={snackbarMessage}
       />
+      </Box>
     </Card>
   );
 }

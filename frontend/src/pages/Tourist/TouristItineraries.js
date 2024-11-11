@@ -63,8 +63,6 @@ const TouristItineraries = () => {
         tags: "",
         startDate: "",
     });
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
     const [sortOption, setSortOption] = useState('');
     const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -155,8 +153,8 @@ const TouristItineraries = () => {
           }
   
           const json = await response.json();
-          setItineraries(json);
-          setFilteredActivities(json); // Set initial filtered activities
+          setItineraries(json.filter((itinerary) => itinerary.isFlagged === false));
+          setFilteredActivities(json.filter((itinerary) => itinerary.isFlagged === false)); // Set initial filtered activities
         } catch (error) {
           console.log("Error fetching itineraries:", error);
         }
@@ -342,7 +340,8 @@ useEffect(() => {
                 <Grid item key={index} sx={{ display: 'flex', justifyContent: 'left' }}>
                     <UserItineraryPost
                         id={itinerary._id}
-                        author={itinerary.author?.name}
+                        author={itinerary.author}
+                        title={itinerary.title}
                         img={"frontend/public/assets/images/itirenary.png"}
                         start_date={itinerary.start_date}
                         end_date={itinerary.end_date}

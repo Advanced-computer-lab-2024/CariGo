@@ -4,14 +4,15 @@ import {  Box, Menu, TextField, Button, CircularProgress, Typography, MenuItem ,
 import SearchIcon from '@mui/icons-material/Search';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import NavBar from './components/TouristNavBar.js';
+import GuestNavBar from "../../components/NavBarTourist";
 
 export default function TouristViewActivities (){
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-  
+    
     const [activities, setActivities] = useState([]);
-  
+    const [tourist, setTourist] = useState(true);
   //to show user typed in values
     const [filterInputValues, setFilterInputValues] = useState({
         minPrice: "",
@@ -50,11 +51,11 @@ export default function TouristViewActivities (){
     // handles if filter value changes
     const handleFilterChange = (e) => {
         const { name, value } = e.target;
+        //console.log(`Changing ${name} to ${value}`);
         setFilterInputValues(prevFilters => ({
             ...prevFilters,
             [name]: value
         }));
-        
     };
   
     const handleFilter = () => {
@@ -118,9 +119,11 @@ export default function TouristViewActivities (){
                 console.log("Fetched activities:", json);
                 setActivities(json);
                 setFilteredActivities(json); // Initialize filteredActivities with all activities
+                const token = localStorage.getItem('jwt');
+                if (!token) setTourist(false);
             } catch (error) {
                 console.log('Error fetching activities:', error);
-                setError('Failed to fetch activities. Please try again later.');
+                //setError('Failed to fetch activities. Please try again later.');
             } finally {
                 setLoading(false);
             }
@@ -134,9 +137,10 @@ export default function TouristViewActivities (){
     const [searchTerm, setSearchTerm] = useState('');
     
     const handleSearch = () => {
+      console.log("search term "+searchTerm);
         if (!searchTerm.trim()) {
             // If searchTerm is empty, show all activities
-            setFilteredActivities(filteredActivities);
+            setFilteredActivities(activities);
         } else {
             const filtered = activities.filter((activity) => {
                 return (activity.title && activity.title.toLowerCase().includes(searchTerm.toLowerCase()))
@@ -149,7 +153,8 @@ export default function TouristViewActivities (){
   
     return(
       <div>
-      <NavBar/>
+        
+      {!tourist? <GuestNavBar/>: <NavBar/>}
   
       <Box sx={{
         width:'1150px' ,
@@ -206,6 +211,7 @@ export default function TouristViewActivities (){
                 <Box sx={{display:'flex',
                  flexDirection: anchorEl ? 'column' : 'row' ,
                   marginTop: '30px',marginLeft :'120px',}}> {/* for filter and sort next to each other*/}
+                  
                 {/*Filter menu*/}
                 <Box
                 sx={{
@@ -240,7 +246,7 @@ export default function TouristViewActivities (){
                       label="Price"
                       variant="outlined"
                       name="price"
-                      value={filters.price}
+                      value={filterInputValues.price}
                       onChange={handleFilterChange}
                       type="number"
                       sx={{ mb: 2, mr: 2 , marginLeft :'10px',}}
@@ -249,15 +255,16 @@ export default function TouristViewActivities (){
                       label="Category"
                       variant="outlined"
                       name="category"
-                      value={filters.category}
+                      value={filterInputValues.category}
                       onChange={handleFilterChange}
+                      type="text"
                       sx={{ mb: 2, mr: 2 }}
                   />
                   <TextField
                       label="Rating"
                       variant="outlined"
                       name="rating"
-                      value={filters.rating}
+                      value={filterInputValues.rating}
                       onChange={handleFilterChange}
                       type="number"
                       sx={{ mb: 2, mr: 2 }}
@@ -267,7 +274,7 @@ export default function TouristViewActivities (){
                       //label="Start Date"
                       variant="outlined"
                       name="startDate"
-                      value={filters.startDate}
+                      value={filterInputValues.startDate}
                       onChange={handleFilterChange}
                       type="date"
                       sx={{ mb: 2, mr: 2 }}
@@ -325,13 +332,14 @@ export default function TouristViewActivities (){
   
   
       <Box sx={{ 
-        height: '100%',
+        height: '80vh',
         marginLeft: '100px',
         width: '100%',
         display: "flex",
         flexDirection: "column",
         gap: "15px",
         overflowX: 'hidden',
+        overflowY: 'auto', 
         '&::-webkit-scrollbar': {display: 'none',},
         }}> {/* Enable vertical scrolling only */}
   

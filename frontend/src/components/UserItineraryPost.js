@@ -24,6 +24,7 @@ export default function UserItineraryPost({
   id,
   author,
   img,
+  title,
   start_date,
   end_date,
   locations = [], // Default to an empty array
@@ -121,7 +122,9 @@ export default function UserItineraryPost({
     }
     setSnackbarOpen(false);
   };
-
+  
+  const conversionRate = localStorage.getItem("conversionRate")||1;
+  const code = localStorage.getItem("currencyCode")||"EGP";
   return (
     <Card
       sx={{
@@ -160,10 +163,10 @@ export default function UserItineraryPost({
 
         <Box sx={{ display: 'flex', flexDirection: 'column', width: '400px', padding: '10px' }}>
           <CardHeader
-            avatar={<Avatar sx={{ bgcolor: red[500] }}>{author?.charAt(0) || 'A'}</Avatar>}
+            avatar={<Avatar sx={{ bgcolor: red[500] }}>{title?.charAt(0) || 'A'}</Avatar>}
             title={
               <Typography variant="h5" sx={{ fontWeight: 'bold', fontSize: '24px' }}>
-                {author || "Anonymous"}
+                {title || "Anonymous"}
               </Typography>
             }
           />
@@ -196,7 +199,7 @@ export default function UserItineraryPost({
             <Box sx={{ display: 'flex', marginTop: '5px' }}>
               <AttachMoneyIcon />
               <Typography sx={{ marginLeft: '5px', color: price ? '#126782' : '#ff4d4d' }}>
-                {price ? `$${price}` : "Price not specified"}
+                {price ? `${(price*conversionRate).toFixed(2)} ${code}` : "Price not specified"}
               </Typography>
             </Box>
           </Box>
@@ -216,13 +219,6 @@ export default function UserItineraryPost({
           </IconButton>
           <IconButton aria-label="share" onClick={handleShare}>
             <ShareIcon />
-          </IconButton>
-          <IconButton
-            aria-label="delete"
-            onClick={handleDelete}
-            sx={{ color: 'red' }}
-          >
-            <DeleteIcon />
           </IconButton>
         </Box>
       </CardActions>

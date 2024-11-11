@@ -39,7 +39,6 @@ router.route("/").get(touristController.updateMe);
 router
   .route("/:id")
   .get(touristController.getTourist)
-  .patch(touristController.updateTourist)
   .delete(touristController.deleteTourist);
 
 

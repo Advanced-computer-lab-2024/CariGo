@@ -4,15 +4,22 @@ import { Box, Typography, Chip, Avatar } from "@mui/material";
 import PinDropIcon from "@mui/icons-material/PinDrop";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import StarIcon from "@mui/icons-material/Star";
-import NavBar from "../components/NavBar";
+import ResponsiveAppBar from "./Tourist/components/TouristNavBar";
 import UserAcList from "../components/UserAcList"; // Import the new MarkerList component
 import "../components/styles/CompanyInfo.css";
 import logoImage from "../assets/itinerary.png"; // Correct relative path
+import { useNavigate } from "react-router-dom";
+import Button from '@mui/material/Button';
 import axios from "axios";
 
 const ItineraryDetails = () => {
   const { id } = useParams(); // Get the itinerary ID from the URL
   const [itinerary, setItinerary] = useState(null);
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate(`/checkout/itinerary/${id}`); // Update the navigation path
+  };
 
   useEffect(() => {
     const fetchItineraryDetails = async () => {
@@ -83,10 +90,11 @@ const ItineraryDetails = () => {
     startDate: formatDateTime(activity.start_date),
     endDate: formatDateTime(activity.end_date),
   }));
-
+  const conversionRate = localStorage.getItem("conversionRate")||1;
+  const code = localStorage.getItem("currencyCode")||"EGP";
   return (
     <div>
-      <NavBar />
+      <ResponsiveAppBar />
       <Box sx={{ padding: "20px", maxWidth: "1200px", margin: "auto" }}>
         <Box
           sx={{
@@ -176,7 +184,7 @@ const ItineraryDetails = () => {
               <AttachMoneyIcon sx={{ marginRight: "5px" }} />
               <Typography variant="body1">
                 <strong>Price:</strong>{" "}
-                {price ? `$${price}` : "Price not specified"}
+                {price ? `${(price*conversionRate).toFixed(2)} ${code}` : "Price not specified"}
               </Typography>
             </Box>
             <Typography variant="body1" sx={{ fontSize: "18px" }}>
@@ -207,6 +215,11 @@ const ItineraryDetails = () => {
               <strong>Activities:</strong>
             </Typography>
             <UserAcList activities={formattedActivities} />
+          </Box>
+          <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+            <Button variant="contained" color="primary" onClick={handleClick}>
+              Book Now
+            </Button>
           </Box>
         </div>
       </Box>

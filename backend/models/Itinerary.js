@@ -56,6 +56,10 @@ const itinerarySchema = new schema(
       max: [5, "Rating must be below 5.0"],
       set: (val) => Math.round(val * 10) / 10, // Rounding ratings
     },
+    ratingsQuantity: {
+      type: Number,
+      default: 0,
+    },
     tags: {
       type: [
         {
@@ -69,6 +73,10 @@ const itinerarySchema = new schema(
       type: Boolean,
       default: true,
     },
+    isFlagged:{
+      type: Boolean,
+      default: false,
+    }
   },
   { timestamps: true }
 );

@@ -25,7 +25,7 @@ export default function TouristVintagePost({
   pictures = [],
   location = null,
   ticket_price = {
-    foreigner: "Not specified",
+    foriegner: "Not specified",
     native: "Not specified",
     student: "Not specified"
   },
@@ -109,7 +109,8 @@ export default function TouristVintagePost({
     }
     setSnackbarOpen(false);
   };
-
+  const conversionRate = localStorage.getItem("conversionRate")||1;
+  const code = localStorage.getItem("currencyCode")||"EGP";
   return (
     <Card
       sx={{
@@ -179,7 +180,7 @@ export default function TouristVintagePost({
             <Box sx={{ display: 'flex', marginTop: '5px' }}>
               <AttachMoneyIcon />
               <Typography sx={{ marginLeft: '5px', color: '#126782' }}>
-                Ticket Prices :<br/> Foreigner: {ticket_price.foreigner}<br/> Native: {ticket_price.native}<br/> Student: {ticket_price.student}
+                Ticket Prices in {`${code}`} :<br/> Foreigner: {(ticket_price.foriegner*conversionRate).toFixed(2)}<br/> Native: {(ticket_price.native*conversionRate).toFixed(2)}<br/> Student: {(ticket_price.student*conversionRate).toFixed(2)}
               </Typography>
             </Box>
 

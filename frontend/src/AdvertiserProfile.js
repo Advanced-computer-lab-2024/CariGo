@@ -3,10 +3,11 @@ import axios from "axios";
 import ProfileHeader from "./components/ProfileHeader";
 import CompanyInfo from "./components/CompanyInfo";
 import CenteredTabs from "./components/CenteredTabs";
-import NavBar from "./components/NavBar";
+import NavBar from "./components/NavBarAdvertiser";
 import SmallButton from "./components/smallButton"; // Import SmallButton here
 import "./styles/AdvertiserProfile.css";
 import coverImage from "./assets/header.png";
+import profileImage from "./assets/profilePic.png"
 import logoImage from "./assets/profile.png";
 import { jwtDecode } from "jwt-decode";
 
@@ -62,33 +63,36 @@ const AdvertiserProfile = ({ userId }) => {
   if (!profile) {
     return <div>No profile found.</div>;
   }
-
+  const logoImage =  profile.photo?`http://localhost:4000/public/img/logos/`+profile.photo:profileImage ;
   return (
-    <div className="advertiser-profile">
-      <header className="profile-header">
-        <ProfileHeader
-          companyName={profile.companyName || "CariGo"}
-          coverImage={coverImage}
-          logo={logoImage}
-        />
-      </header>
-      <div className="profile-content">
-        <CompanyInfo
-          userName={profile.username || "No username provided"}
-          email={profile.email || "No email provided"}
-          role={profile.role || "No role assigned"}
-          hotline={profile.hotline || "No hotline provided"}
-          website={profile.website_link || "#"}
-          about={profile.about || "No about information available."}
-          description={profile.description || "No description available."}
-        />
-        <SmallButton
-          profile={profile}
-          setProfile={setProfile}
-          setRefreshKey={setRefreshKey}
-        />{" "}
-        {/* Pass setRefreshKey */}
-        <CenteredTabs />
+    <div>
+      <NavBar/>
+      <div className="advertiser-profile">
+        <header className="profile-header">
+          <ProfileHeader
+            companyName={profile.companyName || "CariGo"}
+            coverImage={coverImage}
+            logo={logoImage}
+          />
+        </header>
+        <div className="profile-content">
+          <CompanyInfo
+            userName={profile.username || "No username provided"}
+            email={profile.email || "No email provided"}
+            role={profile.role || "No role assigned"}
+            hotline={profile.hotline || "No hotline provided"}
+            website={profile.website_link || "#"}
+            about={profile.about || "No about information available."}
+            description={profile.description || "No description available."}
+          />
+          <SmallButton
+            profile={profile}
+            setProfile={setProfile}
+            setRefreshKey={setRefreshKey}
+          />{" "}
+          {/* Pass setRefreshKey */}
+          <CenteredTabs />
+        </div>
       </div>
     </div>
   );

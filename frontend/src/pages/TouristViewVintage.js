@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../styles/index.css";
+import ResponsiveAppBar from "./Tourist/components/TouristNavBar";
 import NavBar from "../components/NavBarTourist";
 import { Box, Grid, TextField, Button, MenuItem } from "@mui/material";
 import { styled, alpha } from '@mui/material/styles';
@@ -127,7 +128,7 @@ const [filters, setFilters] = useState({
   const [errorMessage, setErrorMessage] = useState(""); // State to store error messages
  
   const [searchTerm, setSearchTerm] = useState(""); // For search
- 
+  const [tourist, setTourist] = useState(true); // For tour
   //const [selectedTag, setSelectedTag] = useState(""); // For search
 
      // Fetch vintages
@@ -159,7 +160,7 @@ const [filters, setFilters] = useState({
           const vintagesArray = Array.isArray(json) ? json : [];
           setVintages(vintagesArray);
           setfilteredVintages(vintagesArray); // Initialize filteredVintages with all vintages
-  
+          if(!token) setTourist(false); //
         } catch (error) {
           console.log("Error fetching vintages:", error);
           setErrorMessage("Failed to fetch vintages. Please try again later.");
@@ -220,7 +221,7 @@ const handleSearch = () => {
 
   return (
     <div>
-      <NavBar/>
+      {tourist? <ResponsiveAppBar/>: <NavBar/>}
         {/*Search bar*/}
         <Box sx={{display:'flex',}}>
             <Search>

@@ -7,15 +7,16 @@ const router = express.Router();
 
 
 router.get('/', productController.getProducts);
-
+router.get('/tourist-products', productController.getTouristProducts);
 router.get('/:id', productController.getProduct);
 router.get('/getSellersProducts/:id', productController.getSellersProducts);
 router.post(
     '/createProduct',
     authController.protect,
+    
+    productController.createProduct,
     multerController.uploadProductImages,
-    multerController.resizeProductImages,
-    productController.createProduct
+    multerController.resizeProductImages
   );
   
   router.patch(

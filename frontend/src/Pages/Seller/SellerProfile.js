@@ -1,21 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 // import ProfileHeader from '../components/ProfileHeader';
-import Profile_Header from './Profile_Header';
+import ProfileHeader from './Profile_Header';
 // import CompanyInfo from '../components/CompanyInfo';
 // import TourGuideInfo from '../components/TourGuideInfo';
 import SellerInfo from './SellerInfo';
 // import CenteredTabs from '../components/CenteredTabs';
 // import TourismGovernerTabs from '../components/tourismGovernerTabs';
-// import NavBar from '../components/NavBar';
+import NavBar from '../../components/NavBarAdvertiser';
 // import SmallButton from '../components/smallButton'; // Import SmallButton here
 // import SmallButtonTG from '../components/smallButtonTG';
 import SmallButtonS from './smallButtonS';
 import '../../styles/AdvertiserProfile.css';
+import profileImage from '../../assets/profilePic.png';
 import coverImage from '../../assets/cover.jpg'; 
 import { Button } from '@mui/base/Button';
 import { useNavigate } from 'react-router-dom';
-import logoImage from '../../assets/travel.jpg'; 
+ 
 
 const SellerProfile = ({ userId }) => {
   const [profile, setProfile] = useState(null);
@@ -23,6 +24,7 @@ const SellerProfile = ({ userId }) => {
   const [error, setError] = useState(null);
   const [refreshKey, setRefreshKey] = useState(0); // Add refreshKey state
   const navigate = useNavigate()
+
   const handleProducts = ()=>{
   
     console.log(2)
@@ -73,34 +75,37 @@ const SellerProfile = ({ userId }) => {
   if (!profile) {
     return <div>No profile found.</div>;
   }
-
+  const logoImage =  profile.photo?`http://localhost:4000/public/img/logos/`+profile.photo:profileImage ;
   return (
-    <div className="advertiser-profile">
-      <header className="profile-header">
-        <Profile_Header 
-          companyName={profile.username  /*companyName || 'CariGo'*/} 
-          coverImage={coverImage} 
-          logo={logoImage} 
-        />
-      </header>
-      <div className="profile-content">
-        <SellerInfo 
-          userName={profile.username || 'No username provided'} 
-          email={profile.email || 'No email provided'}
-          description={profile.description || 'no description was provided'}
-        //   previousWork={profile.previousWork || 'no previous work was provided'}
-          mobileNumber={profile.mobile_number || 'no mobile was provided'}
-        //   role={profile.role || 'No role assigned'}
-        //   hotline={profile.hotline || 'No hotline provided'}
-        //   website={profile.website_link || '#'}
-        //   about={profile.about || 'No about information available.'}
-        //   description={profile.description || 'No description available.'}
-        //   { userName, email, yearsOfExperience,previousWork,mobileNumber }
-        />
+    <div>
+      <NavBar/>
+      <div className="advertiser-profile">
+        <header className="profile-header">
+          <ProfileHeader 
+            companyName={logoImage  /*companyName || 'CariGo'*/} 
+            coverImage={coverImage} 
+            logo={logoImage} 
+          />
+        </header>
+        <div className="profile-content">
+          <SellerInfo 
+            userName={profile.username || 'No username provided'} 
+            email={profile.email || 'No email provided'}
+            description={profile.description || 'no description was provided'}
+          //   previousWork={profile.previousWork || 'no previous work was provided'}
+            mobileNumber={profile.mobile_number || 'no mobile was provided'}
+          //   role={profile.role || 'No role assigned'}
+          //   hotline={profile.hotline || 'No hotline provided'}
+          //   website={profile.website_link || '#'}
+          //   about={profile.about || 'No about information available.'}
+          //   description={profile.description || 'No description available.'}
+          //   { userName, email, yearsOfExperience,previousWork,mobileNumber }
+          />
         
-        <SmallButtonS profile={profile} setProfile={setProfile} setRefreshKey={setRefreshKey} /> {/* Pass setRefreshKey */}
-        <Button style={{marginTop:"10px"}} onClick={()=>handleProducts()}>View Products</Button>
-        {/* <SellerTabs /> */}
+          <SmallButtonS profile={profile} setProfile={setProfile} setRefreshKey={setRefreshKey} /> {/* Pass setRefreshKey */}
+          <Button style={{marginTop:"10px"}} onClick={()=>handleProducts()}>View Products</Button>
+          {/* <SellerTabs /> */}
+        </div>
       </div>
     </div>
   );

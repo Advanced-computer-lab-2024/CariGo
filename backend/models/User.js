@@ -1,8 +1,7 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
-const crypto = require('crypto');
-
+const crypto = require("crypto");
 
 const experienceSchema = require("./Experience");
 const activitySchema = require("./Activity");
@@ -33,7 +32,6 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, "Please confirm your password!"],
       validate: {
-        //ONLY WORKS ON CREATE AND SAVE!!
         validator: function (el) {
           return el === this.password;
         },
@@ -71,6 +69,17 @@ const userSchema = new mongoose.Schema(
         required: [false],
       },
     ],
+    ratingsAverage: {
+      type: Number,
+      default: 4.5,
+      min: [1, "Rating must be above 1.0"],
+      max: [5, "Rating must be below 5.0"],
+      set: (val) => Math.round(val * 10) / 10, // Rounding ratings
+    },
+    ratingsQuantity: {
+      type: Number,
+      default: 0,
+    },
     previous_work: [String],
     years_of_experience: {
       type: Number,
@@ -137,6 +146,30 @@ const userSchema = new mongoose.Schema(
     taxationRegistryCard: {
       type: String, // Path to the taxation registry card (for Advertisers/Sellers)
     },
+    loyaltyPoints: {
+      type: Number,
+      default: 0,
+    },
+    level: {
+      type: Number,
+      default: 1,
+    },
+    badge: {
+      type: String,
+      default: "Bronze",
+    },
+    pointsAvailable: {
+      type: Number,
+      default: 0,
+    },
+    selectedTags: {
+      type: [
+        {
+          type: mongoose.Schema.ObjectId,
+          ref: "Tag",
+        },
+      ],
+    },
   },
   { timestamps: true }
 );
@@ -189,17 +222,70 @@ userSchema.methods.changedPasswordAfter = async function (JWTTimestamp) {
   return false;
 };
 
-userSchema.methods.createPasswordResetToken = function() {
-  const resetToken = crypto.randomBytes(32).toString('hex');
+userSchema.methods.createPasswordResetToken = function () {
+  const resetToken = crypto.randomBytes(32).toString("hex");
 
   this.passwordResetToken = crypto
-    .createHash('sha256')
+    .createHash("sha256")
     .update(resetToken)
-    .digest('hex');
+    .digest("hex");
 
   this.passwordResetExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
 
   return resetToken;
+};
+
+userSchema.methods.addLoyaltyPoints = function (amountPaid) {
+  let pointsMultiplier;
+  switch (this.level) {
+    case 1:
+      pointsMultiplier = 0.5;
+      break;
+    case 2:
+      pointsMultiplier = 1;
+      break;
+    case 3:
+      pointsMultiplier = 1.5;
+      break;
+    default:
+      pointsMultiplier = 0.5;
+  }
+
+  this.loyaltyPoints += Math.floor(amountPaid * pointsMultiplier);
+  this.updateLevelAndBadge();
+};
+
+userSchema.methods.addAvailablePoints = function (amountPaid) {
+  let pointsMultiplier;
+  switch (this.level) {
+    case 1:
+      pointsMultiplier = 0.5;
+      break;
+    case 2:
+      pointsMultiplier = 1;
+      break;
+    case 3:
+      pointsMultiplier = 1.5;
+      break;
+    default:
+      pointsMultiplier = 0.5;
+  }
+
+  this.pointsAvailable += Math.floor(amountPaid * pointsMultiplier);
+  // this.updateLevelAndBadge();
+};
+
+userSchema.methods.updateLevelAndBadge = function () {
+  if (this.loyaltyPoints <= 100000) {
+    this.level = 1;
+    this.badge = "Bronze";
+  } else if (this.loyaltyPoints <= 500000) {
+    this.level = 2;
+    this.badge = "Silver";
+  } else {
+    this.level = 3;
+    this.badge = "Gold";
+  }
 };
 
 const User = mongoose.model("User", userSchema, "User");

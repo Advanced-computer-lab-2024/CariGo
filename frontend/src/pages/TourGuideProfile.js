@@ -12,7 +12,7 @@ import logoImage from "../assets/travel.jpg";
 import NavBar from "../components/NavBarTourGuide";
 import CT_TourGuide from "../components/CT_TourGuide";
 import { jwtDecode } from "jwt-decode";
-
+import profileImage from '../assets/profilePic.png';
 const TourGuideProfile = ({ userId }) => {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -68,7 +68,7 @@ const TourGuideProfile = ({ userId }) => {
   if (!profile) {
     return <div>No profile found.</div>;
   }
-
+  const logoImage =  profile.photo?`http://localhost:4000/public/img/users/`+profile.photo:profileImage ;
   return (
     <div>
       <NavBar />
