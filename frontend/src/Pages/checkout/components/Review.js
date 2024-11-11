@@ -11,6 +11,7 @@ import Typography from "@mui/material/Typography";
 export default function Review({ orderData, activityDetails, totalPrice }) {
   const { quantity, paymentMethod, cardDetails } = orderData;
   const conversionRate = localStorage.getItem("conversionRate") || 1;
+  const code = localStorage.getItem("currencyCode")||"EGP";
   return (
     
     <Stack spacing={2}>
@@ -24,7 +25,7 @@ export default function Review({ orderData, activityDetails, totalPrice }) {
         <ListItem sx={{ py: 1, px: 0 }}>
           <ListItemText primary="Total" />
           <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-            ${(totalPrice*conversionRate).toFixed(2)}
+            ${(totalPrice*conversionRate).toFixed(2)} {` ${code}`}
           </Typography>
         </ListItem>
       </List>

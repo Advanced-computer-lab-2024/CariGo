@@ -33,7 +33,7 @@ export default function ActivityPost({ id,author, img, start_date, end_date, dur
 const navigate = useNavigate();
 
 const conversionRate = localStorage.getItem("conversionRate")||1;
-
+const code = localStorage.getItem("currencyCode")||"EGP";
   return (
     // <Link 
     // to={`/activities/${id}`} 
@@ -154,7 +154,7 @@ const conversionRate = localStorage.getItem("conversionRate")||1;
                 marginRight: '5px',
             }}> {
               price != null?
-              ((price.range?.max*conversionRate).toFixed(2)+"-"+(price.range?.min*conversionRate).toFixed(2) )
+              ((price.range?.max*conversionRate).toFixed(2)+"-"+(price.range?.min*conversionRate).toFixed(2) ) +` ${code}`
               :'no specified price'}
               </Typography>
 

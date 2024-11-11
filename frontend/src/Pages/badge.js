@@ -98,7 +98,7 @@ const UserBadge = ({ userId }) => {
   const handleClose = () => {
     setOpen(false);
   };
-
+  const code = localStorage.getItem("currencyCode")||"EGP";
   return (
     <>
       {/* Avatar with Tooltip */}
@@ -152,7 +152,7 @@ const UserBadge = ({ userId }) => {
     id="cash"
     label="cash"
     value={(cash*conversionRate).toFixed(2)}
-    helperText={`10 points = ${conversionRate} 💵`}
+    helperText={`10 points = ${conversionRate} ${code}`}
     disabled
   />
 </Stack> {/* Close Stack */}
