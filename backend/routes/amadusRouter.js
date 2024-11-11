@@ -4,6 +4,7 @@ const authController = require('../controllers/authController');
 const router = express.Router();
 router.get('/getFlights',amadusController.getFlights);
 router.get('/cities',amadusController.cities);
+router.get('/airports',amadusController.airports);
 router.get('/hotels',amadusController.getHotels);
 router.get('/hotelDetails',amadusController.getHotelDetails);
 router.get('/seatMap',amadusController.getSeatmap);

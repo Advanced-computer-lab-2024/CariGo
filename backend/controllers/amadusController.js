@@ -140,6 +140,30 @@ const cities = async (req, res) => {
       res.status(500).send(error.message);
   }
 }
+
+const airports = async (keyword, res) => {
+  try {
+    const response = await amadeus.referenceData.locations.airports.get({
+      keyword: keyword,
+      // subType: "AIRPORT"
+    });
+
+    // Check if the keyword matches any IATA code
+    const matchedLocation = response.data.find(location => location.iataCode.toLowerCase() === keyword.toLowerCase());
+
+    if (matchedLocation) {
+      // If a match is found, return the detailed name and stop
+      return res.json({ detailedName: matchedLocation.detailedName });
+    }
+    return res.json({ detailedName: " " });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).send(error.message);
+  }
+};
+
+
 // const getHotels = async (req, res) => {
 //   try {
 //     const { keyword } = req.query; // Extract keyword from query parameters
@@ -558,5 +582,5 @@ const CancelflightBooking = async (req, res) => {
 };
 
 module.exports={getFlights,cities,getHotels,getHotelDetails,getSeatmap,CancelflightBooking,CancelhotelBooking,BookHotel,BookFlight,MyHotelBookings,
-  MyFlightBookings
+  MyFlightBookings ,airports
 };
