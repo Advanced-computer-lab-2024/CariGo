@@ -57,23 +57,6 @@ function TouristNB() {
   const handleCloseBookingsMenu = () => setAnchorElBookings(null);
 
   // Navigation functions
-<<<<<<< HEAD
-  const loadSuggestedForYou = () => { handleCloseNavMenu(); navigate('/Tourist'); };
-  const loadActivities = () => { handleCloseNavMenu(); navigate('/tourist-activities'); };
-  const loadItinerary = () => { handleCloseNavMenu(); navigate('/Tourist-itineraries'); };
-  const loadHistoricalPlaces = () => { handleCloseNavMenu(); navigate('/allVintages'); };
-  const loadProducts = () => { handleCloseNavMenu(); navigate('/Tourist/Products'); };
-  const loadFileComplaint = () => { handleCloseNavMenu(); navigate('/tourist/file-complaint'); };
-  const loadBookServices = () => { handleCloseBookingsMenu(); navigate('/book-services'); sessionStorage.clear(); };
-  const loadBookedActivities = () => { handleCloseBookingsMenu(); navigate('/tourist/MyBookedActivities'); };
-  const loadBookedItineraries = () => { handleCloseBookingsMenu(); navigate('/tourist/MyBookings');};
-  const loadBookedHotels = () => { handleCloseBookingsMenu(); navigate('/tourist/MyBookedHotels'); };
-  const loadBookedFlights = () => { handleCloseBookingsMenu(); navigate('/tourist/MyBookedFlights'); };
-  const loadBookedTransportation = () => { handleCloseBookingsMenu(); navigate('/tourist/MyBookedTransportation'); };
-  const loadProfile = () => { handleCloseUserMenu(); navigate('/tourist-profile'); };
-  const handleLogout = () => { handleCloseUserMenu(); navigate('/login'); };
-  const handleChangePass = () => { handleCloseUserMenu(); navigate('/change-password'); };
-=======
   const loadSuggestedForYou = () => {
     handleCloseNavMenu();
     navigate("/Tourist");
@@ -149,7 +132,6 @@ function TouristNB() {
   const loadComplaintHistory = () => { handleCloseComplaintsMenu(); navigate('/tourist/complaint-history'); }; // Route to complaint history
   const handleOpenComplaintsMenu = (event) => setAnchorElComplaints(event.currentTarget); // Open complaints menu
 const handleCloseComplaintsMenu = () => setAnchorElComplaints(null); // Close complaints menu
->>>>>>> 4d87d8746d05ba95a1c4c4fb76a41470f90bfa1e
 
   return (
     <AppBar position="static" sx={{ backgroundColor: "#004c74" }}>
@@ -217,22 +199,10 @@ const handleCloseComplaintsMenu = () => setAnchorElComplaints(null); // Close co
                 anchorOrigin={{ vertical: "top", horizontal: "left" }}
                 transformOrigin={{ vertical: "top", horizontal: "left" }}
               >
-<<<<<<< HEAD
                 <MenuItem onClick={loadBookServices}><Typography>Book Services</Typography></MenuItem>
                 <MenuItem onClick={loadBookedActivities}><Typography>Booked Activities</Typography></MenuItem>
                 <MenuItem onClick={loadBookedItineraries}><Typography>Booked Itineraries</Typography></MenuItem>
 
-=======
-                <MenuItem onClick={loadBookServices}>
-                  <Typography>Book Services</Typography>
-                </MenuItem>
-                <MenuItem onClick={loadBookedActivities}>
-                  <Typography>Booked Activities</Typography>
-                </MenuItem>
-                <MenuItem onClick={loadBookedItineraries}>
-                  <Typography>Booked Itineraries</Typography>
-                </MenuItem>
->>>>>>> 4d87d8746d05ba95a1c4c4fb76a41470f90bfa1e
               </Menu>
             </Menu>
           </Box>
@@ -309,25 +279,12 @@ const handleCloseComplaintsMenu = () => setAnchorElComplaints(null); // Close co
                 transformOrigin={{ vertical: "top", horizontal: "left" }}
                 sx={{marginTop:'30px'}}
               >
-<<<<<<< HEAD
                 <MenuItem onClick={loadBookServices}><Typography>Book Services</Typography></MenuItem>
                 <MenuItem onClick={loadBookedActivities}><Typography>Booked Activities</Typography></MenuItem>
                 <MenuItem onClick={loadBookedItineraries}><Typography>Booked Itineraries</Typography></MenuItem>
                 <MenuItem onClick={loadBookedHotels}><Typography>Booked Hotels</Typography></MenuItem>
                 <MenuItem onClick={loadBookedFlights}><Typography>Booked Flights</Typography></MenuItem>
                 <MenuItem onClick={loadBookedTransportation}><Typography>Booked Transportation</Typography></MenuItem>
-=======
-                <MenuItem onClick={loadBookServices}>
-                  <Typography>Book Services</Typography>
-                </MenuItem>
-                <MenuItem onClick={loadBookedActivities}>
-                  <Typography>Booked Activities</Typography>
-                </MenuItem>
-                <MenuItem onClick={loadBookedItineraries}>
-                  <Typography>Booked Itineraries</Typography>
-                </MenuItem>
-                
->>>>>>> 4d87d8746d05ba95a1c4c4fb76a41470f90bfa1e
               </Menu>
             </Box>
           </Box>
