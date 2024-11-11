@@ -64,6 +64,7 @@ const UserVintageDetails = () => {
     },
   } = vintage;
   const conversionRate = localStorage.getItem("conversionRate")||1;
+  const code = localStorage.getItem("currencyCode")||"EGP";
   return (
     <div>
       <ResponsiveAppBar />
@@ -132,7 +133,7 @@ const UserVintageDetails = () => {
             >
               <AttachMoneyIcon sx={{ marginRight: "5px" }} />
               <Typography variant="body1">
-              Ticket Prices :<br/> Foreigner: {(ticket_price.foriegner*conversionRate).toFixed(2)}<br/> Native: {(ticket_price.native*conversionRate).toFixed(2)}<br/> Student: {(ticket_price.student*conversionRate).toFixed(2)}
+              Ticket Prices in {`${code}`}:<br/> Foreigner: {(ticket_price.foriegner*conversionRate).toFixed(2)}<br/> Native: {(ticket_price.native*conversionRate).toFixed(2)}<br/> Student: {(ticket_price.student*conversionRate).toFixed(2)}
               </Typography>
             </Box>
             <Typography variant="body1" sx={{ fontSize: "18px", marginBottom: "10px" }}>

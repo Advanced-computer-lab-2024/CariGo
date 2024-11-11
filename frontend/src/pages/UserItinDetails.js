@@ -91,6 +91,7 @@ const ItineraryDetails = () => {
     endDate: formatDateTime(activity.end_date),
   }));
   const conversionRate = localStorage.getItem("conversionRate")||1;
+  const code = localStorage.getItem("currencyCode")||"EGP";
   return (
     <div>
       <ResponsiveAppBar />
@@ -183,7 +184,7 @@ const ItineraryDetails = () => {
               <AttachMoneyIcon sx={{ marginRight: "5px" }} />
               <Typography variant="body1">
                 <strong>Price:</strong>{" "}
-                {price ? `$${(price*conversionRate).toFixed(2)}` : "Price not specified"}
+                {price ? `${(price*conversionRate).toFixed(2)} ${code}` : "Price not specified"}
               </Typography>
             </Box>
             <Typography variant="body1" sx={{ fontSize: "18px" }}>

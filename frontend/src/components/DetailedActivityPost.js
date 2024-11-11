@@ -32,7 +32,7 @@ export default function DetailedActivityPost({ id,author, img, start_date, end_d
 
   const navigate = useNavigate();
   const conversionRate = localStorage.getItem("conversionRate")||1;
-
+  const code = localStorage.getItem("currencyCode")||"EGP";
   return (
     <Card
       sx={{
@@ -166,7 +166,7 @@ export default function DetailedActivityPost({ id,author, img, start_date, end_d
                 marginRight: '5px',
             }}> {
               price != null? 
-              ((price.range.max*conversionRate).toFixed(2)+"-"+(price.range.min*conversionRate).toFixed(2) )
+              ((price.range.max*conversionRate).toFixed(2)+"-"+(price.range.min*conversionRate).toFixed(2) ) + ` ${code}`
               :'no specified price'}
               </Typography>
             <Box sx={{

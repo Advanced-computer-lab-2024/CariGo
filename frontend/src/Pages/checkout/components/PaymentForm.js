@@ -92,6 +92,7 @@ export default function Component({ userDetails, paymentTotal, onPaymentDetailsC
   const userWallet = userDetails.wallet;
   const bookingPayment = paymentTotal;
   const conversionRate = localStorage.getItem("conversionRate") || 1;
+  const code = localStorage.getItem("currencyCode")||"EGP";
   const walletAfterPurchase = ((userWallet*conversionRate) - (bookingPayment*conversionRate)).toFixed(2);
 
   const handlePaymentTypeChange = (event) => {
@@ -321,7 +322,7 @@ export default function Component({ userDetails, paymentTotal, onPaymentDetailsC
               Wallet after purchase:
             </Typography>
             <Typography variant="body1" sx={{ fontWeight: "medium" }}>
-              {walletAfterPurchase}
+            {String(walletAfterPurchase) + "\u00A0\u00A0\u00A0" + String(code)}
             </Typography>
           </Box>
         </Box>

@@ -26,7 +26,7 @@ import Avatar from "@mui/material/Avatar";
 import { useLocation } from 'react-router-dom';
 
 import ColorModeIconDropdown from "./theme/ColorModeIconDropdown";
-import { STATES } from "mongoose";
+// import { STATES } from "mongoose";
 const user = JSON.parse(localStorage.getItem("user"));
 
 const steps = ["Ticket details", "Payment details", "Review your order"];

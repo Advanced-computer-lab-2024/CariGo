@@ -242,7 +242,7 @@ const handleData = (data) =>{
         <Grid container spacing={3}>
           <FormGrid size={{ xs: 12, md: 12 }} style={{ marginLeft: "210px", marginTop: "-5px" }}>
             <label htmlFor="file-upload" className="custom-file-upload">
-              <img src={postImage.myFile || (image && image.myFile) || avatar} alt="Uploaded avatar" />
+              <img src={postImage.myFile || (image && image.myFile) || avatar} alt="Uploaded avatar" style={{borderRadius:"50%"}} />
             </label>
             <input
               type="file"

@@ -37,18 +37,17 @@ const FormContainer = styled(Paper)(({ theme }) => ({
   borderRadius: "8px",
   backgroundColor: "#f5f5f5",
 }));
-let pic = avatar
-let form = false
-let flag = false
+let pic = avatar;
+let form = false;
+let flag = false;
 export default function EditProduct() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [data, setData] = useState([]); // State to hold fetched tags
   const [loading, setLoading] = useState(false); // Loading state
-  const [postImage, setPostImage] = useState({ myFile:"" ,
-    mainImage:""});
+  const [postImage, setPostImage] = useState({ myFile: "", mainImage: "" });
   const handleChange = (e) => {
-    form = true
+    form = true;
     setData({ ...data, [e.target.name]: e.target.value });
   };
   // Fetch tags on component mount
@@ -60,16 +59,14 @@ export default function EditProduct() {
     setLoading(true); // Start loading
     try {
       const response = await axios.get(
-        `http://localhost:4000/cariGo/products/${id}`
-      ,{
-        headers:{
-            authorization :`Bearer ${localStorage.getItem('token')}`
-    
-          }
-        }); // Fetch from backend
+        `http://localhost:4000/cariGo/products/${id}`,
+        {
+          headers: {
+            authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      ); // Fetch from backend
       setData(response.data); // Set the tags state
-      
-      
     } catch (error) {
       console.error("Error fetching tags:", error);
       toast.error("Error fetching tags."); // Show error message
@@ -87,13 +84,13 @@ export default function EditProduct() {
   //     // Cleanup the timer if the component unmounts before the navigation occurs
   //     return () => clearTimeout(timer);
   // }, [navigate]);
-  const FormGrid = styled('div')(() => ({
-    display: 'flex',
-    flexDirection: 'column',
+  const FormGrid = styled("div")(() => ({
+    display: "flex",
+    flexDirection: "column",
   }));
-  console.log(data.mainImage)
-  if(data.mainImage)
-    pic = folderPics+data.mainImage
+  console.log(data.mainImage);
+  if (data.mainImage) pic = folderPics + data.mainImage;
+  else pic = avatar;
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -102,36 +99,39 @@ export default function EditProduct() {
       if (!token) {
         throw new Error("No token found. Please log in.");
       }
-       
+
       console.log(data);
-      if(form){
-      await axios.patch(
-        `http://localhost:4000/cariGo/products/updateProduct/${id}`,
-        data, // Data should be the second argument
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      ); // Headers should be the third argument
-     
-        }
-        if(flag){
-          const id = data._id;
-      const image = new FormData();
-      image.append('mainImage',postImage.mainImage)
-      const imageResponse = await axios.patch(`http://localhost:4000/cariGo/products/updateProduct/${id}`, image,{
-        headers:{
-            authorization :`Bearer ${token}`
-    
+      if (form) {
+        await axios.patch(
+          `http://localhost:4000/cariGo/products/updateProduct/${id}`,
+          data, // Data should be the second argument
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
           }
-        });
-      //  if(response){
-        console.log(imageResponse)
-        }
-        toast.success("Product updated successfully!"); // Show success message
-        fetchTags(); // Refresh the tag list
+        ); // Headers should be the third argument
+      }
+      if (flag) {
+        const id = data._id;
+        const image = new FormData();
+        image.append("mainImage", postImage.mainImage);
+        const imageResponse = await axios.patch(
+          `http://localhost:4000/cariGo/products/updateProduct/${id}`,
+          image,
+          {
+            headers: {
+              authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        //  if(response){
+        console.log(imageResponse);
+        flag = !flag;
+      }
+      toast.success("Product updated successfully!"); // Show success message
+      fetchTags(); // Refresh the tag list
     } catch (error) {
       console.error("Error updating tag:", error);
       const errorMessage =
@@ -142,16 +142,14 @@ export default function EditProduct() {
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
     //console.log(file);
-   const base64 = await convertToBase64(file);
-   console.log(base64);
-   flag = true
+    const base64 = await convertToBase64(file);
+    console.log(base64);
+    flag = true;
     //setData({ ...data,mainImage:String(file)});
-    setPostImage({myFile:base64,mainImage:file})
+    setPostImage({ myFile: base64, mainImage: file });
     //pic = postImage.myFile
-    
   };
-  if(flag)
-  pic = postImage.myFile
+  if (flag) pic = postImage.myFile;
   //console.log(data.mainImage)
   return (
     <Layout style={{ height: "100vh" }}>
@@ -167,19 +165,21 @@ export default function EditProduct() {
           <FormContainer>
             <h2 style={{ marginBottom: "10px" }}>Update Product</h2>
             <form onSubmit={handleSubmit} style={{ width: "100%" }}>
-            <FormGrid size={{ xs: 12, md: 12 }} style={{ marginLeft: "130px" }}>
-            <label htmlFor="file-upload" className="custom-file-upload">
-              <img src={ pic} alt="Uploaded avatar" />
-            </label>
-            <input
-              type="file"
-              name="myFile"
-              
-              id="file-upload"
-              accept=".jpeg, .png, .jpg"
-              onChange={handleFileUpload}
-            />
-          </FormGrid>
+              <FormGrid
+                size={{ xs: 12, md: 12 }}
+                style={{ marginLeft: "130px" }}
+              >
+                <label htmlFor="file-upload" className="custom-file-upload">
+                  <img src={pic} alt="Uploaded avatar" />
+                </label>
+                <input
+                  type="file"
+                  name="myFile"
+                  id="file-upload"
+                  accept=".jpeg, .png, .jpg"
+                  onChange={handleFileUpload}
+                />
+              </FormGrid>
               <TextField
                 type="text"
                 name="name"

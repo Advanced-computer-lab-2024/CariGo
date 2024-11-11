@@ -108,6 +108,8 @@ const TouristProfile = ({ userId }) => {
   const logoImage = profile.photo
     ? `http://localhost:4000/public/img/users/` + profile.photo
     : profileImage;
+  const conversionRate = localStorage.getItem("conversionRate")||1;
+  const code = localStorage.getItem("currencyCode")||"EGP";
 
   return (
     <div className="tourist-profile">
@@ -127,7 +129,7 @@ const TouristProfile = ({ userId }) => {
           mobile={profile.mobile_number || "No mobile number provided"}
           nationality={profile.nationality || "Not available"}
           job={profile.job || "No job information available."}
-          wallet={profile.wallet || "No balance available."}
+          wallet={(profile.wallet*conversionRate).toFixed(2)+` ${code}` || "No balance available."}
         />
         <Button
           variant="contained"
