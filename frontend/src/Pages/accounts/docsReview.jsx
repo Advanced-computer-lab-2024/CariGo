@@ -40,18 +40,18 @@ import { Content, Header } from "antd/es/layout/layout";
 import TopBar from "../TopBar";
 import { TablePagination } from "@mui/material";
 import { ToastContainer, toast } from "react-toastify";
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { Navigate, useLocation } from "react-router-dom";
 import ArchiveIcon from "@mui/icons-material/Archive";
 import UnarchiveIcon from "@mui/icons-material/Unarchive";
 import { ArrowRightAlt, Edit } from "@mui/icons-material";
-import DangerousIcon from '@mui/icons-material/Dangerous';
+import DangerousIcon from "@mui/icons-material/Dangerous";
 import SearchIcon from "@mui/icons-material/Search";
-import avatar from "../../assets/profilePic.png"
+import avatar from "../../assets/profilePic.png";
 export default function ReviewAccounts() {
   const [products, setProducts] = useState([]); // State to hold fetched categories
   const [loading, setLoading] = useState(false); // Loading state
-  const [status,setStatus] = useState({documentApprovalStatus:"Pending"})
+  const [status, setStatus] = useState({ documentApprovalStatus: "Pending" });
   const { palette } = useTheme();
   const [filter, setFilter] = useState("?quantity[gte]=1");
   const [sort, setSort] = useState("");
@@ -61,14 +61,13 @@ export default function ReviewAccounts() {
   const token = localStorage.getItem("jwt");
   const folderPics = `http://localhost:4000/public/img/users/`;
   const folderDocs = `http://localhost:4000/public/img/documents/`;
+  const folderLogos = `http://localhost:4000/public/img/logos/`;
   // Fetch categories function
   const fetchProducts = async () => {
     setLoading(true); // Start loading
     try {
       //console.log(filter + " ffffffffffffff");
-      const response = await axios.get(
-        `http://localhost:4000/cariGo/users`
-      ); // Fetch from backend
+      const response = await axios.get(`http://localhost:4000/cariGo/users`); // Fetch from backend
       // console.log(response.data); // Log the response data
       setProducts(response.data); // Set the categories state
     } catch (error) {
@@ -81,14 +80,11 @@ export default function ReviewAccounts() {
   const refreshProducts = async () => {
     setLoading(true); // Start loading
     try {
-      const response = await axios.get(
-        "http://localhost:4000/cariGo/users",
-        {
-          headers: {
-            authorization: `Bearer ${token}`,
-          },
-        }
-      ); // Fetch from backend
+      const response = await axios.get("http://localhost:4000/cariGo/users", {
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      }); // Fetch from backend
       //console.log(response.data); // Log the response data
       setProducts(response.data); // Set the products state
     } catch (error) {
@@ -100,79 +96,79 @@ export default function ReviewAccounts() {
 
   const acceptUser = async (product) => {
     try {
-        //console.log("INNNNNNNNN")
-      
-              const response = await axios.patch(
+      //console.log("INNNNNNNNN")
+
+      const response = await axios.patch(
         `http://localhost:4000/cariGo/users/update/${product._id}`, // Use the user ID from context
-        {documentApprovalStatus:"Approved"},
+        { documentApprovalStatus: "Approved" },
         {
           headers: {
             authorization: `Bearer ${token}`,
           },
         }
       );
-      console.log(response.status)
+      console.log(response.status);
 
-      if (response.status===201) {
+      if (response.status === 201) {
         toast.success(`Done successfully!`);
-        
+
         refreshProducts();
-   
       }
-         } catch (error) {
+    } catch (error) {
       console.error("Error archiving product:", error.message || error);
       toast.error(
         "Error archiving product. Please check the network tab for details."
       );
     }
   };
-   const downloadDocs = async(user) =>{
-        
-    let files = user.certificates.length>0?user.certificates:user.taxationRegistryCard;
-        if(files && user.idDocument)
-            files.push(user.idDocument)
+  const downloadDocs = async (user) => {
+    let files =
+      user.certificates.length > 0
+        ? user.certificates
+        : [user.taxationRegistryCard];
+    console.log(files);
+    if (files && user.idDocument) files.push(user.idDocument);
+    console.log(files);
+    if (files) {
+      files.forEach((fileUrl) => {
+        fetch(folderDocs + fileUrl)
+          .then((response) => response.blob())
+          .then((blob) => {
+            const blobUrl = window.URL.createObjectURL(new Blob([blob]));
+            const link = document.createElement("a");
+            link.href = blobUrl;
+            link.download = fileUrl; // Use the file name from the URL
 
-        files.forEach(fileUrl => {
-        fetch(folderDocs+fileUrl).then(response=>response.blob()).then(
-            blob=>{
-                const blobUrl = window.URL.createObjectURL(new Blob([blob]))
-                const link = document.createElement('a');
-                link.href = blobUrl;
-                link.download = fileUrl; // Use the file name from the URL
-                
-                // Programmatically click the link to trigger download
-                document.body.appendChild(link);
-                link.click();
-                
-                // Clean up by removing the link
-                document.body.removeChild(link);
-            }
-        )
+            // Programmatically click the link to trigger download
+            document.body.appendChild(link);
+            link.click();
 
-            // Create a temporary link element
-         
-        });
-      };
-   
+            // Clean up by removing the link
+            document.body.removeChild(link);
+          });
+
+        // Create a temporary link element
+      });
+    }
+  };
+
   const rejectUser = async (product) => {
     try {
-       
-        const response = await axios.patch(
-          `http://localhost:4000/cariGo/users/update/${product._id}`, // Use the user ID from context
-          {documentApprovalStatus:"Rejected"},
-          {
-            headers: {
-              authorization: `Bearer ${token}`,
-            },
-          }
-        );
+      const response = await axios.patch(
+        `http://localhost:4000/cariGo/users/update/${product._id}`, // Use the user ID from context
+        { documentApprovalStatus: "Rejected" },
+        {
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
+        }
+      );
       if (response.status === 201) {
         toast.success(`Done successfully!`);
-       
+
         refreshProducts();
         // Update the product's `archived` status locally
-             }
-      
+      }
     } catch (error) {
       console.error("Error unarchiving product:", error.message || error);
       toast.error(
@@ -302,7 +298,6 @@ export default function ReviewAccounts() {
             <CardHeader>
               <Title>New Accounts</Title>
               <div style={{ display: Flex }}>
-                
                 {/* <Select size="small" defaultValue="this_month">
           <MenuItem value="this_month" >Filter</MenuItem>
           <MenuItem value="1" onClick={() =>{setFilter("?price=20")}}>Less Than $19</MenuItem>
@@ -313,7 +308,6 @@ export default function ReviewAccounts() {
 
 
         </Select> */}
-                
               </div>
             </CardHeader>
             <Box overflow="auto">
@@ -331,9 +325,6 @@ export default function ReviewAccounts() {
                       Role
                     </TableCell>
 
-                    
-
-                    
                     <TableCell colSpan={1} sx={{ px: 7 }}>
                       Action
                     </TableCell>
@@ -354,7 +345,17 @@ export default function ReviewAccounts() {
                             htmlFor="file-upload"
                             className="custom-file-upload"
                           >
-                            <img src={product.photo?folderPics + product.photo:avatar} style={{borderRadius:"50%"}} alt="p" />
+                            <img
+                              src={
+                                product.photo && product.role === "Tour_Guide"
+                                  ? folderPics + product.photo
+                                  : product.photo
+                                  ? folderLogos + product.photo
+                                  : avatar
+                              }
+                              style={{ borderRadius: "50%" }}
+                              alt="p"
+                            />
                           </label>
                           <Paragraph>{product.username}</Paragraph>
                         </Box>
@@ -365,22 +366,21 @@ export default function ReviewAccounts() {
                         colSpan={2}
                         sx={{ px: 8, mr: 10, textTransform: "capitalize" }}
                       >
-                        
                         {product.role}
                       </TableCell>
 
-
-                     
                       <TableCell sx={{ px: 7 }} colSpan={1}>
-                      <Tooltip title="Reject" placement="top">
-                            <IconButton
-                              onClick={() => rejectUser(product)}
-                              style={{ color: "red" }}
-                            >
-                              <DangerousIcon />
-                            </IconButton>
-                          </Tooltip>
-                        {(product.certificates.length>0 || product.idDocument || product.taxationRegistryCard) && (
+                        <Tooltip title="Reject" placement="top">
+                          <IconButton
+                            onClick={() => rejectUser(product)}
+                            style={{ color: "red" }}
+                          >
+                            <DangerousIcon />
+                          </IconButton>
+                        </Tooltip>
+                        {(product.certificates.length > 0 ||
+                          product.idDocument ||
+                          product.taxationRegistryCard) && (
                           <Tooltip title="Download Docs" placement="top">
                             <IconButton
                               onClick={() => downloadDocs(product)}

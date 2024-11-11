@@ -107,31 +107,50 @@ function TouristNB() {
     navigate("/change-password");
   };
 
+  const loadBookedHotels = () => {
+    handleCloseBookingsMenu();
+    navigate("/tourist/MyBookedHotels");
+  };
+  const loadBookedFlights = () => {
+    handleCloseBookingsMenu();
+    navigate("/tourist/MyBookedFlights");
+  };
+  const loadBookedTransportation = () => {
+    handleCloseBookingsMenu();
+    navigate("/tourist/MyBookedTransportation");
+  };
+
   const handleDeleteAccount = async () => {
-    const token = localStorage.getItem('jwt');
-    try{
-      const response = await fetch(`http://localhost:4000/cariGo/delReq/createReq`, {
-        method: "POST", // Change this to "POST" if your backend expects it
-        headers: {
-            "Authorization": `Bearer ${token}`, // Send the token in the Authorization header 
+    const token = localStorage.getItem("jwt");
+    try {
+      const response = await fetch(
+        `http://localhost:4000/cariGo/delReq/createReq`,
+        {
+          method: "POST", // Change this to "POST" if your backend expects it
+          headers: {
+            Authorization: `Bearer ${token}`, // Send the token in the Authorization header
+          },
         }
-    });
-    if (response.ok) {
-      alert("Account delete request sent");
-    } else {
+      );
+      if (response.ok) {
+        alert("Account delete request sent");
+      } else {
         console.error("Failed to send delete request:", response.statusText);
-    }
-    console.log(response.json);
-    }
-    catch(error){
+      }
+      console.log(response.json);
+    } catch (error) {
       console.error("Error deleting account:", error);
     }
-  }
-  
+  };
+
   // const loadFileComplaint = () => { handleCloseComplaintsMenu(); navigate('/tourist/file-complaint'); }; // Route to file complaint
-  const loadComplaintHistory = () => { handleCloseComplaintsMenu(); navigate('/tourist/complaint-history'); }; // Route to complaint history
-  const handleOpenComplaintsMenu = (event) => setAnchorElComplaints(event.currentTarget); // Open complaints menu
-const handleCloseComplaintsMenu = () => setAnchorElComplaints(null); // Close complaints menu
+  const loadComplaintHistory = () => {
+    handleCloseComplaintsMenu();
+    navigate("/tourist/complaint-history");
+  }; // Route to complaint history
+  const handleOpenComplaintsMenu = (event) =>
+    setAnchorElComplaints(event.currentTarget); // Open complaints menu
+  const handleCloseComplaintsMenu = () => setAnchorElComplaints(null); // Close complaints menu
 
   return (
     <AppBar position="static" sx={{ backgroundColor: "#004c74" }}>
@@ -191,7 +210,7 @@ const handleCloseComplaintsMenu = () => setAnchorElComplaints(null); // Close co
               <MenuItem onClick={handleOpenBookingsMenu}>
                 <Typography sx={{ textAlign: "center" }}>Bookings</Typography>
               </MenuItem>
-              <Menu
+              {/* <Menu
                 id="bookings-menu-mobile"
                 anchorEl={anchorElBookings}
                 open={Boolean(anchorElBookings)}
@@ -208,7 +227,7 @@ const handleCloseComplaintsMenu = () => setAnchorElComplaints(null); // Close co
                 <MenuItem onClick={loadBookedItineraries}>
                   <Typography>Booked Itineraries</Typography>
                 </MenuItem>
-              </Menu>
+              </Menu> */}
             </Menu>
           </Box>
 
@@ -282,7 +301,7 @@ const handleCloseComplaintsMenu = () => setAnchorElComplaints(null); // Close co
                 onClose={handleCloseBookingsMenu}
                 anchorOrigin={{ vertical: "top", horizontal: "left" }}
                 transformOrigin={{ vertical: "top", horizontal: "left" }}
-                sx={{marginTop:'30px'}}
+                sx={{ marginTop: "30px" }}
               >
                 <MenuItem onClick={loadBookServices}>
                   <Typography>Book Services</Typography>
@@ -293,7 +312,15 @@ const handleCloseComplaintsMenu = () => setAnchorElComplaints(null); // Close co
                 <MenuItem onClick={loadBookedItineraries}>
                   <Typography>Booked Itineraries</Typography>
                 </MenuItem>
-                
+                <MenuItem onClick={loadBookedHotels}>
+                  <Typography>Booked Hotels</Typography>
+                </MenuItem>
+                <MenuItem onClick={loadBookedFlights}>
+                  <Typography>Booked Flights</Typography>
+                </MenuItem>
+                <MenuItem onClick={loadBookedTransportation}>
+                  <Typography>Booked Transportation</Typography>
+                </MenuItem>
               </Menu>
             </Box>
           </Box>
@@ -335,7 +362,7 @@ const handleCloseComplaintsMenu = () => setAnchorElComplaints(null); // Close co
                 </Typography>
               </MenuItem>
               <MenuItem onClick={handleDeleteAccount}>
-                <Typography sx={{ textAlign: "center", color:'#ff4d4d' }}>
+                <Typography sx={{ textAlign: "center", color: "#ff4d4d" }}>
                   delete account
                 </Typography>
               </MenuItem>
