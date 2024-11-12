@@ -136,7 +136,7 @@ const getSellersProducts = async (req, res) => {
 const getProduct = async (req, res) => {
   const { id } = req.params;
   try {
-    const product = await Product.findById(id); // Fixed from ActivityModel to Activity, and use findById(id)
+    const product = await Product.findById(id).populate("author"); // Fixed from ActivityModel to Activity, and use findById(id)
     if (!product) {
       return res.status(404).json({ message: "Product not found" });
     }

@@ -54,11 +54,11 @@ const ProductDetails = () => {
   if (!product) {
     return <div>Loading...</div>;
   }
-  const conversionRate = localStorage.getItem("conversionRate")||1;
-  const code = localStorage.getItem("currencyCode")||"EGP";
+  const conversionRate = localStorage.getItem("conversionRate") || 1;
+  const code = localStorage.getItem("currencyCode") || "EGP";
   return (
     <Layout style={{ height: "100vh" }}>
-    <Layout>
+      <Layout>
         <Header style={{ background: "#001529", padding: 0 }}>
           <ResponsiveAppBar /> {/* Top bar added here */}
         </Header>
@@ -81,16 +81,32 @@ const ProductDetails = () => {
             {/* Right Column for Product Info */}
             <Col span={14} style={{ paddingLeft: "20px" }}>
               <Title level={2}>{product.name}</Title>
-              <Row><Rate allowHalf disabled value={product.ratingsAverage || 0} />
               <Text
                 type="secondary"
-                style={{ display: "block", marginBottom: "8px", marginLeft: "8px" }}
+                style={{ display: "block", marginBottom: "8px" }}
               >
-                {" "}{product.ratingsAverage || 0}/5 ({product.ratingsQuantity || 0} reviews)
+                Sold by: {(product.author.sellerName.length > 0? product.author.sellerName : product.author.username) || "Unknown Seller"}
               </Text>
+
+              <Row>
+                <Rate allowHalf disabled value={product.ratingsAverage || 0} />
+                <Text
+                  type="secondary"
+                  style={{
+                    display: "block",
+                    marginBottom: "8px",
+                    marginLeft: "8px",
+                  }}
+                >
+                  {" "}
+                  {product.ratingsAverage || 0}/5 (
+                  {product.ratingsQuantity || 0} reviews)
+                </Text>
               </Row>
-              <Title level={3}>${(product.price*conversionRate).toFixed(2)} {code}</Title>
-              
+              <Title level={3}>
+                ${(product.price * conversionRate).toFixed(2)} {code}
+              </Title>
+
               {/* Description Section */}
               <Paragraph style={{ marginTop: "16px" }}>
                 {product.description || "No description available."}
@@ -114,7 +130,7 @@ const ProductDetails = () => {
           {/* Row for the product analysis chart */}
           <Row>
             <Col span={24}>
-              <ProductReviews id={id}/>
+              <ProductReviews id={id} />
             </Col>
           </Row>
         </Content>
