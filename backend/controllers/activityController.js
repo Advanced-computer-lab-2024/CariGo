@@ -641,21 +641,24 @@ const CancelActivityBooking = async (req, res) => {
             { UserId, ActivityId }, // Filter to find documents with both UserId and ActivityId
             { $set: { Status: false } } // Update to set Status to false
           );
-          await Activity.updateOne(
-            { _id: ActivityId },
-            { $set: { isBooked: false } }
-          );
+          const cancel = await bookingModel.findOne({
+            ActivityId: ActivityId,
+            status: true,
+          });
+          if (!cancel) {
+            await Activity.updateOne(
+              { _id: ActivityId },
+              { $set: { isBooked: false } }
+            );
+          }
           res.status(200).json({
             message: "Bookings canceled successfully",
             updatedBookingsCount: bookings.modifiedCount, // shows how many bookings were updated
           });
         } else {
-          res
-            .status(400)
-            .json({
-              message:
-                "Cannot book/cancel within 48 hours of the activity date",
-            });
+          res.status(400).json({
+            message: "Cannot book/cancel within 48 hours of the activity date",
+          });
         }
       } else {
         res.status(404).json({ message: "Activity not found" });
