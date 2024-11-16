@@ -61,7 +61,7 @@ export default function Checkout(props, { activityId },) {
     if (activityDetails && activityDetails.price) {
       let price;
       if (type === "activity") {
-        price = parseFloat(activityDetails.price.range.min);
+        price = parseFloat(activityDetails.price);  //price.range.min
       } else {
         price = parseFloat(activityDetails.price);
       }
@@ -132,7 +132,7 @@ export default function Checkout(props, { activityId },) {
 
       let price;
       if (type === "activity") {
-        price = parseFloat(activityDetails.price.range.min);
+        price = parseFloat(activityDetails.price); //price.range.min
       } else if (type==="transportation"){
         price = parseFloat(activityDetails.price);
       }

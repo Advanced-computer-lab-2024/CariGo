@@ -36,10 +36,7 @@ const activitySchema = new mongoose.Schema(
       lan: String,
     },
     price: {
-      range: {
-        min: Number,
-        max: Number,
-      },
+      type: Number,
     },
     Category: {
       type: mongoose.Schema.ObjectId,

@@ -111,7 +111,7 @@ const getActivities = async (req, res) => {
 
   // Change sortBy to "price.range.min" if it is "price"
   if (sortBy === "price") {
-    sortBy = "price.range.min";
+    sortBy = "price";
   }
 
   const categoryName = req.query.Category;
@@ -152,8 +152,8 @@ const getActivities = async (req, res) => {
   if (priceParam !== null) {
     query.where({
       $and: [
-        { "price.range.min": { $lte: priceParam } }, // Price is greater than or equal to min
-        { "price.range.max": { $gte: priceParam } }, // Price is less than or equal to max
+        { "price": { $lte: priceParam } }, // Price is greater than or equal to min //price.range.min
+        { "price": { $gte: priceParam } }, // Price is less than or equal to max //price.range.max
       ],
     });
     // Remove price parameter from req.query
@@ -226,7 +226,7 @@ const getActivitiesForAdmin = async (req, res) => {
 
   // Change sortBy to "price.range.min" if it is "price"
   if (sortBy === "price") {
-    sortBy = "price.range.min";
+    sortBy = "price";
   }
 
   const categoryName = req.query.Category;
@@ -262,8 +262,8 @@ const getActivitiesForAdmin = async (req, res) => {
   if (priceParam !== null) {
     query.where({
       $and: [
-        { "price.range.min": { $lte: priceParam } }, // Price is greater than or equal to min
-        { "price.range.max": { $gte: priceParam } }, // Price is less than or equal to max
+        { "price": { $lte: priceParam } }, // Price is greater than or equal to min //price.range.min
+        { "price": { $gte: priceParam } }, // Price is less than or equal to max //price.range.max
       ],
     });
     // Remove price parameter from req.query
