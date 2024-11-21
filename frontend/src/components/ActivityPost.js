@@ -90,9 +90,9 @@ const code = localStorage.getItem("currencyCode")||"EGP";
   return (
     <Card
       sx={{
-        width: '100%', // Use full width of the container
-        maxWidth: '900px', // Set a max width
-        height:'350px',
+        //width: '100%', // Use full width of the container
+        width: '800px', // Set a max width
+        height:'370px',
         maxHeight: '500px',
         color: '#126782',
         fontSize: '18px',
@@ -116,35 +116,34 @@ const code = localStorage.getItem("currencyCode")||"EGP";
           image={img || "/0ae1e586-0d84-43c3-92d4-924c13c01059.jpeg"}
           alt={title}
           sx={{
-            width: '500px',
+            width: '400px',
             height: '250px',
-            margin: '2px',
+            margin: '5px',
             borderRadius: '10px',
             boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
           }}
         />
         
-        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column' , margin:'15px', marginLeft:'25px',}}>
           <Box
             sx={{
-              width: '400px',
-              padding: '10px',
+              //width: '400px',
+              //padding: '20px',
               display: 'flex',
               flexDirection: 'column',
               overflow: 'overflow',
             }}
           >
             <CardHeader
-//               avatar={<Avatar sx={{ bgcolor: red[500] }}>R</Avatar>}
-
+            // avatar={<Avatar sx={{ bgcolor: red[500] }}>R</Avatar>}
               title={
-                <Typography variant="h5" sx={{ width: '300px', fontWeight: 'bold', fontSize: '24px' }}>
+                <Typography variant="h5" sx={{ width: '300px', fontWeight: 'bold', fontSize: '24px', marginLeft:'-5px' }}>
                   {title}
                 </Typography>
               }
             />
 
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginLeft: '15px' }}>
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginLeft: '10px' }}>
               {tag != null && <Chip label={tag} sx={{backgroundColor :'#126782', color: 'white' }} />}
             </Box>
           </Box>
@@ -153,13 +152,13 @@ const code = localStorage.getItem("currencyCode")||"EGP";
           <Box
             sx={{
               display: 'flex',
-              flexFlow: 'column',
-              marginLeft: '30px',
+              flexFlow: 'column', 
+              margin:'10px',
+              marginLeft: '15px',
             }}
           >
             <Typography>
               category: {category != null ? category:"no specified category"}
-              
             </Typography>
 
             <Box sx={{display:'flex', }}>

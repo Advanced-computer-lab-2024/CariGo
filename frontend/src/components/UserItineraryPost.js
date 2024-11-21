@@ -19,7 +19,8 @@ import StarIcon from '@mui/icons-material/Star';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import logoImage from '../assets/itinerary.png';
-
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
 export default function UserItineraryPost({
   id,
   author,
@@ -45,9 +46,18 @@ export default function UserItineraryPost({
       year: 'numeric',
       month: 'long',
       day: 'numeric',
+      //hour: '2-digit',
+      //minute: '2-digit',
+      //hour12: true,
+    };
+    return new Date(dateString).toLocaleString(undefined, options);
+  };
+
+  const formatDateHour = (dateString) => {
+    const options = {
       hour: '2-digit',
       minute: '2-digit',
-      hour12: true,
+      hour12: true, // Use 12-hour format with AM/PM
     };
     return new Date(dateString).toLocaleString(undefined, options);
   };
@@ -128,8 +138,7 @@ export default function UserItineraryPost({
   return (
     <Card
       sx={{
-        width: '100%',
-        maxWidth: '900px',
+        width: '95%',
         height: '400px',
         color: '#126782',
         fontSize: '18px',
@@ -153,15 +162,15 @@ export default function UserItineraryPost({
           image={logoImage || "/default-itinerary.jpg"}
           alt="Itinerary Image"
           sx={{
-            width: '500px',
+            width: '400px',
             height: '250px',
-            margin: '2px',
+            margin: '5px',
             borderRadius: '10px',
             boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
           }}
         />
 
-        <Box sx={{ display: 'flex', flexDirection: 'column', width: '400px', padding: '10px' }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', width: '60%', padding: '10px' }}>
           <CardHeader
             avatar={<Avatar sx={{ bgcolor: red[500] }}>{title?.charAt(0) || 'A'}</Avatar>}
             title={
@@ -182,17 +191,42 @@ export default function UserItineraryPost({
               <StarIcon sx={{ scale: '0.9' }} />
               <Typography sx={{ fontSize: '16px', marginTop: '1px' }}>{rating || "No rating"}</Typography>
             </Box>
-            <Typography sx={{ fontSize: '16px' }}>
+            
+            {/* dates box */}
+            <Box sx={{ display: 'flex', gap:'5px'}}>
+            <Box sx={{display:'flex', flexDirection:'column'}}>
+              <Box sx={{display:'flex',padding:'5px', paddingLeft:'0px'}}>
+                <CalendarMonthIcon sx={{color:'#ff4d4d'}}/>
+                <Typography sx={{marginTop:'2px'}}>{formatDateTime(start_date)}</Typography>
+              </Box>
+              <Box sx={{display:'flex',padding:'5px', paddingLeft:'0px', gap:'2px'}}>
+                <AccessTimeIcon sx={{color:'#126782',marginLeft:'20px'}}/>
+                <Typography sx={{marginTop:'2px'}}>{formatDateHour(start_date)}</Typography>
+              </Box>
+            </Box>
+            <Typography sx={{margin:'2px',marginTop:'5px', color:'#ff4d4d', fontWeight:'600'}}>to</Typography>
+            <Box sx={{display:'flex', flexDirection:'column', marginLeft:'5px'}}>
+              <Box sx={{display:'flex',padding:'5px', paddingLeft:'0px'}}>
+                <CalendarMonthIcon sx={{color:'#ff4d4d'}}/>
+                <Typography sx={{marginTop:'0px',}}>{formatDateTime(end_date)}</Typography>
+              </Box>
+              <Box sx={{display:'flex',padding:'5px', paddingLeft:'0px', gap:'2px'}}>
+                <AccessTimeIcon sx={{color:'#126782',marginLeft:'20px'}}/>
+                <Typography sx={{marginTop:'2px'}}>{formatDateHour(end_date)}</Typography>
+              </Box>
+            </Box>
+            </Box>
+            {/* <Typography sx={{ fontSize: '16px' }}>
               From: {formatDateTime(start_date)}
             </Typography>
             <Typography sx={{ fontSize: '16px' }}>
               To: {formatDateTime(end_date)}
-            </Typography>
+            </Typography> */}
 
             <Box sx={{ display: 'flex', marginTop: '5px' }}>
               <PinDropIcon />
               <Typography sx={{ marginLeft: '5px' }}>
-                Locations: {Array.isArray(locations) ? locations.join(', ') : "Not specified"}
+                {Array.isArray(locations) ? locations.join(', ') : "Not specified"}
               </Typography>
             </Box>
 
