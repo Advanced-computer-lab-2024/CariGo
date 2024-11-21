@@ -8,6 +8,7 @@ import GuestNavBar from "../../components/NavBarTourist";
 import ItineraryList from '../../components/UserItineraryList.js';
 import SelectTags from '../../components/SelectTags.js';
 import { Tag } from '@mui/icons-material';
+import { parseISO } from 'date-fns';
 
 export default function TouristItineraries (){
 
@@ -112,6 +113,8 @@ export default function TouristItineraries (){
               const queryParams = new URLSearchParams();
               if (filters.price) queryParams.append("price", filters.price);
               if (filters.language) queryParams.append("language", filters.language);
+              if (filters.startDate) queryParams.append("start_date", new Date(filters.startDate));
+              console.log(filters.startDate);
               if(filters.tags) {
                 if (Array.isArray(filters.tags) && filters.tags.length > 0) {
                   filters.tags.forEach(tag => {
@@ -119,8 +122,6 @@ export default function TouristItineraries (){
                   });
                 }
               }
-              
-              if (filters.startDate) queryParams.append("start_date", filters.startDate);
 
                 if (sortOption) queryParams.append('sort', sortOption);
   
@@ -398,7 +399,7 @@ export default function TouristItineraries (){
                       <Select
                         label="tags"
                         //id="tags-select"
-                        //multiple
+                        multiple
                         value={filterInputValues.tags || []}
                         onChange={handleTagFilterChange}
                         renderValue={(selected) => selected.join(', ')} // Displays selected tags as comma-separated values
