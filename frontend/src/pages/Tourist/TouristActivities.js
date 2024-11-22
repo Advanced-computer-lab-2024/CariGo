@@ -15,14 +15,14 @@ export default function TouristViewActivities (){
     const [tourist, setTourist] = useState(true);
   //to show user typed in values
     const [filterInputValues, setFilterInputValues] = useState({
-        minPrice: "",
+        price: "",
         category: "",
         rating: "",
         startDate: "",
     });
     //for actual filtering
     const [filters, setFilters] = useState({
-        minPrice: "",
+        price: "",
         category: "",
         rating: "",
         startDate: "",
