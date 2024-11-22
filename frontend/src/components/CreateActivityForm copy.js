@@ -22,8 +22,8 @@ export default function CreateTransportationForm() {
   const [category, setCategory] = useState('');
   const [lon, setLon] = useState('');
   const [lan, setLan] = useState('');
-  const [minPrice, setMinPrice] = useState(0);
-  const [maxPrice, setMaxPrice] = useState(0);
+  const [price, setPrice] = useState(0);
+//  const [maxPrice, setMaxPrice] = useState(0);
   const [discount, setDiscount] = useState(0);
   const [errorMessages, setErrorMessages] = useState({});
 
@@ -37,8 +37,8 @@ export default function CreateTransportationForm() {
     if (!lan) errors.lan = "Latitude is required.";
     if (!tag) errors.tag = "Tag is required.";
     if (!category) errors.category = "Category is required.";
-    if (minPrice < 0) errors.minPrice = "Minimum price cannot be negative.";
-    if (maxPrice < 0) errors.maxPrice = "Maximum price cannot be negative.";
+    if (price < 0) errors.price = "price cannot be negative.";
+//    if (maxPrice < 0) errors.maxPrice = "Maximum price cannot be negative.";
     if (discount < 0) errors.discount = "Discount cannot be negative.";
     
     return errors;
@@ -63,8 +63,8 @@ export default function CreateTransportationForm() {
       tag,
       lon,
       lan,
-      minPrice: parseFloat(minPrice),
-      maxPrice: parseFloat(maxPrice),
+      price: parseFloat(price),
+//      maxPrice: parseFloat(maxPrice),
       discount: parseFloat(discount),
       category,
     };
@@ -101,8 +101,8 @@ export default function CreateTransportationForm() {
       setTags('');
       setLon('');
       setLan('');
-      setMinPrice(0);
-      setMaxPrice(0);
+      setPrice(0);
+//      setMaxPrice(0);
       setDiscount(0);
       setErrorMessages({});
       console.log("Activity created");
@@ -208,17 +208,17 @@ export default function CreateTransportationForm() {
           </FormControl>
 
           <FormControl required>
-            <Label>Minimum Price</Label>
+            <Label>Price</Label>
             <StyledInput
-              placeholder="Enter minimum activity price"
+              placeholder="Enter activity price"
               type="number"
-              onChange={(e) => setMinPrice(e.target.value)}
-              value={minPrice}
+              onChange={(e) => setPrice(e.target.value)}
+              value={price}
             />
-            {errorMessages.minPrice && <HelperText>{errorMessages.minPrice}</HelperText>}
+            {errorMessages.Price && <HelperText>{errorMessages.Price}</HelperText>}
           </FormControl>
 
-          <FormControl required>
+          {/* <FormControl required>
             <Label>Maximum Price</Label>
             <StyledInput
               placeholder="Enter maximum activity price"
@@ -227,7 +227,7 @@ export default function CreateTransportationForm() {
               value={maxPrice}
             />
             {errorMessages.maxPrice && <HelperText>{errorMessages.maxPrice}</HelperText>}
-          </FormControl>
+          </FormControl> */}
 
           <FormControl>
             <Label>DISCOUNT</Label>
