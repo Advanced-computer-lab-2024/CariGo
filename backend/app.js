@@ -22,6 +22,7 @@ const amadusRouter = require("./routes/amadusRouter.js");
 const transportationRouter = require("./routes/transportationRouter.js");
 const purchaseRouter = require("./routes/purchaseRouter.js");
 const DeleteRequestRouter = require("./routes/deleteRequestRouter.js");
+
 const app = express();
 
 
@@ -84,5 +85,6 @@ app.use((err, req, res, next) => {
     message: err.message,
   });
 });
+
 
 module.exports = app;
