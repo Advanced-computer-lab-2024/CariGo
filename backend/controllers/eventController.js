@@ -172,6 +172,12 @@ const updateItinerary = async (req, res) => {
         return res.status(404).json({ error: "Itinerary not found" });
       }
 
+      if(req.body.isFlagged){
+        if(req.body.isFlagged === true){
+          await notificationController.sendFlaggedContentNotification(content.userId, id, 'Itinerary' , itinerary.title);
+        }
+      }
+  
       const result = await itineraryModel.updateOne(
         { _id: new mongoose.Types.ObjectId(req.params.itineraryId) },
         { $set: update }
