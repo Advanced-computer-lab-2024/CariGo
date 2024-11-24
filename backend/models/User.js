@@ -170,6 +170,14 @@ const userSchema = new mongoose.Schema(
         },
       ],
     },
+    wishList: {
+      type: [
+        {
+          type: mongoose.Schema.ObjectId,
+          ref: "Product",
+        },
+      ],
+    },
   },
   { timestamps: true }
 );
