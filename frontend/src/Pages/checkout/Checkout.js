@@ -23,11 +23,15 @@ import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import logoImage from "../../assets/logo-no-background.png"; // Correct relative path
 import Avatar from "@mui/material/Avatar";
+import { loadStripe } from '@stripe/stripe-js';
+import { useState } from "react";
+import { Elements } from '@stripe/react-stripe-js';
+import StripePaymentForm from "./components/StripePaymentForm"
 
 import ColorModeIconDropdown from "./theme/ColorModeIconDropdown";
 const user = JSON.parse(localStorage.getItem("user"));
 
-const steps = ["Ticket details", "Payment details", "Review your order"];
+const steps = ["Ticket details", "Payment details"];
 
 export default function Checkout(props, { activityId },) {
   const disableCustomTheme = props;
@@ -122,6 +126,37 @@ export default function Checkout(props, { activityId },) {
         : type==="transportation" ? "/tourist/MyBookedTransportation" :"/tourist/MyBookings"
     );
   };
+  const [clientSecret, setClientSecret] = useState(null);
+  const [isPaymentCompleted, setIsPaymentCompleted] = React.useState(false);
+  const stripePromise = loadStripe('pk_test_51QLoL4AkXvwFjwTIX8acMj27pC8YxdOhmoUzn0wbUhej1xUFgFlfgYtXRGmggbKUI6Yfpxz08i9shcsfszv6y9iP0007q608Ny'); // Publishable key
+  
+  // const confirmPayment = async (clientSecret, cardElement) => {
+  //   const stripe = await stripePromise;
+  //   console.log(clientSecret,cardElement);
+  //   console.log("stripe confirm"+stripe)
+  //   // Use the cardElement directly
+  //   const { paymentMethod, error: paymentMethodError } = await stripe.createPaymentMethod({
+  //     type: 'card',
+  //     card: cardElement,
+  //   });
+  //   console.log("done")
+  //   if (paymentMethodError) {
+  //     console.error('Error creating payment method:', paymentMethodError.message);
+  //     return;
+  //   }
+  //   const { paymentIntent, error } = await stripe.confirmCardPayment(clientSecret, {
+  //     payment_method: paymentMethod.id,
+  //   });
+  
+  //   if (error) {
+  //     console.error('Payment failed:', error.message);
+  //   } else if (paymentIntent) {
+  //     console.log('Payment successful:', paymentIntent);
+  //     alert('Payment successful!');
+  //   }
+  // };
+  
+  
   const handlePlaceOrder = async () => {
     // setLoading(true);
     try {
@@ -139,6 +174,11 @@ export default function Checkout(props, { activityId },) {
         else{
         price = parseFloat(activityDetails.price);
       }
+
+      // if(orderData.paymentMethod =="creditCard"){
+      //   confirmPayment(clientSecret);
+      // }
+      
 
       const endpoint =
         type === "activity"
@@ -168,9 +208,41 @@ export default function Checkout(props, { activityId },) {
       // setError(error.response?.data?.error || 'Booking failed');
     }
   };
-
-  const handleNext = () => {
+  const handleNext = async () => {
     setActiveStep(activeStep + 1);
+    //console.log("inside the handle next :"+activeStep)
+    if(activeStep === 0 && orderData.paymentMethod =="creditCard"){
+      const token = localStorage.getItem("jwt");
+      if (!token) {
+        throw new Error("No token found. Please log in.");
+      }
+    try{
+      const response = await axios.post(
+        'http://localhost:4000/cariGo/Event/create_payment_form',
+        {
+          amount: totalPrice, // Request body
+          currency: 'usd',
+        },
+        {
+          headers: {
+            "Content-Type": "application/json", // Correct headers
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      
+      console.log(response)
+      if(response.data){
+         setClientSecret(response.data.clientSecret); // Update state
+      }
+      else
+        throw new Error("got no response");
+    }
+    catch (error) {
+      console.error("Error during creating payment order:", error);
+      // setError(error.response?.data?.error || 'Booking failed');
+    }
+  }
   };
 
   const handleBack = () => {
@@ -212,22 +284,28 @@ export default function Checkout(props, { activityId },) {
         );
       case 1:
         return (
-          <PaymentForm
-            userDetails={userDetails}
-            paymentTotal={totalPrice}
-            paymentMethod={orderData.paymentMethod}
-            onPaymentDetailsChange={handlePaymentDetailsChange}
-            onPaymentTypeChange={handlePaymentTypeChange} // Pass method change handler
-          />
+          <Elements stripe={stripePromise}>
+  
+  <StripePaymentForm
+    userDetails={userDetails}
+    paymentTotal={totalPrice}
+    paymentMethod={orderData.paymentMethod}
+    onPaymentDetailsChange={handlePaymentDetailsChange}
+    onPaymentTypeChange={handlePaymentTypeChange}
+    setIsPaymentCompleted = {setIsPaymentCompleted}
+    //confirmPayment={confirmPayment} // Pass the confirmPayment function
+    clientSecret={clientSecret} // Pass the clientSecret
+  />
+          </Elements>
         );
-      case 2:
-        return (
-          <Review
-            orderData={orderData}  // Make sure orderData is up to date
-            activityDetails={activityDetails}
-            totalPrice={`${totalPrice}`}
-          />
-        );
+      // case 2:
+      //   return (
+      //     <Review
+      //       orderData={orderData}  // Make sure orderData is up to date
+      //       activityDetails={activityDetails}
+      //       totalPrice={`${totalPrice}`}
+      //     />
+      //   );
       default:
         throw new Error("Unknown step");
     }
@@ -283,6 +361,7 @@ export default function Checkout(props, { activityId },) {
               totalPrice={`$${totalPrice}`}
               activityDetails={activityDetails}
               type={type}
+              quantity={orderData.quantity}
             />
           </Box>
         </Grid>
@@ -454,7 +533,8 @@ export default function Checkout(props, { activityId },) {
                       (!isTermsChecked)||
                       activeStep === 1 &&
                       userDetails.wallet - totalPrice < 0 &&
-                      orderData.paymentMethod === "wallet"
+                      orderData.paymentMethod === "wallet"||
+                      (activeStep === 1 && !isPaymentCompleted&&orderData.paymentMethod === "creditCard")
                     }
                     onClick={
                       activeStep === steps.length - 1
