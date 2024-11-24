@@ -42,7 +42,8 @@ const BookingSchema = new schema({
     type: Number,
     
   },
-});
+ 
+} ,{ timestamps: true });
 
 BookingSchema.pre(/^find/, function (next) {
   this.populate({
