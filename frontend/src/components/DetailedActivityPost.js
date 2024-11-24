@@ -166,7 +166,7 @@ export default function DetailedActivityPost({ id,author, img, start_date, end_d
                 marginRight: '5px',
             }}> {
               price != null? 
-              ((price.range.max*conversionRate).toFixed(2)+"-"+(price.range.min*conversionRate).toFixed(2) ) + ` ${code}`
+              ((price*conversionRate).toFixed(2)) + ` ${code}`  //((price.range?.max*conversionRate).toFixed(2)+"-"+(price.range?.min*conversionRate).toFixed(2) ) +` ${code}`
               :'no specified price'}
               </Typography>
             <Box sx={{

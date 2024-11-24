@@ -62,7 +62,7 @@ function Info({ totalPrice = 0, activityDetails, type }) {
           />
           <Typography variant="body1" sx={{ fontWeight: 'medium' }}>
             {type === 'activity'
-              ? (parseFloat(activityDetails?.price?.range?.min) * conversionRate || 0).toFixed(2)
+              ? (parseFloat(activityDetails?.price) * conversionRate || 0).toFixed(2)
               :type=="flight" ?(parseFloat(activityDetails?.price?.total) * conversionRate || 0).toFixed(2): 
               type=="hotel" ?(parseFloat(activityDetails?.offer?.price?.total) * conversionRate || 0).toFixed(2)  
                : (parseFloat(activityDetails?.price) * conversionRate || 0).toFixed(2)}

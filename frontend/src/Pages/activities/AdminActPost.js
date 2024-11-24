@@ -202,7 +202,7 @@ export default function ActivityPost({
                 }}
               >
                 {price != null
-                  ? price.range.max + "-" + price.range.min
+                  ? price   //? price.range.max + "-" + price.range.min
                   : "no specified price"}
               </Typography>
 

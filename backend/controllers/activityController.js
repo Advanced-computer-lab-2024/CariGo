@@ -18,8 +18,7 @@ const createActivity = async (req, res) => {
       duration,
       lon,
       lan,
-      minPrice,
-      maxPrice,
+      price,
       discount,
       tag,
       bookingOpened,
@@ -28,13 +27,6 @@ const createActivity = async (req, res) => {
       description,
     } = req.body;
 
-    // Validate that end_date is after start_date
-    const price = {
-      range: {
-        min: minPrice,
-        max: maxPrice,
-      },
-    };
     const locations = {
       lon: lon,
       lan: lan,
@@ -112,7 +104,7 @@ const getActivities = async (req, res) => {
 
   // Change sortBy to "price.range.min" if it is "price"
   if (sortBy === "price") {
-    sortBy = "price.range.min";
+    sortBy = "price";
   }
 
   const categoryName = req.query.Category;
@@ -152,10 +144,7 @@ const getActivities = async (req, res) => {
   console.log(priceParam);
   if (priceParam !== null) {
     query.where({
-      $and: [
-        { "price.range.min": { $lte: priceParam } }, // Price is greater than or equal to min
-        { "price.range.max": { $gte: priceParam } }, // Price is less than or equal to max
-      ],
+      "price": priceParam, // Match the fixed price
     });
     // Remove price parameter from req.query
     delete req.query.price;
@@ -227,7 +216,7 @@ const getActivitiesForAdmin = async (req, res) => {
 
   // Change sortBy to "price.range.min" if it is "price"
   if (sortBy === "price") {
-    sortBy = "price.range.min";
+    sortBy = "price";
   }
 
   const categoryName = req.query.Category;
@@ -262,10 +251,7 @@ const getActivitiesForAdmin = async (req, res) => {
   console.log(priceParam);
   if (priceParam !== null) {
     query.where({
-      $and: [
-        { "price.range.min": { $lte: priceParam } }, // Price is greater than or equal to min
-        { "price.range.max": { $gte: priceParam } }, // Price is less than or equal to max
-      ],
+      "price": priceParam, // Match the fixed price
     });
     // Remove price parameter from req.query
     delete req.query.price;
