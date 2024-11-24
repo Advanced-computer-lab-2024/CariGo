@@ -79,6 +79,8 @@ const makePurchase = async (req, res) => {
     product.quantity -= Quantity;
     await product.save();
 
+    await notificationController.checkProductStock(ProductId);
+
     // Create a new purchase entry
     const purchase = await purchaseModel.create({
       UserId,

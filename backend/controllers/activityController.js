@@ -8,6 +8,7 @@ const activityModel = require("../models/Activity");
 const mongoose = require("mongoose");
 const bookingModel = require("../models/Bookings");
 const User = require("../models/User");
+const notificationController = require('../controllers/notificationController');
 
 const createActivity = async (req, res) => {
   try {
@@ -389,7 +390,7 @@ const getAdvActivities = async (req, res) => {
 const updateActivity = async (req, res) => {
   try {
     const { id } = req.params;
-    const { tag, category, ...otherFields } = req.body; // Change to lowercase for consistency
+    const { tag, category,...otherFields } = req.body; // Change to lowercase for consistency
 
     // Check if a tag is provided
     if (tag) {
@@ -414,14 +415,23 @@ const updateActivity = async (req, res) => {
       }
     }
 
+    
+
     // Update the activity
     const updatedActivity = await Activity.findByIdAndUpdate(
       id,
-      { ...otherFields, ...req.body },
+      {...otherFields, ...req.body },
       { new: true }
     );
+
     if (!updatedActivity) {
       return res.status(404).json({ message: "Activity not found" });
+    }
+
+    if(req.body.isFlagged){
+      if(req.body.isFlagged === true){
+        await notificationController.sendFlaggedContentNotification(content.userId, id, 'Activity' , updateActivity.title);
+      }
     }
 
     res.status(200).json(updatedActivity);

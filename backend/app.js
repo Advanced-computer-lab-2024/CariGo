@@ -22,6 +22,7 @@ const amadusRouter = require("./routes/amadusRouter.js");
 const transportationRouter = require("./routes/transportationRouter.js");
 const purchaseRouter = require("./routes/purchaseRouter.js");
 const DeleteRequestRouter = require("./routes/deleteRequestRouter.js");
+const notificationRoutes = require('./routes/notificationRouter.js');
 const app = express();
 
 
@@ -70,6 +71,8 @@ app.use("/cariGo/delReq",DeleteRequestRouter)
 app.use("/cariGo/Event", eventRouter)
 app.use("/cariGo/experience", experienceRouter);
 app.use("/cariGo/purchase", purchaseRouter);
+
+app.use('/cariGo/notifications', notificationRoutes);
 
 app.all("*", (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
