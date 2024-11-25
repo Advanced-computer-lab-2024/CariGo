@@ -21,7 +21,8 @@ const {
   CancelItineraryBooking,
   currencyConversion,
   suggestedItineraries,
-  suggestedActivities
+  suggestedActivities,
+  create_payment_form
 } = require("../controllers/eventController");
 const authController = require("../controllers/authController");
 const router = express.Router();
@@ -104,6 +105,10 @@ router.patch(
   CancelItineraryBooking
 );
 
-
+router.post(
+  "/create_payment_form",
+  authController.restrictTo("Tourist"),
+  create_payment_form
+);
 
 module.exports = router;

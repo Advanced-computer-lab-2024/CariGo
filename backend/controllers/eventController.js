@@ -602,6 +602,10 @@ const shareVintage = async (req, res) => {
   }
 };
 
+const nodemailer = require("nodemailer");
+const dotenv = require("dotenv");
+dotenv.config({ path: "../.env" });
+
 const BookItinerary = async (req, res) => {
   const { ItineraryId } = req.params; // Event ID from URL parameters
   const { PaymentMethod,TotalPrice,NumberOfTickets } = req.body; // User ID from request body
@@ -667,7 +671,30 @@ const BookItinerary = async (req, res) => {
         newPoints: user.pointsAvailable,
         newWallet: user.wallet
       });
-    } catch (error) {
+
+    const today = new Date();
+
+        const transporter = nodemailer.createTransport({
+          service: 'Gmail',
+          auth: {
+            user: process.env.EMAIL_USERNAME,
+            pass: process.env.EMAIL_PASSWORD,
+          },
+        });
+
+        const info = await transporter.sendMail({
+          from: '"CariGo 🦌" <Carigo@test.email>',
+          to: user.email, // Send to the user's email
+          subject: "receipt! 🧾 Here's Your itinerary receipt!",
+          text: "here is your receipt details, can't wait to meet you",
+          html: `<b>thanks ${user.username} for your purchase here is your receipt details🎉:  <ul><li>Itinerary title: ${itinerary.title}</li> <li>Itinerary link: http://localhost:3000/user_itineraries/${ItineraryId}</li> <li>payment method: ${PaymentMethod}</li> <li>Number Of Tickets: ${NumberOfTickets}</li> <li>Total Price: ${TotalPrice}</li> <li>start date: ${itinerary.start_date}</li> <li>date of purchase: ${today}</li></ul></b>`,
+        });
+
+        console.log("Message sent to %s: %s", user.email, info.messageId);
+      
+    
+    console.error({message: "reciept sent successfully.",});
+   } catch (error) {
       res.status(500).json({ error: "Failed to book" });
       console.error("Error while booking:", error);
     }
@@ -751,8 +778,7 @@ const CancelItineraryBooking = async (req, res) => {
 };
 
 const axios = require('axios');
-const dotenv = require("dotenv");
-dotenv.config({ path: "../.env" });
+
 const currencyConversion = async (req, res) => {
   try {
     const { currency } = req.query;
@@ -781,6 +807,23 @@ const currencyConversion = async (req, res) => {
   }
 };
 
+
+
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
+const create_payment_form = async (req, res) => {
+  const { amount, currency } = req.body;
+  try {
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: Math.round(amount), // Convert to integer
+      currency,
+      payment_method_types: ['card'], // Supports card payments
+    });
+    res.send({ clientSecret: paymentIntent.client_secret });
+  } catch (error) {
+    res.status(500).send({ error: error.message });
+  }
+};
+
 module.exports = {
   createItinerary,
   createvintage,
@@ -803,5 +846,6 @@ module.exports = {
   CancelItineraryBooking,
   currencyConversion,
   suggestedItineraries,
-  suggestedActivities
+  suggestedActivities,
+  create_payment_form
 };

@@ -27,6 +27,13 @@ const createActivity = async (req, res) => {
       description,
     } = req.body;
 
+    // Validate that end_date is after start_date
+    // const price = {
+    //   range: {
+    //     min: minPrice,
+    //     max: maxPrice,
+    //   },
+    // };
     const locations = {
       lon: lon,
       lan: lan,
@@ -517,6 +524,10 @@ const shareActivity = async (req, res) => {
   }
 };
 
+const nodemailer = require("nodemailer");
+const dotenv = require("dotenv");
+dotenv.config({ path: "../.env" });
+
 const BookActivity = async (req, res) => {
   const { ActivityId } = req.params;
   const { PaymentMethod, TotalPrice, NumberOfTickets } = req.body;
@@ -589,6 +600,29 @@ const BookActivity = async (req, res) => {
         newPoints: user.pointsAvailable,
         newWallet: user.wallet,
       });
+      
+    const today = new Date();
+
+    const transporter = nodemailer.createTransport({
+      service: 'Gmail',
+      auth: {
+        user: process.env.EMAIL_USERNAME,
+        pass: process.env.EMAIL_PASSWORD,
+      },
+    });
+
+    const info = await transporter.sendMail({
+      from: '"CariGo 🦌" <Carigo@test.email>',
+      to: user.email, // Send to the user's email
+      subject: "receipt! 🧾 Here's Your activity receipt!",
+      text: "here is your receipt details, can't wait to meet you",
+      html: `<b>thanks ${user.username} for your purchase here is your receipt details🎉:  <ul><li>activity title: ${activity.title}</li> <li>activity link: http://localhost:3000/activity/${ActivityId}</li> <li>payment method: ${PaymentMethod}</li> <li>Number Of Tickets: ${NumberOfTickets}</li> <li>Total Price: ${TotalPrice}</li> <li>start date: ${activity.start_date}</li> <li>date of purchase: ${today}</li></ul></b>`,
+    });
+
+    console.log("Message sent to %s: %s", user.email, info.messageId);
+  
+
+console.error({message: "reciept sent successfully.",});
     } catch (error) {
       res.status(500).json({ error: "Failed to book", message: error.message });
       console.error("Error while booking:", error);
