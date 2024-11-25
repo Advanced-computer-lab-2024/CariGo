@@ -14,6 +14,7 @@ const Category = require("../models/Category");
 const bookingModel = require("../models/Bookings");
 const Itinerary = require("../models/Itinerary");
 const User = require("../models/User");
+const notificationController = require("../controllers/notificationController");
 
 const createItinerary = async (req, res) => {
   const userId = new mongoose.Types.ObjectId(req.body.author); // Convert to ObjectId
@@ -160,37 +161,34 @@ const createProduct = async (req, res) => {
 
 const updateItinerary = async (req, res) => {
   const update = req.body;
-  console.log(update);
+  const { itineraryId } = req.params;
 
-  if (mongoose.Types.ObjectId.isValid(req.params.itineraryId)) {
-    console.log("inside the update");
+  if (!mongoose.Types.ObjectId.isValid(itineraryId)) {
+    return res.status(400).json({ error: "Invalid itinerary ID" });
+  }
 
-    try {
-      const itinerary = await itineraryModel.findById(req.params.itineraryId);
+  try {
+    const itinerary = await itineraryModel.findById(itineraryId);
 
-      if (!itinerary) {
-        return res.status(404).json({ error: "Itinerary not found" });
-      }
-
-      if(req.body.isFlagged){
-        if(req.body.isFlagged === true){
-          await notificationController.sendFlaggedContentNotification(content.userId, id, 'Itinerary' , itinerary.title);
-        }
-      }
-  
-      const result = await itineraryModel.updateOne(
-        { _id: new mongoose.Types.ObjectId(req.params.itineraryId) },
-        { $set: update }
-      );
-
-      res.status(201).json(result);
-    } catch (error) {
-      res.status(500).json({ error: "couldn't update itinerary data" });
+    if (!itinerary) {
+      return res.status(404).json({ error: "Itinerary not found" });
     }
-  } else {
-    res
-      .status(500)
-      .json({ error: "couldn't update user data, itinerary id invalid" });
+
+    if (update.isFlagged === true) {
+      await notificationController.sendFlaggedContentNotification(
+        itinerary.author,
+        itineraryId,
+        'Itinerary',
+        itinerary.title
+      );
+    }
+
+    const result = await itineraryModel.findByIdAndUpdate(itineraryId, update, { new: true });
+
+    res.status(200).json(result);
+  } catch (error) {
+    console.error("Error updating itinerary:", error);
+    res.status(500).json({ error: "Couldn't update itinerary data" });
   }
 };
 // const readAllItineraries = async (req, res) => {

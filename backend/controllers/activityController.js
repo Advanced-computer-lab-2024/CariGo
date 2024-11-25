@@ -416,7 +416,7 @@ const updateActivity = async (req, res) => {
 
     if(req.body.isFlagged){
       if(req.body.isFlagged === true){
-        await notificationController.sendFlaggedContentNotification(content.userId, id, 'Activity' , updateActivity.title);
+        await notificationController.sendFlaggedContentNotification(updateActivity.author, id, 'Activity' , updateActivity.title);
       }
     }
 

@@ -162,6 +162,8 @@ exports.sendFlaggedContentNotification = async (
   contentModel,
   title
 ) => {
+
+  console.log("sendFlaggedContentNotification in");
   const message = `Your ${contentModel.toLowerCase()} ${title} has been flagged as inappropriate by the admin.`;
   await this.sendNotification(
     userId,
@@ -196,10 +198,12 @@ exports.scheduleUpcomingEventReminder = async (userId, eventId, eventType) => {
     event = await Itinerary.findById(eventId);
   }
 
+  console.log("here");
+
   if (event) {
-    const reminderDate = new Date(event.startDate);
+    const reminderDate = new Date(event.start_date);
     reminderDate.setDate(reminderDate.getDate() - 1);
-    const message = `Reminder: You have an upcoming ${eventType.toLowerCase()} "${event.name}" tomorrow.`;
+    const message = `Reminder: You have an upcoming ${eventType.toLowerCase()} "${event.title}" tomorrow.`;
     await this.scheduleNotification(userId, message, 'upcoming_event', eventId, eventType, reminderDate);
   }
 };
@@ -207,17 +211,16 @@ exports.scheduleUpcomingEventReminder = async (userId, eventId, eventType) => {
 exports.sendOutOfStockNotification = async (productId) => {
   const product = await Product.findById(productId);
   if (product) {
-    const adminUsers = await User.find({ role: "admin" });
+    console.log("sendOutOfStockNotification in");
     const message = `The product "${product.name}" is now out of stock.`;
-    for (const admin of adminUsers) {
       await this.sendNotification(
-        admin._id,
+        product.author,
         message,
         "out_of_stock",
         productId,
         "Product"
       );
-    }
+
   }
 };
 
