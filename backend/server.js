@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
+const scheduler = require('./utils/scheduler');
+
 
 process.on("uncaughtException", (err) => {
   console.log("UNCAUGHT EXCEPTION!! 💥 shutting down...");
@@ -25,7 +27,11 @@ const uri = process.env.DATABASE;
 
 mongoose
   .connect(uri)
-  .then(() => console.log("MongoDB connected"))
+  .then(() => {
+    console.log("MongoDB connected");
+    // Start the scheduler after the database connection is established
+    scheduler;
+  })
   .catch((err) => console.log("MongoDB connection error:", err));
 
 const port = process.env.PORT || 4000;
