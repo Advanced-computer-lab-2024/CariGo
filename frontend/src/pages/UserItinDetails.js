@@ -11,7 +11,13 @@ import logoImage from "../assets/itinerary.png"; // Correct relative path
 import { useNavigate } from "react-router-dom";
 import Button from "@mui/material/Button";
 import axios from "axios";
-
+import { Paper, Grid } from '@mui/material';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import LanguageIcon from '@mui/icons-material/Language';
+import DirectionsBusIcon from '@mui/icons-material/DirectionsBus';
+import HotelIcon from '@mui/icons-material/Hotel';
+import AccessibleIcon from '@mui/icons-material/Accessible';
+import Divider from '@mui/material/Divider';
 const ItineraryDetails = () => {
   const { id } = useParams(); // Get the itinerary ID from the URL
   const [itinerary, setItinerary] = useState(null);
@@ -96,139 +102,187 @@ const ItineraryDetails = () => {
   const code = localStorage.getItem("currencyCode") || "EGP";
   const token = localStorage.getItem("jwt");
   return (
-    <div>
+    <>
       <ResponsiveAppBar />
-      <Box sx={{ padding: "20px", maxWidth: "1200px", margin: "auto" }}>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            marginBottom: "20px",
-          }}
-        >
-          <Avatar sx={{ bgcolor: "#126782", width: 56, height: 56 }}>
-            {title?.charAt(0) || "A"} {/* Safely handle author name */}
-          </Avatar>
-          <Typography
-            variant="h4"
-            sx={{ margin: "10px 0", fontWeight: "bold" }}
-          >
-            {title || "Anonymous"} {/* Safely handle author name */}
-          </Typography>
-          {tags?.map((tag) => (
-            <Chip
-              key={tag._id}
-              label={tag.title}
-              sx={{ backgroundColor: "#126782", color: "white", margin: "5px" }}
-            />
-          ))}
-        </Box>
+      <Box>
+        <Paper elevation={3} sx={{ padding: "30px", maxWidth: "1200px", margin: "20px auto" }}>
+          <Grid container spacing={4}>
+            <Grid item xs={12} md={8}>
+              <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-start", marginBottom: "20px" }}>
+                <Typography variant="h4" sx={{ marginBottom: "10px", fontWeight: "bold", color: "#126782" }}>
+                  {title || "Anonymous"}
+                </Typography>
+                <Box sx={{ display: "flex", flexWrap: "wrap", gap: "10px", marginBottom: "15px" }}>
+                  {tags?.map((tag) => (
+                    <Chip
+                      key={tag._id}
+                      label={tag.title}
+                      sx={{ backgroundColor: "#126782", color: "white" }}
+                    />
+                  ))}
+                </Box>
+                <Box sx={{ display: "flex", alignItems: "center", marginBottom: "15px" }}>
+                  <StarIcon sx={{ color: "#FFD700", marginRight: "5px" }} />
+                  <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                    {ratingsAverage || "No rating"}
+                  </Typography>
+                </Box>
+              </Box>
 
-        <Box
-          component="img"
-          src={logoImage || ""}
-          alt="Itinerary Image"
-          sx={{
-            width: "100%",
-            maxHeight: "400px",
-            borderRadius: "10px",
-            objectFit: "cover",
-            marginBottom: "20px",
-          }}
-        />
+              <Box
+                component="img"
+                src={logoImage || ""}
+                alt="Itinerary Image"
+                sx={{
+                  width: "100%",
+                  maxHeight: "400px",
+                  borderRadius: "10px",
+                  objectFit: "cover",
+                  marginBottom: "20px",
+                }}
+              />
 
-        <div className="company-info">
-          <Box sx={{ marginBottom: "20px" }}>
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                marginBottom: "10px",
-              }}
-            >
-              <StarIcon sx={{ color: "#FFD700", marginRight: "5px" }} />
-              <Typography variant="body1" sx={{ fontSize: "18px" }}>
-                {ratingsAverage || "No rating"}
-              </Typography>
-            </Box>
-            <Typography
-              variant="body1"
-              sx={{ fontSize: "18px", marginBottom: "5px" }}
-            >
-              <strong>Start Date:</strong> {formatDateTime(start_date)}
-            </Typography>
-            <Typography
-              variant="body1"
-              sx={{ fontSize: "18px", marginBottom: "5px" }}
-            >
-              <strong>End Date:</strong> {formatDateTime(end_date)}
-            </Typography>
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                marginBottom: "5px",
-              }}
-            >
-              <PinDropIcon sx={{ marginRight: "5px" }} />
-              <Typography variant="body1">
-                <strong>Locations:</strong>{" "}
-                {locations?.join(", ") || "Not specified"}
-              </Typography>
-            </Box>
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                marginBottom: "5px",
-              }}
-            >
-              <AttachMoneyIcon sx={{ marginRight: "5px" }} />
-              <Typography variant="body1">
-                <strong>Price:</strong>{" "}
-                {price
-                  ? `${(price * conversionRate).toFixed(2)} ${code}`
-                  : "Price not specified"}
-              </Typography>
-            </Box>
-            <Typography variant="body1" sx={{ fontSize: "18px" }}>
-              <strong>Language of Tour Guide:</strong>{" "}
-              {language || "No transportation info"}
-            </Typography>
-            <Typography variant="body1" sx={{ fontSize: "18px" }}>
-              <strong>Transportation:</strong>{" "}
-              {transportation || "No transportation info"}
-            </Typography>
-            <Typography variant="body1" sx={{ fontSize: "18px" }}>
-              <strong>Pick-up:</strong> {pick_up || "No transportation info"}
-            </Typography>
-            <Typography variant="body1" sx={{ fontSize: "18px" }}>
-              <strong>Drop-off:</strong> {drop_off || "No transportation info"}
-            </Typography>
-            <Typography variant="body1" sx={{ fontSize: "18px" }}>
-              <strong>Accommodation:</strong>{" "}
-              {accommodation || "No accommodation info"}
-            </Typography>
-            <Typography variant="body1" sx={{ fontSize: "18px" }}>
-              <strong>Accessibility:</strong>{" "}
-              {accessibility || "No accessibility info"}
-            </Typography>
+              <Divider sx={{ margin: "20px 0" }} />
 
-            {/* Using MarkerList to display activities */}
-            <Typography variant="body1" sx={{ fontSize: "18px" }}>
-              <strong>Activities:</strong>
-            </Typography>
-            <UserAcList activities={formattedActivities} />
-          </Box>
-          <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-            <Button variant="contained" color="primary" onClick={handleClick}>
-              Book Now
-            </Button>
-          </Box>
-        </div>
+              <Typography variant="h5" sx={{ marginBottom: "15px", color: "#126782" }}>Itinerary Details</Typography>
+
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={6}>
+                  <Box sx={{ display: "flex", alignItems: "center", marginBottom: "10px" }}>
+                    <AccessTimeIcon sx={{ marginRight: "10px", color: "#126782" }} />
+                    <Box>
+                      <Typography variant="body1" sx={{ fontWeight: "bold" }}>Start Date:</Typography>
+                      <Typography variant="body2">{formatDateTime(start_date)}</Typography>
+                    </Box>
+                  </Box>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Box sx={{ display: "flex", alignItems: "center", marginBottom: "10px" }}>
+                    <AccessTimeIcon sx={{ marginRight: "10px", color: "#126782" }} />
+                    <Box>
+                      <Typography variant="body1" sx={{ fontWeight: "bold" }}>End Date:</Typography>
+                      <Typography variant="body2">{formatDateTime(end_date)}</Typography>
+                    </Box>
+                  </Box>
+                </Grid>
+                <Grid item xs={12}>
+                  <Box sx={{ display: "flex", alignItems: "center", marginBottom: "10px" }}>
+                    <PinDropIcon sx={{ marginRight: "10px", color: "#126782" }} />
+                    <Box>
+                      <Typography variant="body1" sx={{ fontWeight: "bold" }}>Locations:</Typography>
+                      <Typography variant="body2">{locations?.join(", ") || "Not specified"}</Typography>
+                    </Box>
+                  </Box>
+                </Grid>
+                <Grid item xs={12}>
+                  <Box sx={{ display: "flex", alignItems: "center", marginBottom: "10px" }}>
+                    <AttachMoneyIcon sx={{ marginRight: "10px", color: "#126782" }} />
+                    <Box>
+                      <Typography variant="body1" sx={{ fontWeight: "bold" }}>Price:</Typography>
+                      <Typography variant="body2">
+                        {price ? `${(price * conversionRate).toFixed(2)} ${code}` : "Price not specified"}
+                      </Typography>
+                    </Box>
+                  </Box>
+                </Grid>
+              </Grid>
+
+              <Divider sx={{ margin: "20px 0" }} />
+
+              <Typography variant="h5" sx={{ marginBottom: "15px", color: "#126782" }}>Additional Information</Typography>
+
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={6}>
+                  <Box sx={{ display: "flex", alignItems: "center", marginBottom: "10px" }}>
+                    <LanguageIcon sx={{ marginRight: "10px", color: "#126782" }} />
+                    <Box>
+                      <Typography variant="body1" sx={{ fontWeight: "bold" }}>Language of Tour Guide:</Typography>
+                      <Typography variant="body2">{language || "Not specified"}</Typography>
+                    </Box>
+                  </Box>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Box sx={{ display: "flex", alignItems: "center", marginBottom: "10px" }}>
+                    <DirectionsBusIcon sx={{ marginRight: "10px", color: "#126782" }} />
+                    <Box>
+                      <Typography variant="body1" sx={{ fontWeight: "bold" }}>Transportation:</Typography>
+                      <Typography variant="body2">{transportation || "Not specified"}</Typography>
+                    </Box>
+                  </Box>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Box sx={{ display: "flex", alignItems: "center", marginBottom: "10px" }}>
+                    <DirectionsBusIcon sx={{ marginRight: "10px", color: "#126782" }} />
+                    <Box>
+                      <Typography variant="body1" sx={{ fontWeight: "bold" }}>Pick-up:</Typography>
+                      <Typography variant="body2">{pick_up || "Not specified"}</Typography>
+                    </Box>
+                  </Box>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Box sx={{ display: "flex", alignItems: "center", marginBottom: "10px" }}>
+                    <DirectionsBusIcon sx={{ marginRight: "10px", color: "#126782" }} />
+                    <Box>
+                      <Typography variant="body1" sx={{ fontWeight: "bold" }}>Drop-off:</Typography>
+                      <Typography variant="body2">{drop_off || "Not specified"}</Typography>
+                    </Box>
+                  </Box>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Box sx={{ display: "flex", alignItems: "center", marginBottom: "10px" }}>
+                    <HotelIcon sx={{ marginRight: "10px", color: "#126782" }} />
+                    <Box>
+                      <Typography variant="body1" sx={{ fontWeight: "bold" }}>Accommodation:</Typography>
+                      <Typography variant="body2">{accommodation || "Not specified"}</Typography>
+                    </Box>
+                  </Box>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Box sx={{ display: "flex", alignItems: "center", marginBottom: "10px" }}>
+                    <AccessibleIcon sx={{ marginRight: "10px", color: "#126782" }} />
+                    <Box>
+                      <Typography variant="body1" sx={{ fontWeight: "bold" }}>Accessibility:</Typography>
+                      <Typography variant="body2">{accessibility || "Not specified"}</Typography>
+                    </Box>
+                  </Box>
+                </Grid>
+              </Grid>
+
+              <Divider sx={{ margin: "20px 0" }} />
+
+              <Typography variant="h5" sx={{ marginBottom: "15px", color: "#126782" }}>Activities</Typography>
+              <UserAcList activities={formattedActivities} />
+            </Grid>
+
+            <Grid item xs={12} md={4}>
+              <Paper elevation={2} sx={{ padding: "20px", position: "sticky", top: "20px" }}>
+                <Typography variant="h6" sx={{ marginBottom: "15px", color: "#126782" }}>Book This Itinerary</Typography>
+                <Typography variant="body1" sx={{ marginBottom: "15px" }}>
+                  Experience this amazing journey from {formatDateTime(start_date)} to {formatDateTime(end_date)}.
+                </Typography>
+                <Typography variant="h5" sx={{ marginBottom: "15px", fontWeight: "bold" }}>
+                  {price ? `${(price * conversionRate).toFixed(2)} ${code}` : "Price not specified"}
+                </Typography>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                  onClick={handleClick}
+                  sx={{
+                    backgroundColor: "#126782",
+                    '&:hover': {
+                      backgroundColor: "#0d4e63",
+                    },
+                  }}
+                >
+                  Book Now
+                </Button>
+              </Paper>
+            </Grid>
+          </Grid>
+        </Paper>
       </Box>
-    </div>
+    </>
   );
 };
 
