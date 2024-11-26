@@ -621,6 +621,9 @@ const BookItinerary = async (req, res) => {
       if (!itinerary) {
         return res.status(404).json({ error: "Iternirary not found" });
       }
+      if (!itinerary.isOpened) {
+        return res.status(400).json({ error: "This itinerary will accept bookings soon" });
+      }
       await Itinerary.findByIdAndUpdate(ItineraryId, { isBooked: true });
 
       const user = await User.findById(UserId);
