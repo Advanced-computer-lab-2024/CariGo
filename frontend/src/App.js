@@ -115,6 +115,7 @@ import BookServicesPage from "./Pages/Tourist/Booking.js";
 import ReviewAccounts from "./Pages/accounts/docsReview.jsx";
 import ProductDetailsT from "./Pages/Tourist/productdetailsT"
 import ProductDetailsSeller from "./Pages/products/ProductDetailsSeller.jsx"
+import TotalReport from "./Pages/TotalReport.js";
 function App() {
   
   const token = localStorage.getItem("jwt");
@@ -235,6 +236,7 @@ function App() {
               <Route path="/admin/analysis" element={<ProductAnalysis />} />
         </Route>
 
+        <Route path="/reports" element={<TotalReport />} />
         <Route path="/guest-places" element={<GuestViewVintage/>} />
         <Route path="/tourist-places" element={<TouristViewVintage />} />
         <Route path="/createVintage" element={<CreateVintageForm />} />
