@@ -2,6 +2,8 @@ const { Admin } = require("mongodb");
 const userModel = require("../models/User");
 const categoryModel = require("../models/Category");
 const tagModel = require("../models/Tag");
+const PromoCode = require("../models/PromoCode"); // Adjust the path as necessary
+
 const catchAsync = require("../utils/catchAsync");
 const User = require("../models/User");
 
@@ -337,6 +339,31 @@ const rejectDocument = catchAsync(async (req, res, next) => {
   });
 });
 
+const createPromoCode = async (req, res) => {
+  const { code, discount, expirationDate } = req.body;
+
+  try {
+    // Check if the promo code already exists
+    const existingPromo = await PromoCode.findOne({ code });
+    if (existingPromo) {
+      return res.status(400).json({ message: 'Promo code already exists' });
+    }
+
+    // Create a new promo code
+    const promoCode = await PromoCode.create({
+      code,
+      discount,
+      expirationDate,
+      isActive: true,
+    });
+
+    res.status(201).json({ message: 'Promo code created successfully', promoCode });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+
 module.exports = {
   addAdmin,
   getUser,
@@ -353,4 +380,5 @@ module.exports = {
   getPendingDocuments,
   approveDocument,
   rejectDocument,
+  createPromoCode,
 };

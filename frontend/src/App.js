@@ -88,6 +88,7 @@ import FlightBooking from './Pages/FlightBooking.jsx';
 import FlightDetails from "./components/FlightDetails";
 import FileComplaintForm from "./Pages/Tourist/FileComplaintForm";
 import ActivityPostDetail from "./components/ActivityPostDetail.js";
+import CreatePromoCode from './Pages/createPromoCode';
 // import HotelBooking from "./Pages/Tourist/HotelBooking.js";
 
 import BookingPage from "./Pages/Tourist/Booking.js";
@@ -215,7 +216,7 @@ function App() {
               <Route path="/admin/manage-products/AddProduct" element={<AddProduct/>} />
               <Route path="/admin/manage-products/product-Details/:id" element={<ProductDetails/>} />
               <Route path="/admin/manage-accounts/ReviewDocs" element={<ReviewAccounts/>} />
-
+              <Route path="/create-promo-code" element={<CreatePromoCode />} />
               <Route path="/update-tag" element={<UpdateTag />} />
               <Route path='/admin/view-products' element={<ViewProducts/>}/>
               <Route path='/admin/view-products/:id' element={<ProductDetails2/>}/>
