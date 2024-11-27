@@ -241,6 +241,7 @@ const MyBookedActivities = () => {
               ) => (
                 <Grid item key={index} sx={{ justifyContent: "left" }}>
                   <MyBookedActivityCard
+                    bookId={activity._id}
                     id={activity.ActivityId._id}
                     author={activity.ActivityId.author}
                     name={activity.ActivityId.title}

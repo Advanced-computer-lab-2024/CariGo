@@ -13,6 +13,7 @@ import FlightIcon from '@mui/icons-material/Flight';
 import LuggageIcon from '@mui/icons-material/Luggage';
 
 const MyBookedFlightCard = ({  
+  bookId,
   airline, 
   airlinename, 
   segments, 
@@ -52,7 +53,7 @@ const MyBookedFlightCard = ({
         }
 
         // Corrected the syntax for axios request
-        await axios.patch(`http://localhost:4000/cariGo/flights//CancelfBooking`, {flightData}, {
+        await axios.patch(`http://localhost:4000/cariGo/flights//CancelfBooking`, {bookingId: bookId,}, {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -80,7 +81,7 @@ const MyBookedFlightCard = ({
         // Add a 5-second delay before reloading the page
         setTimeout(() => {
           window.location.reload();
-        }, 5000); // 5000 ms = 5 seconds
+        }, 1000); // 5000 ms = 5 seconds
       } catch (error) {
         console.error('Failed to cancel Activity booking:', error.response ? error.response.data : error.message);
         alert(`An error occurred while canceling the booking. Details: ${error.message}, ${error.response?.data?.message}`);
