@@ -208,7 +208,7 @@ const MyBookedHotels = () => {
     return (
       <Grid item key={index} sx={{ justifyContent: "left" }}>
         <MyBookedHotelCard
-         
+          bookId={activity._id}
           hotelname={activity.hotelData.hotelName|| " "}
           img={"frontend/public/assets/images/itinerary.png"}
           checkInDate={activity.hotelData.offer.checkInDate || " "}
