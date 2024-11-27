@@ -12,7 +12,14 @@ import "../components/styles/CompanyInfo.css";
 import logoImage from "../assets/itinerary.png"; // Correct relative path
 import SelectCategory from "../components/ItineraryCategory";
 import { useNavigate } from "react-router-dom";
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
 import axios from "axios";
 
 const ItineraryDetails = () => {
@@ -90,7 +97,7 @@ const ItineraryDetails = () => {
       console.error("Error updating itinerary status:", error);
     }
   };
-  
+
   // Function to update itinerary activities and tags
   const updateItinerary = async (activities, tags, category) => {
     const token = localStorage.getItem("jwt");
@@ -185,6 +192,25 @@ const ItineraryDetails = () => {
     return new Date(dateString).toLocaleString(undefined, options);
   };
 
+  const openBookings = async () => {
+    try {
+      const token = localStorage.getItem("jwt");
+    await axios.post(
+      `http://localhost:4000/cariGo/Event/openBookings/${id}`,
+      {
+        isOpened: true,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    setRefreshKey((prev) => prev + 1);
+    } catch (error) {
+      console.error("Error updating itinerary status:", error);
+    }
+  };
   return (
     <div>
       <NavBar />
@@ -340,39 +366,50 @@ const ItineraryDetails = () => {
             </Typography>
           </Box>
           <Button
-        variant="contained"
-        color={itinerary.isActive ? "error" : "primary"} // Red button for deactivation
-        onClick={handleDialogOpen}
-        sx={{ marginTop: "20px" }}
-      >
-        {itinerary.isActive ? "Deactivate Itinerary" : "Activate Itinerary"}
-      </Button>
-
-      {/* Confirmation dialog */}
-      <Dialog open={openDialog} onClose={handleDialogClose}>
-        <DialogTitle>
-          {itinerary.isActive ? "Confirm Deactivation" : "Confirm Activation"}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            {itinerary.isActive
-              ? "Are you sure you want to deactivate this itinerary?"
-              : "Are you sure you want to activate this itinerary?"}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleDialogClose} color="primary">
-            Cancel
-          </Button>
-          <Button
-            onClick={() => toggleIsActive(!itinerary.isActive)}
-            color="error"
-            autoFocus
+            variant="contained"
+            color={itinerary.isActive ? "error" : "primary"} // Red button for deactivation
+            onClick={handleDialogOpen}
+            sx={{ marginTop: "20px" }}
           >
-            Confirm
+            {itinerary.isActive ? "Deactivate Itinerary" : "Activate Itinerary"}
           </Button>
-        </DialogActions>
-      </Dialog>
+          {!itinerary.isOpened && 
+          <Button
+            variant="contained"
+            color={"primary"} // Red button for deactivation
+            onClick={openBookings}
+            sx={{ marginTop: "20px" }}
+          >
+            {"Open Bookings"}
+          </Button>
+          } 
+          {/* Confirmation dialog */}
+          <Dialog open={openDialog} onClose={handleDialogClose}>
+            <DialogTitle>
+              {itinerary.isActive
+                ? "Confirm Deactivation"
+                : "Confirm Activation"}
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                {itinerary.isActive
+                  ? "Are you sure you want to deactivate this itinerary?"
+                  : "Are you sure you want to activate this itinerary?"}
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleDialogClose} color="primary">
+                Cancel
+              </Button>
+              <Button
+                onClick={() => toggleIsActive(!itinerary.isActive)}
+                color="error"
+                autoFocus
+              >
+                Confirm
+              </Button>
+            </DialogActions>
+          </Dialog>
         </div>
       </Box>
     </div>
