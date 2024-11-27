@@ -10,7 +10,10 @@ import "../components/styles/CompanyInfo.css";
 import logoImage from "../assets/itinerary.png"; // Correct relative path
 import { useNavigate } from "react-router-dom";
 import Button from "@mui/material/Button";
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import axios from "axios";
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 
 const ItineraryDetails = () => {
   const { id } = useParams(); // Get the itinerary ID from the URL
@@ -75,12 +78,21 @@ const ItineraryDetails = () => {
   // Function to format the date and time
   const formatDateTime = (dateString) => {
     const options = {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      //hour: '2-digit',
+      //minute: '2-digit',
+      //hour12: true,
+    };
+    return new Date(dateString).toLocaleString(undefined, options);
+  };
+
+  const formatDateHour = (dateString) => {
+    const options = {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true, // Use 12-hour format with AM/PM
     };
     return new Date(dateString).toLocaleString(undefined, options);
   };
@@ -96,105 +108,122 @@ const ItineraryDetails = () => {
   const code = localStorage.getItem("currencyCode") || "EGP";
   const token = localStorage.getItem("jwt");
   return (
-    <div>
+    <Box>
       <ResponsiveAppBar />
-      <Box sx={{ padding: "20px", maxWidth: "1200px", margin: "auto" }}>
-        <Box
+      <Button
+          onClick={() => navigate(`/tourist-itineraries`)}
           sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            marginBottom: "20px",
+            backgroundColor: "#126782",
+            color: "white",
+            borderRadius: "8px",
+            width: "100px",
+            marginTop:'3%',
+            marginLeft:'15%',
+            fontSize:'16px',
+            paddingLeft:'0px',
           }}
         >
-          <Avatar sx={{ bgcolor: "#126782", width: 56, height: 56 }}>
-            {title?.charAt(0) || "A"} {/* Safely handle author name */}
-          </Avatar>
-          <Typography
-            variant="h4"
-            sx={{ margin: "10px 0", fontWeight: "bold" }}
-          >
-            {title || "Anonymous"} {/* Safely handle author name */}
-          </Typography>
-          {tags?.map((tag) => (
-            <Chip
-              key={tag._id}
-              label={tag.title}
-              sx={{ backgroundColor: "#126782", color: "white", margin: "5px" }}
-            />
-          ))}
-        </Box>
-
+          <ArrowBackIosIcon ></ArrowBackIosIcon>
+          Back
+        </Button>
+    <Box sx={{width: "70%", margin:'5%',marginLeft: "15%",marginBottom:'20px', marginTop:'2%'}}>
         <Box
           component="img"
           src={logoImage || ""}
           alt="Itinerary Image"
           sx={{
-            width: "100%",
+            width:"100%",
             maxHeight: "400px",
             borderRadius: "10px",
             objectFit: "cover",
             marginBottom: "20px",
           }}
         />
-
-        <div className="company-info">
-          <Box sx={{ marginBottom: "20px" }}>
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                marginBottom: "10px",
-              }}
+        <Box className="company-info" sx={{marginTop:'-2%',}}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap:'10px' ,
+              marginBottom: "20px",
+              padding: "20px",
+              width:'90%'
+            }}
             >
-              <StarIcon sx={{ color: "#FFD700", marginRight: "5px" }} />
-              <Typography variant="body1" sx={{ fontSize: "18px" }}>
+            
+            <Box sx={{ position: 'relative', width: '100%', display: 'flex', justifyContent: 'space-between' }}>
+            <Box sx={{ display: 'flex', gap: '10px', color: '#126782' }}>
+              <Avatar sx={{ bgcolor: "#ff4d4d", width: 42, height: 42 }}>
+                {title?.charAt(0) || "A"} 
+              </Avatar>
+              <Typography variant="h4" sx={{ fontWeight: "bold" }}>
+                {title || "Anonymous"}
+              </Typography>
+            </Box>
+            <Box sx={{ display: "flex", color: "#126782"  }}>
+              <StarIcon sx={{ color: "#FFD700", marginRight: "5px", fontSize: '40px' }} />
+              <Typography sx={{ fontSize: "30px", fontWeight: 'bold', lineHeight: '1.2' }}>
                 {ratingsAverage || "No rating"}
               </Typography>
             </Box>
-            <Typography
-              variant="body1"
-              sx={{ fontSize: "18px", marginBottom: "5px" }}
-            >
-              <strong>Start Date:</strong> {formatDateTime(start_date)}
-            </Typography>
-            <Typography
-              variant="body1"
-              sx={{ fontSize: "18px", marginBottom: "5px" }}
-            >
-              <strong>End Date:</strong> {formatDateTime(end_date)}
-            </Typography>
+          </Box>
+
+            <Box sx={{ display: "flex", gap: "0px" ,}}>
+              {tags?.map((tag) => (
+                <Chip
+                  key={tag._id}
+                  label={tag.title}
+                  sx={{ backgroundColor: "#126782", color: "white", margin: "5px",fontSize:'15px',padding: "3px" }}
+                />
+              ))}
+              </Box>
+            </Box>
+            {/* big box for dates*/}
+            <Box sx={{ marginBottom: "20px",display:'flex',flexDirection:"column" ,gap:'15px' , color:"#126782", marginLeft:'3%'}}>
+              <Box sx={{display:'flex', gap:'40px'}}>
+                <Box sx={{display:'flex', flexDirection:'column',}}>
+                  <Box sx={{display:"flex", gap:'5px'}}>
+                    <CalendarMonthIcon sx={{color:'#ff4d4d', fontSize:'30px', marginTop:'5px'}}/>
+                    <Typography variant="body1" sx={{ fontSize: "20px", }} >
+                      {formatDateTime(start_date)}
+                    </Typography>
+                  </Box>
+                <Box sx={{display:'flex', gap:'5px',marginLeft:'35px', color:'#ff4d4d'}}>
+                  <AccessTimeIcon sx={{fontSize: "26px",}}/>
+                  <Typography sx={{fontSize: "18px",lineHeight: "1.1" }}>
+                    {formatDateHour(start_date)}
+                  </Typography>
+                </Box>
+              </Box>
+              <Typography sx={{fontSize:'20px', }}>to</Typography>
+              <Box sx={{display:'flex', flexDirection:'column',}}>
+                <Box sx={{display:"flex", gap:'5px'}}>
+                  <CalendarMonthIcon sx={{color:'#ff4d4d', fontSize:'30px',marginTop:'5px'}}/>
+                  <Typography variant="body1" sx={{ fontSize: "20px", }} >
+                    {formatDateTime(end_date)}
+                  </Typography>
+                </Box>
+                <Box sx={{display:'flex', gap:'5px',marginLeft:'35px', color:'#ff4d4d'}}>
+                  <AccessTimeIcon sx={{fontSize: "26px",}}/>
+                  <Typography sx={{fontSize: "18px",lineHeight: "1.1" }}>
+                    {formatDateHour(end_date)}
+                    </Typography>
+                </Box>
+              </Box>
+            </Box>
+
             <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                marginBottom: "5px",
-              }}
-            >
-              <PinDropIcon sx={{ marginRight: "5px" }} />
-              <Typography variant="body1">
-                <strong>Locations:</strong>{" "}
+              sx={{display: "flex", marginBottom: "5px",}}>
+              <PinDropIcon sx={{ marginRight: "5px",fill:'#ff4d4d' ,fontSize:'30px'}} />
+              <Typography sx={{fontSize:'20px', fontWeight:'550', lineHeight:'1.1',}}>
+                {" "}
                 {locations?.join(", ") || "Not specified"}
               </Typography>
             </Box>
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                marginBottom: "5px",
-              }}
-            >
-              <AttachMoneyIcon sx={{ marginRight: "5px" }} />
-              <Typography variant="body1">
-                <strong>Price:</strong>{" "}
-                {price
-                  ? `${(price * conversionRate).toFixed(2)} ${code}`
-                  : "Price not specified"}
-              </Typography>
-            </Box>
+
             <Typography variant="body1" sx={{ fontSize: "18px" }}>
-              <strong>Language of Tour Guide:</strong>{" "}
-              {language || "No transportation info"}
+              <strong>Language of Tour Guide</strong>{" "}
+              {language || "No language info"}
             </Typography>
             <Typography variant="body1" sx={{ fontSize: "18px" }}>
               <strong>Transportation:</strong>{" "}
@@ -220,15 +249,46 @@ const ItineraryDetails = () => {
               <strong>Activities:</strong>
             </Typography>
             <UserAcList activities={formattedActivities} />
+            <Box 
+              sx={{ 
+                display: "flex", 
+                justifyContent: "space-between", 
+               
+                marginBottom: "20px", 
+                width: "180%" 
+              }}
+            >
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <AttachMoneyIcon sx={{ marginRight: "5px", fill: '#ff4d4d', fontSize: '30px' }} />
+                <Typography sx={{ fontSize: '20px', fontWeight: '550', lineHeight: '1.1' }}>
+                  {price
+                    ? `${(price * conversionRate).toFixed(2)} ${code}`
+                    : "Price not specified"}
+                </Typography>
+              </Box>
+              <Button 
+                variant="contained" 
+                onClick={handleClick} 
+                sx={{ backgroundColor: "#ff4d4d", padding:'10px 15px', fontSize: "16px",marginTop:'10px' }}
+              >
+                Book Now
+              </Button>
+            </Box>
+
+            {/* <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", color: "#126782" , width: "180%"}}> */}
+              {/* <Box sx={{display: "flex",alignItems: "center",}}>
+                <StarIcon sx={{ color: "#FFD700", marginRight: "5px" }} />
+                <Typography  sx={{ fontSize: "18px" }}>
+                  {ratingsAverage || "No rating"}
+                </Typography>
+              </Box> */}
+             
+            {/* </Box> */}
           </Box>
-          <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-            <Button variant="contained" color="primary" onClick={handleClick}>
-              Book Now
-            </Button>
-          </Box>
-        </div>
+          {/* end of info box0 */}
       </Box>
-    </div>
+    </Box>
+    </Box>
   );
 };
 

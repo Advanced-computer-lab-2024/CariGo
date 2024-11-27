@@ -90,8 +90,8 @@ export default function ItineraryPost({
   return (
     <Card
       sx={{
-        width: "100%",
-        maxWidth: "900px",
+        width: "95%",
+        //maxWidth: "900px",
         height: "400px",
         color: "#126782",
         fontSize: "18px",

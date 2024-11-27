@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import ActivityPost from "./ActivityPost.js";
 import { Box, Typography } from '@mui/material';
 import TouristVintagePost from './TouristVintagePost.js';
 

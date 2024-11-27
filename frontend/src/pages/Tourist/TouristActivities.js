@@ -6,7 +6,7 @@ import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import NavBar from './components/TouristNavBar.js';
 import GuestNavBar from "../../components/NavBarTourist";
 
-export default function TouristViewActivities (){
+export default function TouristViewVintage (){
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);

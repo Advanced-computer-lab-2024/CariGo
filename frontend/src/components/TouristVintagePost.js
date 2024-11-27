@@ -114,8 +114,8 @@ export default function TouristVintagePost({
   return (
     <Card
       sx={{
-        width: '100%',
-        maxWidth: '900px',
+        width: '95%',
+        //maxWidth: '900px',
         height: '400px',
         color: '#126782',
         fontSize: '18px',
@@ -139,7 +139,7 @@ export default function TouristVintagePost({
           image={pictures[0] || '/placeholder.svg?height=250&width=500'}
           alt={name}
           sx={{
-            width: '500px',
+            width: '400px',
             height: '250px',
             margin: '2px',
             borderRadius: '10px',
@@ -147,7 +147,7 @@ export default function TouristVintagePost({
           }}
         />
 
-        <Box sx={{ display: 'flex', flexDirection: 'column', width: '400px', padding: '10px' }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', width: '60%', padding: '10px' }}>
           <CardHeader
             avatar={<Avatar sx={{ bgcolor: red[500] }}>{author?.charAt(0)}</Avatar>}
             title={

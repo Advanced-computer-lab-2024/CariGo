@@ -1,15 +1,17 @@
-import React from "react";
-import  { useState, useEffect } from 'react';
-// import ReactDOM from "react-dom/client";
+import React, { useState, useEffect } from "react";
 import "../../styles/index.css";
-import TouristNB from "./components/TouristNavBar"
-import { Box } from "@mui/material";
-import { Grid,Menu, TextField, Button, CircularProgress, Typography, MenuItem } from '@mui/material';
+import TouristNB from "./components/TouristNavBar";
+import { Box, Grid, TextField, Button, MenuItem } from "@mui/material";
 import { styled, alpha } from '@mui/material/styles';
 import SearchIcon from '@mui/icons-material/Search';
 import InputBase from '@mui/material/InputBase';
-import UserItineraryPost from '../../components/UserItineraryPost';
-import ItineraryList from "../../components/ItirenaryList";
+import TouristVintagePost from "../../components/TouristVintagePost";
+
+//import vintage from "../../../backend/models/Vintage";
+//import vintage from "../../../backend/models/Vintage";
+
+
+
 
 
 const Search = styled('div')(({ theme }) => ({
@@ -55,85 +57,74 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-const TouristItineraries = () => {
-
-    const [itineraries, setItineraries] = useState([]);
-    const [filters, setFilters] = useState({
-        price: "",
-        language: "",
-        tags: "",
-        startDate: "",
-    });
-    const [sortOption, setSortOption] = useState('');
-    const [anchorEl, setAnchorEl] = React.useState(null);
-
-    const [searchTerm, setSearchTerm] = useState('');
-   
-    
-    const open = Boolean(anchorEl);
-
-    const handleClick = (event) => {
-      setAnchorEl(event.currentTarget);
-    };
-    const handleClose = () => {
-      setAnchorEl(null);
-    };
-
-
+const TouristViewVintage = () => {
+    const [vintages, setVintages] = useState([]);
+    const [filteredVintages, setFilteredVintages] = useState([]); // For filtered vintages
+    const [errorMessage, setErrorMessage] = useState(""); // State to store error messages
+    const [filters, setFilters] = useState({ tag: "" }); // Filter by tag
+    const [searchTerm, setSearchTerm] = useState(""); // For search
+    const [loading, setLoading] = useState(false);
+      const [error, setError] = useState(null);
+      const [selectedTag, setSelectedTag] = useState(""); // For search
+  
+  
     const handleFilterChange = (e) => {
-        const { name, value } = e.target;
-        setFilters(prevFilters => ({
-            ...prevFilters,
-            [name]: value
-        }));
-    };
-
-    const resetFilters = () => {
-        setFilters({
-            price: "",
-            language: "",
-            tags: "",
-            startDate: "",
+      const { name, value } = e.target;
+      setFilters(prevFilters => ({
+          ...prevFilters,
+          [name]: value
+      }));
+  };
+  
+  const resetFilters = () => {
+    setFilters({
+        
+        tag: "",
+        
+    });
+    setFilteredVintages(vintages); // Reset to all activities
+  };
+  
+  
+  const handleSearch = () => {
+    if (!searchTerm.trim()) {
+        // If searchTerm is empty, show all activities
+        setFilteredVintages(vintages);
+    } else {
+        const filtered = vintages.filter((vintage) => {
+            return (vintage.title && vintage.title.toLowerCase().includes(searchTerm.toLowerCase()))
+                || (vintage.tag && vintage.tag.toLowerCase().includes(searchTerm.toLowerCase()))
+                
         });
-        setFilteredActivities(itineraries); // Reset to all activities
-    };
-    
-    const handleSortChange = (sortValue) => {
-      setSortOption(sortValue);  // Set the selected sort option
-      handleClose();  // Close the menu
-    };
-
-    
-    const [filteredActivities, setFilteredActivities] = useState(itineraries); // Store filtered results separately
-
-    const handleSearch = () => {
-        if (!searchTerm.trim()) {
-            // If searchTerm is empty, show all activities
-            setFilteredActivities(itineraries);
-        } else {
-            const filtered = itineraries.filter((itinerary) => {
-                return (itinerary.title && itinerary.title.toLowerCase().includes(searchTerm.toLowerCase()))
-                    || (itinerary.tags && itinerary.tags.includes(searchTerm))
-                    
-            });
-            setFilteredActivities(filtered); // Update the filtered activities
-        }
-    };
-     // Combined useEffect for Fetching Activities with Filters and Sort
-     useEffect(() => {
-      const fetchItineraries = async () => {
+        setFilteredVintages(filtered); // Update the filtered activities
+    }
+  };
+  
+  const filteredVin = vintages.filter(
+    (vintage) =>
+      (selectedTag
+        ? vintage.tags.some((tag) => tag.includes( selectedTag))
+        : true) &&
+      ((vintage.name &&
+        vintage.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        
+        vintage.tags.some((tag) =>
+          tag.toLowerCase().includes(searchTerm.toLowerCase())
+      ))
+    );
+  
+       // Fetch vintages
+    useEffect(() => {
+      const fetchAndProcessVintages = async () => {
+        setLoading(true);
+        setErrorMessage("");
         try {
           const token = localStorage.getItem("jwt"); // Retrieve the token
           const queryParams = new URLSearchParams();
-          if (filters.price) queryParams.append("price", filters.price);
-          if (filters.language) queryParams.append("language", filters.language);
-          if (filters.tags) queryParams.append("tags", filters.tags);
-          if (filters.startDate) queryParams.append("start_date", filters.startDate);
-          
-          if (sortOption) queryParams.append("sort", sortOption);
+          if (filters.tags) queryParams.append("tag", filters.tags);
   
           const response = await fetch(
-            `http://localhost:4000/Event/readAllItineraries/?${queryParams.toString()}`,
+            `http://localhost:4000/Event/readAllVintage/?${queryParams.toString()}`,
             {
               method: "GET",
               headers: {
@@ -148,210 +139,145 @@ const TouristItineraries = () => {
           }
   
           const json = await response.json();
-          setItineraries(json.filter((itinerary) => itinerary.isFlagged === false));
-          setFilteredActivities(json.filter((itinerary) => itinerary.isFlagged === false)); // Set initial filtered activities
+          const vintagesArray = Array.isArray(json) ? json : [];
+          setVintages(vintagesArray);
+          setFilteredVintages(vintagesArray); // Initialize filteredVintages with all vintages
+  
         } catch (error) {
-          console.log("Error fetching itineraries:", error);
+          console.log("Error fetching vintages:", error);
+          setErrorMessage("Failed to fetch vintages. Please try again later.");
+        } finally {
+          setLoading(false);
         }
       };
   
-      fetchItineraries();
-    }, [filters, sortOption]); // Run effect when filters or sort option changes
-
-
-
-useEffect(() => {
-  let updatedActivities = [...itineraries];
-
-  // Apply filters
-  if (filters.price) {
-      updatedActivities = updatedActivities.filter(itinerary => itinerary.price <= filters.price);
-  }
-
-  if (filters.language) {
-      updatedActivities = updatedActivities.filter(itinerary => itinerary.language === filters.language);
-  }
-
-  if (filters.tags) {
-    updatedActivities = updatedActivities.filter(itinerary => itinerary.tags === filters.tags);
-    
-    
-  }
-
-  if (filters.startDate) {
-      updatedActivities = updatedActivities.filter(itinerary => 
-          new Date(itinerary.start_date) >= new Date(filters.startDate)
-      );
-  }
-
-  // Apply search
-  if (searchTerm) {
-      updatedActivities = updatedActivities.filter(itinerary => 
-          itinerary.title && itinerary.title.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-  }
-
-  // Apply sorting
-  if (sortOption) {
-      updatedActivities.sort((a, b) => {
-          if (sortOption === 'price') {
-              return a.price - b.price;
-          } else if (sortOption === 'ratingsAverage') {
-              return b.ratingsAverage - a.ratingsAverage;
-          } else if (sortOption === '-createdAt') {
-              return new Date(b.createdAt) - new Date(a.createdAt);
-          }
-          return 0; // No sorting applied
-      });
-  }
-
-  setFilteredActivities(updatedActivities); // Update filtered activities
-}, [filters, searchTerm, sortOption]); // Run this effect when any of these change
+      fetchAndProcessVintages();
+    }, [filters]); // Run effect when filters change
   
+    // Filter on search term change
+    useEffect(() => {
+      if (!searchTerm.trim()) {
+        setFilteredVintages(vintages); // If no search term, show all vintages
+      } else {
+        const filtered = vintages.filter((vintage) => {
+          return (
+            (vintage.name && vintage.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+            (vintage.tags && vintage.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase())))
+          );
+        });
+        setFilteredVintages(filtered); // Update the filtered vintages based on the search term
+      }
+    }, [searchTerm, ]); // Run effect when searchTerm or vintages change
+          
 
-
-
-  return (
-    
-    <div>
-      <TouristNB/>
-       {/* Filter Form */}
-       <form>
-                <TextField
-                    label="Price"
-                    variant="outlined"
-                    name="price"
-                    value={filters.price}
-                    onChange={handleFilterChange}
-                    type="number"
-                    sx={{ mb: 2, mr: 2 }}
-                />
-                <TextField
-                    label="language"
-                    variant="outlined"
-                    name="language"
-                    value={filters.language}
-                    onChange={handleFilterChange}
-                    sx={{ mb: 2, mr: 2 }}
-                />
-                 <TextField
-                    label="tags"
-                    variant="outlined"
-                    name="tags"
-                    value={filters.tags}
-                    onChange={handleFilterChange}
-                    sx={{ mb: 2, mr: 2 }}
-                />
-
-                <TextField
-                    label="date"
-                    variant="outlined"
-                    name="date"
-                    value={filters.startDate}
-                    onChange={handleFilterChange}
-                    type="date"
-                    sx={{ mb: 2, mr: 2 }}
-                />
-                <Button variant="contained" onClick={resetFilters} sx={{ ml: 2 }}>
-                    Reset Filters
-                </Button>
-            </form>
-
-
-            {/* END OF FILTER FORM */}
-            {/*Search bar*/}
-            <Box sx={{display:'flex',}}>
-            <Search>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-            placeholder="Search…"
-            inputProps={{ 'aria-label': 'search' }}
-            onChange={(e) => setSearchTerm(e.target.value)} // Capture search input
-            />
-          </Search>
-          <Button variant="contained" label="search" onClick={handleSearch} sx={{ ml: 2 }}>search</Button>
+  
+    return (
+      <div>
+        <TouristNB/>
+  
+  
+          {/*Search bar*/}
+          <Box sx={{display:'flex',}}>
+              <Search>
+              <SearchIconWrapper>
+                <SearchIcon />
+              </SearchIconWrapper>
+              <StyledInputBase
+              placeholder="Search…"
+              inputProps={{ 'aria-label': 'search' }}
+              onChange={(e) => setSearchTerm(e.target.value)} // Capture search input
+              />
+            </Search>
+            <Button variant="contained" label="search" onClick={handleSearch} sx={{ ml: 2 }}>search</Button>
+            </Box>
+  
+  
+            {/* Filter by Tag */}
+            <TextField
+                      label="tags"
+                      variant="outlined"
+                      name="tags"
+                      value={filters.tags}
+                      onChange={(e) => setSelectedTag(e.target.value)}
+                      //onChange={handleFilterChange}
+                      sx={{ mb: 2, mr: 2 }}
+                  />
+  
+        <Box
+          sx={{
+            width: "1150px",
+            overflow: "hidden",
+            margin: "0 auto",
+            padding: "20px",
+            height: "80vh", // Set a fixed height for the scrolling area
+            overflow: "auto", // Enable scrolling
+            "&::-webkit-scrollbar": {
+              display: "none", // Hides the scrollbar for WebKit browsers (Chrome, Safari)
+            },
+            //backgroundColor : "aquamarine" ,
+          }}
+        >
+  
+          <Box
+            sx={{
+              height: "100%",
+              marginLeft: "100px",
+              width: "100%",
+              "&::-webkit-scrollbar": { display: "none" },
+            }}
+          >
+            {" "}
+            {/* Enable vertical scrolling only */}
+            <>
+              {errorMessage ? (
+                  <p style={{ color: 'red', textAlign: 'center' }}>{errorMessage}</p> // Display error message if any
+              ) : (
+                  <Grid container spacing={0} sx={{ display: 'flex', flexDirection: 'column', width: '100vw' }}>
+                      {filteredVin.length > 0 ? (
+                          filteredVin.map((vintage, index) => (
+                              <Grid item key={index} sx={{ display: 'flex', justifyContent: 'left' }}>
+                                  <TouristVintagePost
+                                      id={vintage._id || 'N/A'} // Safely handle missing _id
+                                      name={vintage.name || 'No name provided'} // Handle missing name
+                                      description={vintage.description || 'No description available'} // Handle missing description
+                                      pictures={vintage.pictures || []} // Handle missing pictures with an empty array
+                                      location={vintage.location ? {
+                                          longitude: vintage.location.longitude || 0, // Default longitude
+                                          latitude: vintage.location.latitude || 0,   // Default latitude
+                                          nation: {
+                                              country: vintage.location.country || 'Unknown country',
+                                              city: vintage.location.city || 'Unknown city',
+                                          }
+                                      } : null} // Handle missing location by setting it to null
+                                      ticket_price={vintage.ticket_price ? {
+                                          foreigner: vintage.ticket_price.foreigner || 'Not specified',
+                                          native: vintage.ticket_price.native || 'Not specified',
+                                          student: vintage.ticket_price.student || 'Not specified',
+                                      } : {
+                                          foreigner: 'Not specified',
+                                          native: 'Not specified',
+                                          student: 'Not specified',
+                                      }} // Handle missing ticket_price safely
+                                      tags={vintage.tags || []} // Default tags to an empty array if missing
+                                      opening_hours={vintage.opening_hours ? {
+                                          opening: vintage.opening_hours.opening || 'Not specified',
+                                          closing: vintage.opening_hours.closing || 'Not specified',
+                                      } : {
+                                          opening: 'Not specified',
+                                          closing: 'Not specified',
+                                      }} // Handle missing opening_hours safely
+                                  />
+                              </Grid>
+                          ))
+                      ) : (
+                          <p>No vintage posts available.</p> // Display a message if no vintages are found
+                      )}
+                  </Grid>
+              )}
+          </>
           </Box>
-
-            {/*Sort Button*/}
-
-            <div>
-            <Button
-                id="basic-button"
-                aria-controls={open ? 'basic-menu' : undefined}
-                aria-haspopup="true"
-                aria-expanded={open ? 'true' : undefined}
-                onClick={handleClick}
-                sx={{backgroundColor:"#ff4d4d" , color: "white", marginLeft: "50px",marginTop: "30px",}}
-            >
-                Sort By
-            </Button>
-            <Menu
-                id="basic-menu"
-                anchorEl={anchorEl}
-                open={open}
-                onClose={handleClose}
-                MenuListProps={{
-                'aria-labelledby': 'basic-button',
-                }}
-                sx={{width: "200px", }}
-                onChange={handleSortChange}
-            >
-                <MenuItem onClick={() => handleSortChange('price')}>Price</MenuItem>
-                <MenuItem onClick={() => handleSortChange('ratingsAverage')}>Review</MenuItem>
-                <MenuItem onClick={() => handleSortChange('-createdAt')}>creation date</MenuItem>
-              
-            </Menu>
-            </div>
-
-      
-        <Box sx={{
-        width:'100%' ,
-        overflow: 'hidden',
-        margin: '3%', 
-        marginLeft:'10%',
-        //padding:'2%',
-        height: '90vh', // Set a fixed height for the scrolling area
-        display:'flex',
-        gap:'3%',
-        '&::-webkit-scrollbar': {
-        display: 'none', // Hides the scrollbar for WebKit browsers (Chrome, Safari)
-      },
-        }}>
-
-
-          {/* Activity list */}
-          {loading && <CircularProgress />}
-          {error && <Typography color="error">{error}</Typography>}
-        <Box sx={{ 
-          height: '90%',
-          //marginLeft: '100px',
-          width: '55%',
-          display: "flex",
-          flexDirection: "column",
-          gap: "15px",
-          overflowX: 'hidden',
-          overflowY: 'auto', 
-          '&::-webkit-scrollbar': {
-            width: '8px', // Width of the scrollbar
-            
-            },
-          '&::-webkit-scrollbar-thumb': {
-            backgroundColor: '#ff4d4d', // Color of the scrollbar thumb
-            borderRadius: '10px', // Rounded corners for the scrollbar thumb
-            },
-          '&::-webkit-scrollbar-track': {
-            backgroundColor: '#f1f1f1', // Color of the scrollbar track
-            borderRadius: '10px', // Rounded corners for the scrollbar track
-          },
-          }}> {/* Enable vertical scrolling only */}
-
-          <ItineraryList fetched={updatedActivities} />
         </Box>
-        </Box>
-    </div>
-  );
-};
-
-export default TouristItineraries;
+      </div>
+    );
+  };
+export default TouristViewVintage;

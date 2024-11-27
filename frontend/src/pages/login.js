@@ -141,25 +141,32 @@ export default function LoginPage() {
         variant="outlined"
       >
         <div>
-          <Typography level="h4" component="h1">
+          <Typography level="h4" component="h1" sx={{color:'#126782'}}>
             <b>Welcome!</b>
           </Typography>
           <Typography level="body-sm">Sign in to continue.</Typography>
         </div>
         <form onSubmit={handleSubmitLogin}>
           <FormControl>
-            <FormLabel>Username</FormLabel>
+            <FormLabel sx={{color:'#126782'}}>Username</FormLabel>
             <Input
               name="username"
               type="text"
               value={formData.username}
               onChange={handleChange}
-              placeholder="johndoe"
+              placeholder="username"
               required
+              variant="outlined"
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  '&.Mui-focused fieldset': {
+                    borderColor: '#126782', 
+                  },},
+              }}
             />
           </FormControl>
           <FormControl>
-            <FormLabel>Password</FormLabel>
+            <FormLabel sx={{color:'#126782'}}>Password</FormLabel>
             <Input
               name="password"
               type="password"
@@ -167,9 +174,16 @@ export default function LoginPage() {
               onChange={handleChange}
               placeholder="password"
               required
+              variant="outlined"
+              // sx={{
+              //   '& .MuiOutlinedInput-root': {
+              //     '&.Mui-focused fieldset': {
+              //       borderColor: '#126782', // Focused outline color
+              //     },},
+              // }}
             />
           </FormControl>
-          <Button sx={{ mt: 1 }} type="submit">
+          <Button sx={{ mt: 1 ,backgroundColor:'#ff4d4d'}} type="submit" >
             Log in
           </Button>
         </form>

@@ -198,7 +198,7 @@ function App() {
         <Route path="/trans/update/:id" element={<UpdateTransportationForm/>} />
         <Route path="/myVintages" element={<UserViewVintages />} />
         <Route path="/vintage/:id" element={<VintageDetails />} />
-        <Route path="/allVintages" element={<TouristViewVintage />} />
+        <Route path="/allVintages" element={<TouristVintage />} />
         <Route path="/checkout/:type/:id" element={<PaymentCheckout />} />
         <Route path="/viewingAllvintage/:id" element={<UserVintageDetails />} />
         <Route element={< ProtectedRoute/>}>
