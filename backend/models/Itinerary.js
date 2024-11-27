@@ -76,7 +76,11 @@ const itinerarySchema = new schema(
     isFlagged:{
       type: Boolean,
       default: false,
-    }
+    },
+    isOpened:{
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );

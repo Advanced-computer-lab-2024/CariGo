@@ -12,6 +12,7 @@ const {
   updateTag,
   deleteTag,
   getUser,
+  createPromoCode,
 } = require("../controllers/adminController");
 const authController = require("../controllers/authController");
 const complaintController = require('../controllers/complaintsController');
@@ -62,5 +63,10 @@ router.get(
   authController.restrictTo("Admin"),
   complaintController.getComplaintsByStatus
 );
+
+router.post(
+  "/promo-code",
+  authController.restrictTo("Admin"),
+  createPromoCode);
 
 module.exports = router;

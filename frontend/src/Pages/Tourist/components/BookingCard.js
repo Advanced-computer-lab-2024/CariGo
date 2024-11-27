@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import logoImage from '../../../assets/itinerary.png'; // Correct relative path
 
-const BookingCard = ({ id, name, startDate, endDate, location, status, img,price,author,NumberOfTickets,TotalPrice }) => {
+const BookingCard = ({bookId, id, name, startDate, endDate, location, status, img,price,author,NumberOfTickets,TotalPrice }) => {
   const [isPast, setIsPast] = React.useState(false);
 
   React.useEffect(() => {
@@ -27,7 +27,7 @@ const BookingCard = ({ id, name, startDate, endDate, location, status, img,price
         }
 
         await axios.patch(`/cariGo/Event/CancelItineraryBooking`, {
-          ItineraryId: id,
+          bookingId: bookId,
         },
         {
           headers: {
@@ -38,6 +38,7 @@ const BookingCard = ({ id, name, startDate, endDate, location, status, img,price
 
 
         alert("Itinerary booking canceled successfully");
+      
         const rate = parseFloat(JSON.parse(localStorage.getItem("conversionRate")))||1;
         console.log(rate);
         await axios.patch(`/cariGo/users/UpdateWallet`, {

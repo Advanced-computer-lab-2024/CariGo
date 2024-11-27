@@ -111,6 +111,60 @@ const RedeemPoints = async (req, res) => {
   }
 };
 
+const nodemailer = require("nodemailer");
+const dotenv = require("dotenv");
+dotenv.config({ path: "../.env" });
+
+const birthDayPromoCode = async () => {
+    try {
+      const users = await User.find(); // Fetch all users
+      const today = new Date();
+      for (const user of users) {
+
+        const birthDay = new Date(user.DOB);
+        const dayOfBirth = birthDay.getDate();
+        const monthOfBirth = birthDay.getMonth() + 1;
+  
+        const todayDate = today.getDate();
+        const todayMonth = today.getMonth() + 1;
+  
+        if (dayOfBirth === todayDate && monthOfBirth === todayMonth) {
+          const transporter = nodemailer.createTransport({
+            service: 'Gmail',
+            auth: {
+              user: process.env.EMAIL_USERNAME,
+              pass: process.env.EMAIL_PASSWORD,
+            },
+          });
+  
+          const info = await transporter.sendMail({
+            from: '"CariGo 🦌" <Carigo@test.email>',
+            to: user.email, // Send to the user's email
+            subject: "Happy Birthday! 🎉 Here's Your Promo Code!",
+            text: "Happy Birthday! Use this promo code to celebrate your day with us!",
+            html: "<b>Happy Birthday! 🎉 Use this promo code to celebrate your day with us!</b>",
+          });
+  
+          console.log("Message sent to %s: %s", user.email, info.messageId);
+        }
+      }
+      console.error({message: "promo code sent successfully.",});
+     } catch(error) {
+      
+      console.error({ error: "Failed to fetch user" });
+      console.error("Error while redeeming:", error);
+    }
+};
+
+const schedule = require('node-schedule');
+
+const job = schedule.scheduleJob('0 0 * * *', () => {
+  birthDayPromoCode();
+});
+
+
+
+
 module.exports = {
   getUsers,
   getUser,

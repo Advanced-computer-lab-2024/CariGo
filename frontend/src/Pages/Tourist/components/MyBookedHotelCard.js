@@ -10,7 +10,7 @@ import BedIcon from '@mui/icons-material/Bed';
 import PinDropIcon from '@mui/icons-material/PinDrop';
 
 const MyBookedHotelCard = ({ 
-   
+  bookId,
   hotelname, 
   checkInDate, 
   checkOutDate, 
@@ -49,7 +49,7 @@ const MyBookedHotelCard = ({
         }
 
         // Corrected the syntax for axios request
-        await axios.patch(`http://localhost:4000/cariGo/flights//CancelhBooking`, {hotelData}, {
+        await axios.patch(`http://localhost:4000/cariGo/flights//CancelhBooking`, {bookingId: bookId,}, {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -77,7 +77,7 @@ const MyBookedHotelCard = ({
         // Add a 5-second delay before reloading the page
         setTimeout(() => {
           window.location.reload();
-        }, 5000); // 5000 ms = 5 seconds
+        }, 1000); // 5000 ms = 5 seconds
       } catch (error) {
         console.error('Failed to cancel Activity booking:', error.response ? error.response.data : error.message);
         alert(`An error occurred while canceling the booking. Details: ${error.message}, ${error.response?.data?.message}`);

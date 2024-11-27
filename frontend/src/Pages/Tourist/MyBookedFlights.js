@@ -204,7 +204,7 @@ const MyBookedFlights = () => {
     return (
       <Grid item key={index} sx={{ justifyContent: "left" }}>
         <MyBookedFlightCard
-         
+          bookId={activity._id}
           airline={activity.flightData.airline|| " "}
           img={"frontend/public/assets/images/itinerary.png"}
           

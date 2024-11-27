@@ -514,12 +514,12 @@ const MyFlightBookings = async (req, res) => {
 
 const CancelhotelBooking = async (req, res) => {
   UserId  = req.user.id; // User ID from request body
- const { hotelData } = req.body; // Event ID from URL parameters
- console.log(hotelData);
+ const { bookingId } = req.body; // Event ID from URL parameters
+
  if ( mongoose.Types.ObjectId.isValid(UserId)) {
      try {
-         const bookings = await bookingModel.updateMany(
-             { UserId, hotelData }, // Filter to find documents with both UserId and ActivityId
+         const bookings = await bookingModel.updateOne(
+             { _id:bookingId }, // Filter to find documents with both UserId and ActivityId
              { $set: { Status: false } } // Update to set Status to false
            );
            res.status(200).json({
@@ -537,11 +537,11 @@ const CancelhotelBooking = async (req, res) => {
 
 const CancelflightBooking = async (req, res) => {
   UserId  = req.user.id; // User ID from request body
- const { flightData } = req.body; // Event ID from URL parameters
+ const { bookingId } = req.body; // Event ID from URL parameters
  if ( mongoose.Types.ObjectId.isValid(UserId)) {
      try {
-         const bookings = await bookingModel.updateMany(
-             { UserId, flightData }, // Filter to find documents with both UserId and ActivityId
+         const bookings = await bookingModel.updateOne(
+             { _id:bookingId }, // Filter to find documents with both UserId and ActivityId
              { $set: { Status: false } } // Update to set Status to false
            );
            res.status(200).json({

@@ -14,6 +14,7 @@ const Category = require("../models/Category");
 const bookingModel = require("../models/Bookings");
 const Itinerary = require("../models/Itinerary");
 const User = require("../models/User");
+const notificationController = require("../controllers/notificationController");
 
 const createItinerary = async (req, res) => {
   const userId = new mongoose.Types.ObjectId(req.body.author); // Convert to ObjectId
@@ -160,31 +161,34 @@ const createProduct = async (req, res) => {
 
 const updateItinerary = async (req, res) => {
   const update = req.body;
-  console.log(update);
+  const { itineraryId } = req.params;
 
-  if (mongoose.Types.ObjectId.isValid(req.params.itineraryId)) {
-    console.log("inside the update");
+  if (!mongoose.Types.ObjectId.isValid(itineraryId)) {
+    return res.status(400).json({ error: "Invalid itinerary ID" });
+  }
 
-    try {
-      const itinerary = await itineraryModel.findById(req.params.itineraryId);
+  try {
+    const itinerary = await itineraryModel.findById(itineraryId);
 
-      if (!itinerary) {
-        return res.status(404).json({ error: "Itinerary not found" });
-      }
-
-      const result = await itineraryModel.updateOne(
-        { _id: new mongoose.Types.ObjectId(req.params.itineraryId) },
-        { $set: update }
-      );
-
-      res.status(201).json(result);
-    } catch (error) {
-      res.status(500).json({ error: "couldn't update itinerary data" });
+    if (!itinerary) {
+      return res.status(404).json({ error: "Itinerary not found" });
     }
-  } else {
-    res
-      .status(500)
-      .json({ error: "couldn't update user data, itinerary id invalid" });
+
+    if (update.isFlagged === true) {
+      await notificationController.sendFlaggedContentNotification(
+        itinerary.author,
+        itineraryId,
+        'Itinerary',
+        itinerary.title
+      );
+    }
+
+    const result = await itineraryModel.findByIdAndUpdate(itineraryId, update, { new: true });
+
+    res.status(200).json(result);
+  } catch (error) {
+    console.error("Error updating itinerary:", error);
+    res.status(500).json({ error: "Couldn't update itinerary data" });
   }
 };
 // const readAllItineraries = async (req, res) => {
@@ -598,6 +602,10 @@ const shareVintage = async (req, res) => {
   }
 };
 
+const nodemailer = require("nodemailer");
+const dotenv = require("dotenv");
+dotenv.config({ path: "../.env" });
+
 const BookItinerary = async (req, res) => {
   const { ItineraryId } = req.params; // Event ID from URL parameters
   const { PaymentMethod,TotalPrice,NumberOfTickets } = req.body; // User ID from request body
@@ -612,6 +620,9 @@ const BookItinerary = async (req, res) => {
       const itinerary = await Itinerary.findById(ItineraryId);
       if (!itinerary) {
         return res.status(404).json({ error: "Iternirary not found" });
+      }
+      if (!itinerary.isOpened) {
+        return res.status(400).json({ error: "This itinerary will accept bookings soon" });
       }
       await Itinerary.findByIdAndUpdate(ItineraryId, { isBooked: true });
 
@@ -663,7 +674,30 @@ const BookItinerary = async (req, res) => {
         newPoints: user.pointsAvailable,
         newWallet: user.wallet
       });
-    } catch (error) {
+
+    const today = new Date();
+
+        const transporter = nodemailer.createTransport({
+          service: 'Gmail',
+          auth: {
+            user: process.env.EMAIL_USERNAME,
+            pass: process.env.EMAIL_PASSWORD,
+          },
+        });
+
+        const info = await transporter.sendMail({
+          from: '"CariGo 🦌" <Carigo@test.email>',
+          to: user.email, // Send to the user's email
+          subject: "receipt! 🧾 Here's Your itinerary receipt!",
+          text: "here is your receipt details, can't wait to meet you",
+          html: `<b>thanks ${user.username} for your purchase here is your receipt details🎉:  <ul><li>Itinerary title: ${itinerary.title}</li> <li>Itinerary link: http://localhost:3000/user_itineraries/${ItineraryId}</li> <li>payment method: ${PaymentMethod}</li> <li>Number Of Tickets: ${NumberOfTickets}</li> <li>Total Price: ${TotalPrice}</li> <li>start date: ${itinerary.start_date}</li> <li>date of purchase: ${today}</li></ul></b>`,
+        });
+
+        console.log("Message sent to %s: %s", user.email, info.messageId);
+      
+    
+    console.error({message: "reciept sent successfully.",});
+   } catch (error) {
       res.status(500).json({ error: "Failed to book" });
       console.error("Error while booking:", error);
     }
@@ -695,25 +729,24 @@ const MyItineraryBookings = async (req, res) => {
 
 const CancelItineraryBooking = async (req, res) => {
   const  UserId  = req.user.id; // User ID from request body
-  const { ItineraryId } = req.body; // Event ID from URL parameters
-  console.log(ItineraryId+ "    "+UserId);
+  const { bookingId } = req.body; // Event ID from URL parameters
   if (
-    mongoose.Types.ObjectId.isValid(ItineraryId) &&
+    mongoose.Types.ObjectId.isValid(bookingId) &&
     mongoose.Types.ObjectId.isValid(UserId)
   ) {
     try {
-      const itinerary = await itineraryModel.findById(ItineraryId);
+      const booking = await bookingModel.findById(bookingId);
       //console.log(itinerary);
-      const itineraryDate = itinerary.start_date;
+      const ItineraryId = booking.ItineraryId;
+      const itineraryDate = ItineraryId.start_date;
 
       if (itineraryDate) {
         const currDate = new Date();
         const timeDifference = itineraryDate.getTime() - currDate.getTime(); // Difference in milliseconds
         const hoursDifference = timeDifference / (1000 * 60 * 60); // Convert to hours
-        console.log(hoursDifference);
         if (hoursDifference >= 48) {
-          const bookings = await bookingModel.updateMany(
-            { UserId, ItineraryId }, // Filter to find documents with both UserId and ItineraryId
+          const bookings = await bookingModel.updateOne(
+            { _id:bookingId }, // Filter to find documents with both UserId and ItineraryId
             { $set: { Status: false } } // Update to set Status to false
           );
           res.status(200).json({
@@ -747,8 +780,7 @@ const CancelItineraryBooking = async (req, res) => {
 };
 
 const axios = require('axios');
-const dotenv = require("dotenv");
-dotenv.config({ path: "../.env" });
+
 const currencyConversion = async (req, res) => {
   try {
     const { currency } = req.query;
@@ -777,6 +809,23 @@ const currencyConversion = async (req, res) => {
   }
 };
 
+
+
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
+const create_payment_form = async (req, res) => {
+  const { amount, currency } = req.body;
+  try {
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: Math.round(amount), // Convert to integer
+      currency,
+      payment_method_types: ['card'], // Supports card payments
+    });
+    res.send({ clientSecret: paymentIntent.client_secret });
+  } catch (error) {
+    res.status(500).send({ error: error.message });
+  }
+};
+
 module.exports = {
   createItinerary,
   createvintage,
@@ -799,5 +848,6 @@ module.exports = {
   CancelItineraryBooking,
   currencyConversion,
   suggestedItineraries,
-  suggestedActivities
+  suggestedActivities,
+  create_payment_form
 };
