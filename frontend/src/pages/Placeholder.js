@@ -1,283 +1,295 @@
 import React, { useState, useEffect } from "react";
-import "../../styles/index.css";
-import TouristNB from "./components/TouristNavBar";
-import { Box, Grid, TextField, Button, MenuItem } from "@mui/material";
-import { styled, alpha } from '@mui/material/styles';
-import SearchIcon from '@mui/icons-material/Search';
-import InputBase from '@mui/material/InputBase';
-import TouristVintagePost from "../../components/TouristVintagePost";
+import { useParams } from "react-router-dom";
+import { Box, Typography, Chip, Avatar } from "@mui/material";
+import PinDropIcon from "@mui/icons-material/PinDrop";
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import StarIcon from "@mui/icons-material/Star";
+import ResponsiveAppBar from "./Tourist/components/TouristNavBar";
+import UserAcList from "../components/UserAcList"; // Import the new MarkerList component
+import "../components/styles/CompanyInfo.css";
+import logoImage from "../assets/itinerary.png"; // Correct relative path
+import { useNavigate } from "react-router-dom";
+import Button from "@mui/material/Button";
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import axios from "axios";
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 
-//import vintage from "../../../backend/models/Vintage";
-//import vintage from "../../../backend/models/Vintage";
+const ItineraryDetails = () => {
+  const { id } = useParams(); // Get the itinerary ID from the URL
+  const [itinerary, setItinerary] = useState(null);
+  const navigate = useNavigate();
 
-
-
-
-
-const Search = styled('div')(({ theme }) => ({
-  position: 'relative',
-  borderRadius: theme.shape.borderRadius,
-//   borderWidth: "2px",
-//   borderColor:"#126782",
-  backgroundColor: alpha(theme.palette.common.white, 0.15),
-  '&:hover': {
-    backgroundColor: alpha(theme.palette.common.white, 0.25),
-  },
-  marginRight: theme.spacing(2),
-  marginLeft: 0,
-  width: '100%',
-  [theme.breakpoints.up('sm')]: {
-    marginLeft: theme.spacing(3),
-    width: 'auto',
-  },
-}));
-
-
-const SearchIconWrapper = styled('div')(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: '100%',
-  position: 'absolute',
-  pointerEvents: 'none',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: 'inherit',
-  '& .MuiInputBase-input': {
-    padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create('width'),
-    width: '100%',
-    [theme.breakpoints.up('md')]: {
-      width: '20ch',
-    },
-  },
-}));
-
-const TouristViewVintage = () => {
-    const [vintages, setVintages] = useState([]);
-    const [filteredVintages, setFilteredVintages] = useState([]); // For filtered vintages
-    const [errorMessage, setErrorMessage] = useState(""); // State to store error messages
-    const [filters, setFilters] = useState({ tag: "" }); // Filter by tag
-    const [searchTerm, setSearchTerm] = useState(""); // For search
-    const [loading, setLoading] = useState(false);
-      const [error, setError] = useState(null);
-      const [selectedTag, setSelectedTag] = useState(""); // For search
-  
-  
-    const handleFilterChange = (e) => {
-      const { name, value } = e.target;
-      setFilters(prevFilters => ({
-          ...prevFilters,
-          [name]: value
-      }));
+  const handleClick = () => {
+    if (token)
+      navigate(`/checkout/itinerary/${id}`); // Update the navigation path
+    else navigate(`/login`);
   };
-  
-  const resetFilters = () => {
-    setFilters({
-        
-        tag: "",
-        
-    });
-    setFilteredVintages(vintages); // Reset to all activities
-  };
-  
-  
-  const handleSearch = () => {
-    if (!searchTerm.trim()) {
-        // If searchTerm is empty, show all activities
-        setFilteredVintages(vintages);
-    } else {
-        const filtered = vintages.filter((vintage) => {
-            return (vintage.title && vintage.title.toLowerCase().includes(searchTerm.toLowerCase()))
-                || (vintage.tag && vintage.tag.toLowerCase().includes(searchTerm.toLowerCase()))
-                
-        });
-        setFilteredVintages(filtered); // Update the filtered activities
-    }
-  };
-  
-  const filteredVin = vintages.filter(
-    (vintage) =>
-      (selectedTag
-        ? vintage.tags.some((tag) => tag.includes( selectedTag))
-        : true) &&
-      ((vintage.name &&
-        vintage.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        
-        vintage.tags.some((tag) =>
-          tag.toLowerCase().includes(searchTerm.toLowerCase())
-      ))
-    );
-  
-       // Fetch vintages
-    useEffect(() => {
-      const fetchAndProcessVintages = async () => {
-        setLoading(true);
-        setErrorMessage("");
-        try {
-          const token = localStorage.getItem("jwt"); // Retrieve the token
-          const queryParams = new URLSearchParams();
-          if (filters.tags) queryParams.append("tag", filters.tags);
-  
-          const response = await fetch(
-            `http://localhost:4000/Event/readAllVintage/?${queryParams.toString()}`,
-            {
-              method: "GET",
-              headers: {
-                Authorization: `Bearer ${token}`, // Add token to headers
-                "Content-Type": "application/json",
-              },
-            }
-          );
-  
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-  
-          const json = await response.json();
-          const vintagesArray = Array.isArray(json) ? json : [];
-          setVintages(vintagesArray);
-          setFilteredVintages(vintagesArray); // Initialize filteredVintages with all vintages
-  
-        } catch (error) {
-          console.log("Error fetching vintages:", error);
-          setErrorMessage("Failed to fetch vintages. Please try again later.");
-        } finally {
-          setLoading(false);
-        }
-      };
-  
-      fetchAndProcessVintages();
-    }, [filters]); // Run effect when filters change
-  
-    // Filter on search term change
-    useEffect(() => {
-      if (!searchTerm.trim()) {
-        setFilteredVintages(vintages); // If no search term, show all vintages
-      } else {
-        const filtered = vintages.filter((vintage) => {
-          return (
-            (vintage.name && vintage.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
-            (vintage.tags && vintage.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase())))
-          );
-        });
-        setFilteredVintages(filtered); // Update the filtered vintages based on the search term
-      }
-    }, [searchTerm, ]); // Run effect when searchTerm or vintages change
-          
 
-  
-    return (
-      <div>
-        <TouristNB/>
-  
-  
-          {/*Search bar*/}
-          <Box sx={{display:'flex',}}>
-              <Search>
-              <SearchIconWrapper>
-                <SearchIcon />
-              </SearchIconWrapper>
-              <StyledInputBase
-              placeholder="Search…"
-              inputProps={{ 'aria-label': 'search' }}
-              onChange={(e) => setSearchTerm(e.target.value)} // Capture search input
-              />
-            </Search>
-            <Button variant="contained" label="search" onClick={handleSearch} sx={{ ml: 2 }}>search</Button>
-            </Box>
-  
-  
-            {/* Filter by Tag */}
-            <TextField
-                      label="tags"
-                      variant="outlined"
-                      name="tags"
-                      value={filters.tags}
-                      onChange={(e) => setSelectedTag(e.target.value)}
-                      //onChange={handleFilterChange}
-                      sx={{ mb: 2, mr: 2 }}
-                  />
-  
-        <Box
-          sx={{
-            width: "1150px",
-            overflow: "hidden",
-            margin: "0 auto",
-            padding: "20px",
-            height: "80vh", // Set a fixed height for the scrolling area
-            overflow: "auto", // Enable scrolling
-            "&::-webkit-scrollbar": {
-              display: "none", // Hides the scrollbar for WebKit browsers (Chrome, Safari)
+  useEffect(() => {
+    const fetchItineraryDetails = async () => {
+      try {
+        const token = localStorage.getItem("jwt");
+        const response = await fetch(
+          `/cariGo/Event/readSingleItinerary/${id}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
             },
-            //backgroundColor : "aquamarine" ,
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        setItinerary(data);
+      } catch (error) {
+        console.error("Error fetching itinerary details:", error);
+      }
+    };
+    fetchItineraryDetails();
+  }, [id]); // Include `id` in dependencies
+
+  if (!itinerary) {
+    return <Typography>Loading...</Typography>;
+  }
+
+  const {
+    start_date,
+    end_date,
+    locations,
+    price,
+    tags,
+    activities,
+    transportation,
+    accommodation,
+    ratingsAverage,
+    language,
+    pick_up,
+    drop_off,
+    accessibility,
+    title,
+  } = itinerary;
+
+  // Function to format the date and time
+  const formatDateTime = (dateString) => {
+    const options = {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      //hour: '2-digit',
+      //minute: '2-digit',
+      //hour12: true,
+    };
+    return new Date(dateString).toLocaleString(undefined, options);
+  };
+
+  const formatDateHour = (dateString) => {
+    const options = {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true, // Use 12-hour format with AM/PM
+    };
+    return new Date(dateString).toLocaleString(undefined, options);
+  };
+
+  // Format activities to include start and end dates in the correct format
+  const formattedActivities = activities.map((activity) => ({
+    name: activity.name,
+    description: activity.description,
+    startDate: formatDateTime(activity.start_date),
+    endDate: formatDateTime(activity.end_date),
+  }));
+  const conversionRate = localStorage.getItem("conversionRate") || 1;
+  const code = localStorage.getItem("currencyCode") || "EGP";
+  const token = localStorage.getItem("jwt");
+  return (
+    <Box>
+      <ResponsiveAppBar />
+      <Button
+          onClick={() => navigate(`/tourist-itineraries`)}
+          sx={{
+            backgroundColor: "#126782",
+            color: "white",
+            borderRadius: "8px",
+            width: "100px",
+            marginTop:'3%',
+            marginLeft:'15%',
+            fontSize:'16px',
+            paddingLeft:'0px',
           }}
         >
-  
+          <ArrowBackIosIcon ></ArrowBackIosIcon>
+          Back
+        </Button>
+    <Box sx={{width: "70%", margin:'5%',marginLeft: "15%",marginBottom:'20px', marginTop:'2%'}}>
+        <Box
+          component="img"
+          src={logoImage || ""}
+          alt="Itinerary Image"
+          sx={{
+            width:"100%",
+            maxHeight: "400px",
+            borderRadius: "10px",
+            objectFit: "cover",
+            marginBottom: "20px",
+          }}
+        />
+        <Box className="company-info" sx={{marginTop:'-2%',}}>
           <Box
             sx={{
-              height: "100%",
-              marginLeft: "100px",
-              width: "100%",
-              "&::-webkit-scrollbar": { display: "none" },
+              display: "flex",
+              flexDirection: "column",
+              gap:'10px' ,
+              marginBottom: "20px",
+              padding: "20px",
+              width:'90%'
             }}
-          >
-            {" "}
-            {/* Enable vertical scrolling only */}
-            <>
-              {errorMessage ? (
-                  <p style={{ color: 'red', textAlign: 'center' }}>{errorMessage}</p> // Display error message if any
-              ) : (
-                  <Grid container spacing={0} sx={{ display: 'flex', flexDirection: 'column', width: '100vw' }}>
-                      {filteredVin.length > 0 ? (
-                          filteredVin.map((vintage, index) => (
-                              <Grid item key={index} sx={{ display: 'flex', justifyContent: 'left' }}>
-                                  <TouristVintagePost
-                                      id={vintage._id || 'N/A'} // Safely handle missing _id
-                                      name={vintage.name || 'No name provided'} // Handle missing name
-                                      description={vintage.description || 'No description available'} // Handle missing description
-                                      pictures={vintage.pictures || []} // Handle missing pictures with an empty array
-                                      location={vintage.location ? {
-                                          longitude: vintage.location.longitude || 0, // Default longitude
-                                          latitude: vintage.location.latitude || 0,   // Default latitude
-                                          nation: {
-                                              country: vintage.location.country || 'Unknown country',
-                                              city: vintage.location.city || 'Unknown city',
-                                          }
-                                      } : null} // Handle missing location by setting it to null
-                                      ticket_price={vintage.ticket_price ? {
-                                          foreigner: vintage.ticket_price.foreigner || 'Not specified',
-                                          native: vintage.ticket_price.native || 'Not specified',
-                                          student: vintage.ticket_price.student || 'Not specified',
-                                      } : {
-                                          foreigner: 'Not specified',
-                                          native: 'Not specified',
-                                          student: 'Not specified',
-                                      }} // Handle missing ticket_price safely
-                                      tags={vintage.tags || []} // Default tags to an empty array if missing
-                                      opening_hours={vintage.opening_hours ? {
-                                          opening: vintage.opening_hours.opening || 'Not specified',
-                                          closing: vintage.opening_hours.closing || 'Not specified',
-                                      } : {
-                                          opening: 'Not specified',
-                                          closing: 'Not specified',
-                                      }} // Handle missing opening_hours safely
-                                  />
-                              </Grid>
-                          ))
-                      ) : (
-                          <p>No vintage posts available.</p> // Display a message if no vintages are found
-                      )}
-                  </Grid>
-              )}
-          </>
+            >
+            
+            <Box sx={{ position: 'relative', width: '100%', display: 'flex', justifyContent: 'space-between' }}>
+            <Box sx={{ display: 'flex', gap: '10px', color: '#126782' }}>
+              <Avatar sx={{ bgcolor: "#ff4d4d", width: 42, height: 42 }}>
+                {title?.charAt(0) || "A"} 
+              </Avatar>
+              <Typography variant="h4" sx={{ fontWeight: "bold" }}>
+                {title || "Anonymous"}
+              </Typography>
+            </Box>
+            <Box sx={{ display: "flex", color: "#126782"  }}>
+              <StarIcon sx={{ color: "#FFD700", marginRight: "5px", fontSize: '40px' }} />
+              <Typography sx={{ fontSize: "30px", fontWeight: 'bold', lineHeight: '1.2' }}>
+                {ratingsAverage || "No rating"}
+              </Typography>
+            </Box>
           </Box>
-        </Box>
-      </div>
-    );
-  };
-export default TouristViewVintage;
+
+            <Box sx={{ display: "flex", gap: "0px" ,}}>
+              {tags?.map((tag) => (
+                <Chip
+                  key={tag._id}
+                  label={tag.title}
+                  sx={{ backgroundColor: "#126782", color: "white", margin: "5px",fontSize:'15px',padding: "3px" }}
+                />
+              ))}
+              </Box>
+            </Box>
+            {/* big box for dates*/}
+            <Box sx={{ marginBottom: "20px",display:'flex',flexDirection:"column" ,gap:'15px' , color:"#126782", marginLeft:'3%'}}>
+              <Box sx={{display:'flex', gap:'40px'}}>
+                <Box sx={{display:'flex', flexDirection:'column',}}>
+                  <Box sx={{display:"flex", gap:'5px'}}>
+                    <CalendarMonthIcon sx={{color:'#ff4d4d', fontSize:'30px', marginTop:'5px'}}/>
+                    <Typography variant="body1" sx={{ fontSize: "20px", }} >
+                      {formatDateTime(start_date)}
+                    </Typography>
+                  </Box>
+                <Box sx={{display:'flex', gap:'5px',marginLeft:'35px', color:'#ff4d4d'}}>
+                  <AccessTimeIcon sx={{fontSize: "26px",}}/>
+                  <Typography sx={{fontSize: "18px",lineHeight: "1.1" }}>
+                    {formatDateHour(start_date)}
+                  </Typography>
+                </Box>
+              </Box>
+              <Typography sx={{fontSize:'20px', }}>to</Typography>
+              <Box sx={{display:'flex', flexDirection:'column',}}>
+                <Box sx={{display:"flex", gap:'5px'}}>
+                  <CalendarMonthIcon sx={{color:'#ff4d4d', fontSize:'30px',marginTop:'5px'}}/>
+                  <Typography variant="body1" sx={{ fontSize: "20px", }} >
+                    {formatDateTime(end_date)}
+                  </Typography>
+                </Box>
+                <Box sx={{display:'flex', gap:'5px',marginLeft:'35px', color:'#ff4d4d'}}>
+                  <AccessTimeIcon sx={{fontSize: "26px",}}/>
+                  <Typography sx={{fontSize: "18px",lineHeight: "1.1" }}>
+                    {formatDateHour(end_date)}
+                    </Typography>
+                </Box>
+              </Box>
+            </Box>
+
+            <Box
+              sx={{display: "flex", marginBottom: "5px",}}>
+              <PinDropIcon sx={{ marginRight: "5px",fill:'#ff4d4d' ,fontSize:'30px'}} />
+              <Typography sx={{fontSize:'20px', fontWeight:'550', lineHeight:'1.1',}}>
+                {" "}
+                {locations?.join(", ") || "Not specified"}
+              </Typography>
+            </Box>
+
+            <Typography variant="body1" sx={{ fontSize: "18px" }}>
+              <strong>Language of Tour Guide</strong>{" "}
+              {language || "No language info"}
+            </Typography>
+            <Typography variant="body1" sx={{ fontSize: "18px" }}>
+              <strong>Transportation:</strong>{" "}
+              {transportation || "No transportation info"}
+            </Typography>
+            <Typography variant="body1" sx={{ fontSize: "18px" }}>
+              <strong>Pick-up:</strong> {pick_up || "No transportation info"}
+            </Typography>
+            <Typography variant="body1" sx={{ fontSize: "18px" }}>
+              <strong>Drop-off:</strong> {drop_off || "No transportation info"}
+            </Typography>
+            <Typography variant="body1" sx={{ fontSize: "18px" }}>
+              <strong>Accommodation:</strong>{" "}
+              {accommodation || "No accommodation info"}
+            </Typography>
+            <Typography variant="body1" sx={{ fontSize: "18px" }}>
+              <strong>Accessibility:</strong>{" "}
+              {accessibility || "No accessibility info"}
+            </Typography>
+
+            {/* Using MarkerList to display activities */}
+            <Typography variant="body1" sx={{ fontSize: "18px" }}>
+              <strong>Activities:</strong>
+            </Typography>
+            <UserAcList activities={formattedActivities} />
+            <Box 
+              sx={{ 
+                display: "flex", 
+                justifyContent: "space-between", 
+               
+                marginBottom: "20px", 
+                width: "180%" 
+              }}
+            >
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <AttachMoneyIcon sx={{ marginRight: "5px", fill: '#ff4d4d', fontSize: '30px' }} />
+                <Typography sx={{ fontSize: '20px', fontWeight: '550', lineHeight: '1.1' }}>
+                  {price
+                    ? `${(price * conversionRate).toFixed(2)} ${code}`
+                    : "Price not specified"}
+                </Typography>
+              </Box>
+              <Button 
+                variant="contained" 
+                onClick={handleClick} 
+                sx={{ backgroundColor: "#ff4d4d", padding:'10px 15px', fontSize: "16px",marginTop:'10px' }}
+              >
+                Book Now
+              </Button>
+            </Box>
+
+            {/* <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", color: "#126782" , width: "180%"}}> */}
+              {/* <Box sx={{display: "flex",alignItems: "center",}}>
+                <StarIcon sx={{ color: "#FFD700", marginRight: "5px" }} />
+                <Typography  sx={{ fontSize: "18px" }}>
+                  {ratingsAverage || "No rating"}
+                </Typography>
+              </Box> */}
+             
+            {/* </Box> */}
+          </Box>
+          {/* end of info box0 */}
+      </Box>
+    </Box>
+    </Box>
+  );
+};
+
+export default ItineraryDetails;
