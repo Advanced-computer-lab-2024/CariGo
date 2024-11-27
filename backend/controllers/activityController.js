@@ -1,6 +1,7 @@
 const Activity = require("../models/Activity");
 const Category = require("../models/Category");
 const Tag = require("../models/Tag");
+const itinerary = require("../models/Itinerary")
 const APIFeatures = require("../utils/apiFeatures");
 // const User = require('./../models/userModel');
 const activityModel = require("../models/Activity");
@@ -471,7 +472,32 @@ const getActivity = async (req, res) => {
     res.status(500).json({ message: "An error occurred", error });
   }
 };
-
+const getTitlesForEachUser = async (req, res) => {
+  const id  = req.params.id;
+  console.log(id)
+  try {
+    const activities = await Activity.find({author:id}); // Fixed from ActivityModel to Activity, and use findById(id)
+    const itineraries = await itinerary.find({author:id})
+    if (!activities & !itineraries) {
+      return res.status(404).json({ message: "Activity not found" });
+    }
+  //console.log(activities)
+ // console.log("---------------")
+  //console.log(itineraries)
+    const Atitles =(activities)?activities.map(activity => activity.title):[];
+    
+    const Ititles = (itineraries)?itineraries.map(activity => activity.title):[];
+    //const titles = ;
+   // Atitles.push(...Ititles);
+    res.status(200).json(
+      {activityTitles:Atitles,
+        success:true,
+       iteineraryTitles:Ititles
+      });
+  } catch (error) {
+    res.status(500).json({ message: "An error occurred", error });
+  }
+};
 const sortActivities = async (req, res) => {
   const today = new Date();
   const sortBy = req.query.type || "discount"; // Default to "discount" if no parameter is provided
@@ -715,4 +741,5 @@ module.exports = {
   BookActivity,
   MyActivityBookings,
   CancelActivityBooking,
+  getTitlesForEachUser
 };

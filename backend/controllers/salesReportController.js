@@ -7,14 +7,14 @@ const APIFeatures = require("../utils/apiFeatures");
 const generateSalesReport = async (req, res) => {
   try {
     // Step 1: Extract filters from the request query
-    const { date, month, title } = req.query;
+    const { date, month, title, groupBy } = req.query;
     console.log("idddddddddd"+ req.user.id);
     // Step 2: Find activities authored by the user with optional title filter
-    const activityFilter = { author: req.user.id };
+    const activityFilter = { author: req.user.id };   
     if (title) {
       activityFilter.title = { $regex: title, $options: "i" }; // Case-insensitive search by title
     }
-    
+
     const activities = await Activity.find(activityFilter);
     console.log(activities);
 
@@ -45,30 +45,59 @@ const generateSalesReport = async (req, res) => {
         },
         {
           $group: {
-            _id: month // If month is provided, group by the month; otherwise, group by the date
-              ? { activityId: "$ActivityId", month: { $month: "$createdAt" } } // Group by month
-              : { activityId: "$ActivityId", createdAt: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } } }, // Group by date
+            _id: {
+              activityId: "$ActivityId", // Group by activity ID
+              ...(groupBy === 'month' && { month: { $month: "$createdAt" } }), // Group by month if groupBy is 'month'
+              ...(groupBy === 'date' && { createdAt: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } } }), // Group by date if groupBy is 'date'
+            },
             totalRevenue: {
-              $sum: { $multiply: ["$TotalPrice", "$NumberOfTickets"] } // Sum of TotalPrice * NumberOfTickets
+              $sum: { $multiply: ["$TotalPrice"] } // Sum of TotalPrice * NumberOfTickets
+            },
+            distinctUserIds: {
+              $addToSet: "$UserId" // Collect distinct userIds in an array
             }
+          }
+        },
+        {
+          $addFields: {
+            distinctUserCount: { $size: "$distinctUserIds" } // Count the distinct userIds
+          }
+        },
+        {
+          $project: {
+            _id: 0, // Exclude the _id field
+            activityId: "$_id.activityId", // Keep the activityId
+            period: groupBy === 'month' ? "$_id.month" : groupBy === 'date' ? "$_id.createdAt" : "All", // Period based on groupBy
+            totalRevenue: 1, // Total revenue for this activity
+            distinctUserCount: 1 // The number of distinct userIds
           }
         }
       ]);
-
+     //console.log(sales[0])
       // Step 5: Add the results to the report
       sales.forEach(sale => {
         report.push({
-          activityId: sale._id.activityId, // Activity ID
-          period: month ? sale._id.month : sale._id.createdAt, // If month filter is used, show month; otherwise, show date
+          activityId: sale.activityId, // Activity ID
+          activityName : sale.title,
+          period: sale.period, // Period based on grouping
           totalRevenue: sale.totalRevenue, // Total sales for this activity on this date/month
+          distinctUserCount: sale.distinctUserCount // The number of distinct users for this period/activity
         });
       });
     }
-
+    let i =0;
+    
+    let totalRevenue = 0;
+    while(i<report.length)
+      totalRevenue+= report[i++].totalRevenue;
+  
+  //console.log(totalRevenue); // Output: 600
+  
     // Step 6: Return the final sales report as a response
     res.json({
       success: true,
       report: report, // Send the sales report back to the client
+      Revenue:totalRevenue
     });
 
   } catch (error) {
@@ -81,6 +110,7 @@ const generateSalesReport = async (req, res) => {
     });
   }
 };
+
 
 module.exports = { generateSalesReport };
 

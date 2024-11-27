@@ -9,6 +9,7 @@ const BlankCard = ({ children, className }) => {
       className={className}
       elevation={9}
       variant={undefined}
+      
     >
       {children}
     </Card>

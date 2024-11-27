@@ -15,9 +15,17 @@ const DashboardCard = ({
 
   return (
     <Card
-      sx={{ padding: 0 }}
+    sx={{
+      padding: 0,
+      transition: 'transform 0.3s ease, box-shadow 0.3s ease', // Smooth transitions for transform and box-shadow
+      '&:hover': {
+        transform: 'scale(1.05)', // Scale the card slightly on hover
+        boxShadow: '0 12px 24px rgba(0, 0, 0, 0.15)', // Increase box shadow on hover
+      },
+    }}
       elevation={9}
       variant={undefined}
+      
     >
       {cardheading ? (
         <CardContent>

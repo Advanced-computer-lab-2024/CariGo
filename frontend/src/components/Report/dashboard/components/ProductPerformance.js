@@ -10,87 +10,61 @@ import {
 } from '@mui/material';
 import DashboardCard from './DashboardCard';
 
-const products = [
-    {
-        id: "1",
-        name: "Sunil Joshi",
-        post: "Web Designer",
-        pname: "Elite Admin",
-        priority: "Low",
-        pbg: "primary.main",
-        budget: "3.9",
-    },
-    {
-        id: "2",
-        name: "Andrew McDownland",
-        post: "Project Manager",
-        pname: "Real Homes WP Theme",
-        priority: "Medium",
-        pbg: "secondary.main",
-        budget: "24.5",
-    },
-    {
-        id: "3",
-        name: "Christopher Jamil",
-        post: "Project Manager",
-        pname: "MedicalPro WP Theme",
-        priority: "High",
-        pbg: "error.main",
-        budget: "12.8",
-    },
-    {
-        id: "4",
-        name: "Nirav Joshi",
-        post: "Frontend Engineer",
-        pname: "Hosting Press HTML",
-        priority: "Critical",
-        pbg: "success.main",
-        budget: "2.4",
-    },
-];
 
 
-const ProductPerformance = () => {
-    const [events,setEvents] = useState(null);
-    useEffect(() => {
-        // Fetch activities from the backend API
-        const fetchEvents = async () => {
+const ProductPerformance = ({events}) => {
+    // const [events,setEvents] = useState(null);
+    // const [revenue,setRevenue] = useState(null);
+    // const [tourists,setTourists] = useState(null);
+    // useEffect(() => {
+    //     // Fetch activities from the backend API
+    //     const fetchEvents = async () => {
 
-            const token = localStorage.getItem('jwt'); // Get the token from local storage
-            const userId = localStorage.getItem("id"); // Get user ID if needed
-            console.log(userId);
-            console.log(token);
-
-            try {
-                const response = await fetch("http://localhost:4000/cariGo/report", {
-                    method: "GET", // Change this to "POST" if your backend expects it
-                    headers: {
-                        "Authorization": `Bearer ${token}`, // Send the token in the Authorization header
+    //         const token = localStorage.getItem('jwt'); // Get the token from local storage
+    //         const userId = localStorage.getItem("id"); // Get user ID if needed
+    //         console.log(userId);
+    //         console.log(token);
+    //         //const revenue =null;
+    //         try {
+    //             const response = await fetch("http://localhost:4000/cariGo/report", {
+    //                 method: "GET", // Change this to "POST" if your backend expects it
+    //                 headers: {
+    //                     "Authorization": `Bearer ${token}`, // Send the token in the Authorization header
                         
-                    }
-                });
+    //                 }
+    //             });
 
-                // console.log(Request.json())
+    //             // console.log(Request.json())
 
-                if (!response.ok) {
-                    console.log(response)
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
+    //             if (!response.ok) {
+    //                 console.log(response)
+    //                 throw new Error(`HTTP error! status: ${response.status}`);
+    //             }
 
-                const json = await response.json().catch((err) => {
-                    console.error('Error parsing JSON:', err);
-                    throw new Error('Invalid JSON response');
-                });
-
-                console.log("Fetched activities:", json.report);
-                setEvents(json.report); // Set activities if response is okay
-            } catch (error) {
-                console.log('Error fetching activities:', error);
-            }
-        };
-
-        fetchEvents(); // Call the function to fetch activities
-    }, []);
+    //             const json = await response.json().catch((err) => {
+    //                 console.error('Error parsing JSON:', err);
+    //                 throw new Error('Invalid JSON response');
+    //             });
+    //        // setRevenue(json.Revenue);
+    //             console.log("Fetched activities:", json.report);
+    //            const list = json.report.map(activity => activity.distinctUserCount)
+    //            const sum = list.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+    //                console.log(sum); 
+    //             setEvents(json.report); // Set activities if response is okay
+    //           //  if(revenue)
+    //              onHandleRev(json.Revenue)
+    //             onHandleTour(sum)
+    //         } catch (error) {
+    //             console.log('Error fetching activities:', error);
+    //         }
+    //     };
+    //     console.log(typeof onHandleRev ==="function")
+    //     fetchEvents(); // Call the function to fetch activities
+        
+    // }, []);
+   // if(revenue)
+        //onHandleRev(revenue);
+   //onHandleRev = revenue
     return (
 
         <DashboardCard title="Product Performance">

@@ -1,7 +1,8 @@
 import React from 'react';
 import Chart from 'react-apexcharts';
 import { useTheme } from '@mui/material/styles';
-import { Grid, Stack, Typography, Avatar } from '@mui/material';
+import { Grid,Stack, Typography, Avatar, Fab } from '@mui/material';
+import { IconArrowDownRight, IconCurrencyDollar } from '@tabler/icons-react';
 import { IconArrowUpLeft } from '@tabler/icons-react';
 
 import DashboardCard from './DashboardCard';
@@ -59,16 +60,23 @@ const YearlyBreakup = ({revenue}) => {
       },
     ],
   };
-  const seriescolumnchart = [38, 40, 25];
+  const seriescolumnchart = [38, 40, 25,30];
 
   return (
-    <DashboardCard title="Total Revenue">
+    <DashboardCard title="Total Revenue"
+    action={
+      <Fab color="primary" size="medium" sx={{color: '#ffffff'}}>
+        <IconCurrencyDollar width={24} />
+      </Fab>
+    }
+       
+    >
       <Grid container spacing={3}>
         {/* column */}
         <Grid item xs={7} sm={7}>
-          <Typography variant="h3" fontWeight="700">
+          {revenue &&<Typography variant="h3" fontWeight="700">
             {"$"+revenue}
-          </Typography>
+          </Typography>}
           <Stack direction="row" spacing={1} mt={1} alignItems="center">
             <Avatar sx={{ bgcolor: successlight, width: 27, height: 27 }}>
               <IconArrowUpLeft width={20} color="#39B69A" />

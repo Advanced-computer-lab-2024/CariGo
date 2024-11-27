@@ -11,7 +11,7 @@ const router = express.Router();
 router.get('/', activityController.getActivities);
 router.get('/adminActivities', activityController.getActivitiesForAdmin);
 router.get('/getadvact',[authController.protect ,authController.restrictTo("Advertiser")], activityController.getAdvActivities);
-
+router.get('/getTitles/:id',activityController.getTitlesForEachUser)
 router.get('/getOne/:id', activityController.getActivity);
 
 
