@@ -34,7 +34,7 @@ export default function ActivityList({ fetchedActivities }) {
                                 end_date={StringDate(activity.end_date)}
                                 location={activity.locations ? `${activity.locations.lon}, ${activity.locations.lan}` : "Location unavailable"}
                                 duration={calculateDuration(activity.start_date, activity.end_date)}
-                                price={activity.price?.range ? `From ${activity.price.range.min} to ${activity.price.range.max}` : "Price not available"}
+                                price={activity.price ? `${activity.price}` : "Price not available"} //price.range.min to //price.range.max
                                 category={activity.Category?.title || "Uncategorized"}
                                 rating={activity.ratingsAverage ?? "No rating"}
                                 discount={activity.discount ?? 0}

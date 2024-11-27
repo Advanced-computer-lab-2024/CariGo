@@ -14,6 +14,8 @@ const Category = require("../models/Category");
 const bookingModel = require("../models/Bookings");
 const Itinerary = require("../models/Itinerary");
 const User = require("../models/User");
+const notificationController = require("../controllers/notificationController");
+const NotificationController = require('../controllers/notificationController');
 
 const createItinerary = async (req, res) => {
   const userId = new mongoose.Types.ObjectId(req.body.author); // Convert to ObjectId
@@ -160,31 +162,36 @@ const createProduct = async (req, res) => {
 
 const updateItinerary = async (req, res) => {
   const update = req.body;
-  console.log(update);
+  const { itineraryId } = req.params;
 
-  if (mongoose.Types.ObjectId.isValid(req.params.itineraryId)) {
-    console.log("inside the update");
+  if (!mongoose.Types.ObjectId.isValid(itineraryId)) {
+    return res.status(400).json({ error: "Invalid itinerary ID" });
+  }
 
-    try {
-      const itinerary = await itineraryModel.findById(req.params.itineraryId);
+  try {
+    const itinerary = await itineraryModel.findById(itineraryId);
 
-      if (!itinerary) {
-        return res.status(404).json({ error: "Itinerary not found" });
-      }
-
-      const result = await itineraryModel.updateOne(
-        { _id: new mongoose.Types.ObjectId(req.params.itineraryId) },
-        { $set: update }
-      );
-
-      res.status(201).json(result);
-    } catch (error) {
-      res.status(500).json({ error: "couldn't update itinerary data" });
+    if (!itinerary) {
+      return res.status(404).json({ error: "Itinerary not found" });
     }
-  } else {
-    res
-      .status(500)
-      .json({ error: "couldn't update user data, itinerary id invalid" });
+
+    if (update.isFlagged === true) {
+      await notificationController.sendFlaggedContentNotification(
+        itinerary.author,
+        itineraryId,
+        "Itinerary",
+        itinerary.title
+      );
+    }
+
+    const result = await itineraryModel.findByIdAndUpdate(itineraryId, update, {
+      new: true,
+    });
+
+    res.status(200).json(result);
+  } catch (error) {
+    console.error("Error updating itinerary:", error);
+    res.status(500).json({ error: "Couldn't update itinerary data" });
   }
 };
 // const readAllItineraries = async (req, res) => {
@@ -259,7 +266,10 @@ const readAllItineraries = async (req, res) => {
   try {
     // Initialize the query
     const today = new Date();
-    let query = itineraryModel.find({start_date: { $gte: today },isActive: true});
+    let query = itineraryModel.find({
+      start_date: { $gte: today },
+      isActive: true,
+    });
 
     // Check if a tag title is provided
     let itineraries = []; // Declare itineraries with let
@@ -344,36 +354,44 @@ const readMyItineraries = async (req, res) => {
 
 const suggestedItineraries = async (req, res) => {
   // Check if tags is an array; if it's not, make it an array (even if it's a single string)
-  const tags = Array.isArray(req.query.tags) ? req.query.tags : [req.query.tags];
+  const tags = Array.isArray(req.query.tags)
+    ? req.query.tags
+    : [req.query.tags];
 
   try {
     // Find itineraries with matching tags
-    const itineraries = await itineraryModel.find({
-      isActive: true,
-      isFlagged: false,
-      tags: { $in: tags }
-    }).populate("tags");
+    const itineraries = await itineraryModel
+      .find({
+        isActive: true,
+        isFlagged: false,
+        tags: { $in: tags },
+      })
+      .populate("tags");
     res.json(itineraries);
   } catch (error) {
-    res.status(500).json({ error: 'Error fetching itineraries' });
+    res.status(500).json({ error: "Error fetching itineraries" });
   }
 };
 
 const suggestedActivities = async (req, res) => {
   try {
     // Ensure `tags` is always an array, even if a single tag is passed in the query
-    const tags = Array.isArray(req.query.tags) ? req.query.tags : [req.query.tags];
+    const tags = Array.isArray(req.query.tags)
+      ? req.query.tags
+      : [req.query.tags];
     console.log(tags);
 
     // Convert `tags` to ObjectId format if they are strings, since the tag field references ObjectIds
-    const tagIds = tags.map(tag => new mongoose.Types.ObjectId(tag)); // Use `new` to create ObjectId instances
+    const tagIds = tags.map((tag) => new mongoose.Types.ObjectId(tag)); // Use `new` to create ObjectId instances
 
     // Fetch activities that match any tag in the `tags` array
-    const itineraries = await activityModel.find({
-      isActive: true,
-      isFlagged: false,
-      tag: { $in: tagIds } // Check if activity's tag is in the provided tags list
-    }).populate("tag"); // Ensure populated tag information is returned
+    const itineraries = await activityModel
+      .find({
+        isActive: true,
+        isFlagged: false,
+        tag: { $in: tagIds }, // Check if activity's tag is in the provided tags list
+      })
+      .populate("tag"); // Ensure populated tag information is returned
     console.log(itineraries);
     res.json(itineraries);
   } catch (error) {
@@ -381,9 +399,6 @@ const suggestedActivities = async (req, res) => {
     res.status(500).json({ error: "Error fetching suggested activities" });
   }
 };
-
-
-
 
 const deleteItinerary = async (req, res) => {
   const { id } = req.params;
@@ -598,9 +613,13 @@ const shareVintage = async (req, res) => {
   }
 };
 
+const nodemailer = require("nodemailer");
+const dotenv = require("dotenv");
+dotenv.config({ path: "../.env" });
+
 const BookItinerary = async (req, res) => {
   const { ItineraryId } = req.params; // Event ID from URL parameters
-  const { PaymentMethod,TotalPrice,NumberOfTickets } = req.body; // User ID from request body
+  const { PaymentMethod, TotalPrice, NumberOfTickets } = req.body; // User ID from request body
   const UserId = req.user.id;
   let CardNumber;
   let booking; // Declare booking outside of if-else to use in response
@@ -612,6 +631,11 @@ const BookItinerary = async (req, res) => {
       const itinerary = await Itinerary.findById(ItineraryId);
       if (!itinerary) {
         return res.status(404).json({ error: "Iternirary not found" });
+      }
+      if (!itinerary.isOpened) {
+        return res
+          .status(400)
+          .json({ error: "This itinerary will accept bookings soon" });
       }
       await Itinerary.findByIdAndUpdate(ItineraryId, { isBooked: true });
 
@@ -628,19 +652,17 @@ const BookItinerary = async (req, res) => {
           PaymentMethod: PaymentMethod,
           Status: true,
           CardNumber: CardNumber,
-          NumberOfTickets:NumberOfTickets,
-          TotalPrice:TotalPrice
+          NumberOfTickets: NumberOfTickets,
+          TotalPrice: TotalPrice,
         });
       } else {
-
         booking = await bookingModel.create({
-
           ItineraryId: ItineraryId,
           UserId: UserId,
           PaymentMethod: PaymentMethod,
           Status: true,
-          NumberOfTickets:NumberOfTickets,
-          TotalPrice:TotalPrice
+          NumberOfTickets: NumberOfTickets,
+          TotalPrice: TotalPrice,
         });
         const newWalletValue = user.wallet - TotalPrice;
         user.wallet = newWalletValue;
@@ -650,19 +672,44 @@ const BookItinerary = async (req, res) => {
       // Add loyalty points
       // user.addLoyaltyPoints(itinerary.price);
       user.addLoyaltyPoints(TotalPrice);
-      user.addAvailablePoints(TotalPrice)
+      user.addAvailablePoints(TotalPrice);
       await user.save({ validateBeforeSave: false });
 
       res.status(200).json({
         message: "Booked successfully",
         booking,
-        loyaltyPointsEarned: Math.floor(itinerary.price * (user.level === 1 ? 0.5 : user.level === 2 ? 1 : 1.5)),
+        loyaltyPointsEarned: Math.floor(
+          itinerary.price *
+            (user.level === 1 ? 0.5 : user.level === 2 ? 1 : 1.5)
+        ),
         newTotalPoints: user.loyaltyPoints,
         newLevel: user.level,
         newBadge: user.badge,
         newPoints: user.pointsAvailable,
-        newWallet: user.wallet
+        newWallet: user.wallet,
       });
+
+      const today = new Date();
+
+      const transporter = nodemailer.createTransport({
+        service: "Gmail",
+        auth: {
+          user: process.env.EMAIL_USERNAME,
+          pass: process.env.EMAIL_PASSWORD,
+        },
+      });
+
+      const info = await transporter.sendMail({
+        from: '"CariGo 🦌" <Carigo@test.email>',
+        to: user.email, // Send to the user's email
+        subject: "receipt! 🧾 Here's Your itinerary receipt!",
+        text: "here is your receipt details, can't wait to meet you",
+        html: `<b>thanks ${user.username} for your purchase here is your receipt details🎉:  <ul><li>Itinerary title: ${itinerary.title}</li> <li>Itinerary link: http://localhost:3000/user_itineraries/${ItineraryId}</li> <li>payment method: ${PaymentMethod}</li> <li>Number Of Tickets: ${NumberOfTickets}</li> <li>Total Price: ${TotalPrice}</li> <li>start date: ${itinerary.start_date}</li> <li>date of purchase: ${today}</li></ul></b>`,
+      });
+
+      console.log("Message sent to %s: %s", user.email, info.messageId);
+
+      console.error({ message: "reciept sent successfully." });
     } catch (error) {
       res.status(500).json({ error: "Failed to book" });
       console.error("Error while booking:", error);
@@ -672,19 +719,17 @@ const BookItinerary = async (req, res) => {
   }
 };
 
-
 const MyItineraryBookings = async (req, res) => {
-  const  UserId  = req.user.id; // User ID from request body
+  const UserId = req.user.id; // User ID from request body
   //console.log("/////////////////////////////////////////"+UserId+"//////////////////////////////////////////////////");
   if (mongoose.Types.ObjectId.isValid(UserId)) {
     try {
       const bookings = await bookingModel
         .find({ UserId, ItineraryId: { $ne: null } })
         .sort({ createdAt: -1 });
-        //console.log(bookings);  
+      //console.log(bookings);
       return res.status(200).json(bookings);
-      
-    } catch (error){
+    } catch (error) {
       res.status(500).json({ error: "Failed to fetch bookings" });
       console.error("Error while booking:", error);
     }
@@ -695,66 +740,63 @@ const MyItineraryBookings = async (req, res) => {
 
 const CancelItineraryBooking = async (req, res) => {
   const  UserId  = req.user.id; // User ID from request body
-  const { ItineraryId } = req.body; // Event ID from URL parameters
-  console.log(ItineraryId+ "    "+UserId);
+  const { bookingId } = req.body; // Event ID from URL parameters
   if (
-    mongoose.Types.ObjectId.isValid(ItineraryId) &&
+    mongoose.Types.ObjectId.isValid(bookingId) &&
     mongoose.Types.ObjectId.isValid(UserId)
   ) {
     try {
-      const itinerary = await itineraryModel.findById(ItineraryId);
+      const booking = await bookingModel.findById(bookingId);
       //console.log(itinerary);
-      const itineraryDate = itinerary.start_date;
+      const ItineraryId = booking.ItineraryId;
+      const itineraryDate = ItineraryId.start_date;
 
       if (itineraryDate) {
         const currDate = new Date();
         const timeDifference = itineraryDate.getTime() - currDate.getTime(); // Difference in milliseconds
         const hoursDifference = timeDifference / (1000 * 60 * 60); // Convert to hours
-        console.log(hoursDifference);
         if (hoursDifference >= 48) {
-          const bookings = await bookingModel.updateMany(
-            { UserId, ItineraryId }, // Filter to find documents with both UserId and ItineraryId
+          const bookings = await bookingModel.updateOne(
+            { _id:bookingId }, // Filter to find documents with both UserId and ItineraryId
             { $set: { Status: false } } // Update to set Status to false
           );
           res.status(200).json({
             message: "Bookings canceled successfully",
             updatedBookingsCount: bookings.modifiedCount, // shows how many bookings were updated
           });
-          const canceled = await bookingModel.findOne({ItineraryId: ItineraryId,status: true});
-          if(!canceled){
+          const canceled = await bookingModel.findOne({
+            ItineraryId: ItineraryId,
+            status: true,
+          });
+          if (!canceled) {
             await Itinerary.findByIdAndUpdate(ItineraryId, { isBooked: false });
           }
         } else {
-          res
-            .status(400)
-            .json({
-              message:
-                "Cannot cancel booking within 48 hours of the itinerary date",
-            });
+          res.status(400).json({
+            message:
+              "Cannot cancel booking within 48 hours of the itinerary date",
+          });
         }
       } else {
         res.status(404).json({ message: "itinerary not found" });
       }
-    } catch(error) {
-      
+    } catch (error) {
       res.status(500).json({ error: "Failed to fetch booking" });
       console.error("Error while booking:", error);
     }
   } else {
     res.status(400).json({ error: "Invalid event ID format" });
   }
-
 };
 
-const axios = require('axios');
-const dotenv = require("dotenv");
-dotenv.config({ path: "../.env" });
+const axios = require("axios");
+
 const currencyConversion = async (req, res) => {
   try {
     const { currency } = req.query;
     console.log(currency);
     const key = process.env.currencyConversionKey;
-  
+
     const url = `https://v6.exchangerate-api.com/v6/${key}/pair/EGP/${currency}`;
     const response = await axios.get(url);
     const data = response.data;
@@ -764,7 +806,7 @@ const currencyConversion = async (req, res) => {
       console.log("Exchange rates:", result);
       res.status(200).json({
         message: "Currency conversion successful",
-        result // shows how many bookings were updated
+        result, // shows how many bookings were updated
       });
       // Access rates like: data.conversion_rates['EUR'], data.conversion_rates['EGP'], etc.
     } else {
@@ -773,7 +815,69 @@ const currencyConversion = async (req, res) => {
     }
   } catch (error) {
     console.error("Error making request:", error);
-    res.status(500).json({ error: "An error occurred while fetching exchange rates" });
+    res
+      .status(500)
+      .json({ error: "An error occurred while fetching exchange rates" });
+  }
+};
+
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+const create_payment_form = async (req, res) => {
+  const { amount, currency } = req.body;
+  try {
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: Math.round(amount), // Convert to integer
+      currency,
+      payment_method_types: ["card"], // Supports card payments
+    });
+    res.send({ clientSecret: paymentIntent.client_secret });
+  } catch (error) {
+    res.status(500).send({ error: error.message });
+  }
+};
+
+const openBookings = async (req, res) => {
+  try {
+    const itineraryId = req.params.id;
+    let itinerary = await itineraryModel.findById(itineraryId).populate('interestedUsers');
+
+    if (!itinerary) {
+      return res.status(404).json({
+        status: 'fail',
+        message: 'Itinerary not found'
+      });
+    }
+
+    itinerary.isOpened = true;
+    await itinerary.save();
+
+    // Send notifications and emails to all interested users
+    if (itinerary.interestedUsers && itinerary.interestedUsers.length > 0) {
+      const message = `Bookings are now open for the itinerary: ${itinerary.title}`;
+      for (const user of itinerary.interestedUsers) {
+        await NotificationController.sendNotification(
+          user._id,
+          message,
+          'upcoming_event',
+          itineraryId,
+          'Itinerary'
+        );
+      }
+    }
+
+    res.status(200).json({
+      status: 'success',
+      message: 'Bookings opened successfully',
+      data: {
+        itinerary
+      }
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      message: error.message
+    });
   }
 };
 
@@ -799,5 +903,7 @@ module.exports = {
   CancelItineraryBooking,
   currencyConversion,
   suggestedItineraries,
-  suggestedActivities
+  suggestedActivities,
+  create_payment_form,
+  openBookings
 };

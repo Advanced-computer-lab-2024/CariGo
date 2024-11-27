@@ -190,7 +190,7 @@ const code = localStorage.getItem("currencyCode")||"EGP";
                 marginRight: '5px',
             }}> {
               price != null?
-              ((price.range?.max*conversionRate).toFixed(2)+"-"+(price.range?.min*conversionRate).toFixed(2) ) +` ${code}`
+              ((price*conversionRate).toFixed(2)) +` ${code}`   //((price.range?.max*conversionRate).toFixed(2)+"-"+(price.range?.min*conversionRate).toFixed(2) ) +` ${code}`
               :'no specified price'}
               </Typography>
 

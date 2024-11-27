@@ -8,6 +8,7 @@ const activityModel = require("../models/Activity");
 const mongoose = require("mongoose");
 const bookingModel = require("../models/Bookings");
 const User = require("../models/User");
+const notificationController = require('../controllers/notificationController');
 
 const createActivity = async (req, res) => {
   try {
@@ -17,8 +18,7 @@ const createActivity = async (req, res) => {
       duration,
       lon,
       lan,
-      minPrice,
-      maxPrice,
+      price,
       discount,
       tag,
       bookingOpened,
@@ -28,12 +28,12 @@ const createActivity = async (req, res) => {
     } = req.body;
 
     // Validate that end_date is after start_date
-    const price = {
-      range: {
-        min: minPrice,
-        max: maxPrice,
-      },
-    };
+    // const price = {
+    //   range: {
+    //     min: minPrice,
+    //     max: maxPrice,
+    //   },
+    // };
     const locations = {
       lon: lon,
       lan: lan,
@@ -111,7 +111,7 @@ const getActivities = async (req, res) => {
 
   // Change sortBy to "price.range.min" if it is "price"
   if (sortBy === "price") {
-    sortBy = "price.range.min";
+    sortBy = "price";
   }
 
   const categoryName = req.query.Category;
@@ -151,10 +151,7 @@ const getActivities = async (req, res) => {
   console.log(priceParam);
   if (priceParam !== null) {
     query.where({
-      $and: [
-        { "price.range.min": { $lte: priceParam } }, // Price is greater than or equal to min
-        { "price.range.max": { $gte: priceParam } }, // Price is less than or equal to max
-      ],
+      "price": priceParam, // Match the fixed price
     });
     // Remove price parameter from req.query
     delete req.query.price;
@@ -226,7 +223,7 @@ const getActivitiesForAdmin = async (req, res) => {
 
   // Change sortBy to "price.range.min" if it is "price"
   if (sortBy === "price") {
-    sortBy = "price.range.min";
+    sortBy = "price";
   }
 
   const categoryName = req.query.Category;
@@ -261,10 +258,7 @@ const getActivitiesForAdmin = async (req, res) => {
   console.log(priceParam);
   if (priceParam !== null) {
     query.where({
-      $and: [
-        { "price.range.min": { $lte: priceParam } }, // Price is greater than or equal to min
-        { "price.range.max": { $gte: priceParam } }, // Price is less than or equal to max
-      ],
+      "price": priceParam, // Match the fixed price
     });
     // Remove price parameter from req.query
     delete req.query.price;
@@ -389,7 +383,7 @@ const getAdvActivities = async (req, res) => {
 const updateActivity = async (req, res) => {
   try {
     const { id } = req.params;
-    const { tag, category, ...otherFields } = req.body; // Change to lowercase for consistency
+    const { tag, category,...otherFields } = req.body; // Change to lowercase for consistency
 
     // Check if a tag is provided
     if (tag) {
@@ -414,14 +408,23 @@ const updateActivity = async (req, res) => {
       }
     }
 
+    
+
     // Update the activity
     const updatedActivity = await Activity.findByIdAndUpdate(
       id,
-      { ...otherFields, ...req.body },
+      {...otherFields, ...req.body },
       { new: true }
     );
+
     if (!updatedActivity) {
       return res.status(404).json({ message: "Activity not found" });
+    }
+
+    if(req.body.isFlagged){
+      if(req.body.isFlagged === true){
+        await notificationController.sendFlaggedContentNotification(updateActivity.author, id, 'Activity' , updateActivity.title);
+      }
     }
 
     res.status(200).json(updatedActivity);
@@ -521,6 +524,10 @@ const shareActivity = async (req, res) => {
   }
 };
 
+const nodemailer = require("nodemailer");
+const dotenv = require("dotenv");
+dotenv.config({ path: "../.env" });
+
 const BookActivity = async (req, res) => {
   const { ActivityId } = req.params;
   const { PaymentMethod, TotalPrice, NumberOfTickets } = req.body;
@@ -593,6 +600,29 @@ const BookActivity = async (req, res) => {
         newPoints: user.pointsAvailable,
         newWallet: user.wallet,
       });
+      
+    const today = new Date();
+
+    const transporter = nodemailer.createTransport({
+      service: 'Gmail',
+      auth: {
+        user: process.env.EMAIL_USERNAME,
+        pass: process.env.EMAIL_PASSWORD,
+      },
+    });
+
+    const info = await transporter.sendMail({
+      from: '"CariGo 🦌" <Carigo@test.email>',
+      to: user.email, // Send to the user's email
+      subject: "receipt! 🧾 Here's Your activity receipt!",
+      text: "here is your receipt details, can't wait to meet you",
+      html: `<b>thanks ${user.username} for your purchase here is your receipt details🎉:  <ul><li>activity title: ${activity.title}</li> <li>activity link: http://localhost:3000/activity/${ActivityId}</li> <li>payment method: ${PaymentMethod}</li> <li>Number Of Tickets: ${NumberOfTickets}</li> <li>Total Price: ${TotalPrice}</li> <li>start date: ${activity.start_date}</li> <li>date of purchase: ${today}</li></ul></b>`,
+    });
+
+    console.log("Message sent to %s: %s", user.email, info.messageId);
+  
+
+console.error({message: "reciept sent successfully.",});
     } catch (error) {
       res.status(500).json({ error: "Failed to book", message: error.message });
       console.error("Error while booking:", error);
@@ -621,15 +651,15 @@ const MyActivityBookings = async (req, res) => {
 
 const CancelActivityBooking = async (req, res) => {
   const UserId = req.user.id; // User ID from request body
-  const { ActivityId } = req.body; // Event ID from URL parameters
+  const { bookingId } = req.body; // Event ID from URL parameters
   if (
-    mongoose.Types.ObjectId.isValid(ActivityId) &&
+    mongoose.Types.ObjectId.isValid(bookingId) &&
     mongoose.Types.ObjectId.isValid(UserId)
   ) {
     try {
-      const activity = await activityModel.findById(ActivityId);
-      console.log(activity);
-      const activityDate = activity.start_date;
+      const booking = await bookingModel.findById(bookingId);
+      const ActivityId = booking.ActivityId;
+      const activityDate = ActivityId.start_date;
 
       if (activityDate) {
         const currDate = new Date();
@@ -637,8 +667,8 @@ const CancelActivityBooking = async (req, res) => {
         const hoursDifference = timeDifference / (1000 * 60 * 60); // Convert to hours
 
         if (hoursDifference >= 48) {
-          const bookings = await bookingModel.updateMany(
-            { UserId, ActivityId }, // Filter to find documents with both UserId and ActivityId
+          const bookings = await bookingModel.updateOne(
+            { _id:bookingId }, // Filter to find documents with both UserId and ActivityId
             { $set: { Status: false } } // Update to set Status to false
           );
           const cancel = await bookingModel.findOne({

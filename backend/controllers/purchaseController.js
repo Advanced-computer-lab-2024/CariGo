@@ -1,6 +1,7 @@
 const productModel = require("../models/Product");
 const userModel = require("../models/User");
 const purchaseModel = require("../models/Purchase");
+const notificationController = require("../controllers/notificationController");
 
 const getAllPurchases = async (req, res) => {
   try {
@@ -78,6 +79,10 @@ const makePurchase = async (req, res) => {
     // Update the product's quantity
     product.quantity -= Quantity;
     await product.save();
+
+    // console.log("before");
+    await notificationController.checkProductStock(ProductId);
+    // console.log("after");
 
     // Create a new purchase entry
     const purchase = await purchaseModel.create({

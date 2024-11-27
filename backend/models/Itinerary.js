@@ -76,7 +76,18 @@ const itinerarySchema = new schema(
     isFlagged:{
       type: Boolean,
       default: false,
-    }
+    },
+    isOpened:{
+      type: Boolean,
+      default: false,
+    },
+    interestedUsers: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: "User",
+        default: [],
+      },
+    ],
   },
   { timestamps: true }
 );

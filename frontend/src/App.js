@@ -88,6 +88,7 @@ import FlightBooking from './Pages/FlightBooking.jsx';
 import FlightDetails from "./components/FlightDetails";
 import FileComplaintForm from "./Pages/Tourist/FileComplaintForm";
 import ActivityPostDetail from "./components/ActivityPostDetail.js";
+import CreatePromoCode from './Pages/createPromoCode';
 // import HotelBooking from "./Pages/Tourist/HotelBooking.js";
 
 import BookingPage from "./Pages/Tourist/Booking.js";
@@ -114,7 +115,9 @@ import BookServicesPage from "./Pages/Tourist/Booking.js";
 import ReviewAccounts from "./Pages/accounts/docsReview.jsx";
 import ProductDetailsT from "./Pages/Tourist/productdetailsT"
 import ProductDetailsSeller from "./Pages/products/ProductDetailsSeller.jsx";
+import TotalReport from "./Pages/TotalReport.js";
 //import ChooseSignUP from "./Pages/ChooseSignUp";
+
 function App() {
   
   const token = localStorage.getItem("jwt");
@@ -217,7 +220,7 @@ function App() {
               <Route path="/admin/manage-products/AddProduct" element={<AddProduct/>} />
               <Route path="/admin/manage-products/product-Details/:id" element={<ProductDetails/>} />
               <Route path="/admin/manage-accounts/ReviewDocs" element={<ReviewAccounts/>} />
-
+              <Route path="/create-promo-code" element={<CreatePromoCode />} />
               <Route path="/update-tag" element={<UpdateTag />} />
               <Route path='/admin/view-products' element={<ViewProducts/>}/>
               <Route path='/admin/view-products/:id' element={<ProductDetails2/>}/>
@@ -236,6 +239,7 @@ function App() {
               <Route path="/admin/analysis" element={<ProductAnalysis />} />
         </Route>
 
+        <Route path="/reports" element={<TotalReport />} />
         <Route path="/guest-places" element={<GuestViewVintage/>} />
         <Route path="/tourist-places" element={<TouristViewVintage />} />
         <Route path="/createVintage" element={<CreateVintageForm />} />

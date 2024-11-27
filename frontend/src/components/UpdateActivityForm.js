@@ -28,8 +28,8 @@ export default function UpdateActivityForm(){
     const [category, setCategory] = useState('');
     const [lon, setLon] = useState('');
     const [lan, setLan] = useState('');
-    const [minPrice, setMinPrice] = useState(0);
-    const [maxPrice, setMaxPrice] = useState(0);
+    const [price, setPrice] = useState(0);
+//    const [maxPrice, setMaxPrice] = useState(0);
     const [discount, setDiscount] = useState(0);
     const [errorMessages, setErrorMessages] = useState({});
 
@@ -58,8 +58,8 @@ export default function UpdateActivityForm(){
           if (tag) activity.tag = tag;
           if (lon) activity.lon = lon;
           if (lan) activity.lan = lan;
-          if (minPrice) activity.minPrice = parseFloat(minPrice);
-          if (maxPrice) activity.maxPrice = parseFloat(maxPrice);
+          if (price) activity.price = parseFloat(price);
+//          if (maxPrice) activity.maxPrice = parseFloat(maxPrice);
           if (discount) activity.discount = parseFloat(discount);
           if (category) activity.category = category;
         
@@ -95,8 +95,8 @@ export default function UpdateActivityForm(){
               setTags('');
               setLon('');
               setLan('');
-              setMinPrice(0);
-              setMaxPrice(0);
+              setPrice(0);
+//              setMaxPrice(0);
               setDiscount(0);
               setErrorMessages({});
               console.log("Activity updated");
@@ -202,17 +202,17 @@ export default function UpdateActivityForm(){
             </FormControl>
   
             <FormControl >
-              <Label>Minimum Price</Label>
+              <Label>Price</Label>
               <StyledInput
-                placeholder="Enter minimum activity price"
+                placeholder="Enter activity price"
                 type="number"
-                onChange={(e) => setMinPrice(e.target.value)}
-                value={minPrice}
+                onChange={(e) => setPrice(e.target.value)}
+                value={price}
               />
-              {errorMessages.minPrice && <HelperText>{errorMessages.minPrice}</HelperText>}
+              {errorMessages.price && <HelperText>{errorMessages.price}</HelperText>}
             </FormControl>
   
-            <FormControl required>
+            {/* <FormControl required>
               <Label>Maximum Price</Label>
               <StyledInput
                 placeholder="Enter maximum activity price"
@@ -221,7 +221,7 @@ export default function UpdateActivityForm(){
                 value={maxPrice}
               />
               {errorMessages.maxPrice && <HelperText>{errorMessages.maxPrice}</HelperText>}
-            </FormControl>
+            </FormControl> */}
   
             <FormControl>
               <Label>DISCOUNT</Label>
