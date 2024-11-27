@@ -729,25 +729,24 @@ const MyItineraryBookings = async (req, res) => {
 
 const CancelItineraryBooking = async (req, res) => {
   const  UserId  = req.user.id; // User ID from request body
-  const { ItineraryId } = req.body; // Event ID from URL parameters
-  console.log(ItineraryId+ "    "+UserId);
+  const { bookingId } = req.body; // Event ID from URL parameters
   if (
-    mongoose.Types.ObjectId.isValid(ItineraryId) &&
+    mongoose.Types.ObjectId.isValid(bookingId) &&
     mongoose.Types.ObjectId.isValid(UserId)
   ) {
     try {
-      const itinerary = await itineraryModel.findById(ItineraryId);
+      const booking = await bookingModel.findById(bookingId);
       //console.log(itinerary);
-      const itineraryDate = itinerary.start_date;
+      const ItineraryId = booking.ItineraryId;
+      const itineraryDate = ItineraryId.start_date;
 
       if (itineraryDate) {
         const currDate = new Date();
         const timeDifference = itineraryDate.getTime() - currDate.getTime(); // Difference in milliseconds
         const hoursDifference = timeDifference / (1000 * 60 * 60); // Convert to hours
-        console.log(hoursDifference);
         if (hoursDifference >= 48) {
-          const bookings = await bookingModel.updateMany(
-            { UserId, ItineraryId }, // Filter to find documents with both UserId and ItineraryId
+          const bookings = await bookingModel.updateOne(
+            { _id:bookingId }, // Filter to find documents with both UserId and ItineraryId
             { $set: { Status: false } } // Update to set Status to false
           );
           res.status(200).json({
