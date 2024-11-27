@@ -101,6 +101,14 @@ export default function LoginPage() {
     }
   };
 
+  const [showSignUpOptions, setShowSignUpOptions] = useState(false);
+  const toggleSignUpOptions = () => {
+    if (!showSignUpOptions) {
+      setShowSignUpOptions(true);
+    }
+  };
+  
+
   return (
     <main>
       <Box
@@ -112,7 +120,7 @@ export default function LoginPage() {
           maxWidth: 500,
         }}
       >
-        <Button
+        {/* <Button
           style={{ marginTop: "50px" }}
           variant="contained"
           startIcon={<ChevronLeftRoundedIcon />}
@@ -122,14 +130,14 @@ export default function LoginPage() {
           sx={{ width: { xs: "flex", sm: "fit-content" } }}
         >
           Return
-        </Button>
+        </Button> */}
       </Box>
       <CssBaseline />
       <Sheet
         sx={{
           width: 300,
           mx: "auto", // margin left & right
-          my: 0, // margin top & bottom
+          my: showSignUpOptions? 5:10, // margin top & bottom
           py: 3, // padding top & bottom
           px: 2, // padding left & right
           display: "flex",
@@ -146,8 +154,14 @@ export default function LoginPage() {
           </Typography>
           <Typography level="body-sm">Sign in to continue.</Typography>
         </div>
-        <form onSubmit={handleSubmitLogin}>
-          <FormControl>
+        <form onSubmit={handleSubmitLogin}
+          style={{
+            display: "flex",
+            flexDirection: "column", 
+            gap: "16px", 
+            //width:'70%'
+          }}>
+          <FormControl >
             <FormLabel sx={{color:'#126782'}}>Username</FormLabel>
             <Input
               name="username"
@@ -157,12 +171,7 @@ export default function LoginPage() {
               placeholder="username"
               required
               variant="outlined"
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  '&.Mui-focused fieldset': {
-                    borderColor: '#126782', 
-                  },},
-              }}
+              
             />
           </FormControl>
           <FormControl>
@@ -175,53 +184,46 @@ export default function LoginPage() {
               placeholder="password"
               required
               variant="outlined"
-              // sx={{
-              //   '& .MuiOutlinedInput-root': {
-              //     '&.Mui-focused fieldset': {
-              //       borderColor: '#126782', // Focused outline color
-              //     },},
-              // }}
+              sx={{
+                '&:focus': {
+                  outline: '2px solid #126782', // Change the outline color
+                  outlineOffset: '2px', // Optional: adds space between the outline and the element
+                },
+              }}
             />
           </FormControl>
-          <Button sx={{ mt: 1 ,backgroundColor:'#ff4d4d'}} type="submit" >
+          <Button sx={{ mt: 0.5 ,backgroundColor:'#ff4d4d', width:'30%'}} type="submit" >
             Log in
           </Button>
         </form>
-        <Typography
-          endDecorator={"Sign UP Below"}
-          sx={{ fontSize: "sm", alignSelf: "center" }}
-        >
-          Don&apos;t have an account?
-        </Typography>
-        <Typography
-          sx={{ fontSize: "sm", alignSelf: "center" }}
-        >
-          continue without login <a href="/" onClick={()=> navigate("/")}>here</a>
-        </Typography>
-        {/* <Typography
-          endDecorator={<Link href="/Register-Seller">Seller</Link>}
-          sx={{ fontSize: 'sm', alignSelf: 'center' }}
-        >
-          Don&apos;t have an account?
-        </Typography>
-        <Typography
-          endDecorator={<Link href="/Register-Advertiser">Advertiser</Link>}
-          sx={{ fontSize: 'sm', alignSelf: 'center' }}
-        >
-          Don&apos;t have an account?
-        </Typography>
-        <Typography
-          endDecorator={<Link href="/Register-TourGuide">Tour Guide</Link>}
-          sx={{ fontSize: 'sm', alignSelf: 'center' }}
-        >
-          Don&apos;t have an account?
-        </Typography>  */}
+        <Box sx={{color:'#126782', display:'flex' , gap:"5px"}}>
+          <Typography
+            //endDecorator={"Sign UP Below"}
+            sx={{ fontSize: "sm", alignSelf: "center",color:'#126782'}}>
+            Don&apos;t have an account?
+          </Typography>
+          <Button onClick={toggleSignUpOptions}
+          sx={{color:'#ff4d4d', fontSize:'16px',padding:'0px 2px', fontWeight:'400', backgroundColor:'white',
+          '&:hover':{color:'#ff4d4d', backgroundColor:'white', fontWeight:'600'}, }}>
+            Sign Up
+          </Button>
+          {/* <Typography sx={{color:'#126782'}}>below</Typography> */}
+        </Box>
+        <Box sx={{display:'flex',gap:'5px', marginTop:'-5%'}}>
+        <Typography sx={{color:'#126782',fontSize:'14px',}}>OR</Typography>
+        <Link href="/" onClick={()=> navigate("/")}
+          sx={{ fontSize: "sm", alignSelf: "center" , color:'#126782', '&:hover':{color:'#ff4d4d', textDecorationColor:'#ff4d4d'},}}>
+          continue as guest
+        </Link>
+        </Box>
+
       </Sheet>
+      {showSignUpOptions && (
       <Box
         sx={{
           display: "flex",
           padding: "20px",
-          position: "relative",
+          //position: "relative",
           alignItems: "center",
           justifyContent: "center",
           marginTop: "50px",
@@ -231,125 +233,101 @@ export default function LoginPage() {
         <Button
           variant="outlined"
           sx={{
-            width: "200px",
-            height: "180px",
-            borderRadius: "15px",
+            width: "10%",
+            height: "7%",
+            padding:"20px",
+            fontSize:'20px',
+            borderRadius: "10px",
             border: "2px solid #126782",
             boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
             transition: "all 0.3s ease",
-            "&:hover": {
-              scale: "1.1",
-              borderColor: "#ff4d4d",
-              backgroundColor: "white",
-
-              marginRight: "5px",
-              "& .insideIcon": {
-                fill: "#ff4d4d",
-              },
-            },
-          }}
-          onClick={() => navigate("/Register-Advertiser")}
-        >
-          <p
-            className="insideIcon"
-            fontSize="large"
-            sx={{ scale: "3", fill: "#126782", margin: "30px" }}
-          >
-            Advertiser
-          </p>
-        </Button>
-
-        <Button
-          variant="outlined"
-          sx={{
-            width: "200px",
-            height: "180px",
-            borderRadius: "15px",
-            border: "2px solid #126782",
-            boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
-            transition: "all 0.3s ease",
+            color:'#126782',
             "&:hover": {
               scale: "1.1",
               borderColor: "#ff4d4d",
               backgroundColor: "white",
               marginLeft: "5px",
-              marginRight: "5px",
-              "& .insideIcon": {
-                fill: "#ff4d4d",
-              },
+              color:'#ff4d4d',
             },
           }}
           onClick={() => navigate("/Register-Tourist")}
         >
-          <p
-            className="insideIcon"
-            fontSize="large"
-            sx={{ scale: "3", fill: "#126782", margin: "30px" }}
-          >
-            Tourist
-          </p>
+           Tourist
         </Button>
+
         <Button
           variant="outlined"
           sx={{
-            width: "200px",
-            height: "180px",
-            borderRadius: "15px",
+            width: "10%",
+            height: "7%",
+            padding:"20px",
+            fontSize:'20px',
+            borderRadius: "10px",
             border: "2px solid #126782",
             boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
             transition: "all 0.3s ease",
+            color:'#126782',
             "&:hover": {
               scale: "1.1",
               borderColor: "#ff4d4d",
               backgroundColor: "white",
               marginLeft: "5px",
-
-              "& .insideIcon": {
-                fill: "#ff4d4d",
-              },
+              color:'#ff4d4d',
             },
           }}
-          onClick={() => navigate("/Register-TourGuide")}
+          onClick={() => navigate("/Register-Advertiser")}
         >
-          <p
-            className="insideIcon"
-            fontSize="large"
-            sx={{ scale: "3", fill: "#126782", margin: "30px" }}
-          >
+           Advertiser
+        </Button>
+
+        <Button
+          variant="outlined"
+          sx={{
+            width: "10%",
+            height: "7%",
+            padding:"20px",
+            fontSize:'20px',
+            borderRadius: "10px",
+            border: "2px solid #126782",
+            boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
+            transition: "all 0.3s ease",
+            color:'#126782',
+            "&:hover": {
+              scale: "1.1",
+              borderColor: "#ff4d4d",
+              backgroundColor: "white",
+              marginLeft: "5px",
+              color:'#ff4d4d',
+            },
+          }}
+          onClick={() => navigate("/Register-TourGuide")}>
             Tour Guide
-          </p>
         </Button>
         <Button
           variant="outlined"
           sx={{
-            width: "200px",
-            height: "180px",
-            borderRadius: "15px",
+            width: "10%",
+            height: "7%",
+            padding:"20px",
+            fontSize:'20px',
+            borderRadius: "10px",
             border: "2px solid #126782",
             boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
             transition: "all 0.3s ease",
+            color:'#126782',
             "&:hover": {
               scale: "1.1",
               borderColor: "#ff4d4d",
               backgroundColor: "white",
               marginLeft: "5px",
-
-              "& .insideIcon": {
-                fill: "#ff4d4d",
-              },
+              color:'#ff4d4d',
             },
           }}
-          onClick={() => navigate("/Register-Seller")}
-        >
-          <p
-            className="insideIcon"
-            fontSize="large"
-            sx={{ scale: "3", fill: "#126782", margin: "30px" }}
-          >
+          onClick={() => navigate("/Register-Seller")}>
             Seller
-          </p>
         </Button>
       </Box>
+    )}
     </main>
   );
 }
