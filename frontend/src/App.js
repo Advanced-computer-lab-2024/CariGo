@@ -114,6 +114,8 @@ import BookServicesPage from "./Pages/Tourist/Booking.js";
 import ReviewAccounts from "./Pages/accounts/docsReview.jsx";
 import ProductDetailsT from "./Pages/Tourist/productdetailsT"
 import ProductDetailsSeller from "./Pages/products/ProductDetailsSeller.jsx"
+import ViewReport from "./components/Report/ViewReport.jsx";
+import Table from "./components/Report/Table.jsx";
 function App() {
   
   const token = localStorage.getItem("jwt");
@@ -153,6 +155,7 @@ function App() {
       <Route path="tour_guide/itineraries" element={<UserViewItineraries />} />
       <Route path="tour_guide/inactive_itineraries" element={<InactiveItineraries />} />
       <Route path="tour_guide/itineraries/:id" element={<ItineraryDetails />} />
+      <Route path="tour_guide/report" element={<ViewReport />} />
       <Route path="/Tourist/Products" element={<ViewProductsTourist />} />
       <Route path="/Tourist/Products/ViewProduct/:id" element={<ViewProductTourist />} />
       <Route

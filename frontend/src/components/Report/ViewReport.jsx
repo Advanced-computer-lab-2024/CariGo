@@ -1,33 +1,33 @@
 import React from "react";
 // import ReactDOM from "react-dom/client";
-import "../styles/index.css";
-import NavBar from "../components/NavBarTourGuide";
+//import "../styles/index.css";
+import NavBar from "../../components/NavBarTourGuide";
+
 import { Box } from "@mui/material";
-import ItineraryList from "../components/ItirenaryList";
+//import ItineraryList from "../components/ItirenaryList";
 import { useNavigate } from "react-router-dom";
 // const navigate = useNavigate();
 import { Button } from '@mui/material'; // Using Material-UI for styling
-import Table from "../components/Report/Table";
+import Table from "../../components/Report/Table";
 import { PrimeReactProvider } from 'primereact/api';
-const UserViewItirenaries = () => {
+import 'primeicons/primeicons.css';
+//import { PrimeReactProvider } from 'primereact/api';
+//import 'primeflex/primeflex.css';
+//import NavBar from "../../components/NavBarTourGuide";
+import 'primereact/resources/primereact.css';
+import 'primereact/resources/themes/lara-light-indigo/theme.css';
+import Repo from "./dashboard/Dashboard";
+const ViewReport = () => {
     const handleNavigate = () => {
-  navigate("/tour_guide/itineraries/new");
+  navigate("/tour_guide/report");
 };
 const navigate = useNavigate();
   return (
-    <div>
-      <NavBar/>
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handleNavigate}
-        sx={{ margin: "10px" }} // Optional styling
-      >
-        Create new Itinerary
-    </Button>
-    
-      {/* <CreateItineraryForm/> */}
-      <Box
+   
+      <div>
+        
+        <NavBar/>
+        <Box
         sx={{
           width: "1150px",
           overflow: "hidden",
@@ -44,19 +44,17 @@ const navigate = useNavigate();
         <Box
           sx={{
             height: "100%",
-            marginLeft: "100px",
+            marginLeft: "0px",
             width: "100%",
             "&::-webkit-scrollbar": { display: "none" },
           }}
         >
-          {" "}
-          {/* Enable vertical scrolling only */}
-          <ItineraryList />
-        </Box>
-      </Box>
-      
-    </div>
+     <Repo/>
+     </Box>
+     </Box>
+     </div>
+   
   );
 };
 
-export default UserViewItirenaries;
+export default ViewReport;
