@@ -24,7 +24,7 @@ const {
   suggestedActivities,
   create_payment_form,
 
-  getDiscount
+  getDiscount,
 
   openBookings
 
