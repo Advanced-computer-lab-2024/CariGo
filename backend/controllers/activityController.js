@@ -658,9 +658,9 @@ const CancelActivityBooking = async (req, res) => {
   ) {
     try {
       const booking = await bookingModel.findById(bookingId);
-      const ActivityId = booking.ActivityId;
-      const activityDate = ActivityId.start_date;
-
+      const Activity = booking.ActivityId;
+      const ActivityId = Activity._id;
+      const activityDate = Activity.start_date;
       if (activityDate) {
         const currDate = new Date();
         const timeDifference = activityDate.getTime() - currDate.getTime(); // Difference in milliseconds
