@@ -23,7 +23,11 @@ const {
   suggestedItineraries,
   suggestedActivities,
   create_payment_form,
+
+  getDiscount,
+
   openBookings
+
 } = require("../controllers/eventController");
 const authController = require("../controllers/authController");
 const router = express.Router();
@@ -35,6 +39,10 @@ router.get(
   readAllItineraries
 ); // itineraries
 
+router.get(
+  "/getDiscount",
+  getDiscount
+);
 
 router.get("/readSingleItinerary/:itineraryId", readSingleItinerary); // itineraries/:id
 router.get("/readSingleVintage/:vintageId", readSingleVintage);

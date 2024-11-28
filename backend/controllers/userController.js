@@ -1,6 +1,8 @@
 const User = require("../models/User.js");
 const mongoose = require("mongoose");
 const productModel = require("../models/Product.js");
+const PromoCode = require("../models/PromoCode"); // Adjust the path as necessary
+
 
 // get all users
 const getUsers = async (req, res) => {
@@ -129,6 +131,30 @@ const birthDayPromoCode = async () => {
         const todayMonth = today.getMonth() + 1;
   
         if (dayOfBirth === todayDate && monthOfBirth === todayMonth) {
+          //create promo code
+        let randomNumber = Math.floor(Math.random() * 900) + 100;
+        
+        let code = `HB${randomNumber}${dayOfBirth}`;
+        const discount = 30;
+        const expirationDate = new Date(today); // Create a copy of today's date
+        expirationDate.setMonth(expirationDate.getMonth() + 1);
+        // Check if the promo code already exists
+        let existingPromo = await PromoCode.findOne({ code });
+
+        while(existingPromo){
+          randomNumber = Math.floor(Math.random() * 900) + 100;
+          code = `HB${randomNumber}${dayOfBirth}`;
+          existingPromo = await PromoCode.findOne({ code });
+        }
+
+        // Create a new promo code
+        const promoCode = await PromoCode.create({
+          code,
+          discount,
+          expirationDate,
+          isActive: true,
+        });
+
           const transporter = nodemailer.createTransport({
             service: 'Gmail',
             auth: {
@@ -142,13 +168,13 @@ const birthDayPromoCode = async () => {
             to: user.email, // Send to the user's email
             subject: "Happy Birthday! 🎉 Here's Your Promo Code!",
             text: "Happy Birthday! Use this promo code to celebrate your day with us!",
-            html: "<b>Happy Birthday! 🎉 Use this promo code to celebrate your day with us!</b>",
+            html: `<p>Happy Birthday! 🎉 Use this promo code to celebrate your day with us!<br/>promo code:<strong>${code}</strong><br/><strong>please note this promo code will expire on ${expirationDate.toDateString()}</strong></p>`,
           });
   
           console.log("Message sent to %s: %s", user.email, info.messageId);
         }
       }
-      console.error({message: "promo code sent successfully.",});
+      console.log({message: "promo code sent successfully.",});
      } catch(error) {
       
       console.error({ error: "Failed to fetch user" });
