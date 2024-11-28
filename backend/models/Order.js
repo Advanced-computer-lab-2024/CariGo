@@ -37,6 +37,15 @@ const OrderSchema = new Schema(
       type: Number,
       required: true,
     },
+    state: {
+      type: String,
+      required: true,
+      default: "processing",
+      enum: ["processing", "shipped", "delivered", "cancelled"],
+    },
+    deliveryDate: {
+      type: Date,
+    },
   },
   {
     timestamps: true,
