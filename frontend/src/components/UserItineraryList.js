@@ -7,7 +7,7 @@ const ItineraryList = ({ fetched }) => {
     
 
     return (
-         <Box sx={{ width: '100%' ,marginTop:'-15px'}}>
+         <Box sx={{ width: '95%' ,marginTop:'-15px'}}>
          {fetched && fetched.length > 0 && (
              <Box>
                  {fetched.map((itinerary) => (

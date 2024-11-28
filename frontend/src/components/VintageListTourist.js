@@ -6,7 +6,7 @@ import TouristVintagePost from './TouristVintagePost.js';
 export default function ActivityList({fetchedVintages}) {
     
     return (
-        <Box sx={{ width: '100vw' }}>
+        <Box sx={{ width: '95%' }}>
            
             {/* Activity List */}
             {fetchedVintages.length > 0 ? (

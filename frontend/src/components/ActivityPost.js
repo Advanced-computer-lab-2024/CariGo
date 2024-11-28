@@ -91,7 +91,7 @@ const code = localStorage.getItem("currencyCode")||"EGP";
     <Card
       sx={{
         //width: '100%', // Use full width of the container
-        width: '800px', // Set a max width
+        width: '100%', // Set a max width
         height:'370px',
         maxHeight: '500px',
         color: '#126782',

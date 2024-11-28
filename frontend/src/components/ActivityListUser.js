@@ -22,7 +22,7 @@ export default function ActivityList({ fetchedActivities }) {
     };
 
     return (
-        <Box sx={{ width: '90%' }}>
+        <Box sx={{ width: '95%' }}>
             {fetchedActivities && fetchedActivities.length > 0 ? (
                 <Box>
                     {fetchedActivities.map((activity) => (

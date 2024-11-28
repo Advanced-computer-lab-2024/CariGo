@@ -114,7 +114,7 @@ export default function TouristVintagePost({
   return (
     <Card
       sx={{
-        width: '95%',
+        width: '100%',
         //maxWidth: '900px',
         height: '400px',
         color: '#126782',

@@ -176,7 +176,7 @@ export default function TouristViewVintage (){
         <Box sx={{ 
           height: '90%',
           //marginLeft: '100px',
-          width: '55%',
+          width: '60%',
           display: "flex",
           flexDirection: "column",
           gap: "15px",

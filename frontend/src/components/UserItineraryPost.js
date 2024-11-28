@@ -138,7 +138,8 @@ export default function UserItineraryPost({
   return (
     <Card
       sx={{
-        width: '95%',
+        width: '100%',
+        //width: '800px',
         height: '400px',
         color: '#126782',
         fontSize: '18px',
