@@ -840,47 +840,61 @@ const create_payment_form = async (req, res) => {
   }
 };
 
-const getDiscount = async (req, res) => {
-  console.log("???????????"+req.user.id+"????????????????")
-  const { code } = req.query;
+const redeemPromoCode = async (req, res) => {
+  const { code } = req.body;
   const userId = req.user.id;
   if (!mongoose.Types.ObjectId.isValid(userId)){
     return res.status(400).json({ error: "Invalid event ID format" });
   }
   try {
-    let promo = await PromoCode.findOne({ code });
+    const promo = await PromoCode.findOne({ code, isActive: true, usedUsers: { $ne: userId } });
     if (!promo) {
       return res.status(404).send("invalid promo code");
     }
     if (promo.codeType === "birthDay") {
       await PromoCode.updateOne(
         { _id: promo._id },
-        { $set: { isActive: !promo.isActive } }
+        { $set: { isActive: false } }
       ); // Update operation)
     } else {
-      const usersWhoUsedThePromo = promo.usedUsers;
-      // Check if the user is already in the array
-      const userIndex = usersWhoUsedThePromo.indexOf(userId);
-
-      if (userIndex !== -1) {
-        // User found, remove them from the array
-        await PromoCode.updateOne(
-          { _id: promo._id },
-          { $pull: { usedUsers: userId } } // `$pull` removes the specified value from the array
-        );
-      } else {
         // User not found, add them to the array
         await PromoCode.updateOne(
           { _id: promo._id },
           { $addToSet: { usedUsers: userId } } // `$addToSet` ensures no duplicate entries
         );
-      }
+      
     }
-    promo = await PromoCode.findOne({ code });
-    if(promo.isActive)
       res.status(200).send({ discount: promo.discount });
-    else
+  } catch (error) {
+    res.status(500).send({ error: error.message });
+  }
+};
+
+const cancelPromoCode = async (req, res) => {
+  const { code } = req.body;
+  const userId = req.user.id;
+  if (!mongoose.Types.ObjectId.isValid(userId)){
+    return res.status(400).json({ error: "Invalid event ID format" });
+  }
+  try {
+    const promo = await PromoCode.findOne({ code });
+    if (!promo) {
       return res.status(404).send("invalid promo code");
+    }
+    if (promo.codeType === "birthDay") {
+      await PromoCode.updateOne(
+        { _id: promo._id },
+        { $set: { isActive: true } }
+      ); // Update operation)
+    } else {
+        // User found, remove them from the array
+        await PromoCode.updateOne(
+          { _id: promo._id },
+          { $pull: { usedUsers: userId } } // `$pull` removes the specified value from the array
+        );
+    }
+    console.log("inside cancel promo code");
+    res.status(200).send({ message: "Promo code canceled successfully" });
   } catch (error) {
     res.status(500).send({ error: error.message });
   }
@@ -957,7 +971,8 @@ module.exports = {
   suggestedActivities,
   create_payment_form,
 
-  getDiscount,
+  redeemPromoCode,
+  cancelPromoCode,
 
   openBookings,
 };
