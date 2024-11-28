@@ -39,10 +39,6 @@ router.get(
   readAllItineraries
 ); // itineraries
 
-router.get(
-  "/getDiscount",
-  getDiscount
-);
 
 router.get("/readSingleItinerary/:itineraryId", readSingleItinerary); // itineraries/:id
 router.get("/readSingleVintage/:vintageId", readSingleVintage);
@@ -115,6 +111,12 @@ router.patch(
   "/CancelItineraryBooking",
   authController.restrictTo("Tourist"),
   CancelItineraryBooking
+);
+
+router.get(
+  "/getDiscount",
+  authController.restrictTo("Tourist"),
+  getDiscount
 );
 
 router.post(

@@ -153,6 +153,7 @@ const birthDayPromoCode = async () => {
           discount,
           expirationDate,
           isActive: true,
+          codeType:"birthDay",
         });
 
           const transporter = nodemailer.createTransport({
