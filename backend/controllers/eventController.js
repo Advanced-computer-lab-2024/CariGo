@@ -15,6 +15,7 @@ const bookingModel = require("../models/Bookings");
 const Itinerary = require("../models/Itinerary");
 const User = require("../models/User");
 const notificationController = require("../controllers/notificationController");
+const PromoCode = require("../models/PromoCode"); // Adjust the path as necessary
 
 const createItinerary = async (req, res) => {
   const userId = new mongoose.Types.ObjectId(req.body.author); // Convert to ObjectId
@@ -737,8 +738,9 @@ const CancelItineraryBooking = async (req, res) => {
     try {
       const booking = await bookingModel.findById(bookingId);
       //console.log(itinerary);
-      const ItineraryId = booking.ItineraryId;
-      const itineraryDate = ItineraryId.start_date;
+      const Itinerary = booking.ItineraryId;
+      const ItineraryId = Itinerary._id;
+      const itineraryDate = Itinerary.start_date;
 
       if (itineraryDate) {
         const currDate = new Date();
@@ -826,6 +828,22 @@ const create_payment_form = async (req, res) => {
   }
 };
 
+const getDiscount = async (req,res)=>{
+  const {code} = req.query;
+  try{
+    
+    const promo = await PromoCode.findOne({code,isActive:true});
+    if(!promo){
+      return res.status(404).send("invalid promo code");
+    }
+    console.log("promo:"+promo)
+    console.log("??????????"+promo.discount+"??????????????????")
+    res.status(200).send({ discount: promo.discount });
+  }catch(error){
+    res.status(500).send({ error: error.message });
+  }
+}
+
 module.exports = {
   createItinerary,
   createvintage,
@@ -849,5 +867,6 @@ module.exports = {
   currencyConversion,
   suggestedItineraries,
   suggestedActivities,
-  create_payment_form
+  create_payment_form,
+  getDiscount
 };
