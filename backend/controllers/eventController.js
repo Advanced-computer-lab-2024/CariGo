@@ -929,7 +929,7 @@ module.exports = {
   suggestedActivities,
   create_payment_form,
 
-  getDiscount
+  getDiscount,
 
   openBookings
 
