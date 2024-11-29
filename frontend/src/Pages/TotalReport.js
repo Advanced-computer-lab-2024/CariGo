@@ -32,7 +32,8 @@ import {
 import { Line, Bar } from "react-chartjs-2";
 import TopBar from "./TopBar";
 import Sidebar from "./Sidebar";
-import {useEffect} from 'react';
+import { useEffect } from "react";
+import axios from "axios";
 
 ChartJS.register(
   CategoryScale,
@@ -45,21 +46,6 @@ ChartJS.register(
   Legend
 );
 
-// Sample data
-const monthlyData = [
-  { name: "Jan", events: 4000, itineraries: 2400, giftShop: 2400, total: 8800 },
-  { name: "Feb", events: 3000, itineraries: 1398, giftShop: 2210, total: 6608 },
-  {
-    name: "Mar",
-    events: 2000,
-    itineraries: 9800,
-    giftShop: 2290,
-    total: 14090,
-  },
-  { name: "Apr", events: 2780, itineraries: 3908, giftShop: 2000, total: 8688 },
-  { name: "May", events: 1890, itineraries: 4800, giftShop: 2181, total: 8871 },
-  { name: "Jun", events: 2390, itineraries: 3800, giftShop: 2500, total: 8690 },
-];
 
 // Custom theme with blue and orange
 const theme = createTheme({
@@ -74,10 +60,45 @@ const theme = createTheme({
 });
 
 export default function SalesReportMUI() {
+  const [totalRevenue, setTotalRevenue] = useState(0);
+  const [totalBookings, setTotalBookings] = useState(0);
+  const [totalProductRevenue, setTotalProductRevenue] = useState(0);
+  const [totalItineraryBookings, setTotalItineraryBookings] = useState(0);
+  const [totalEventBookings, setTotalEventBookings] = useState(0);
+  const [totalProductSales, setTotalProductSales] = useState(0);
+  const [itineraryRevenueM, setItineraryRevenueM] = useState(Array(12).fill(0));
+  const [eventRevenueM, setEventRevenueM] = useState(Array(12).fill(0));
+  const [productRevenueM, setProductRevenueM] = useState(Array(12).fill(0));
   const [timeframe, setTimeframe] = useState("monthly");
   const [tabValue, setTabValue] = useState(0);
-  const totalRevenue = monthlyData.reduce((acc, curr) => acc + curr.total, 0);
   const appCommission = totalRevenue * 0.1;
+
+  useEffect(() => {
+    const fetchRevenueReport = async () => {
+      try {
+        const response = await axios.get("http://localhost:4000/Admin/report", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+          },
+        });
+        const data = response.data.data;
+        console.log("hii" + data);
+        setTotalRevenue(data.totalRevenue);
+        setTotalBookings(data.totalBookings);
+        setTotalProductRevenue(data.totalProductRevenue);
+        setTotalItineraryBookings(data.totalItineraryBookings);
+        setTotalEventBookings(data.totalEventBookings);
+        setTotalProductSales(data.totalProductSales);
+        setItineraryRevenueM(data.itineraryRevenueM);
+        setEventRevenueM(data.eventRevenueM);
+        setProductRevenueM(data.productRevenueM);
+      } catch (error) {
+        console.error("Error fetching revenue report:", error);
+      }
+    };
+
+    fetchRevenueReport();
+  }, []);
 
   const handleTimeframeChange = (event) => {
     setTimeframe(event.target.value);
@@ -88,11 +109,13 @@ export default function SalesReportMUI() {
   };
 
   const lineChartData = {
-    labels: monthlyData.map((d) => d.name),
+    labels: ["Aug", "Sep", "Oct", "Nov", "Dec"],
     datasets: [
       {
         label: "Total Revenue",
-        data: monthlyData.map((d) => d.total),
+        data: Array.from({length: 5}, (_, i) => 
+          itineraryRevenueM.slice(-5)[i] + eventRevenueM.slice(-5)[i] + productRevenueM.slice(-5)[i]
+        ),
         borderColor: theme.palette.primary.main,
         backgroundColor: theme.palette.primary.light,
       },
@@ -100,21 +123,21 @@ export default function SalesReportMUI() {
   };
 
   const barChartData = {
-    labels: monthlyData.map((d) => d.name),
+    labels: ["Aug", "Sep", "Oct", "Nov", "Dec"],
     datasets: [
       {
         label: "Events",
-        data: monthlyData.map((d) => d.events),
+        data: eventRevenueM.slice(-5),
         backgroundColor: theme.palette.primary.main,
       },
       {
         label: "Itineraries",
-        data: monthlyData.map((d) => d.itineraries),
+        data: itineraryRevenueM.slice(-5),
         backgroundColor: theme.palette.secondary.main,
       },
       {
         label: "Gift Shop",
-        data: monthlyData.map((d) => d.giftShop),
+        data: productRevenueM.slice(-5),
         backgroundColor: theme.palette.primary.light,
       },
     ],
@@ -225,7 +248,7 @@ export default function SalesReportMUI() {
                       <Card>
                         <CardHeader title="Total Bookings" />
                         <CardContent>
-                          <Typography variant="h5">+573</Typography>
+                          <Typography variant="h5">{totalBookings}</Typography>
                           <Typography variant="body2" color="text.secondary">
                             +201 since last month
                           </Typography>
@@ -236,7 +259,7 @@ export default function SalesReportMUI() {
                       <Card>
                         <CardHeader title="Active Sales" />
                         <CardContent>
-                          <Typography variant="h5">+89</Typography>
+                          <Typography variant="h5">+{totalProductSales}</Typography>
                           <Typography variant="body2" color="text.secondary">
                             +20.1% from last month
                           </Typography>

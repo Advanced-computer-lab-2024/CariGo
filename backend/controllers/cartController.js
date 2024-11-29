@@ -150,8 +150,8 @@ const checkout = async (req, res) => {
 
       // Check if enough stock is available
       if (item.quantity > product.quantity) {
-        return res.status(400).json({ 
-          message: `Not enough stock for ${product.name}. Available: ${product.quantity}` 
+        return res.status(400).json({
+          message: `Not enough stock for ${product.name}. Available: ${product.quantity}`,
         });
       }
       totalOrderPrice += product.price * item.quantity;
@@ -167,6 +167,7 @@ const checkout = async (req, res) => {
       })),
       shippingAddress,
       totalPrice: totalOrderPrice,
+      deliveryDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
     });
 
     // Update product stock after order creation
@@ -182,7 +183,7 @@ const checkout = async (req, res) => {
         ProductId: item.productId._id,
         Quantity: item.quantity,
       });
-      console.log("new purchase is "+purchase);
+      console.log("new purchase is " + purchase);
     }
     // Clear the user's cart
     cart.products = [];
@@ -197,5 +198,10 @@ const checkout = async (req, res) => {
   }
 };
 
-    
-module.exports = { getCart, editProductInCart, removeItemFromCart, clearCart, checkout };
+module.exports = {
+  getCart,
+  editProductInCart,
+  removeItemFromCart,
+  clearCart,
+  checkout,
+};
