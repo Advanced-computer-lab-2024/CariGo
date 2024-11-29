@@ -81,6 +81,13 @@ const itinerarySchema = new schema(
       type: Boolean,
       default: false,
     },
+    interestedUsers: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: "User",
+        default: [],
+      },
+    ],
   },
   { timestamps: true }
 );

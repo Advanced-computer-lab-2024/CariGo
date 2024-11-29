@@ -13,6 +13,7 @@ const {
   deleteTag,
   getUser,
   createPromoCode,
+  revenueReport
 } = require("../controllers/adminController");
 const authController = require("../controllers/authController");
 const complaintController = require('../controllers/complaintsController');
@@ -68,5 +69,11 @@ router.post(
   "/promo-code",
   authController.restrictTo("Admin"),
   createPromoCode);
+
+router.get(
+  "/report",
+  // authController.restrictTo("Admin"),
+  revenueReport
+)
 
 module.exports = router;
