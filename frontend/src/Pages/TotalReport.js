@@ -29,12 +29,13 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { Line, Bar } from "react-chartjs-2";
+import { Line, Bar, Pie } from "react-chartjs-2";
 import TopBar from "./TopBar";
 import Sidebar from "./Sidebar";
 import { useEffect } from "react";
 import axios from "axios";
-
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -45,7 +46,6 @@ ChartJS.register(
   Tooltip,
   Legend
 );
-
 
 // Custom theme with blue and orange
 const theme = createTheme({
@@ -71,6 +71,8 @@ export default function SalesReportMUI() {
   const [productRevenueM, setProductRevenueM] = useState(Array(12).fill(0));
   const [timeframe, setTimeframe] = useState("monthly");
   const [tabValue, setTabValue] = useState(0);
+  const [totalItineraryRevenue, setTotalItineraryRevenue] = useState(0);
+  const [totalEventRevenue, setTotalEventRevenue] = useState(0);
   const appCommission = totalRevenue * 0.1;
 
   useEffect(() => {
@@ -92,6 +94,18 @@ export default function SalesReportMUI() {
         setItineraryRevenueM(data.itineraryRevenueM);
         setEventRevenueM(data.eventRevenueM);
         setProductRevenueM(data.productRevenueM);
+        // Calculate total itinerary and event revenue
+        const itinerarySum = data.itineraryRevenueM.reduce(
+          (sum, value) => sum + value,
+          0
+        );
+        const eventSum = data.eventRevenueM.reduce(
+          (sum, value) => sum + value,
+          0
+        );
+
+        setTotalItineraryRevenue(itinerarySum);
+        setTotalEventRevenue(eventSum);
       } catch (error) {
         console.error("Error fetching revenue report:", error);
       }
@@ -108,14 +122,69 @@ export default function SalesReportMUI() {
     setTabValue(newValue);
   };
 
+  const handleDownloadReport = () => {
+    const input = document.getElementById('report-content');
+    html2canvas(input).then((canvas) => {
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('landscape'); // Set orientation to landscape
+      const imgWidth = pdf.internal.pageSize.getWidth();
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+      pdf.save('report.pdf');
+    });
+  };
+
   const lineChartData = {
     labels: ["Aug", "Sep", "Oct", "Nov", "Dec"],
     datasets: [
       {
         label: "Total Revenue",
-        data: Array.from({length: 5}, (_, i) => 
-          itineraryRevenueM.slice(-5)[i] + eventRevenueM.slice(-5)[i] + productRevenueM.slice(-5)[i]
+        data: Array.from(
+          { length: 5 },
+          (_, i) =>
+            itineraryRevenueM.slice(-5)[i] +
+            eventRevenueM.slice(-5)[i] +
+            productRevenueM.slice(-5)[i]
         ),
+        borderColor: theme.palette.primary.main,
+        backgroundColor: theme.palette.primary.light,
+      },
+    ],
+  };
+
+  const itineraryChartData = {
+    labels: ["Aug", "Sep", "Oct", "Nov", "Dec"],
+    datasets: [
+      {
+        label: "Total Revenue",
+        data: Array.from(
+          { length: 5 },
+          (_, i) => itineraryRevenueM.slice(-5)[i]
+        ),
+        borderColor: theme.palette.primary.main,
+        backgroundColor: theme.palette.primary.light,
+      },
+    ],
+  };
+
+  const eventChartData = {
+    labels: ["Aug", "Sep", "Oct", "Nov", "Dec"],
+    datasets: [
+      {
+        label: "Total Revenue",
+        data: Array.from({ length: 5 }, (_, i) => eventRevenueM.slice(-5)[i]),
+        borderColor: theme.palette.primary.main,
+        backgroundColor: theme.palette.primary.light,
+      },
+    ],
+  };
+
+  const giftChartData = {
+    labels: ["Aug", "Sep", "Oct", "Nov", "Dec"],
+    datasets: [
+      {
+        label: "Total Revenue",
+        data: Array.from({ length: 5 }, (_, i) => productRevenueM.slice(-5)[i]),
         borderColor: theme.palette.primary.main,
         backgroundColor: theme.palette.primary.light,
       },
@@ -141,6 +210,67 @@ export default function SalesReportMUI() {
         backgroundColor: theme.palette.primary.light,
       },
     ],
+  };
+
+  const pieChartData = {
+    labels: ["Event Bookings", "Other Revenue"],
+    datasets: [
+      {
+        data: [
+          (totalEventRevenue / totalRevenue) * 100,
+          ((totalRevenue - totalEventRevenue) / totalRevenue) * 100,
+        ],
+        backgroundColor: [
+          theme.palette.primary.main,
+          theme.palette.secondary.main,
+        ],
+        borderWidth: 0,
+      },
+    ],
+  };
+
+  const pieChartData_itinerary = {
+    labels: ["Itinerary Bookings", "Other Revenue"],
+    datasets: [
+      {
+        data: [
+          (totalItineraryRevenue / totalRevenue) * 100,
+          ((totalRevenue - totalItineraryRevenue) / totalRevenue) * 100,
+        ],
+        backgroundColor: [
+          theme.palette.primary.main,
+          theme.palette.secondary.main,
+        ],
+        borderWidth: 0,
+      },
+    ],
+  };
+
+  const pieChartData_gift = {
+    labels: ["Gift Shop", "Other Revenue"],
+    datasets: [
+      {
+        data: [
+          (totalProductRevenue / totalRevenue) * 100,
+          ((totalRevenue - totalProductRevenue) / totalRevenue) * 100,
+        ],
+        backgroundColor: [
+          theme.palette.primary.main,
+          theme.palette.secondary.main,
+        ],
+        borderWidth: 0,
+      },
+    ],
+  };
+
+  const pieOptions = {
+    plugins: {
+      legend: {
+        position: "bottom",
+      },
+    },
+    responsive: true,
+    maintainAspectRatio: false,
   };
 
   const chartOptions = {
@@ -202,7 +332,11 @@ export default function SalesReportMUI() {
                     <MenuItem value="monthly">Monthly</MenuItem>
                     <MenuItem value="yearly">Yearly</MenuItem>
                   </Select>
-                  <Button variant="contained" color="primary">
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleDownloadReport}
+                  >
                     Download Report
                   </Button>
                 </Box>
@@ -214,7 +348,7 @@ export default function SalesReportMUI() {
                 <Tab label="Itineraries" />
                 <Tab label="Gift Shop" />
               </Tabs>
-
+              <div id="report-content">
               {tabValue === 0 && (
                 <>
                   <Grid container spacing={3} sx={{ mb: 3 }}>
@@ -259,7 +393,9 @@ export default function SalesReportMUI() {
                       <Card>
                         <CardHeader title="Active Sales" />
                         <CardContent>
-                          <Typography variant="h5">+{totalProductSales}</Typography>
+                          <Typography variant="h5">
+                            +{totalProductSales}
+                          </Typography>
                           <Typography variant="body2" color="text.secondary">
                             +20.1% from last month
                           </Typography>
@@ -292,6 +428,125 @@ export default function SalesReportMUI() {
                   </Grid>
                 </>
               )}
+              {tabValue === 1 && (
+                <Grid container spacing={3}>
+                  <Grid item xs={12} md={8}>
+                    <Card>
+                      <CardHeader title="Revenue Overview" />
+                      <CardContent>
+                        <Box sx={{ height: 300 }}>
+                          <Line data={eventChartData} options={chartOptions} />
+                        </Box>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                  <Grid item xs={12} md={4}>
+                    <Card>
+                      <CardHeader title="Events Distribution" />
+                      <CardContent>
+                        <Typography variant="h6" sx={{ mb: 2 }}>
+                          Total Bookings: {totalEventBookings}
+                        </Typography>
+                        <Box sx={{ height: 200 }}>
+                          <Pie data={pieChartData} options={pieOptions} />
+                        </Box>
+                        <Typography
+                          variant="body2"
+                          sx={{ mt: 2, textAlign: "center" }}
+                        >
+                          Events make up{" "}
+                          {((totalEventBookings / totalBookings) * 100).toFixed(
+                            1
+                          )}
+                          % of total bookings
+                        </Typography>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                </Grid>
+              )}
+              {tabValue === 2 && (
+                <Grid container spacing={3}>
+                  <Grid item xs={12} md={8}>
+                    <Card>
+                      <CardHeader title="Revenue Overview" />
+                      <CardContent>
+                        <Box sx={{ height: 300 }}>
+                          <Line
+                            data={itineraryChartData}
+                            options={chartOptions}
+                          />
+                        </Box>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                  <Grid item xs={12} md={4}>
+                    <Card>
+                      <CardHeader title="Itineraries Distribution" />
+                      <CardContent>
+                        <Typography variant="h6" sx={{ mb: 2 }}>
+                          Total Bookings: {totalItineraryBookings}
+                        </Typography>
+                        <Box sx={{ height: 200 }}>
+                          <Pie
+                            data={pieChartData_itinerary}
+                            options={pieOptions}
+                          />
+                        </Box>
+                        <Typography
+                          variant="body2"
+                          sx={{ mt: 2, textAlign: "center" }}
+                        >
+                          Itineraries make up{" "}
+                          {(
+                            (totalItineraryBookings / totalBookings) *
+                            100
+                          ).toFixed(1)}
+                          % of total bookings
+                        </Typography>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                </Grid>
+              )}
+              {tabValue === 3 && (
+                <Grid container spacing={3}>
+                  <Grid item xs={12} md={8}>
+                    <Card>
+                      <CardHeader title="Revenue Overview" />
+                      <CardContent>
+                        <Box sx={{ height: 300 }}>
+                          <Line data={giftChartData} options={chartOptions} />
+                        </Box>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                  <Grid item xs={12} md={4}>
+                    <Card>
+                      <CardHeader title="Gift Shop Distribution" />
+                      <CardContent>
+                        <Typography variant="h6" sx={{ mb: 2 }}>
+                          Total Sales: {totalProductSales}
+                        </Typography>
+                        <Box sx={{ height: 200 }}>
+                          <Pie data={pieChartData_gift} options={pieOptions} />
+                        </Box>
+                        <Typography
+                          variant="body2"
+                          sx={{ mt: 2, textAlign: "center" }}
+                        >
+                          Gift shop sales make up{" "}
+                          {((totalProductRevenue / totalRevenue) * 100).toFixed(
+                            1
+                          )}
+                          % of total Revenue
+                        </Typography>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                </Grid>
+              )}
+              </div>
             </Box>
           </ThemeProvider>
         </Content>
