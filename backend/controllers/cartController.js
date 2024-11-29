@@ -227,13 +227,7 @@ const updateOrderStates = schedule.scheduleJob("0 0 * * *", async () => {
   }
 });
 
-module.exports = {
-  getCart,
-  editProductInCart,
-  removeItemFromCart,
-  clearCart,
-  checkout,
-};
+
 const CancelOrder = async (req, res) => {
   const UserId = req.user.id;  // User ID from the request body (authenticated user)
   const { OrderId } = req.body;  // Order ID from the request body
