@@ -196,6 +196,61 @@ const checkout = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+const CancelOrder = async (req, res) => {
+  const UserId = req.user.id;  // User ID from the request body (authenticated user)
+  const { OrderId } = req.body;  // Order ID from the request body
 
-    
+  // Check if the provided OrderId and UserId are valid ObjectIds
+  if (
+    mongoose.Types.ObjectId.isValid(OrderId) &&
+    mongoose.Types.ObjectId.isValid(UserId)
+  ) {
+    try {
+      // Fetch the order to be canceled
+      const order = await Order.findById(OrderId).populate('products.productId');  // Populate product details
+
+      if (!order) {
+        return res.status(404).json({ message: "Order not found" });
+      }
+
+      // Check if the order belongs to the logged-in user
+      if (order.userId.toString() !== UserId) {
+        return res.status(403).json({ message: "Unauthorized to cancel this order" });
+      }
+
+      // Loop through each product in the order and update the product quantity in the Product model
+      for (let item of order.products) {
+        const product = item.productId;  // The product object is populated
+
+        if (!product) {
+          continue;  // If product is not found, skip it (just a safety check)
+        }
+
+        // Update the product's quantity by adding the quantity from the canceled order
+        product.quantity += item.quantity;  // Increase the product quantity
+        await product.save();  // Save the updated product
+      }
+
+      // Mark the order as canceled in the Order model
+      order.isCancelled = true;
+      await order.save();  // Save the updated order
+      if (order.purchaseIds && order.purchaseIds.length > 0) {
+        await Purchase.updateMany(
+          { _id: { $in: order.purchaseIds } },  // Find purchases whose _id is in the purchaseIds array
+          { $set: { isCancelled: true } }  // Set isCancelled to true for those purchases
+        );
+      }
+
+      // Respond with a success message
+      res.status(200).json({ message: "Order canceled successfully", order });
+    } catch (error) {
+      // Catch any errors and send a failure response
+      console.error("Error canceling order:", error);
+      res.status(500).json({ message: "Error processing cancellation", error: error.message });
+    }
+  } else {
+    res.status(400).json({ message: "Invalid OrderId or UserId" });
+  }
+};
+   
 module.exports = { getCart, editProductInCart, removeItemFromCart, clearCart, checkout };

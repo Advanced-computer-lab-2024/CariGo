@@ -37,6 +37,14 @@ const OrderSchema = new Schema(
       type: Number,
       required: true,
     },
+    isCancelled :{
+      type :Boolean,
+      default :false
+    }
+    , purchaseIds: [{ 
+      type: Schema.Types.ObjectId, 
+      ref: "Purchase",  // Reference to the Purchase model
+    }],
   },
   {
     timestamps: true,
