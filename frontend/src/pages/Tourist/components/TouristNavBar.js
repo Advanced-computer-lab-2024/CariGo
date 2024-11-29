@@ -315,18 +315,27 @@ function TouristNB() {
             {/* <Box> */}
               <Button
                 onClick={handleOpenComplaintsMenu}
+                className={Boolean(anchorElComplaints) ? "menu-open" : ""} // Add a class if menu is open
                 sx={{ 
                   my: 2, color: "white", display: "block" ,
                   transition: "all 0.3s ease", 
                   fontSize:'15px',
-                  "&:hover": {
+                  "&:hover ": {
                     fontSize: "16px",
                     paddingLeft: "1%", 
-                    paddingRight:'1%',
+                    paddingRight:'2.4%',
                     "& .arrow-icon": {
                       opacity: 1,
                       transform: "translateX(0)", 
-                      fontSize:'18px',
+                    },
+                  },
+                  "&.menu-open": {
+                    fontSize: "16px",
+                    paddingLeft: "1%", 
+                    paddingRight:'2.4%',
+                    "& .arrow-icon": {
+                      opacity: 1,
+                      transform: "translateX(0)", 
                     },
                   },
                 }}
@@ -337,19 +346,19 @@ function TouristNB() {
                   <KeyboardArrowDownIcon
                     className="arrow-icon"
                     sx={{
-                      //fontSize: "30px",
+                      fontSize: "26px",
                       marginLeft: "0.2%",
                       opacity: 1,
                       transition: "all 0.3s ease", 
                       position: "absolute",
-                      top: "25%",
+                      top: "20%",
                     }}
                   />
                 ) : (
                   <ArrowForwardIosIcon
                   className="arrow-icon"
                   sx={{
-                    //fontSize: "18px",
+                    fontSize: "18px",
                     marginLeft: "0.2%", // Space between text and icon
                     opacity: Boolean(anchorElComplaints) ? 1 : 0, // Show if menu is open
                     transition: "all 0.3s ease", 
@@ -367,6 +376,7 @@ function TouristNB() {
                 onClose={handleCloseComplaintsMenu}
                 anchorOrigin={{ vertical: "top", horizontal: "left" }}
                 transformOrigin={{ vertical: "top", horizontal: "left" }}
+                sx={{ marginTop: "2%" }}
               >
                 <MenuItem onClick={loadFileComplaint}>File Complaint</MenuItem>
                 <MenuItem onClick={loadComplaintHistory}>
@@ -379,11 +389,21 @@ function TouristNB() {
             {/* <Box> */}
               <Button
                 onClick={handleOpenBookingsMenu}
+                className={Boolean(anchorElBookings) ? "menu-open" : ""} // Add a class if menu is open
                 sx={{ 
                   my: 2, color: "white", display: "block" ,
                   transition: "all 0.3s ease", 
                   fontSize:'15px',
-                  "&:hover": {
+                  "&:hover ": {
+                    fontSize: "16px",
+                    paddingLeft: "1%", 
+                    paddingRight:'1%',
+                    "& .arrow-icon": {
+                      opacity: 1,
+                      transform: "translateX(0)", 
+                    },
+                  },
+                  "&.menu-open": {
                     fontSize: "16px",
                     paddingLeft: "1%", 
                     paddingRight:'1%',
@@ -400,12 +420,12 @@ function TouristNB() {
                   <KeyboardArrowDownIcon
                     className="arrow-icon"
                     sx={{
-                      fontSize: "18px",
+                      fontSize: "26px",
                       marginLeft: "0.2%",
                       opacity: 1,
                       transition: "all 0.3s ease", 
                       position: "absolute",
-                      top: "25%",
+                      top: "20%",
                     }}
                   />
                 ) : (
