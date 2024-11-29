@@ -4,6 +4,7 @@ const User = require("../models/User");
 const mongoose = require("mongoose");
 const Order = require("../models/Order");
 const Purchase = require("../models/Purchase");
+const moment = require('moment');
 
 const getCart = async (req, res) => {
   try {
@@ -207,7 +208,7 @@ const CancelOrder = async (req, res) => {
   ) {
     try {
       // Fetch the order to be canceled
-      const order = await Order.findById(OrderId).populate('products.productId');  // Populate product details
+      const order = await Order.findById(OrderId);  // Populate product details
 
       if (!order) {
         return res.status(404).json({ message: "Order not found" });
@@ -218,17 +219,11 @@ const CancelOrder = async (req, res) => {
         return res.status(403).json({ message: "Unauthorized to cancel this order" });
       }
 
-      // Loop through each product in the order and update the product quantity in the Product model
-      for (let item of order.products) {
-        const product = item.productId;  // The product object is populated
-
-        if (!product) {
-          continue;  // If product is not found, skip it (just a safety check)
-        }
-
-        // Update the product's quantity by adding the quantity from the canceled order
-        product.quantity += item.quantity;  // Increase the product quantity
-        await product.save();  // Save the updated product
+  
+      for (const item of order.products) {
+        await Product.findByIdAndUpdate(item.productId._id, {
+          $inc: { quantity: item.quantity },
+        });
       }
 
       // Mark the order as canceled in the Order model
@@ -252,5 +247,65 @@ const CancelOrder = async (req, res) => {
     res.status(400).json({ message: "Invalid OrderId or UserId" });
   }
 };
+
+
+
+async function getMyOrders(req, res) {
+  try {
+    // 1. Fetch orders by userId
+    const orders = await Order.find({ userId: req.user.id });
+
+    const currentOrders = [];
+    const pastOrders = [];
+
+    // 2. Loop through each order and set deliveryDate, state
+    for (const order of orders) {
+      const createdAt = moment(order.createdAt);
+      const deliveryDate = createdAt.add(5, 'days'); // deliveryDate is createdAt + 5 days
+
+      // 3. Determine the state based on deliveryDate and isCancelled
+      let state = order.state; // Default to the current state of the order
+
+      // If the order is cancelled, set state to 'cancelled'
+      if (order.isCancelled) {
+        state = 'cancelled';
+      } else {
+        const now = moment();
+
+        // If the deliveryDate has passed and is not cancelled, set state to 'delivered'
+        if (now.isAfter(deliveryDate)) {
+          state = 'delivered';
+        } 
+        // If only 2 days or less remaining to the deliveryDate, set state to 'shipped'
+        else if (deliveryDate.diff(now, 'days') <= 2) {
+          state = 'shipped';
+        } 
+        // Otherwise, keep it as 'processing'
+        else {
+          state = 'processing';
+        }
+      }
+
+      // 4. Update the state (optional if you want to persist the changes)
+      await order.updateOne({ state });
+
+      // 5. Add the order to current or past based on its state
+      const orderData = { ...order.toObject(), deliveryDate, state };
+
+      if (state === 'delivered' || state === 'cancelled') {
+        pastOrders.push(orderData);
+      } else {
+        currentOrders.push(orderData);
+      }
+    }
+
+    // 6. Return the response with current and past orders
+    res.json({ currentOrders, pastOrders });
+  } catch (error) {
+    console.error('Error fetching orders:', error);
+    res.status(500).json({ message: 'An error occurred while fetching your orders.' });
+  }
+}
+
    
-module.exports = { getCart, editProductInCart, removeItemFromCart, clearCart, checkout };
+module.exports = { getCart, editProductInCart, removeItemFromCart, clearCart, checkout ,getMyOrders,CancelOrder};

@@ -15,7 +15,7 @@ import  GuestItineraries from "./Pages/Guest/GuestItineraries.js";
 import  GuestViewVintage from "./Pages/Guest/GuestPlaces.js";
 import  TouristVintage from "./Pages/Tourist/TouristPlaces.js";
 import CreateVintageForm from "./Pages/CreateVintageForm.js";
-
+import MyOrders from "./Pages/Tourist/MyOrders.js";
 import './styles/index.css';
 
 //import Checkout from "./Pages/SignUp/Checkout.js";
@@ -237,6 +237,7 @@ function App() {
         </Route>
 
         <Route path="/reports" element={<TotalReport />} />
+        <Route path="/orders" element={<MyOrders />} />
         <Route path="/guest-places" element={<GuestViewVintage/>} />
         <Route path="/tourist-places" element={<TouristViewVintage />} />
         <Route path="/createVintage" element={<CreateVintageForm />} />
