@@ -15,7 +15,8 @@ import UserBadge from "../../badge";
 import logoImage from "../../../assets/cropped_image.png";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import CurrencyConversion from "../../../components/CurrencyConversion";
 
 const pages = [
@@ -153,7 +154,7 @@ function TouristNB() {
   const handleCloseComplaintsMenu = () => setAnchorElComplaints(null); // Close complaints menu
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: "#004c74" }}>
+    <AppBar position="static" sx={{ backgroundColor: "#004c74" , padding:'0.5%' ,}}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Avatar
@@ -234,16 +235,17 @@ function TouristNB() {
           {/* Desktop Menu */}
           <Box sx={{ flexGrow: 1, display:'flex',}}>
             {/* main options box */}
-            <Box sx={{display:'flex', marginBottom:'-0.5%', marginTop:'2%', }}>
+            <Box sx={{display:'flex', marginBottom:'-2.5%', marginTop:'0%',width:'80%' }}>
             <Button
               onClick={loadSuggestedForYou}
               sx={{ 
                 my: 2, color: "white", display: "block" ,
-                transition: "all 0.3s ease", // Smooth font size and spacing changes
+                transition: "all 0.3s ease",
+                fontSize:'15px',
                 "&:hover": {
-                  fontSize: "14px",
-                  paddingLeft: "2%", // Pushes content smoothly to the right
-                  paddingRight:'2%',
+                  fontSize: "16px",
+                  paddingLeft: "1%", 
+                  paddingRight:'1%',
                 },
               }}
             >
@@ -251,35 +253,112 @@ function TouristNB() {
             </Button>
             <Button
               onClick={loadActivities}
-              sx={{ my: 2, color: "white", display: "block" }}
+              sx={{ 
+                my: 2, color: "white", display: "block" ,
+                transition: "all 0.3s ease", 
+                fontSize:'15px',
+                "&:hover": {
+                  fontSize: "16px",
+                  //paddingLeft: "1%", 
+                  paddingRight:'1%',
+                },
+              }}
             >
               {pages[1]}
             </Button>
             <Button
               onClick={loadItinerary}
-              sx={{ my: 2, color: "white", display: "block" }}
+              sx={{ 
+                my: 2, color: "white", display: "block" ,
+                transition: "all 0.3s ease",
+                fontSize:'15px',
+                "&:hover": {
+                  fontSize: "16px",
+                  paddingLeft: "1%", 
+                  paddingRight:'1%',
+                },
+              }}
             >
               {pages[2]}
             </Button>
             <Button
               onClick={loadHistoricalPlaces}
-              sx={{ my: 2, color: "white", display: "block" }}
+              sx={{ 
+                my: 2, color: "white", display: "block" ,
+                transition: "all 0.3s ease",
+                fontSize:'15px',
+                "&:hover": {
+                  fontSize: "16px",
+                  paddingLeft: "1%", 
+                  paddingRight:'1%',
+                },
+              }}
             >
               {pages[3]}
             </Button>
             <Button
               onClick={loadProducts}
-              sx={{ my: 2, color: "white", display: "block" }}
+              sx={{ 
+                my: 2, color: "white", display: "block" ,
+                transition: "all 0.3s ease", 
+                fontSize:'15px',
+                "&:hover": {
+                  fontSize: "16px",
+                  paddingLeft: "1%", 
+                  paddingRight:'1%',
+                },
+              }}
             >
               {pages[4]}
             </Button>
             {/* Complaints Dropdown in Desktop View */}
-            <Box>
+            {/* <Box> */}
               <Button
                 onClick={handleOpenComplaintsMenu}
-                sx={{ my: 2, color: "white", display: "block" }}
+                sx={{ 
+                  my: 2, color: "white", display: "block" ,
+                  transition: "all 0.3s ease", 
+                  fontSize:'15px',
+                  "&:hover": {
+                    fontSize: "16px",
+                    paddingLeft: "1%", 
+                    paddingRight:'1%',
+                    "& .arrow-icon": {
+                      opacity: 1,
+                      transform: "translateX(0)", 
+                      fontSize:'18px',
+                    },
+                  },
+                }}
               >
                 Complaints
+                {/* kol da 3la 7tet arrow */}
+                {Boolean(anchorElComplaints) ? (
+                  <KeyboardArrowDownIcon
+                    className="arrow-icon"
+                    sx={{
+                      //fontSize: "30px",
+                      marginLeft: "0.2%",
+                      opacity: 1,
+                      transition: "all 0.3s ease", 
+                      position: "absolute",
+                      top: "25%",
+                    }}
+                  />
+                ) : (
+                  <ArrowForwardIosIcon
+                  className="arrow-icon"
+                  sx={{
+                    //fontSize: "18px",
+                    marginLeft: "0.2%", // Space between text and icon
+                    opacity: Boolean(anchorElComplaints) ? 1 : 0, // Show if menu is open
+                    transition: "all 0.3s ease", 
+                    position: "absolute",
+                    top: "25%",
+                  }}
+                />
+              )}
+               {/*aaaaaaaaaaaaaaaaaaaaaaa*/}
               </Button>
               <Menu
                 id="complaints-menu"
@@ -294,15 +373,55 @@ function TouristNB() {
                   Complaint History
                 </MenuItem>
               </Menu>
-            </Box>
+            {/* </Box> */}
 
             {/* Bookings Dropdown in Desktop View */}
-            <Box>
+            {/* <Box> */}
               <Button
                 onClick={handleOpenBookingsMenu}
-                sx={{ my: 2, color: "white", display: "block" }}
+                sx={{ 
+                  my: 2, color: "white", display: "block" ,
+                  transition: "all 0.3s ease", 
+                  fontSize:'15px',
+                  "&:hover": {
+                    fontSize: "16px",
+                    paddingLeft: "1%", 
+                    paddingRight:'1%',
+                    "& .arrow-icon": {
+                      opacity: 1,
+                      transform: "translateX(0)", 
+                    },
+                  },
+                }}
               >
                 Bookings
+                 {/* kol da 3la 7tet arrow */}
+                 {Boolean(anchorElBookings) ? (
+                  <KeyboardArrowDownIcon
+                    className="arrow-icon"
+                    sx={{
+                      fontSize: "18px",
+                      marginLeft: "0.2%",
+                      opacity: 1,
+                      transition: "all 0.3s ease", 
+                      position: "absolute",
+                      top: "25%",
+                    }}
+                  />
+                ) : (
+                  <ArrowForwardIosIcon
+                  className="arrow-icon"
+                  sx={{
+                    fontSize: "18px",
+                    marginLeft: "0.2%", // Space between text and icon
+                    opacity: Boolean(anchorElBookings) ? 1 : 0, // Show if menu is open
+                    transition: "all 0.3s ease", 
+                    position: "absolute",
+                    top: "25%",
+                  }}
+                />
+              )}
+               {/*aaaaaaaaaaaaaaaaaaaaaaa*/}
               </Button>
               <Menu
                 id="bookings-menu"
@@ -311,7 +430,7 @@ function TouristNB() {
                 onClose={handleCloseBookingsMenu}
                 anchorOrigin={{ vertical: "top", horizontal: "left" }}
                 transformOrigin={{ vertical: "top", horizontal: "left" }}
-                sx={{ marginTop: "30px" }}
+                sx={{ marginTop: "2%" }}
               >
                 <MenuItem onClick={loadBookServices}>
                   <Typography>Book Services</Typography>
@@ -334,8 +453,8 @@ function TouristNB() {
               </Menu>
             </Box>
           </Box>
-          </Box>
-          {/* end o main options box */}
+          {/* </Box> */}
+          {/* end of main options box */}
 
           {/* User Badge */}
           <UserBadge userId={userId} />
