@@ -232,10 +232,20 @@ function TouristNB() {
           </Box>
 
           {/* Desktop Menu */}
-          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+          <Box sx={{ flexGrow: 1, display:'flex',}}>
+            {/* main options box */}
+            <Box sx={{display:'flex', marginBottom:'-0.5%', marginTop:'2%', }}>
             <Button
               onClick={loadSuggestedForYou}
-              sx={{ my: 2, color: "white", display: "block" }}
+              sx={{ 
+                my: 2, color: "white", display: "block" ,
+                transition: "all 0.3s ease", // Smooth font size and spacing changes
+                "&:hover": {
+                  fontSize: "14px",
+                  paddingLeft: "2%", // Pushes content smoothly to the right
+                  paddingRight:'2%',
+                },
+              }}
             >
               {pages[0]}
             </Button>
@@ -324,6 +334,8 @@ function TouristNB() {
               </Menu>
             </Box>
           </Box>
+          </Box>
+          {/* end o main options box */}
 
           {/* User Badge */}
           <UserBadge userId={userId} />

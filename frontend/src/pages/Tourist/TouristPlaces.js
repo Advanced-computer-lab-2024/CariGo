@@ -161,7 +161,7 @@ export default function TouristItineraries (){
         width:'100%' ,
         overflow: 'hidden',
         margin: '3%', 
-        marginLeft:'10%',
+        marginLeft:'0%',
         //padding:'2%',
         height: '90vh', // Set a fixed height for the scrolling area
         display:'flex',
@@ -178,7 +178,7 @@ export default function TouristItineraries (){
         <Box sx={{ 
           height: '90%',
           //marginLeft: '100px',
-          width: '60%',
+          width: '70%',
           display: "flex",
           flexDirection: "column",
           gap: "15px",

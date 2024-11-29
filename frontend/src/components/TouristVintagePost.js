@@ -14,6 +14,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { Box, Chip, Snackbar } from '@mui/material';
 import PinDropIcon from '@mui/icons-material/PinDrop';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -116,7 +117,8 @@ export default function TouristVintagePost({
       sx={{
         width: '100%',
         //maxWidth: '900px',
-        height: '400px',
+        height: '80%',
+        maxHeight:'100%',
         color: '#126782',
         fontSize: '18px',
         display: 'flex',
@@ -134,18 +136,30 @@ export default function TouristVintagePost({
       onClick={() => navigate(`/viewingAllvintage/${id}`)}
     >
       <Box sx={{ display: 'flex', flexDirection: 'row', flexGrow: 1 }}>
-        <CardMedia
-          component="img"
-          image={pictures[0] || '/placeholder.svg?height=250&width=500'}
-          alt={name}
-          sx={{
-            width: '400px',
-            height: '250px',
-            margin: '2px',
-            borderRadius: '10px',
-            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-          }}
-        />
+        <Box sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
+          <CardMedia
+            component="img"
+            //image={pictures[0] || '/placeholder.svg'}
+            image={'/ca353eb3-2c2e-4c9a-bcea-615f80995fd2.jpeg'}
+            alt={name}
+            sx={{
+              width: '90%', // Adjusts to parent container's width
+              maxWidth: '90%', // Maximum width for responsiveness
+              height:'70%',
+              maxHeight:'70%',
+              aspectRatio: '16/9', // Forces all images to have the same aspect ratio
+              borderRadius: '10px',
+              margin: '5px',
+              borderRadius: '10px',
+              boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+            }}
+          />
+          <CardContent sx={{ flexGrow: 1 , width:'95%', overflow:'overflow', marginTop:'3%'}}>
+            <Typography variant="body2" sx={{ color: 'text.secondary', marginTop: '-10px', fontSize: '16px', }}>
+              {description}
+            </Typography>
+          </CardContent>
+          </Box>
 
         <Box sx={{ display: 'flex', flexDirection: 'column', width: '60%', padding: '10px' }}>
           <CardHeader
@@ -163,12 +177,20 @@ export default function TouristVintagePost({
             ))}
           </Box>
 
-          <Box sx={{ display: 'flex', flexDirection: 'column', marginLeft: '30px', marginTop: '10px' }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', marginLeft: '5%', marginTop: '3%' , gap:'5px'}}>
+            <Box sx={{ display: 'flex', marginTop: '5px' , marginTop: '2%', gap:'5px'}}>
+              <AccessTimeIcon sx={{fill:'#ff4d4d'}}/>
+              <Typography sx={{ fontSize: '16px', }}>
+               {opening_hours.opening} - {opening_hours.closing}
+              </Typography>
+            </Box>
             {location && location.nation ? (
               <Box sx={{ display: 'flex', marginTop: '5px' }}>
-                <PinDropIcon />
+                <PinDropIcon 
+                //sx={{fill:'#ff4d4d', fontSize}}
+                />
                 <Typography sx={{ marginLeft: '5px' }}>
-                  Location: {location.nation.city}, {location.nation.country}<br/> (Lat: {location.latitude}, Long: {location.longitude})
+                 {location.nation.city}, {location.nation.country}<br/> (Lat: {location.latitude}, Long: {location.longitude})
                 </Typography>
               </Box>
             ) : (
@@ -179,23 +201,42 @@ export default function TouristVintagePost({
 
             <Box sx={{ display: 'flex', marginTop: '5px' }}>
               <AttachMoneyIcon />
-              <Typography sx={{ marginLeft: '5px', color: '#126782' }}>
-                Ticket Prices in {`${code}`} :<br/> Foreigner: {(ticket_price.foriegner*conversionRate).toFixed(2)}<br/> Native: {(ticket_price.native*conversionRate).toFixed(2)}<br/> Student: {(ticket_price.student*conversionRate).toFixed(2)}
+              <Typography sx={{ marginLeft: '5px', color: '#126782', fontWeight:'bold' }}>
+                Ticket Prices in {`${code}`} 
               </Typography>
+              </Box>
+            {/* prices box */}
+            <Box sx={{marginLeft:'8%',width:'35%'}}>
+              <Box sx={{display:'flex' ,justifyContent:'space-between'}}>
+                <Typography sx={{marginLeft:'10%'}}>
+                  Foreigner 
+                </Typography>
+                <Typography sx={{color:'#ff4d4d', }}>
+                  {(ticket_price.foriegner*conversionRate).toFixed(2)}
+                </Typography>
+              </Box>
+              <Box sx={{display:'flex',justifyContent:'space-between'}}>
+                <Typography sx={{marginLeft:'10%'}}>
+                  Native 
+                </Typography>
+                <Typography sx={{color:'#ff4d4d', }}>
+                  {(ticket_price.native*conversionRate).toFixed(2)}
+                </Typography>
+              </Box>
+              <Box sx={{display:'flex' ,justifyContent:'space-between'}}>
+                <Typography sx={{marginLeft:'10%'}}>
+                  Student 
+                </Typography>
+                <Typography sx={{color:'#ff4d4d', }}>
+                  {(ticket_price.student*conversionRate).toFixed(2)} 
+                </Typography>
+              </Box>
             </Box>
-
-            <Typography sx={{ fontSize: '16px', marginTop: '10px' }}>
-              Opening Hours: {opening_hours.opening} - {opening_hours.closing}
-            </Typography>
+              
+            
           </Box>
         </Box>
       </Box>
-
-      <CardContent sx={{ flexGrow: 1 }}>
-        <Typography variant="body2" sx={{ color: 'text.secondary', marginTop: '-10px', fontSize: '16px', width: '460px' }}>
-          {description}
-        </Typography>
-      </CardContent>
 
       <CardActions disableSpacing>
         <Box sx={{ position: 'absolute', bottom: '2px', left: '2px' }}>

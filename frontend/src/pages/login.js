@@ -212,7 +212,7 @@ export default function LoginPage() {
         <Box sx={{display:'flex',gap:'5px', marginTop:'-5%'}}>
         <Typography sx={{color:'#126782',fontSize:'14px',}}>OR</Typography>
         <Link href="/" onClick={()=> navigate("/")}
-          sx={{ fontSize: "sm", alignSelf: "center" , color:'#126782', '&:hover':{color:'#ff4d4d', textDecorationColor:'#ff4d4d'},}}>
+          sx={{ fontSize: "sm", alignSelf: "center" , color:'#126782',textDecoration:'underline', '&:hover':{color:'#ff4d4d', textDecorationColor:'#ff4d4d'},}}>
           continue as guest
         </Link>
         </Box>
