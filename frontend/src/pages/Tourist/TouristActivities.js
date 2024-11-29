@@ -6,7 +6,7 @@ import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import NavBar from './components/TouristNavBar.js';
 import GuestNavBar from "../../components/NavBarTourist";
 
-export default function TouristViewActivities (){
+export default function TouristViewVintage (){
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -153,149 +153,95 @@ export default function TouristViewActivities (){
   
     return(
       <div>
-        
       {!tourist? <GuestNavBar/>: <NavBar/>}
-  
+
       <Box sx={{
-        width:'1150px' ,
+        width:'100%' ,
         overflow: 'hidden',
-        margin: '0 auto', 
-        padding:'20px',
-        height: '80vh', // Set a fixed height for the scrolling area
-         
+        margin: '3%', 
+        marginLeft:'0%',
+        //padding:'2%',
+        height: '90vh', // Set a fixed height for the scrolling area
+        display:'flex',
+        gap:'3%',
         '&::-webkit-scrollbar': {
         display: 'none', // Hides the scrollbar for WebKit browsers (Chrome, Safari)
       },
         }}>
-  
-              {/*Search bar*/}
-              <Box sx={{marginLeft:"120px",}}>
-                <TextField
-                  id="search-bar"
-                  className="text"
-                  onInput={(e) => {
-                    setSearchTerm(e.target.value);
-                  }}
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      "&.Mui-focused fieldset": {
-                        borderColor: "#ff4d4daa",
-                      },
-                    },
-                    
-                  }}
-                  variant="outlined"
-                  placeholder="Search..."
-                  size="small"
-                />
-                <IconButton type="submit" aria-label="search" 
-                sx={{ width:"40px", height:"40px",
+
+
+          {/* Activity list */}
+          {loading && <CircularProgress />}
+          {error && <Typography color="error">{error}</Typography>}
+        <Box sx={{ 
+          height: '90%',
+          //marginLeft: '100px',
+          width: '70%',
+          display: "flex",
+          flexDirection: "column",
+          gap: "15px",
+          overflowX: 'hidden',
+          overflowY: 'auto', 
+          '&::-webkit-scrollbar': {
+            width: '8px', // Width of the scrollbar
+            
+            },
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: '#ff4d4d', // Color of the scrollbar thumb
+            borderRadius: '10px', // Rounded corners for the scrollbar thumb
+            },
+          '&::-webkit-scrollbar-track': {
+            backgroundColor: '#f1f1f1', // Color of the scrollbar track
+            borderRadius: '10px', // Rounded corners for the scrollbar track
+          },
+          }}> {/* Enable vertical scrolling only */}
+
+          <ActivityList fetchedActivities={filteredActivities} />
+        </Box>
+
+        <Box sx={{display:'flex', flexDirection:'column', gap:'20px', marginTop:'5%'}}>
+        {/*Search bar*/}
+        <Box sx={{}}>
+          <TextField
+            id="search-bar"
+            className="text"
+            onInput={(e) => {
+              setSearchTerm(e.target.value);
+            }}
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                "&.Mui-focused fieldset": {
+                  borderColor: "#ff4d4daa",
+                },
+              },            
+            }}
+            variant="outlined"
+            placeholder="Search..."
+            size="small"
+            />
+          <IconButton type="submit" aria-label="search" 
+            sx={{ width:"40px", height:"40px",
                  marginBottom:"-5px",
                  marginLeft:"-3px",
                  backgroundColor: "#ff4d4d", 
-                    color: "white", 
-                    borderRadius: "3px",
-                    "&:hover": {
-                      backgroundColor: "#e63939"
-                    } 
-                 }}>
-                  <SearchIcon  onClick={handleSearch} 
-                  sx={{ 
-                    
-                  }}
-                  />
+                color: "white", 
+                borderRadius: "3px",
+                "&:hover": {
+                  backgroundColor: "#e63939"
+                } 
+              }}>
+              <SearchIcon  onClick={handleSearch} sx={{ }}/>
                 </IconButton>
               </Box>
               {/*End of Search bar*/}
-  
-                <Box sx={{display:'flex',
+                {/* for filter and sort next to each other*/}
+                {/* <Box sx={{display:'flex',
                  flexDirection: anchorEl ? 'column' : 'row' ,
-                  marginTop: '30px',marginLeft :'120px',}}> {/* for filter and sort next to each other*/}
-                  
-                {/*Filter menu*/}
-                <Box
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  
-                  }}
-                  
-                >
-                <FilterAltIcon
-                onClick={handleFilterClick}
-                sx={{
-                  color : "gray",
-                }}
-              >
-              </FilterAltIcon>
-              {Boolean(anchorEl) && ( // Conditional rendering based on anchorEl
-                <Box
-                  sx={{
-                    //padding: '20px',
-                    paddingTop:'10px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    borderRadius: '20px',
-                    backgroundColor: 'white', 
-                    borderColor: '1px solid #ff4d4d', 
-                    width: '900px',
-                  }}
-                >
-                <Box sx={{display:'flex'}}>
-                  <TextField
-                      label="Price"
-                      variant="outlined"
-                      name="price"
-                      value={filterInputValues.price}
-                      onChange={handleFilterChange}
-                      type="number"
-                      sx={{ mb: 2, mr: 2 , marginLeft :'10px',}}
-                  />
-                  <TextField
-                      label="Category"
-                      variant="outlined"
-                      name="category"
-                      value={filterInputValues.category}
-                      onChange={handleFilterChange}
-                      type="text"
-                      sx={{ mb: 2, mr: 2 }}
-                  />
-                  <TextField
-                      label="Rating"
-                      variant="outlined"
-                      name="rating"
-                      value={filterInputValues.rating}
-                      onChange={handleFilterChange}
-                      type="number"
-                      sx={{ mb: 2, mr: 2 }}
-                  />
+                  marginTop: '30px',marginLeft :'120px',}}>  */}
+
+                  {/*Sort Button*/}
   
-                  <TextField
-                      //label="Start Date"
-                      variant="outlined"
-                      name="startDate"
-                      value={filterInputValues.startDate}
-                      onChange={handleFilterChange}
-                      type="date"
-                      sx={{ mb: 2, mr: 2 }}
-                  />
-                  </Box>
-                  <Box sx={{display:'flex',}}>
-                  <Button variant="contained" onClick={handleFilter} sx={{ ml: 2 , backgroundColor: '#ff4d4d' , width : '50px',}}>
-                      Filter
-                  </Button>
-                  <Button variant="contained" onClick={resetFilters} sx={{ ml: 2 ,backgroundColor: '#ff4d4d',width : '50px'}}>
-                      Reset 
-                  </Button>
-                  </Box>
-                  </Box>
-                  )}
-              </Box>
-              {/* END OF FILTER MENU */}
-  
-              {/*Sort Button*/}
-  
-              <Box sx={{marginLeft : anchorEl? '800px':'770px'}}>
+              <Box sx={{marginLeft :'0px'}}>
               <Button
                   id="basic-button"
                   aria-controls={Boolean(anchorE2) ? 'basic-menu' : undefined}
@@ -323,29 +269,95 @@ export default function TouristViewActivities (){
               </Menu>
               </Box>
               {/*END OF SORT */}
+                  
+                {/*Filter menu*/}
+                <Box
+                sx={{
+                  position: 'relative',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  }}
+                >
+                <FilterAltIcon
+                onClick={handleFilterClick}
+                sx={{
+                  color : "gray",
+                  cursor: 'pointer',
+                }}
+              >
+              </FilterAltIcon>
+              {Boolean(anchorEl) && ( // Conditional rendering based on anchorEl
+                <Box
+                  sx={{
+                    //padding: '20px',
+                    position: 'absolute', 
+                    top: '50px', 
+                    left: '0', 
+                    //paddingTop:'10px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap:'10px',
+                    borderRadius: '20px',
+                    backgroundColor: 'white', 
+                    borderColor: '1px solid #ff4d4d', 
+                    width: '150%',
+                  }}
+                >
+                <Box sx={{display:'flex',width:'100%', flexWrap: 'wrap',marginLeft:'5px', gap:'5px'}}>
+                  <TextField
+                      label="Price"
+                      variant="outlined"
+                      name="price"
+                      value={filterInputValues.price}
+                      onChange={handleFilterChange}
+                      type="number"
+                      sx={{ width:'45%', height:'5%'}}
+                  />
+                  <TextField
+                      label="Category"
+                      variant="outlined"
+                      name="category"
+                      value={filterInputValues.category}
+                      onChange={handleFilterChange}
+                      type="text"
+                      sx={{ width:'45%', height:'20%'}}
+                  />
+                  <TextField
+                      label="Rating"
+                      variant="outlined"
+                      name="rating"
+                      value={filterInputValues.rating}
+                      onChange={handleFilterChange}
+                      type="number"
+                      sx={{ width:'45%', height:'20%'}}
+                  />
+  
+                  <TextField
+                      //label="Start Date"
+                      variant="outlined"
+                      name="startDate"
+                      value={filterInputValues.startDate}
+                      onChange={handleFilterChange}
+                      type="date"
+                      sx={{ width:'45%', height:'20%'}}
+                  />
+                  </Box>
+                  <Box sx={{display:'flex', marginLeft:'-5px'}}>
+                  <Button variant="contained" onClick={handleFilter} sx={{ ml: 2 , backgroundColor: '#ff4d4d' , width : '50px',}}>
+                      Filter
+                  </Button>
+                  <Button variant="contained" onClick={resetFilters} sx={{ ml: 2 ,backgroundColor: '#ff4d4d',width : '50px'}}>
+                      Reset 
+                  </Button>
+                  </Box>
+                  </Box>
+                  )}
               </Box>
-              {/* Loading State */}
-              {loading && <CircularProgress />}
+              {/* END OF FILTER MENU */}
   
-              {/* Error Message */}
-              {error && <Typography color="error">{error}</Typography>}
-  
-  
-      <Box sx={{ 
-        height: '80vh',
-        marginLeft: '100px',
-        width: '100%',
-        display: "flex",
-        flexDirection: "column",
-        gap: "15px",
-        overflowX: 'hidden',
-        overflowY: 'auto', 
-        '&::-webkit-scrollbar': {display: 'none',},
-        }}> {/* Enable vertical scrolling only */}
-  
-        <ActivityList fetchedActivities={filteredActivities} />
-  
-        </Box>
+              {/* </Box> */}
+              </Box>
+              
     </Box>
     </div>
     

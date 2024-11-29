@@ -21,6 +21,7 @@ import StarIcon from "@mui/icons-material/Star";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import logoImage from "../assets/itinerary.png"; // Correct relative path
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 
 export default function ItineraryPost({
   id,
@@ -89,8 +90,8 @@ export default function ItineraryPost({
   return (
     <Card
       sx={{
-        width: "100%",
-        maxWidth: "900px",
+        width: "95%",
+        //maxWidth: "900px",
         height: "400px",
         color: "#126782",
         fontSize: "18px",
@@ -176,17 +177,25 @@ export default function ItineraryPost({
                 {rating || "No rating"}
               </Typography>
             </Box>
-            <Typography sx={{ fontSize: "16px" }}>
+             {/*timings box */}
+             <Box sx={{display:'flex', color:'#ff4d4d',padding:'5px', paddingLeft:'0px'}}>
+                <CalendarMonthIcon/>
+                <Typography sx={{marginTop:'2px'}}>{formatDateTime(start_date)}</Typography>
+                <Typography sx={{marginLeft:'10px',marginTop:'2px'}}>to</Typography>
+                <CalendarMonthIcon sx={{marginLeft:'10px'}}/>
+                <Typography sx={{marginTop:'2px',}}>{formatDateTime(end_date)}</Typography>
+              </Box>
+            {/* <Typography sx={{ fontSize: "16px" }}>
               From: {formatDateTime(start_date)}
             </Typography>
             <Typography sx={{ fontSize: "16px" }}>
               To: {formatDateTime(end_date)}
-            </Typography>
+            </Typography> */}
 
             <Box sx={{ display: "flex", marginTop: "5px" }}>
               <PinDropIcon />
               <Typography sx={{ marginLeft: "5px" }}>
-                Locations: {locations?.join(", ") || "Not specified"}
+                {locations?.join(", ") || "Not specified"}
               </Typography>
             </Box>
 

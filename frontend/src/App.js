@@ -15,7 +15,7 @@ import  GuestItineraries from "./Pages/Guest/GuestItineraries.js";
 import  GuestViewVintage from "./Pages/Guest/GuestPlaces.js";
 import  TouristVintage from "./Pages/Tourist/TouristPlaces.js";
 import CreateVintageForm from "./Pages/CreateVintageForm.js";
-
+import MyOrders from "./Pages/Tourist/MyOrders.js";
 import './styles/index.css';
 
 //import Checkout from "./Pages/SignUp/Checkout.js";
@@ -114,8 +114,10 @@ import BookServicesPage from "./Pages/Tourist/Booking.js";
 //const dotenv = require('dotenv')
 import ReviewAccounts from "./Pages/accounts/docsReview.jsx";
 import ProductDetailsT from "./Pages/Tourist/productdetailsT"
-import ProductDetailsSeller from "./Pages/products/ProductDetailsSeller.jsx"
+import ProductDetailsSeller from "./Pages/products/ProductDetailsSeller.jsx";
 import TotalReport from "./Pages/TotalReport.js";
+//import ChooseSignUP from "./Pages/ChooseSignUp";
+
 function App() {
   
   const token = localStorage.getItem("jwt");
@@ -148,6 +150,7 @@ function App() {
         <Route path="/tourist/MyBookedFlights" element={<MyBookedFlights />} /> 
         <Route path="/tourist/MyBookedHotels" element={<MyBookedHotels />} /> 
         <Route path="/login" element={<LoginPage />} />
+        {/* <Route path="/choose-sign-up" element={<ChooseSignUp/>} /> */}
       <Route
         path="tour_guide/profile"
         element={<TourGuideProfile userId={localStorage.getItem("id")} />}
@@ -200,7 +203,7 @@ function App() {
         <Route path="/trans/update/:id" element={<UpdateTransportationForm/>} />
         <Route path="/myVintages" element={<UserViewVintages />} />
         <Route path="/vintage/:id" element={<VintageDetails />} />
-        <Route path="/allVintages" element={<TouristViewVintage />} />
+        <Route path="/allVintages" element={<TouristVintage />} />
         <Route path="/checkout/:type/:id" element={<PaymentCheckout />} />
         <Route path="/viewingAllvintage/:id" element={<UserVintageDetails />} />
         <Route element={< ProtectedRoute/>}>
@@ -236,7 +239,9 @@ function App() {
               <Route path="/admin/analysis" element={<ProductAnalysis />} />
         </Route>
 
-        <Route path="/reports" element={<TotalReport />} />
+        <Route path="admin/reports" element={<TotalReport />} />
+       
+        <Route path="/orders" element={<MyOrders />} />
         <Route path="/guest-places" element={<GuestViewVintage/>} />
         <Route path="/tourist-places" element={<TouristViewVintage />} />
         <Route path="/createVintage" element={<CreateVintageForm />} />
