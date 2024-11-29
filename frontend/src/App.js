@@ -236,7 +236,8 @@ function App() {
               <Route path="/admin/analysis" element={<ProductAnalysis />} />
         </Route>
 
-        <Route path="/reports" element={<TotalReport />} />
+        <Route path="admin/reports" element={<TotalReport />} />
+       
         <Route path="/orders" element={<MyOrders />} />
         <Route path="/guest-places" element={<GuestViewVintage/>} />
         <Route path="/tourist-places" element={<TouristViewVintage />} />

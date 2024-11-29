@@ -7,7 +7,7 @@ import ProfileHeader from './Profile_Header';
 import SellerInfo from './SellerInfo';
 // import CenteredTabs from '../components/CenteredTabs';
 // import TourismGovernerTabs from '../components/tourismGovernerTabs';
-import NavBar from '../../components/NavBarAdvertiser';
+import NavBar from '../../components/NavBarSeller';
 // import SmallButton from '../components/smallButton'; // Import SmallButton here
 // import SmallButtonTG from '../components/smallButtonTG';
 import SmallButtonS from './smallButtonS';

@@ -190,6 +190,24 @@ const userSchema = new mongoose.Schema(
       ],
       default: [],
     },
+    savedEvents: {
+      type: [
+        {
+          type: mongoose.Schema.ObjectId,
+          ref: "Activity",
+        },
+      ],
+      default: [],
+    },
+    savedItineraries: {
+      type: [
+        {
+          type: mongoose.Schema.ObjectId,
+          ref: "Itinerary",
+        },
+      ],
+      default: [],
+    },
   },
   { timestamps: true }
 );

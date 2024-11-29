@@ -4,6 +4,7 @@ const User = require("../models/User");
 const mongoose = require("mongoose");
 const Order = require("../models/Order");
 const Purchase = require("../models/Purchase");
+const schedule = require("node-schedule");
 const moment = require('moment');
 
 const getCart = async (req, res) => {
@@ -151,8 +152,8 @@ const checkout = async (req, res) => {
 
       // Check if enough stock is available
       if (item.quantity > product.quantity) {
-        return res.status(400).json({ 
-          message: `Not enough stock for ${product.name}. Available: ${product.quantity}` 
+        return res.status(400).json({
+          message: `Not enough stock for ${product.name}. Available: ${product.quantity}`,
         });
       }
       totalOrderPrice += product.price * item.quantity;
@@ -168,6 +169,7 @@ const checkout = async (req, res) => {
       })),
       shippingAddress,
       totalPrice: totalOrderPrice,
+      deliveryDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
     });
 
     // Update product stock after order creation
@@ -183,7 +185,7 @@ const checkout = async (req, res) => {
         ProductId: item.productId._id,
         Quantity: item.quantity,
       });
-      console.log("new purchase is "+purchase);
+      console.log("new purchase is " + purchase);
     }
     // Clear the user's cart
     cart.products = [];
@@ -196,6 +198,41 @@ const checkout = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
+};
+// Schedule job to run every day at midnight
+const updateOrderStates = schedule.scheduleJob("0 0 * * *", async () => {
+  try {
+    const today = new Date();
+
+    // Find all non-cancelled orders
+    const orders = await Order.find({ state: { $ne: "cancelled" } });
+
+    for (const order of orders) {
+      const daysUntilDelivery = Math.ceil(
+        (order.deliveryDate - today) / (1000 * 60 * 60 * 24)
+      );
+
+      if (daysUntilDelivery <= 0) {
+        order.state = "delivered";
+      } else if (daysUntilDelivery <= 5) {
+        order.state = "shipped";
+      } else {
+        order.state = "processing";
+      }
+
+      await order.save();
+    }
+  } catch (error) {
+    console.error("Error updating order states:", error);
+  }
+});
+
+module.exports = {
+  getCart,
+  editProductInCart,
+  removeItemFromCart,
+  clearCart,
+  checkout,
 };
 const CancelOrder = async (req, res) => {
   const UserId = req.user.id;  // User ID from the request body (authenticated user)
