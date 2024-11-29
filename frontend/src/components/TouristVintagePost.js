@@ -139,8 +139,8 @@ export default function TouristVintagePost({
         <Box sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
           <CardMedia
             component="img"
-            //image={pictures[0] || '/placeholder.svg'}
-            image={'/ca353eb3-2c2e-4c9a-bcea-615f80995fd2.jpeg'}
+            image={pictures[0] || '/ca353eb3-2c2e-4c9a-bcea-615f80995fd2.jpeg'}
+            //image={'/ca353eb3-2c2e-4c9a-bcea-615f80995fd2.jpeg'}
             alt={name}
             sx={{
               width: '90%', // Adjusts to parent container's width

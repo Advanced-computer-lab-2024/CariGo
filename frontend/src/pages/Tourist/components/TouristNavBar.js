@@ -1,16 +1,10 @@
-import * as React from "react";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
-import Menu from "@mui/material/Menu";
+import React, { useState } from "react";
+import {
+  Box,IconButton,Avatar,Tooltip,Typography,Divider,
+  List,ListItem, ListItemButton,ListItemText,Drawer,
+  AppBar,Toolbar,Menu,MenuItem,Container,Button
+} from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import Container from "@mui/material/Container";
-import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
-import Tooltip from "@mui/material/Tooltip";
-import MenuItem from "@mui/material/MenuItem";
 import UserBadge from "../../badge";
 import logoImage from "../../../assets/cropped_image.png";
 import { useNavigate } from "react-router-dom";
@@ -152,6 +146,27 @@ function TouristNB() {
   const handleOpenComplaintsMenu = (event) =>
     setAnchorElComplaints(event.currentTarget); // Open complaints menu
   const handleCloseComplaintsMenu = () => setAnchorElComplaints(null); // Close complaints menu
+
+  // handling side bar
+  const [isDrawerOpen, setDrawerOpen] = useState(false);
+
+  const toggleDrawer = (open) => (event) => {
+    if (
+      event.type === "keydown" &&
+      (event.key === "Tab" || event.key === "Shift")
+    ) {
+      return;
+    }
+    setDrawerOpen(open);
+  };
+
+  const userOptions = [
+    { label: "My Profile", onClick: loadProfile },
+    { label: "Logout", onClick: handleLogout },
+    { label: "Change Password", onClick: handleChangePass },
+    { label: "Choose Currency", onClick: handleOpenCurrencyDialog },
+    { label: "Delete Account", onClick: handleDeleteAccount, color: "#ff4d4d" },
+  ];
 
   return (
     <AppBar position="static" sx={{ backgroundColor: "#004c74" , padding:'0.5%' ,}}>
