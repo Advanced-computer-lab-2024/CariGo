@@ -41,7 +41,7 @@ const items = [
     icon: <BarChartOutlined />,
     children: [
       { key: '5', icon: <FileTextOutlined />, label: 'User Activity Report' },
-      { key: '6', icon: <FileTextOutlined />, label: 'Sales Report' },
+      { key: '6', icon: <FileTextOutlined />, label: <Link to="/admin/reports">Sales Report</Link>  },
       { key: '7', icon: <FileSearchOutlined />, label: 'Traffic Report' },
       { key: '8', icon: <FileSearchOutlined />, label: 'Error Logs' },
     ],
