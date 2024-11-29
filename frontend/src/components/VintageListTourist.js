@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import ActivityPost from "./ActivityPost.js";
 import { Box, Typography } from '@mui/material';
 import TouristVintagePost from './TouristVintagePost.js';
 
@@ -7,8 +6,7 @@ import TouristVintagePost from './TouristVintagePost.js';
 export default function ActivityList({fetchedVintages}) {
     
     return (
-        <Box sx={{ width: '100vw' }}>
-           
+        <Box sx={{ width: '95%' ,paddingLeft:'15%',marginTop:'-1%'}}>
             {/* Activity List */}
             {fetchedVintages.length > 0 ? (
             <Box>
