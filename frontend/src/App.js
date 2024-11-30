@@ -116,6 +116,8 @@ import ReviewAccounts from "./Pages/accounts/docsReview.jsx";
 import ProductDetailsT from "./Pages/Tourist/productdetailsT"
 import ProductDetailsSeller from "./Pages/products/ProductDetailsSeller.jsx";
 import TotalReport from "./Pages/TotalReport.js";
+import BookmarkedItineraries from "./Pages/BookmarkedItineraries.js";
+import BookmarkedActivities from "./Pages/BookmarkedActivities.js";
 //import ChooseSignUP from "./Pages/ChooseSignUp";
 
 function App() {
@@ -186,6 +188,8 @@ function App() {
         <Route path="/Tourist-History" element={<TouristHistory />} />
         <Route path="/tourist/file-complaint" element={<FileComplaintForm />} />
         <Route path="/tourist/complaint-history" element={<ComplaintHistory />} />
+        <Route path="/tourist/BookmarkedItineraries" element={<BookmarkedItineraries />} />
+        <Route path="/tourist/BookmarkedActivities" element={<BookmarkedActivities />} />
         {/* <Route path="/guest-places" element={<GuestViewVintage/>} /> */}
         <Route path="/createActivity" element={<CreateActivityForm userId={localStorage.getItem("id")} />} />
         <Route path="/createTransportation" element={<CreateTransportation userId={localStorage.getItem("id")} />} /> 

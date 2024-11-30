@@ -20,11 +20,18 @@ import StarIcon from '@mui/icons-material/Star';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import TimelapseIcon from '@mui/icons-material/Timelapse';
+import { useState, useEffect } from 'react';
+import BookmarkIcon from '@mui/icons-material/Bookmark';
+import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
+
+
 export default function ActivityPost({ id,author, img, start_date, end_date, duration, tag, description, title,location,
     price,category,discount,isOpened, rating}) {
   const [expanded, setExpanded] = React.useState(false);
   const [snackbarOpen, setSnackbarOpen] = React.useState(false);
   const [snackbarMessage, setSnackbarMessage] = React.useState('');
+  const [isBookmarked, setIsBookmarked] = React.useState(false);
+  const [savedActivities, setSavedActivities] = React.useState([]);
   const navigate = useNavigate();
 
   const handleExpandClick = () => {
@@ -82,6 +89,68 @@ export default function ActivityPost({ id,author, img, start_date, end_date, dur
     }
     setSnackbarOpen(false);
   };
+
+  //check user role
+  const isUserTourist = () => {
+    const userRole = localStorage.getItem('role');  // Get the role from localStorage
+    return userRole === 'Tourist';  // Return true if the user is a Tourist
+  };
+
+
+  const handleBookmark = async (e) => {
+    e.stopPropagation();
+  
+    const token = localStorage.getItem('jwt');
+    const userId = localStorage.getItem('id');
+    console.log('Token:', token);
+    console.log('User ID:', userId);
+  
+    if (!token || !userId) {
+      console.error('No token or user ID found. Please log in.');
+      return;
+    }
+  
+    try {
+      // Get the current saved Activities from localStorage (or state if already loaded)
+      let currentSavedActivities = JSON.parse(localStorage.getItem('savedActivities')) || [];
+  
+      // Update the saved Activities list based on whether it's bookmarked or not
+      const updatedSavedActivities = isBookmarked
+        ? currentSavedActivities.filter((activityId) => activityId !== id)
+        : [...currentSavedActivities, id];
+  
+      console.log("Updated Saved Activities", updatedSavedActivities);
+  
+      // Update the saved Activities on the backend
+      await axios.patch(
+        `/cariGo/users/update/${userId}`,
+        { savedEvents: updatedSavedActivities },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+  
+      // Ensure the state and localStorage are updated with the new list
+      localStorage.setItem('savedActivities', JSON.stringify(updatedSavedActivities));
+  
+      // Update the state to trigger a re-render
+      setSavedActivities(updatedSavedActivities);
+      setIsBookmarked(!isBookmarked);
+      setSnackbarMessage(
+        isBookmarked
+          ? "Activity removed from bookmarks"
+          : "Activity bookmarked successfully"
+      );
+      setSnackbarOpen(true);
+    } catch (error) {
+      console.error("Error bookmarking Activity:", error);
+      setSnackbarMessage("Failed to bookmark Activity. Please try again later.");
+      setSnackbarOpen(true);
+    }
+  };
+  
 
 
 const conversionRate = localStorage.getItem("conversionRate")||1;
@@ -230,12 +299,15 @@ const code = localStorage.getItem("currencyCode")||"EGP";
 
       <CardActions disableSpacing>
         <Box sx={{ position: 'absolute', bottom: '2px', left: '2px' }}>
-          <IconButton aria-label="add to favorites">
-            <FavoriteIcon />
-          </IconButton>
+        
           <IconButton aria-label="share" onClick={handleShare}>
             <ShareIcon />
           </IconButton>
+          {isUserTourist() && (
+            <IconButton aria-label="bookmark" onClick={handleBookmark}>
+            {isBookmarked ? <BookmarkIcon /> : <BookmarkBorderIcon />}
+            </IconButton>
+          )}
           <IconButton
             onClick={handleExpandClick}
             aria-expanded={expanded}
