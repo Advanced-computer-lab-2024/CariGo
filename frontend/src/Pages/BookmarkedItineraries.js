@@ -1,116 +1,66 @@
 import React, { useState, useEffect } from "react";
-import "../styles/index.css";
-import TouristNB from "./Tourist/components/TouristNavBar";
-import { Box, Button, TextField, CircularProgress, Typography, Menu, MenuItem } from "@mui/material";
-import { styled, alpha } from '@mui/material/styles';
-import SearchIcon from '@mui/icons-material/Search';
-import InputBase from '@mui/material/InputBase';
-import UserItineraryPost from "../components/UserItineraryPost";
-import { Grid } from '@mui/material'; // Add this import
+import {
+  Box,
+  CircularProgress,
+  Typography,
+  Container,
+  Paper,
+  InputBase,
+  IconButton,
+} from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
+import FilterAltIcon from "@mui/icons-material/FilterAlt";
+import NavBar from "./Tourist/components/TouristNavBar";
+import GuestNavBar from "../components/NavBarTourist";
+import ItineraryList from "../components/UserItineraryList";
+import SelectTags from "../components/SelectTags";
 
-const Search = styled('div')(({ theme }) => ({
-  position: 'relative',
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.common.white, 0.15),
-  '&:hover': {
-    backgroundColor: alpha(theme.palette.common.white, 0.25),
-  },
-  marginRight: theme.spacing(2),
-  marginLeft: 0,
-  width: '100%',
-  [theme.breakpoints.up('sm')]: {
-    marginLeft: theme.spacing(3),
-    width: 'auto',
-  },
-}));
-
-const SearchIconWrapper = styled('div')(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: '100%',
-  position: 'absolute',
-  pointerEvents: 'none',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: 'inherit',
-  '& .MuiInputBase-input': {
-    padding: theme.spacing(1, 1, 1, 0),
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create('width'),
-    width: '100%',
-    [theme.breakpoints.up('md')]: {
-      width: '20ch',
-    },
-  },
-}));
-
-const BookmarkedItineraries = () => {
+export default function TouristItineraries() {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [itineraries, setItineraries] = useState([]);
+  const [tourist, setTourist] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
   const [filters, setFilters] = useState({
     price: "",
     language: "",
-    tags: "",
+    tags: [],
     startDate: "",
   });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [sortOption, setSortOption] = useState('');
+
+  //handles filter menu opening and closing
   const [anchorEl, setAnchorEl] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filteredActivities, setFilteredActivities] = useState([]);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
-  const open = Boolean(anchorEl);
-
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
+  const handleFilterClick = (event) => {
+    if (isFilterOpen) {
+      handleFilterClose();
+    } else {
+      setAnchorEl(event.currentTarget);
+      setIsFilterOpen(true);
+    }
   };
 
-  const handleClose = () => {
+  const handleFilterClose = () => {
     setAnchorEl(null);
+    setIsFilterOpen(false);
   };
 
-  const handleFilterChange = (e) => {
-    const { name, value } = e.target;
-    setFilters(prevFilters => ({
-      ...prevFilters,
-      [name]: value
-    }));
+  //handling sort
+  const [anchorE2, setAnchorE2] = useState(null);
+  const [sortOption, setSortOption] = useState("");
+
+  const handleSortClick = (event) => {
+    setAnchorE2(event.currentTarget);
   };
 
-  const resetFilters = () => {
-    setFilters({
-      price: "",
-      language: "",
-      tags: "",
-      startDate: "",
-    });
+  const handleSortClose = () => {
+    setAnchorE2(null);
   };
 
   const handleSortChange = (sortValue) => {
-    setSortOption(sortValue);
-    handleClose();
-  };
-
-  const handleSearch = () => {
-    if (!searchTerm.trim()) {
-      setFilteredActivities(itineraries);
-    } else {
-      const filtered = itineraries.filter(itinerary =>
-        itinerary.title.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setFilteredActivities(filtered);
-    }
-  };
-  const fetchAuthor = async (authorId) => {
-    const response = await fetch(`http://localhost:4000/cariGo/users/${authorId}`);
-    if (!response.ok) {
-      throw new Error('User not found');
-    }
-    const authorData = await response.json();
-    return authorData;
+    setSortOption(sortValue); // Set the selected sort option
+    handleSortClose(); // Close the menu
   };
 
   const fetchSavedItineraries = async () => {
@@ -148,7 +98,9 @@ const BookmarkedItineraries = () => {
       }
 
       const savedItinerariesResponse = await fetch(
-        `http://localhost:4000/Event/readItinerariesByIds/?ids=${savedItineraryIds.join(",")}`,
+        `http://localhost:4000/Event/readItinerariesByIds/?ids=${savedItineraryIds.join(
+          ","
+        )}`,
         {
           method: "GET",
           headers: {
@@ -159,16 +111,18 @@ const BookmarkedItineraries = () => {
       );
 
       if (!savedItinerariesResponse.ok) {
-        console.error(`Failed to fetch saved itineraries: ${savedItinerariesResponse.status}`);
+        console.error(
+          `Failed to fetch saved itineraries: ${savedItinerariesResponse.status}`
+        );
         return;
       }
 
       const savedItineraries = await savedItinerariesResponse.json();
       console.log(savedItineraries);
 
-      //setItineraries(savedItineraries);
+      setItineraries(savedItineraries);
 
-      setFilteredActivities(savedItineraries); // Initialize filtered activities
+      // setFilteredActivities(savedItineraries); // Initialize filtered activities
     } catch (error) {
       console.error("Error fetching saved itineraries:", error);
     }
@@ -178,162 +132,105 @@ const BookmarkedItineraries = () => {
     fetchSavedItineraries();
   }, []);
 
+  const handleSearch = () => {
+
+  };
+
+  const [tagNames, setTagNames] = useState("");
+
   useEffect(() => {
-    let updatedActivities = [...itineraries];
+    const fetchTags = async () => {
+      try {
+        const response = await fetch("http://localhost:4000/Admin/getTags");
+        const data = await response.json();
+        const tagNames = data.map((tag) => tag.title);
+        setTagNames(tagNames);
+      } catch (error) {
+        console.error("Error fetching tags:", error);
+      }
+    };
 
-    if (filters.price) {
-      updatedActivities = updatedActivities.filter(itinerary => itinerary.price <= filters.price);
-    }
-    if (filters.language) {
-      updatedActivities = updatedActivities.filter(itinerary => itinerary.language === filters.language);
-    }
-    if (filters.tags) {
-      updatedActivities = updatedActivities.filter(itinerary => itinerary.tags === filters.tags);
-    }
-    if (filters.startDate) {
-      updatedActivities = updatedActivities.filter(itinerary => new Date(itinerary.start_date) >= new Date(filters.startDate));
-    }
-    if (searchTerm) {
-      updatedActivities = updatedActivities.filter(itinerary => itinerary.title.toLowerCase().includes(searchTerm.toLowerCase()));
-    }
+    fetchTags();
+  }, []);
 
-    if (sortOption) {
-      updatedActivities.sort((a, b) => {
-        if (sortOption === 'price') {
-          return a.price - b.price;
-        } else if (sortOption === 'ratingsAverage') {
-          return b.ratingsAverage - a.ratingsAverage;
-        } else if (sortOption === '-createdAt') {
-          return new Date(b.createdAt) - new Date(a.createdAt);
-        }
-        return 0;
-      });
-    }
-
-    setFilteredActivities(updatedActivities);
-  }, [filters, searchTerm, sortOption, itineraries]);
 
   return (
-    <div>
-      <TouristNB />
+    <Box sx={{ minHeight: "100vh", backgroundColor: "#f5f5f5" }}>
+      {!tourist ? <GuestNavBar /> : <NavBar />}
+      <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+        <Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              mb: 3,
+            }}
+          >
+            <Typography variant="h4" component="h1" gutterBottom>
+              My Saved Itineraries
+            </Typography>
+            <Box sx={{ display: "flex", gap: 2 }}>
+              <Paper
+                component="form"
+                sx={{
+                  p: "2px 4px",
+                  display: "flex",
+                  alignItems: "center",
+                  width: 400,
+                }}
+              >
+                <InputBase
+                  sx={{ ml: 1, flex: 1 }}
+                  placeholder="Search Itineraries"
+                  inputProps={{ "aria-label": "search itineraries" }}
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                <IconButton
+                  type="button"
+                  sx={{ p: "10px" }}
+                  aria-label="search"
+                  onClick={handleSearch}
+                >
+                  <SearchIcon />
+                </IconButton>
+              </Paper>
+              <IconButton
+                aria-label="filter"
+                onClick={() => {
+                  /* Add filter logic */
+                }}
+              >
+                <FilterAltIcon />
+              </IconButton>
+            </Box>
+          </Box>
 
-      {/* Filter Form */}
-      <form>
-        <TextField
-          label="Price"
-          variant="outlined"
-          name="price"
-          value={filters.price}
-          onChange={handleFilterChange}
-          type="number"
-          sx={{ mb: 2, mr: 2 }}
-        />
-        <TextField
-          label="Language"
-          variant="outlined"
-          name="language"
-          value={filters.language}
-          onChange={handleFilterChange}
-          sx={{ mb: 2, mr: 2 }}
-        />
-        <TextField
-          label="Tags"
-          variant="outlined"
-          name="tags"
-          value={filters.tags}
-          onChange={handleFilterChange}
-          sx={{ mb: 2, mr: 2 }}
-        />
-        <TextField
-          label="Date"
-          variant="outlined"
-          name="startDate"
-          value={filters.startDate}
-          onChange={handleFilterChange}
-          type="date"
-          sx={{ mb: 2, mr: 2 }}
-        />
-        <Button variant="contained" onClick={resetFilters} sx={{ ml: 2 }}>
-          Reset Filters
-        </Button>
-      </form>
+          {loading && <CircularProgress />}
+          {error && <Typography color="error">{error}</Typography>}
 
-      {/* Search Bar */}
-      <Box sx={{ display: 'flex' }}>
-        <Search>
-          <SearchIconWrapper>
-            <SearchIcon />
-          </SearchIconWrapper>
-          <StyledInputBase
-            placeholder="Search…"
-            inputProps={{ 'aria-label': 'search' }}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </Search>
-        <Button variant="contained" onClick={handleSearch} sx={{ ml: 2 }}>
-          Search
-        </Button>
-      </Box>
-
-      {/* Sort Button */}
-      <div>
-        <Button
-          id="basic-button"
-          aria-controls={open ? 'basic-menu' : undefined}
-          aria-haspopup="true"
-          aria-expanded={open ? 'true' : undefined}
-          onClick={handleClick}
-          sx={{ backgroundColor: "#ff4d4d", color: "white", marginLeft: "50px", marginTop: "30px", borderRadius: "5px", padding: "10px", textTransform: "none" }}
-        >
-          Sort By
-        </Button>
-        <Menu
-          id="basic-menu"
-          anchorEl={anchorEl}
-          open={open}
-          onClose={handleClose}
-          MenuListProps={{
-            'aria-labelledby': 'basic-button',
-          }}
-        >
-          <MenuItem onClick={() => handleSortChange('price')}>Price</MenuItem>
-          <MenuItem onClick={() => handleSortChange('ratingsAverage')}>Rating</MenuItem>
-          <MenuItem onClick={() => handleSortChange('-createdAt')}>Newest</MenuItem>
-        </Menu>
-      </div>
-
-      {/* Display Filtered Itineraries */}
-      {loading ? (
-        <CircularProgress />
-      ) : error ? (
-        <Typography color="error">Error loading itineraries</Typography>
-      ) : (
-        <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 2 }}>
-          <Grid container spacing={0} sx={{ display: 'flex', flexDirection: 'column', width: '100vw' }}>
-            {filteredActivities.map((itinerary, index) => (
-                <Grid item key={index} sx={{ display: 'flex', justifyContent: 'left' }}>
-                    <UserItineraryPost
-                        id={itinerary._id}
-                        author={itinerary.author?.username}
-                        img={"frontend/public/assets/images/itirenary.png"}
-                        start_date={itinerary.start_date}
-                        end_date={itinerary.end_date}
-                        locations={itinerary.locations}
-                        price={itinerary.price}
-                        tags={itinerary.tags}
-                        transportation={itinerary.transportation}
-                        accommodation={itinerary.accommodation}
-                        rating={itinerary.ratingsAverage}
-                        isBooked={itinerary.isBooked}
-                        accessibility={itinerary.accessibility}
-                    />
-                </Grid>
-            ))}
-        </Grid>
-        </Box>
-      )}
-    </div>
+          <Box
+            sx={{
+              height: "calc(100vh - 250px)",
+              overflowY: "auto",
+              "&::-webkit-scrollbar": {
+                width: "8px",
+              },
+              "&::-webkit-scrollbar-thumb": {
+                backgroundColor: "#ff4d4d",
+                borderRadius: "4px",
+              },
+              "&::-webkit-scrollbar-track": {
+                backgroundColor: "#f1f1f1",
+                borderRadius: "4px",
+              },
+            }}
+          >
+            <ItineraryList fetched={itineraries} />
+          </Box>
+        </Paper>
+      </Container>
+    </Box>
   );
-};
-
-export default BookmarkedItineraries;
+}

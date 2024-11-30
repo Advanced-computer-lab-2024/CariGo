@@ -245,10 +245,10 @@ const handleBookmark = async (e) => {
 
         <Box sx={{ display: 'flex', flexDirection: 'column', width: '60%', padding: '10px' }}>
           <CardHeader
-            avatar={<Avatar sx={{ bgcolor: red[500] }}>{author?.charAt(0) || 'A'}</Avatar>}
+            avatar={<Avatar sx={{ bgcolor: red[500] }}>{title?.charAt(0) || 'A'}</Avatar>}
             title={
               <Typography variant="h5" sx={{ fontWeight: 'bold', fontSize: '24px' }}>
-                {author || "Anonymous"}
+                {title || "Anonymous"}
               </Typography>
             }
           />

@@ -225,7 +225,7 @@ const getActivitiesByIds = async (req, res) => {
     if (!activities || activities.length === 0) {
       return res.status(404).json({ message: "Activities not found" });
     }
-
+    console.log(activities);
     // If activities are found, return them
     res.status(200).json(activities);
   } catch (error) {
