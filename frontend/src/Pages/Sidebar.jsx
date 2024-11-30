@@ -16,6 +16,7 @@ import {
   ApiOutlined,
   DatabaseOutlined,
   ExclamationCircleOutlined,
+  GiftOutlined,
 } from '@ant-design/icons';
 import { Button, Menu } from 'antd';
 import { Link } from 'react-router-dom';
@@ -28,6 +29,11 @@ const items = [
     key: 'complaints', 
     icon: <ExclamationCircleOutlined />, 
     label: <Link to="/complaints">Complaints</Link> 
+  },
+  { 
+    key: 'create-promo-code', 
+    icon: <GiftOutlined />, 
+    label: <Link to="/create-promo-code">Create Promo Code</Link> 
   },
   {
     key: 'sub1',

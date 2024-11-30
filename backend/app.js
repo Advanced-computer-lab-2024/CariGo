@@ -24,9 +24,10 @@ const amadusRouter = require("./routes/amadusRouter.js");
 const transportationRouter = require("./routes/transportationRouter.js");
 const purchaseRouter = require("./routes/purchaseRouter.js");
 const DeleteRequestRouter = require("./routes/deleteRequestRouter.js");
+const notificationRoutes = require('./routes/notificationRouter.js');
 const salesReportRouter = require("./routes/salesReportRouter.js");
 
-const notificationRoutes = require('./routes/notificationRouter.js');
+
 const app = express();
 
 

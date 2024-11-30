@@ -3,7 +3,7 @@ import { Grid, Box } from '@mui/material';
 import PageContainer from './components/PageContainer';
 
 // components
-import SalesOverview from './components/SalesOverview';
+import SalesOverview from './components/SO';
 import YearlyBreakup from './components/YearlyBreakup';
 import RecentTransactions from './components/RecentTransactions';
 import ProductPerformance from './components/ProductPerformance';

@@ -67,7 +67,7 @@ const ProductPerformance = ({events}) => {
    //onHandleRev = revenue
     return (
 
-        <DashboardCard title="Product Performance">
+        <DashboardCard title="Detailed Report">
             <Box sx={{ overflow: 'auto', width: { xs: '280px', sm: 'auto' } }}>
               {events &&  <Table
                     aria-label="simple table"
@@ -85,22 +85,18 @@ const ProductPerformance = ({events}) => {
                             </TableCell>
                             <TableCell>
                                 <Typography variant="subtitle2" fontWeight={600}>
-                                    Assigned
+                                    Title
                                 </Typography>
                             </TableCell>
                             <TableCell>
                                 <Typography variant="subtitle2" fontWeight={600}>
-                                    Name
+                                    Period
                                 </Typography>
                             </TableCell>
-                            <TableCell>
-                                <Typography variant="subtitle2" fontWeight={600}>
-                                    Priority
-                                </Typography>
-                            </TableCell>
+                            
                             <TableCell align="right">
                                 <Typography variant="subtitle2" fontWeight={600}>
-                                    Budget
+                                    Revenue
                                 </Typography>
                             </TableCell>
                         </TableRow>
@@ -127,16 +123,9 @@ const ProductPerformance = ({events}) => {
                                     >
                                         <Box>
                                             <Typography variant="subtitle2" fontWeight={600}>
-                                                {product.totalRevenue}
+                                                {"...."}
                                             </Typography>
-                                            <Typography
-                                                color="textSecondary"
-                                                sx={{
-                                                    fontSize: "13px",
-                                                }}
-                                            >
-                                                {product.period}
-                                            </Typography>
+                                           
                                         </Box>
                                     </Box>
                                 </TableCell>
@@ -145,19 +134,9 @@ const ProductPerformance = ({events}) => {
                                         {product.period}
                                     </Typography>
                                 </TableCell>
-                                <TableCell>
-                                    <Chip
-                                        sx={{
-                                            px: "4px",
-                                            //backgroundColor: product.pbg,
-                                            color: "#fff",
-                                        }}
-                                        size="small"
-                                        label={product.period}
-                                    ></Chip>
-                                </TableCell>
+                                
                                 <TableCell align="right">
-                                    <Typography variant="h6">${product.totalRevenue}k</Typography>
+                                    <Typography variant="h6">${product.totalRevenue}</Typography>
                                 </TableCell>
                             </TableRow>
                         ))}

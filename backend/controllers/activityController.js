@@ -677,15 +677,15 @@ const MyActivityBookings = async (req, res) => {
 
 const CancelActivityBooking = async (req, res) => {
   const UserId = req.user.id; // User ID from request body
-  const { ActivityId } = req.body; // Event ID from URL parameters
+  const { bookingId } = req.body; // Event ID from URL parameters
   if (
-    mongoose.Types.ObjectId.isValid(ActivityId) &&
+    mongoose.Types.ObjectId.isValid(bookingId) &&
     mongoose.Types.ObjectId.isValid(UserId)
   ) {
     try {
-      const activity = await activityModel.findById(ActivityId);
-      console.log(activity);
-      const activityDate = activity.start_date;
+      const booking = await bookingModel.findById(bookingId);
+      const ActivityId = booking.ActivityId;
+      const activityDate = ActivityId.start_date;
 
       if (activityDate) {
         const currDate = new Date();
@@ -693,8 +693,8 @@ const CancelActivityBooking = async (req, res) => {
         const hoursDifference = timeDifference / (1000 * 60 * 60); // Convert to hours
 
         if (hoursDifference >= 48) {
-          const bookings = await bookingModel.updateMany(
-            { UserId, ActivityId }, // Filter to find documents with both UserId and ActivityId
+          const bookings = await bookingModel.updateOne(
+            { _id:bookingId }, // Filter to find documents with both UserId and ActivityId
             { $set: { Status: false } } // Update to set Status to false
           );
           const cancel = await bookingModel.findOne({

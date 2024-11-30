@@ -2,6 +2,8 @@ const Cart = require("../models/Cart");
 const Product = require("../models/Product");
 const User = require("../models/User");
 const mongoose = require("mongoose");
+const Order = require("../models/Order");
+const Purchase = require("../models/Purchase");
 
 const getCart = async (req, res) => {
   try {
@@ -18,16 +20,6 @@ const getCart = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
-// const createCart = async (req, res) => {
-//     try {
-//         const userId = req.body.userId;
-//         const cart = await Cart.create({ userId, products: [] });
-//         res.status(201).json(cart);
-//     } catch (error) {
-//         res.status(500).json({ message: error.message });
-//     }
-// };
 
 const editProductInCart = async (req, res) => {
   try {
@@ -88,7 +80,7 @@ const editProductInCart = async (req, res) => {
 const removeItemFromCart = async (req, res) => {
   try {
     const userId = req.user.id;
-    const productId  = req.params.id;
+    const productId = req.params.id;
 
     // Validate input
     if (!productId) {
@@ -124,7 +116,7 @@ const removeItemFromCart = async (req, res) => {
 const clearCart = async (req, res) => {
   try {
     const userId = req.user.id;
-    const cart = await Cart.findOne({ userId });  // Find the user's cart
+    const cart = await Cart.findOne({ userId }); // Find the user's cart
     if (!cart) {
       return res.status(404).json({ message: "Cart not found" });
     }
@@ -134,6 +126,76 @@ const clearCart = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
-}
+};
 
-module.exports = { getCart, editProductInCart, removeItemFromCart, clearCart };
+const checkout = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { shippingAddress } = req.body;
+
+    // Find the user's cart and populate product details
+    const cart = await Cart.findOne({ userId }).populate(
+      "products.productId",
+      "name price quantity"
+    );
+
+    if (!cart || cart.products.length === 0) {
+      return res.status(404).json({ message: "Cart is empty or not found" });
+    }
+
+    // Check stock availability and calculate total price
+    let totalOrderPrice = 0;
+    for (const item of cart.products) {
+      const product = item.productId;
+
+      // Check if enough stock is available
+      if (item.quantity > product.quantity) {
+        return res.status(400).json({ 
+          message: `Not enough stock for ${product.name}. Available: ${product.quantity}` 
+        });
+      }
+      totalOrderPrice += product.price * item.quantity;
+    }
+
+    // Create the order
+    const order = await Order.create({
+      userId,
+      products: cart.products.map((item) => ({
+        productId: item.productId._id,
+        quantity: item.quantity,
+        totalPrice: item.productId.price * item.quantity,
+      })),
+      shippingAddress,
+      totalPrice: totalOrderPrice,
+    });
+
+    // Update product stock after order creation
+    for (const item of cart.products) {
+      await Product.findByIdAndUpdate(item.productId._id, {
+        $inc: { quantity: -item.quantity },
+      });
+    }
+
+    for (const item of cart.products) {
+      let purchase = await Purchase.create({
+        UserId: userId,
+        ProductId: item.productId._id,
+        Quantity: item.quantity,
+      });
+      console.log("new purchase is "+purchase);
+    }
+    // Clear the user's cart
+    cart.products = [];
+    await cart.save();
+
+    res.status(200).json({
+      message: "Order placed successfully",
+      order,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+    
+module.exports = { getCart, editProductInCart, removeItemFromCart, clearCart, checkout };

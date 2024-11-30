@@ -233,6 +233,7 @@ const MyBookings = () => {
             {filteredActivities.map((itinerary, index) => (
               <Grid item key={index} sx={{ justifyContent: "left" }}>
                 <BookingCard
+                  bookId={itinerary._id}
                   id={itinerary.ItineraryId._id}
                   author={itinerary.ItineraryId.author}
                   name={itinerary.ItineraryId.title}

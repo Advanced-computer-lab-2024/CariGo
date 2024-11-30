@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import logoImage from '../../../assets/itinerary.png'; // Correct relative path
 
-const MyBookedActivityCard = ({ id, name, startDate, endDate, location, status, img,price,author,NumberOfTickets,TotalPrice }) => {
+const MyBookedActivityCard = ({bookId, id, name, startDate, endDate, location, status, img,price,author,NumberOfTickets,TotalPrice }) => {
   const [isPast, setIsPast] = React.useState(false);
 
   React.useEffect(() => {
@@ -27,7 +27,7 @@ const MyBookedActivityCard = ({ id, name, startDate, endDate, location, status, 
         }
 
         await axios.patch(`/cariGo/activity/CancelActivityBooking`, {
-          ActivityId: id,
+          bookingId: bookId,
         },
         {
           headers: {
