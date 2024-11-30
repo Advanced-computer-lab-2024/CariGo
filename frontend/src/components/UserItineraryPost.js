@@ -21,6 +21,11 @@ import axios from 'axios';
 import logoImage from '../assets/itinerary.png';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
+import BookmarkIcon from '@mui/icons-material/Bookmark';
+import { useState, useEffect } from 'react';
+//import React, { useState } from 'react';
+
 export default function UserItineraryPost({
   id,
   author,
@@ -40,6 +45,15 @@ export default function UserItineraryPost({
   const navigate = useNavigate();
   const [snackbarOpen, setSnackbarOpen] = React.useState(false);
   const [snackbarMessage, setSnackbarMessage] = React.useState('');
+  const [isBookmarked, setIsBookmarked] = React.useState(false);
+  const [savedItineraries, setSavedItineraries] = React.useState([]);
+  const [userId, setUserId] = React.useState(null);
+
+  //check the role of the user 
+  const isUserTourist = () => {
+    const userRole = localStorage.getItem('role');  // Get the role from localStorage
+    return userRole === 'Tourist';  // Return true if the user is a Tourist
+  };
 
   const formatDateTime = (dateString) => {
     const options = {
@@ -125,6 +139,66 @@ export default function UserItineraryPost({
       setSnackbarOpen(true);
     }
   };
+
+  useEffect(() => {
+    const storedSavedItineraries = JSON.parse(localStorage.getItem('savedItineraries')) || [];
+    setSavedItineraries(storedSavedItineraries);
+}, []);
+
+const handleBookmark = async (e) => {
+  e.stopPropagation();
+
+  const token = localStorage.getItem('jwt');
+  const userId = localStorage.getItem('id');
+  console.log('Token:', token);
+  console.log('User ID:', userId);
+
+  if (!token || !userId) {
+    console.error('No token or user ID found. Please log in.');
+    return;
+  }
+
+  try {
+    // Get the current saved itineraries from localStorage (or state if already loaded)
+    let currentSavedItineraries = JSON.parse(localStorage.getItem('savedItineraries')) || [];
+
+    // Update the saved itineraries list based on whether it's bookmarked or not
+    const updatedSavedItineraries = isBookmarked
+      ? currentSavedItineraries.filter((itineraryId) => itineraryId !== id)
+      : [...currentSavedItineraries, id];
+
+    console.log("Updated Saved Itineraries:", updatedSavedItineraries);
+
+    // Update the saved itineraries on the backend
+    await axios.patch(
+      `/cariGo/users/update/${userId}`,
+      { savedItineraries: updatedSavedItineraries },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    // Ensure the state and localStorage are updated with the new list
+    localStorage.setItem('savedItineraries', JSON.stringify(updatedSavedItineraries));
+
+    // Update the state to trigger a re-render
+    setSavedItineraries(updatedSavedItineraries);
+    setIsBookmarked(!isBookmarked);
+    setSnackbarMessage(
+      isBookmarked
+        ? "Itinerary removed from bookmarks"
+        : "Itinerary bookmarked successfully"
+    );
+    setSnackbarOpen(true);
+  } catch (error) {
+    console.error("Error bookmarking itinerary:", error);
+    setSnackbarMessage("Failed to bookmark itinerary. Please try again later.");
+    setSnackbarOpen(true);
+  }
+};
+
 
   const handleSnackbarClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -255,6 +329,11 @@ export default function UserItineraryPost({
           <IconButton aria-label="share" onClick={handleShare}>
             <ShareIcon />
           </IconButton>
+          {isUserTourist() && (
+            <IconButton aria-label="bookmark" onClick={handleBookmark}>
+            {isBookmarked ? <BookmarkIcon /> : <BookmarkBorderIcon />}
+            </IconButton>
+          )}
         </Box>
       </CardActions>
       <Snackbar
