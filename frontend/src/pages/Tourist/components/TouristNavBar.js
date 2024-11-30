@@ -165,6 +165,7 @@ function TouristNB() {
     { label: "Logout", onClick: handleLogout },
     { label: "Change Password", onClick: handleChangePass },
     { label: "Choose Currency", onClick: handleOpenCurrencyDialog },
+    { label: "Bookmarks", onClick: handleOpenCurrencyDialog },
     { label: "Delete Account", onClick: handleDeleteAccount, color: "#ff4d4d" },
   ];
 
@@ -525,6 +526,11 @@ function TouristNB() {
               <MenuItem onClick={handleOpenCurrencyDialog}>
                 <Typography sx={{ textAlign: "center" }}>
                   Choose Currency
+                </Typography>
+              </MenuItem>
+              <MenuItem>
+                <Typography sx={{ textAlign: "center" }}>
+                  Bookmarks
                 </Typography>
               </MenuItem>
               <MenuItem onClick={handleDeleteAccount}>

@@ -251,6 +251,22 @@ const updateItinerary = async (req, res) => {
 //       res.status(500).json({ message: "An error occurred", error });
 //   }
 // };
+const readItinerariesByIds = async (req, res) => {
+  try {
+    const { ids } = req.query; // Extract the ids from query string
+    const itineraryIds = ids.split(","); // Split the ids into an array
+    // Fetch the itineraries from the database based on these IDs
+    const itineraries = await Itinerary.find({ _id: { $in: itineraryIds } })
+    .populate('author');
+    
+
+    res.status(200).json(itineraries);
+  } catch (error) {
+    console.error("Error fetching itineraries:", error);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
 
 const readAllItineraries = async (req, res) => {
   const sort = req.query.sort || "-createdAt"; // Default to "-createdAt" if no parameter is provided
@@ -928,6 +944,8 @@ module.exports = {
   suggestedItineraries,
   suggestedActivities,
   create_payment_form,
+  readItinerariesByIds,
+
 
   getDiscount,
 

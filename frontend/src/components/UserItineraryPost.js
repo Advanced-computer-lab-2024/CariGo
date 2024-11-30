@@ -150,9 +150,7 @@ const handleBookmark = async (e) => {
 
   const token = localStorage.getItem('jwt');
   const userId = localStorage.getItem('id');
-  console.log('Token:', token);
-  console.log('User ID:', userId);
-
+  
   if (!token || !userId) {
     console.error('No token or user ID found. Please log in.');
     return;
@@ -323,9 +321,7 @@ const handleBookmark = async (e) => {
 
       <CardActions disableSpacing>
         <Box sx={{ position: 'absolute', bottom: '2px', left: '2px' }}>
-          <IconButton aria-label="add to favorites">
-            <FavoriteIcon />
-          </IconButton>
+         
           <IconButton aria-label="share" onClick={handleShare}>
             <ShareIcon />
           </IconButton>

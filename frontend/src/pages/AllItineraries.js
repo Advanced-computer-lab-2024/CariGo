@@ -395,7 +395,7 @@ useEffect(() => {
                 <Grid item key={index} sx={{ display: 'flex', justifyContent: 'left' }}>
                     <UserItineraryPost
                         id={itinerary._id}
-                        author={itinerary.author?.name}
+                        author={itinerary.author?.username}
                         img={"frontend/public/assets/images/itirenary.png"}
                         start_date={itinerary.start_date}
                         end_date={itinerary.end_date}

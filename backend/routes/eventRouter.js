@@ -30,6 +30,8 @@ const {
 
 } = require("../controllers/eventController");
 const authController = require("../controllers/authController");
+const { readItinerariesByIds } = require("../controllers/eventController");
+
 const router = express.Router();
 
 router.get("/currencyConversion",currencyConversion);
@@ -43,6 +45,7 @@ router.get(
   "/getDiscount",
   getDiscount
 );
+
 
 router.get("/readSingleItinerary/:itineraryId", readSingleItinerary); // itineraries/:id
 router.get("/readSingleVintage/:vintageId", readSingleVintage);
@@ -122,5 +125,8 @@ router.post(
   authController.restrictTo("Tourist"),
   create_payment_form
 );
+
+router.get("/readItinerariesByIds", readItinerariesByIds);
+
 
 module.exports = router;
