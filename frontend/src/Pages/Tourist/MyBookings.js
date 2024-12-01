@@ -98,11 +98,11 @@ const MyBookings = () => {
         filters.status === ""
           ? true
           : filters.status === "Booked"
-          ? itinerary.Status === true && itineraryStartDate >= today
+          ? itinerary.Status === true && itineraryStartDate > today
           : filters.status === "Canceled Bookings"
           ? itinerary.Status === false
           : filters.status === "Done"
-          ? itinerary.Status === true && itineraryStartDate < today
+          ? itinerary.Status === true && itineraryStartDate <= today
           : false;
       const matchesSearchTerm =
         itinerary.ItineraryId.title &&

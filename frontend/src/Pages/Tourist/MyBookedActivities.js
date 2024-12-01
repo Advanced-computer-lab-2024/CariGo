@@ -100,11 +100,11 @@ const MyBookedActivities = () => {
         filters.status === ""
           ? true
           : filters.status === "Booked"
-          ? activity.Status === true && activityStartDate >= today
+          ? activity.Status === true && activityStartDate > today
           : filters.status === "Canceled Bookings"
           ? activity.Status === false
           : filters.status === "Done"
-          ? activity.Status === true && activityStartDate < today
+          ? activity.Status === true && activityStartDate <= today
           : false;
       const matchesSearchTerm =
         activity.ActivityId.title &&
@@ -257,7 +257,7 @@ const MyBookedActivities = () => {
                     onClick={() =>
                       openActivityReviewFormHandler(activity.ActivityId._id)
                     }
-                    disabled={!(activity.Status && today > new Date(activity.ActivityId.end_date))}
+                    disabled={!(activity.Status && today > new Date(activity.ActivityId.start_date))}
                   >
                     <RateReviewIcon />
                   </IconButton>
