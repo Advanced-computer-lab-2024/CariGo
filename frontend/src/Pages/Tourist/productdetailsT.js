@@ -85,7 +85,7 @@ const ProductDetails = () => {
                 type="secondary"
                 style={{ display: "block", marginBottom: "8px" }}
               >
-                Sold by: {(product.author.sellerName.length > 0? product.author.sellerName : product.author.username) || "Unknown Seller"}
+                Sold by: {(product.author?.sellerName.length > 0? product.author?.sellerName : product.author?.username) || "Unknown Seller"}
               </Text>
 
               <Row>
