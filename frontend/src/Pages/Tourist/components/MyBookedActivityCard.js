@@ -41,8 +41,8 @@ const MyBookedActivityCard = ({bookId, id, name, startDate, endDate, location, s
         const rate = parseFloat(JSON.parse(localStorage.getItem("conversionRate")))||1;
         console.log(rate);
         await axios.patch(`/cariGo/users/UpdateWallet`, {
-          numOfTickets:NumberOfTickets,
-          price:price,
+          numOfTickets:1,
+          price:TotalPrice,
           conversionRate:1
         },
         {

@@ -19,6 +19,12 @@ import StarIcon from '@mui/icons-material/Star';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import logoImage from '../assets/itinerary.png';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
+import BookmarkIcon from '@mui/icons-material/Bookmark';
+import { useState, useEffect } from 'react';
+//import React, { useState } from 'react';
 
 export default function UserItineraryPost({
   id,
@@ -39,15 +45,33 @@ export default function UserItineraryPost({
   const navigate = useNavigate();
   const [snackbarOpen, setSnackbarOpen] = React.useState(false);
   const [snackbarMessage, setSnackbarMessage] = React.useState('');
+  const [isBookmarked, setIsBookmarked] = React.useState(false);
+  const [savedItineraries, setSavedItineraries] = React.useState([]);
+  const [userId, setUserId] = React.useState(null);
+
+  //check the role of the user 
+  const isUserTourist = () => {
+    const userRole = localStorage.getItem('role');  // Get the role from localStorage
+    return userRole === 'Tourist';  // Return true if the user is a Tourist
+  };
 
   const formatDateTime = (dateString) => {
     const options = {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
+      //hour: '2-digit',
+      //minute: '2-digit',
+      //hour12: true,
+    };
+    return new Date(dateString).toLocaleString(undefined, options);
+  };
+
+  const formatDateHour = (dateString) => {
+    const options = {
       hour: '2-digit',
       minute: '2-digit',
-      hour12: true,
+      hour12: true, // Use 12-hour format with AM/PM
     };
     return new Date(dateString).toLocaleString(undefined, options);
   };
@@ -116,6 +140,66 @@ export default function UserItineraryPost({
     }
   };
 
+  useEffect(() => {
+    const storedSavedItineraries = JSON.parse(localStorage.getItem('savedItineraries')) || [];
+    setSavedItineraries(storedSavedItineraries);
+}, []);
+
+const handleBookmark = async (e) => {
+  e.stopPropagation();
+
+  const token = localStorage.getItem('jwt');
+  const userId = localStorage.getItem('id');
+  console.log('Token:', token);
+  console.log('User ID:', userId);
+
+  if (!token || !userId) {
+    console.error('No token or user ID found. Please log in.');
+    return;
+  }
+
+  try {
+    // Get the current saved itineraries from localStorage (or state if already loaded)
+    let currentSavedItineraries = JSON.parse(localStorage.getItem('savedItineraries')) || [];
+
+    // Update the saved itineraries list based on whether it's bookmarked or not
+    const updatedSavedItineraries = isBookmarked
+      ? currentSavedItineraries.filter((itineraryId) => itineraryId !== id)
+      : [...currentSavedItineraries, id];
+
+    console.log("Updated Saved Itineraries:", updatedSavedItineraries);
+
+    // Update the saved itineraries on the backend
+    await axios.patch(
+      `/cariGo/users/update/${userId}`,
+      { savedItineraries: updatedSavedItineraries },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    // Ensure the state and localStorage are updated with the new list
+    localStorage.setItem('savedItineraries', JSON.stringify(updatedSavedItineraries));
+
+    // Update the state to trigger a re-render
+    setSavedItineraries(updatedSavedItineraries);
+    setIsBookmarked(!isBookmarked);
+    setSnackbarMessage(
+      isBookmarked
+        ? "Itinerary removed from bookmarks"
+        : "Itinerary bookmarked successfully"
+    );
+    setSnackbarOpen(true);
+  } catch (error) {
+    console.error("Error bookmarking itinerary:", error);
+    setSnackbarMessage("Failed to bookmark itinerary. Please try again later.");
+    setSnackbarOpen(true);
+  }
+};
+
+
   const handleSnackbarClose = (event, reason) => {
     if (reason === 'clickaway') {
       return;
@@ -129,7 +213,7 @@ export default function UserItineraryPost({
     <Card
       sx={{
         width: '100%',
-        maxWidth: '900px',
+        //width: '800px',
         height: '400px',
         color: '#126782',
         fontSize: '18px',
@@ -153,15 +237,15 @@ export default function UserItineraryPost({
           image={logoImage || "/default-itinerary.jpg"}
           alt="Itinerary Image"
           sx={{
-            width: '500px',
+            width: '400px',
             height: '250px',
-            margin: '2px',
+            margin: '5px',
             borderRadius: '10px',
             boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
           }}
         />
 
-        <Box sx={{ display: 'flex', flexDirection: 'column', width: '400px', padding: '10px' }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', width: '60%', padding: '10px' }}>
           <CardHeader
             avatar={<Avatar sx={{ bgcolor: red[500] }}>{title?.charAt(0) || 'A'}</Avatar>}
             title={
@@ -182,17 +266,42 @@ export default function UserItineraryPost({
               <StarIcon sx={{ scale: '0.9' }} />
               <Typography sx={{ fontSize: '16px', marginTop: '1px' }}>{rating || "No rating"}</Typography>
             </Box>
-            <Typography sx={{ fontSize: '16px' }}>
+            
+            {/* dates box */}
+            <Box sx={{ display: 'flex', gap:'5px'}}>
+            <Box sx={{display:'flex', flexDirection:'column'}}>
+              <Box sx={{display:'flex',padding:'5px', paddingLeft:'0px'}}>
+                <CalendarMonthIcon sx={{color:'#ff4d4d'}}/>
+                <Typography sx={{marginTop:'2px'}}>{formatDateTime(start_date)}</Typography>
+              </Box>
+              <Box sx={{display:'flex',padding:'5px', paddingLeft:'0px', gap:'2px'}}>
+                <AccessTimeIcon sx={{color:'#126782',marginLeft:'20px'}}/>
+                <Typography sx={{marginTop:'2px'}}>{formatDateHour(start_date)}</Typography>
+              </Box>
+            </Box>
+            <Typography sx={{margin:'2px',marginTop:'5px', color:'#ff4d4d', fontWeight:'600'}}>to</Typography>
+            <Box sx={{display:'flex', flexDirection:'column', marginLeft:'5px'}}>
+              <Box sx={{display:'flex',padding:'5px', paddingLeft:'0px'}}>
+                <CalendarMonthIcon sx={{color:'#ff4d4d'}}/>
+                <Typography sx={{marginTop:'0px',}}>{formatDateTime(end_date)}</Typography>
+              </Box>
+              <Box sx={{display:'flex',padding:'5px', paddingLeft:'0px', gap:'2px'}}>
+                <AccessTimeIcon sx={{color:'#126782',marginLeft:'20px'}}/>
+                <Typography sx={{marginTop:'2px'}}>{formatDateHour(end_date)}</Typography>
+              </Box>
+            </Box>
+            </Box>
+            {/* <Typography sx={{ fontSize: '16px' }}>
               From: {formatDateTime(start_date)}
             </Typography>
             <Typography sx={{ fontSize: '16px' }}>
               To: {formatDateTime(end_date)}
-            </Typography>
+            </Typography> */}
 
             <Box sx={{ display: 'flex', marginTop: '5px' }}>
               <PinDropIcon />
               <Typography sx={{ marginLeft: '5px' }}>
-                Locations: {Array.isArray(locations) ? locations.join(', ') : "Not specified"}
+                {Array.isArray(locations) ? locations.join(', ') : "Not specified"}
               </Typography>
             </Box>
 
@@ -220,6 +329,11 @@ export default function UserItineraryPost({
           <IconButton aria-label="share" onClick={handleShare}>
             <ShareIcon />
           </IconButton>
+          {isUserTourist() && (
+            <IconButton aria-label="bookmark" onClick={handleBookmark}>
+            {isBookmarked ? <BookmarkIcon /> : <BookmarkBorderIcon />}
+            </IconButton>
+          )}
         </Box>
       </CardActions>
       <Snackbar

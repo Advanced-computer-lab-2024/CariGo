@@ -17,7 +17,7 @@ const purchaseSchema = new schema(
     },
     isCancelled :{
       type :Boolean ,
-      default :true
+      default :false
     }
   },
   { timestamps: true }

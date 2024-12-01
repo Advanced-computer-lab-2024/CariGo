@@ -3,12 +3,15 @@ const userModel = require("../models/User");
 const categoryModel = require("../models/Category");
 const tagModel = require("../models/Tag");
 const PromoCode = require("../models/PromoCode"); // Adjust the path as necessary
+const Purchase = require("../models/Purchase");
+const bookingModel = require("../models/Bookings");
 
 const catchAsync = require("../utils/catchAsync");
 const User = require("../models/User");
 
 const { default: mongoose } = require("mongoose");
 const bcrypt = require("bcrypt");
+const purchase = require("../models/Purchase");
 
 const addAdmin = async (req, res) => {
   const { username, password, passwordConfirm, email, about } = req.body;
@@ -292,13 +295,11 @@ const getPendingDocuments = catchAsync(async (req, res, next) => {
       return { ...user.toObject(), files };
     })
   );
-  res
-    .status(200)
-    .json({
-      status: "success",
-      results: usersWithFiles.length,
-      data: { users: usersWithFiles },
-    });
+  res.status(200).json({
+    status: "success",
+    results: usersWithFiles.length,
+    data: { users: usersWithFiles },
+  });
 });
 
 const approveDocument = catchAsync(async (req, res, next) => {
@@ -346,7 +347,7 @@ const createPromoCode = async (req, res) => {
     // Check if the promo code already exists
     const existingPromo = await PromoCode.findOne({ code });
     if (existingPromo) {
-      return res.status(400).json({ message: 'Promo code already exists' });
+      return res.status(400).json({ message: "Promo code already exists" });
     }
 
     // Create a new promo code
@@ -357,12 +358,118 @@ const createPromoCode = async (req, res) => {
       isActive: true,
     });
 
-    res.status(201).json({ message: 'Promo code created successfully', promoCode });
+    res
+      .status(201)
+      .json({ message: "Promo code created successfully", promoCode });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 };
 
+const revenueReport = async (req, res) => {
+  try {
+    let totalRevenue = 0;
+    let totalBookings = 0;
+    let totalProductRevenue = 0;
+    let totalItineraryBookings = 0;
+    let totalEventBookings = 0;
+    let totalProductSales = 0;
+    let itineraryRevenueM = Array(12).fill(0);
+    let eventRevenueM = Array(12).fill(0);
+    let productRevenueM = Array(12).fill(0);
+
+    // Calculate total product sales by summing the quantities of each purchase
+    const purchases = await Purchase.find().populate("ProductId", "price");
+    if (purchases && purchases.length > 0) {
+      totalProductSales = purchases.reduce(
+        (acc, purchase) => acc + (purchase.Quantity || 0),
+        0
+      );
+      totalProductRevenue = purchases.reduce(
+        (acc, purchase) =>
+          acc + (purchase.Quantity || 0) * (purchase.ProductId?.price || 0),
+        0
+      );
+    }
+
+    // Fetch all bookings
+    const bookings = await bookingModel
+      .find({ Status: true })
+      .populate("ItineraryId", "price")
+      .populate("ActivityId", "price");
+    console.log("Bookings found:", bookings.length);
+
+    // Calculate total revenue from bookings
+    if (bookings && bookings.length > 0) {
+      totalRevenue = bookings.reduce((acc, booking) => {
+        let price = 0;
+        if (booking.ItineraryId) {
+          price = booking.ItineraryId.price * booking.NumberOfTickets || 0;
+        } else if (booking.ActivityId) {
+          price = booking.ActivityId.price * booking.NumberOfTickets || 0;
+        } else {
+          price = booking.TotalPrice || 0;
+        }
+        // console.log("Current booking price:", price);
+        return acc + price;
+      }, 0);
+
+      // Calculate total itinerary and event bookings
+      totalItineraryBookings = bookings.filter(
+        (booking) => booking.ItineraryId
+      ).length;
+      totalEventBookings = bookings.filter(
+        (booking) => booking.ActivityId
+      ).length;
+      totalBookings = bookings.length;
+
+      // Calculate revenue per month from bookings
+      bookings.forEach((booking) => {
+        const month = new Date(booking.createdAt).getMonth();
+        if (booking.ItineraryId && booking.ItineraryId.price) {
+          const revenue = booking.ItineraryId.price * (booking.NumberOfTickets || 0);
+          console.log(`Itinerary Revenue for Month ${month}:`, revenue);
+          itineraryRevenueM[month] += revenue;
+        } else if (booking.ActivityId && booking.ActivityId.price) {
+          const revenue = booking.ActivityId.price * (booking.NumberOfTickets || 0);
+          console.log(`Activity Revenue for Month ${month}:`, revenue);
+          eventRevenueM[month] += revenue;
+        }
+      });
+      
+    }
+
+    // Calculate revenue per month from product purchases
+    purchases.forEach((purchase) => {
+      const month = new Date(purchase.createdAt).getMonth();
+      productRevenueM[month] +=
+        (purchase.Quantity || 0) * (purchase.ProductId?.price || 0);
+    });
+
+    // Send response
+    res.status(200).json({
+      status: "success",
+      data: {
+        totalRevenue,
+        totalBookings,
+        totalProductRevenue,
+        totalItineraryBookings,
+        totalEventBookings,
+        totalProductSales,
+        itineraryRevenueM,
+        eventRevenueM,
+        productRevenueM,
+      },
+    });
+  } catch (error) {
+    // Log detailed error for debugging
+    console.error("Error:", error);
+    res.status(500).json({
+      status: "error",
+      message: error.message,
+    });
+  }
+};
 
 module.exports = {
   addAdmin,
@@ -381,4 +488,5 @@ module.exports = {
   approveDocument,
   rejectDocument,
   createPromoCode,
+  revenueReport,
 };

@@ -22,7 +22,12 @@ const {
   currencyConversion,
   suggestedItineraries,
   suggestedActivities,
-  create_payment_form
+  create_payment_form,
+
+  getDiscount,
+
+  openBookings
+
 } = require("../controllers/eventController");
 const authController = require("../controllers/authController");
 const router = express.Router();
@@ -34,6 +39,10 @@ router.get(
   readAllItineraries
 ); // itineraries
 
+router.get(
+  "/getDiscount",
+  getDiscount
+);
 
 router.get("/readSingleItinerary/:itineraryId", readSingleItinerary); // itineraries/:id
 router.get("/readSingleVintage/:vintageId", readSingleVintage);
@@ -71,7 +80,7 @@ router.get("/viewAllVintage", authController.protect, viewAllVintage);
 
 router.patch(
   "/updateItinerary/:itineraryId",
-  authController.restrictTo("Tour_Guide", "Admin"),
+  authController.restrictTo("Tour_Guide", "Admin", "Tourist"),
   updateItinerary
 ); // itineraries/:id
 router.delete(
@@ -79,7 +88,6 @@ router.delete(
   authController.restrictTo("Tour_Guide", "Admin"),
   deleteItinerary
 );
-
 router.get("/readAllVintages", readAllVintages);
 router.patch("/updateVintage/:vintageId", updateVintage);
 router.delete("/deleteVintage/:id", deleteVintage);
@@ -92,7 +100,11 @@ router.post(
   authController.restrictTo("Tourist"),
   BookItinerary
 );
-
+router.post(
+  "/openBookings/:id",
+  authController.restrictTo("Tour_Guide"),
+  openBookings
+);
 router.get(
   "/MyItineraryBookings",
   authController.restrictTo("Tourist"),

@@ -4,6 +4,8 @@ const User = require("../models/User");
 const mongoose = require("mongoose");
 const Order = require("../models/Order");
 const Purchase = require("../models/Purchase");
+const schedule = require("node-schedule");
+const moment = require('moment');
 
 const getCart = async (req, res) => {
   try {
@@ -150,8 +152,8 @@ const checkout = async (req, res) => {
 
       // Check if enough stock is available
       if (item.quantity > product.quantity) {
-        return res.status(400).json({ 
-          message: `Not enough stock for ${product.name}. Available: ${product.quantity}` 
+        return res.status(400).json({
+          message: `Not enough stock for ${product.name}. Available: ${product.quantity}`,
         });
       }
       totalOrderPrice += product.price * item.quantity;
@@ -167,6 +169,7 @@ const checkout = async (req, res) => {
       })),
       shippingAddress,
       totalPrice: totalOrderPrice,
+      deliveryDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
     });
 
     // Update product stock after order creation
@@ -182,7 +185,7 @@ const checkout = async (req, res) => {
         ProductId: item.productId._id,
         Quantity: item.quantity,
       });
-      console.log("new purchase is "+purchase);
+      console.log("new purchase is " + purchase);
     }
     // Clear the user's cart
     cart.products = [];
@@ -196,6 +199,144 @@ const checkout = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+// Schedule job to run every day at midnight
+const updateOrderStates = schedule.scheduleJob("0 0 * * *", async () => {
+  try {
+    const today = new Date();
 
-    
-module.exports = { getCart, editProductInCart, removeItemFromCart, clearCart, checkout };
+    // Find all non-cancelled orders
+    const orders = await Order.find({ state: { $ne: "cancelled" } });
+
+    for (const order of orders) {
+      const daysUntilDelivery = Math.ceil(
+        (order.deliveryDate - today) / (1000 * 60 * 60 * 24)
+      );
+
+      if (daysUntilDelivery <= 0) {
+        order.state = "delivered";
+      } else if (daysUntilDelivery <= 5) {
+        order.state = "shipped";
+      } else {
+        order.state = "processing";
+      }
+
+      await order.save();
+    }
+  } catch (error) {
+    console.error("Error updating order states:", error);
+  }
+});
+
+
+const CancelOrder = async (req, res) => {
+  const UserId = req.user.id;  // User ID from the request body (authenticated user)
+  const { OrderId } = req.body;  // Order ID from the request body
+
+  // Check if the provided OrderId and UserId are valid ObjectIds
+  if (
+    mongoose.Types.ObjectId.isValid(OrderId) &&
+    mongoose.Types.ObjectId.isValid(UserId)
+  ) {
+    try {
+      // Fetch the order to be canceled
+      const order = await Order.findById(OrderId);  // Populate product details
+
+      if (!order) {
+        return res.status(404).json({ message: "Order not found" });
+      }
+
+      // Check if the order belongs to the logged-in user
+      if (order.userId.toString() !== UserId) {
+        return res.status(403).json({ message: "Unauthorized to cancel this order" });
+      }
+
+  
+      for (const item of order.products) {
+        await Product.findByIdAndUpdate(item.productId._id, {
+          $inc: { quantity: item.quantity },
+        });
+      }
+
+      // Mark the order as canceled in the Order model
+      order.isCancelled = true;
+      await order.save();  // Save the updated order
+      if (order.purchaseIds && order.purchaseIds.length > 0) {
+        await Purchase.updateMany(
+          { _id: { $in: order.purchaseIds } },  // Find purchases whose _id is in the purchaseIds array
+          { $set: { isCancelled: true } }  // Set isCancelled to true for those purchases
+        );
+      }
+
+      // Respond with a success message
+      res.status(200).json({ message: "Order canceled successfully", order });
+    } catch (error) {
+      // Catch any errors and send a failure response
+      console.error("Error canceling order:", error);
+      res.status(500).json({ message: "Error processing cancellation", error: error.message });
+    }
+  } else {
+    res.status(400).json({ message: "Invalid OrderId or UserId" });
+  }
+};
+
+
+
+async function getMyOrders(req, res) {
+  try {
+    // 1. Fetch orders by userId
+    const orders = await Order.find({ userId: req.user.id });
+
+    const currentOrders = [];
+    const pastOrders = [];
+
+    // 2. Loop through each order and set deliveryDate, state
+    for (const order of orders) {
+      const createdAt = moment(order.createdAt);
+      const deliveryDate = createdAt.add(5, 'days'); // deliveryDate is createdAt + 5 days
+
+      // 3. Determine the state based on deliveryDate and isCancelled
+      let state = order.state; // Default to the current state of the order
+
+      // If the order is cancelled, set state to 'cancelled'
+      if (order.isCancelled) {
+        state = 'cancelled';
+      } else {
+        const now = moment();
+
+        // If the deliveryDate has passed and is not cancelled, set state to 'delivered'
+        if (now.isAfter(deliveryDate)) {
+          state = 'delivered';
+        } 
+        // If only 2 days or less remaining to the deliveryDate, set state to 'shipped'
+        else if (deliveryDate.diff(now, 'days') <= 2) {
+          state = 'shipped';
+        } 
+        // Otherwise, keep it as 'processing'
+        else {
+          state = 'processing';
+        }
+      }
+
+      // 4. Update the state (optional if you want to persist the changes)
+      await order.updateOne({ state });
+
+      // 5. Add the order to current or past based on its state
+      const orderData = { ...order.toObject(), deliveryDate, state };
+
+      if (state === 'delivered' || state === 'cancelled') {
+        pastOrders.push(orderData);
+      } else {
+        currentOrders.push(orderData);
+      }
+    }
+
+    // 6. Return the response with current and past orders
+    res.json({ currentOrders, pastOrders });
+  } catch (error) {
+    console.error('Error fetching orders:', error);
+    res.status(500).json({ message: 'An error occurred while fetching your orders.' });
+  }
+}
+
+   
+module.exports = { getCart, editProductInCart, removeItemFromCart, clearCart, checkout ,getMyOrders,CancelOrder};

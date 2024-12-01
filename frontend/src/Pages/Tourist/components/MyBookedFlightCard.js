@@ -66,9 +66,9 @@ const MyBookedFlightCard = ({
         console.log(rate);
 
         await axios.patch('/cariGo/users/UpdateWallet', {
-          numOfTickets: NumberOfTickets,
-          price: price,
-          conversionRate: rate,
+          numOfTickets: 1,
+          price: TotalPrice,
+          conversionRate: 1,
         }, {
           headers: {
             Authorization: `Bearer ${token}`,

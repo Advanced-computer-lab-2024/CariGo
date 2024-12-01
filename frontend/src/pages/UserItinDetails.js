@@ -18,9 +18,12 @@ import DirectionsBusIcon from "@mui/icons-material/DirectionsBus";
 import HotelIcon from "@mui/icons-material/Hotel";
 import AccessibleIcon from "@mui/icons-material/Accessible";
 import Divider from "@mui/material/Divider";
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+
 const ItineraryDetails = () => {
   const { id } = useParams(); // Get the itinerary ID from the URL
   const [itinerary, setItinerary] = useState(null);
+  const [localInterestedUsers, setLocalInterestedUsers] = useState([]);
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -50,6 +53,9 @@ const ItineraryDetails = () => {
 
         const data = await response.json();
         setItinerary(data);
+        if(data.interestedUsers) {
+          setLocalInterestedUsers(data.interestedUsers);
+        }
       } catch (error) {
         console.error("Error fetching itinerary details:", error);
       }
@@ -76,21 +82,35 @@ const ItineraryDetails = () => {
     drop_off,
     accessibility,
     title,
-    isOpened,
+    isOpened
   } = itinerary;
 
-  // Function to format the date and time
-  const formatDateTime = (dateString) => {
+  // if (itinerary.interestedUsers) {
+  //   setInterestedUsers(itinerary.interestedUsers);
+  // }
+
+   // Function to format the date and time
+   const formatDateTime = (dateString) => {
     const options = {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      //hour: '2-digit',
+      //minute: '2-digit',
+      //hour12: true,
     };
     return new Date(dateString).toLocaleString(undefined, options);
   };
+
+  const formatDateHour = (dateString) => {
+    const options = {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true, // Use 12-hour format with AM/PM
+    };
+    return new Date(dateString).toLocaleString(undefined, options);
+  };
+
 
   // Format activities to include start and end dates in the correct format
   const formattedActivities = activities.map((activity) => ({
@@ -99,6 +119,24 @@ const ItineraryDetails = () => {
     startDate: formatDateTime(activity.start_date),
     endDate: formatDateTime(activity.end_date),
   }));
+
+  const handleInterestedUser = async (users) => {
+    try {
+      const response = await fetch(`/cariGo/Event/updateItinerary/${id}`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          interestedUsers: users,
+        }),
+      });
+    } catch (error) {
+      console.error("Error", error);
+    }
+  };
+
   const conversionRate = localStorage.getItem("conversionRate") || 1;
   const code = localStorage.getItem("currencyCode") || "EGP";
   const token = localStorage.getItem("jwt");
@@ -181,26 +219,24 @@ const ItineraryDetails = () => {
               >
                 Itinerary Details
               </Typography>
-
+            {/* start and end date */}
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={6}>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      marginBottom: "10px",
-                    }}
-                  >
-                    <AccessTimeIcon
-                      sx={{ marginRight: "10px", color: "#126782" }}
-                    />
-                    <Box>
-                      <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                  <Box sx={{ display: "flex",margin: "2% 0", }}>
+                    <CalendarMonthIcon sx={{color:'#ff4d4d', fontSize:'30px',}}/>
+                    <Box sx={{color:'#126782', marginLeft:'10px',display:'flex', flexDirection:'column', gap:'5px'}}>
+                      {/* <Typography variant="body1" sx={{ fontWeight: "bold" }}>
                         Start Date:
-                      </Typography>
-                      <Typography variant="body2">
+                      </Typography> */}
+                      <Typography variant="body2" sx={{fontSize:'18px'}}>
                         {formatDateTime(start_date)}
                       </Typography>
+                      <Box sx={{display:'flex', gap:'5px', color:'#126782'}}>
+                        <AccessTimeIcon sx={{fontSize: "22px",}}/>
+                        <Typography sx={{ }}>
+                            {formatDateHour(start_date)}
+                        </Typography>
+                        </Box>
                     </Box>
                   </Box>
                 </Grid>
@@ -225,20 +261,21 @@ const ItineraryDetails = () => {
                     </Box>
                   </Box>
                 </Grid>
+                {/* end of start and end date */}
                 <Grid item xs={12}>
                   <Box
                     sx={{
                       display: "flex",
-                      alignItems: "center",
+                      //alignItems: "center",
                       marginBottom: "10px",
                     }}
                   >
                     <PinDropIcon
-                      sx={{ marginRight: "10px", color: "#126782" }}
+                      sx={{ fontSize:'30px', color: "#ff4d4d" }}
                     />
-                    <Box>
+                    <Box sx={{color:'#126782', marginLeft:'10px',display:'flex', flexDirection:'column', gap:'5px'}}>
                       <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                        Locations:
+                      Location {locations.length > 1 ? 's' : ''}
                       </Typography>
                       <Typography variant="body2">
                         {locations?.join(", ") || "Not specified"}
@@ -250,16 +287,16 @@ const ItineraryDetails = () => {
                   <Box
                     sx={{
                       display: "flex",
-                      alignItems: "center",
+                      //alignItems: "center",
                       marginBottom: "10px",
                     }}
                   >
                     <AttachMoneyIcon
-                      sx={{ marginRight: "10px", color: "#126782" }}
+                      sx={{ fontSize:'30px', color: "#ff4d4d" }}
                     />
-                    <Box>
+                    <Box sx={{color:'#126782', marginLeft:'10px',display:'flex', flexDirection:'column', gap:'5px'}}>
                       <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                        Price:
+                        Price
                       </Typography>
                       <Typography variant="body2">
                         {price
@@ -485,7 +522,7 @@ const ItineraryDetails = () => {
                       This itinerary is not yet open for booking. Check back
                       later for updates!
                     </Typography>
-                    <Button
+                    {!localInterestedUsers.includes(localStorage.getItem("id"))?<Button
                       variant="outlined"
                       color="primary"
                       fullWidth
@@ -496,9 +533,21 @@ const ItineraryDetails = () => {
                           backgroundColor: "#e6f7ff",
                         },
                       }}
+                      onClick={() => {
+                        setLocalInterestedUsers([...localInterestedUsers, localStorage.getItem("id")]);
+                        let users = [
+                          ...localInterestedUsers,
+                          localStorage.getItem("id"),
+                        ];
+                        console.log("ernker " + users);
+                        handleInterestedUser(users);
+                      }}
                     >
                       Notify Me When Available
-                    </Button>
+                    </Button>:
+                    <Typography variant="body1" sx={{ marginBottom: "15px" }}>
+                    You will be notified when this itinerary is available for booking.
+                  </Typography>}
                   </Box>
                 )}
               </Paper>
