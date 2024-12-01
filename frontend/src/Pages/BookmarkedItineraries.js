@@ -7,11 +7,15 @@ import {
   Paper,
   InputBase,
   IconButton,
+  Grid,
+  Chip,
+  Menu,
+  MenuItem,
+  Button,
 } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
-import FilterAltIcon from "@mui/icons-material/FilterAlt";
+
+import SortIcon from "@mui/icons-material/Sort";
 import NavBar from "./Tourist/components/TouristNavBar";
-import GuestNavBar from "../components/NavBarTourist";
 import ItineraryList from "../components/UserItineraryList";
 import SelectTags from "../components/SelectTags";
 
@@ -20,7 +24,7 @@ export default function TouristItineraries() {
   const [error, setError] = useState(null);
   const [itineraries, setItineraries] = useState([]);
   const [tourist, setTourist] = useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
+
   const [filters, setFilters] = useState({
     price: "",
     language: "",
@@ -28,9 +32,11 @@ export default function TouristItineraries() {
     startDate: "",
   });
 
-  //handles filter menu opening and closing
   const [anchorEl, setAnchorEl] = useState(null);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [anchorE2, setAnchorE2] = useState(null);
+  const [sortOption, setSortOption] = useState("");
+
 
   const handleFilterClick = (event) => {
     if (isFilterOpen) {
@@ -46,10 +52,6 @@ export default function TouristItineraries() {
     setIsFilterOpen(false);
   };
 
-  //handling sort
-  const [anchorE2, setAnchorE2] = useState(null);
-  const [sortOption, setSortOption] = useState("");
-
   const handleSortClick = (event) => {
     setAnchorE2(event.currentTarget);
   };
@@ -59,8 +61,8 @@ export default function TouristItineraries() {
   };
 
   const handleSortChange = (sortValue) => {
-    setSortOption(sortValue); // Set the selected sort option
-    handleSortClose(); // Close the menu
+    setSortOption(sortValue);
+    handleSortClose();
   };
 
   const fetchSavedItineraries = async () => {
@@ -156,79 +158,48 @@ export default function TouristItineraries() {
 
   return (
     <Box sx={{ minHeight: "100vh", backgroundColor: "#f5f5f5" }}>
-      {!tourist ? <GuestNavBar /> : <NavBar />}
+       <NavBar />
       <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+     
         <Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              mb: 3,
+        <Grid item xs={5}>
+        <Typography 
+            variant="h4" 
+            component="h1" 
+            gutterBottom 
+            sx={{ 
+                fontWeight: "bold", 
+                fontFamily: "Roboto, sans-serif", 
+                color: "#004c74", 
+                textAlign: "center" 
             }}
-          >
-            <Typography variant="h4" component="h1" gutterBottom>
-              My Saved Itineraries
-            </Typography>
-            <Box sx={{ display: "flex", gap: 2 }}>
-              <Paper
-                component="form"
-                sx={{
-                  p: "2px 4px",
-                  display: "flex",
-                  alignItems: "center",
-                  width: 400,
-                }}
-              >
-                <InputBase
-                  sx={{ ml: 1, flex: 1 }}
-                  placeholder="Search Itineraries"
-                  inputProps={{ "aria-label": "search itineraries" }}
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-                <IconButton
-                  type="button"
-                  sx={{ p: "10px" }}
-                  aria-label="search"
-                  onClick={handleSearch}
-                >
-                  <SearchIcon />
-                </IconButton>
-              </Paper>
-              <IconButton
-                aria-label="filter"
-                onClick={() => {
-                  /* Add filter logic */
-                }}
-              >
-                <FilterAltIcon />
-              </IconButton>
-            </Box>
-          </Box>
-
-          {loading && <CircularProgress />}
-          {error && <Typography color="error">{error}</Typography>}
-
-          <Box
-            sx={{
-              height: "calc(100vh - 250px)",
-              overflowY: "auto",
-              "&::-webkit-scrollbar": {
-                width: "8px",
-              },
-              "&::-webkit-scrollbar-thumb": {
-                backgroundColor: "#ff4d4d",
-                borderRadius: "4px",
-              },
-              "&::-webkit-scrollbar-track": {
-                backgroundColor: "#f1f1f1",
-                borderRadius: "4px",
-              },
-            }}
-          >
-            <ItineraryList fetched={itineraries} />
-          </Box>
+            >
+            My Saved Itineraries
+        </Typography>
+            </Grid>
+     
+            <Box
+        sx={{
+          height: "calc(100vh - 50px)", // Reduced subtraction to increase the height
+          overflowY: "auto",
+          mt: 3,
+          ml: -15,
+          "&::-webkit-scrollbar": {
+            width: "8px",
+          },
+          "&::-webkit-scrollbar-thumb": {
+            backgroundColor: "#ff4d4d",
+            borderRadius: "4px",
+          },
+          "&::-webkit-scrollbar-track": {
+            backgroundColor: "#f1f1f1",
+            borderRadius: "4px",
+          },
+        }}
+      >
+    <ItineraryList fetched={itineraries} />
+  </Box>
+       
         </Paper>
       </Container>
     </Box>

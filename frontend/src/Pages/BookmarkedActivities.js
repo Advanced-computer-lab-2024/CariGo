@@ -1,8 +1,3 @@
-import ReactDOM from "react-dom/client";
-import "../styles/index.css";
-import App from "../App";
-import NavBar from "./Tourist/components/TouristNavBar";
-import ActivityList from "../components/ActivityListUser";
 import React, { useState, useEffect } from "react";
 import {
   Box,
@@ -12,11 +7,16 @@ import {
   TextField,
   Typography,
   CircularProgress,
+  Container,
+  Paper,
+  Grid,
+  AppBar,
+  Toolbar,
+  IconButton,
 } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
-import IconButton from "@mui/material/IconButton";
-
-import FilterAltIcon from "@mui/icons-material/FilterAlt";
+import SortIcon from "@mui/icons-material/Sort";
+import NavBar from "./Tourist/components/TouristNavBar";
+import ActivityList from "../components/ActivityListUser";
 
 export default function UserViewActivities() {
   const [loading, setLoading] = useState(false);
@@ -191,55 +191,54 @@ export default function UserViewActivities() {
   }, []);
 
   return (
-    <div>
-      <NavBar />
-
-      <Box
-        sx={{
-          width: "1150px",
-          overflow: "hidden",
-          margin: "0 auto",
-          padding: "20px",
-          height: "80vh", // Set a fixed height for the scrolling area
-
-          "&::-webkit-scrollbar": {
-            display: "none", // Hides the scrollbar for WebKit browsers (Chrome, Safari)
-          },
-        }}
-      >
-        {Boolean(anchorEl) && ( // Conditional rendering based on anchorEl
-          <Box
-            sx={{
-              //padding: '20px',
-              paddingTop: "10px",
-              display: "flex",
-              flexDirection: "column",
-              borderRadius: "20px",
-              backgroundColor: "white",
-              borderColor: "1px solid #ff4d4d",
-              width: "900px",
+    <Box sx={{ minHeight: "100vh", backgroundColor: "#f5f5f5" }}>
+    <NavBar />
+   <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+  
+     <Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
+     <Grid item xs={5}>
+        <Typography 
+            variant="h4" 
+            component="h1" 
+            gutterBottom 
+            sx={{ 
+                fontWeight: "bold", 
+                fontFamily: "Roboto, sans-serif", 
+                color: "#004c74", 
+                textAlign: "center" 
             }}
-          ></Box>
-        )}
-      </Box>
-      <Box
-        sx={{
-          height: "100%",
-          marginLeft: "100px",
-          width: "100%",
-          display: "flex",
-          flexDirection: "column",
-          gap: "15px",
-          overflowX: "hidden",
-          "&::-webkit-scrollbar": { display: "none" },
-        }}
-      >
-        {" "}
-        {/* Enable vertical scrolling only */}
-        <ActivityList fetchedActivities={activities} />
-      </Box>
-    </div>
-  );
+            >
+            My Saved Activities
+        </Typography>
+         </Grid>
+  
+         <Box
+     sx={{
+       height: "calc(100vh - 50px)", // Reduced subtraction to increase the height
+       overflowY: "auto",
+       mt: 3,
+       ml: -15,
+       "&::-webkit-scrollbar": {
+         width: "8px",
+       },
+       "&::-webkit-scrollbar-thumb": {
+         backgroundColor: "#ff4d4d",
+         borderRadius: "4px",
+       },
+       "&::-webkit-scrollbar-track": {
+         backgroundColor: "#f1f1f1",
+         borderRadius: "4px",
+       },
+     }}
+   >
+          <ActivityList fetchedActivities={activities} />
+          
+  </Box>
+       
+        </Paper>
+      </Container>
+    </Box>
+    );
 }
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
