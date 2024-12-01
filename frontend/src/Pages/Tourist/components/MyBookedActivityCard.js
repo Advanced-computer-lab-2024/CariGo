@@ -10,8 +10,9 @@ const MyBookedActivityCard = ({bookId, id, name, startDate, endDate, location, s
   React.useEffect(() => {
     const checkDate = () => {
       const today = new Date();
-      const start = new Date(endDate);
-      setIsPast(start < today); // Sets isPast to true if startDate is before today
+      const start = new Date(startDate);
+
+      setIsPast(start <= today); // Sets isPast to true if startDate is before today
     };
 
     checkDate();

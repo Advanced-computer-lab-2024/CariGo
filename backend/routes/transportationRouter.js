@@ -24,5 +24,5 @@ router.patch('/updateTransportation/:id',[authController.protect ,authController
 router.delete('/deleteTransportation/:id', [authController.protect ,authController.restrictTo("Advertiser")],transportationController.deleteTransportation);
 
 router.get('/MyBookings',[authController.protect,authController.restrictTo("Tourist")],transportationController.MyTransportationBookings);
-router.patch('/CancelBooking/:TransportationId',[authController.protect,authController.restrictTo("Tourist")],transportationController.CancelBooking);
+router.patch('/CancelBooking/:bookId',[authController.protect,authController.restrictTo("Tourist")],transportationController.CancelBooking);
 module.exports = router;

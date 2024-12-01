@@ -768,13 +768,19 @@ const CancelItineraryBooking = async (req, res) => {
             message: "Bookings canceled successfully",
             updatedBookingsCount: bookings.modifiedCount, // shows how many bookings were updated
           });
+          console.log("???????????in first????????????");
           const canceled = await bookingModel.findOne({
             ItineraryId: ItineraryId,
             status: true,
           });
+          console.log("???????????in second????????????");
           if (!canceled) {
-            await Itinerary.findByIdAndUpdate(ItineraryId, { isBooked: false });
+            await Itinerary.updateOne(
+              { _id: ItineraryId },
+              { $set: { isBooked: false } }
+            );
           }
+          console.log("???????????in third????????????");
         } else {
           res.status(400).json({
             message:
