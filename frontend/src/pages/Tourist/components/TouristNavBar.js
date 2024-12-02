@@ -12,6 +12,11 @@ import { Link } from "react-router-dom";
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import CurrencyConversion from "../../../components/CurrencyConversion";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import LogoutIcon from '@mui/icons-material/Logout';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
 
 const pages = [
   "Suggested For You",
@@ -148,25 +153,19 @@ function TouristNB() {
   const handleCloseComplaintsMenu = () => setAnchorElComplaints(null); // Close complaints menu
 
   // handling side bar
-  const [isDrawerOpen, setDrawerOpen] = useState(false);
+   const [drawerOpen, setDrawerOpen] = useState(false);
 
-  const toggleDrawer = (open) => (event) => {
-    if (
-      event.type === "keydown" &&
-      (event.key === "Tab" || event.key === "Shift")
-    ) {
-      return;
-    }
-    setDrawerOpen(open);
-  };
-
-  const userOptions = [
-    { label: "My Profile", onClick: loadProfile },
-    { label: "Logout", onClick: handleLogout },
-    { label: "Change Password", onClick: handleChangePass },
-    { label: "Choose Currency", onClick: handleOpenCurrencyDialog },
-    { label: "Delete Account", onClick: handleDeleteAccount, color: "#ff4d4d" },
-  ];
+   // Function to toggle the drawer open/close
+   const toggleDrawer = () => {
+    setDrawerOpen(!drawerOpen);
+   };
+  // const userOptions = [
+  //   { label: "My Profile", onClick: loadProfile },
+  //   { label: "Logout", onClick: handleLogout },
+  //   { label: "Change Password", onClick: handleChangePass },
+  //   { label: "Choose Currency", onClick: handleOpenCurrencyDialog },
+  //   { label: "Delete Account", onClick: handleDeleteAccount, color: "#ff4d4d" },
+  // ];
 
   return (
     <AppBar position="static" sx={{ backgroundColor: "#004c74" , padding:'0.5%' ,}}>
@@ -497,49 +496,81 @@ function TouristNB() {
           {/* User Settings Menu */}
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+              <IconButton onClick={toggleDrawer} sx={{ p: 0 }}>
                 <Avatar alt="User Avatar" />
               </IconButton>
             </Tooltip>
-            <Menu
-              sx={{ mt: "45px" }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{ vertical: "top", horizontal: "right" }}
-              keepMounted
-              transformOrigin={{ vertical: "top", horizontal: "right" }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
+
+            {/* side bar */}
+            <Drawer
+              anchor="right"
+              open={drawerOpen}
+              onClose={toggleDrawer}
+              PaperProps={{
+              sx:{
+                width:'250px', 
+                backgroundColor:'#004c74', 
+                color:'white',
+                borderLeft:'1px solid #126782',
+                //position:'relative',
+              }
+              }}
             >
-              <MenuItem onClick={loadProfile}>
-                <Typography sx={{ textAlign: "center" }}>My Profile</Typography>
-              </MenuItem>
-              <MenuItem onClick={handleLogout}>
-                <Typography sx={{ textAlign: "center" }}>Logout</Typography>
-              </MenuItem>
-              <MenuItem onClick={handleChangePass}>
-                <Typography sx={{ textAlign: "center" }}>
+              {/* back arrow to close */}
+              <IconButton onClick={toggleDrawer} sx={{ alignSelf: 'flex-start' }}>
+                <ArrowBackIcon sx={{fill:'white',}}/>
+              </IconButton>
+              {/* Drawer Content */}
+              <Box sx={{ display: "flex",flexDirection:"column", gap: "2%",padding:'5%'}}>
+                <Box sx={{ display: "flex",alignItems: "center",gap:'5px' ,":&hover:":{cursor:'pointer'} ,}}>
+                  <Tooltip sx={{scale:'0.8'}}>
+                      <Avatar alt="User Avatar" />
+                  </Tooltip>
+                  <Typography onClick={loadProfile} sx={{fontSize:'18px' ,paddingTop:'2%' ,}}>
+                    My Profile
+                  </Typography>
+                </Box>
+                <Divider sx={{ backgroundColor: "lightgray", height: "1px",borderRadius:'2px',}}/>
+                <Box sx={{ display: "flex",alignItems: "center",gap:'5px' ,":&hover:":{cursor:'pointer'},padding:'2%' }}>
+                  <EditIcon sx={{padding:'1%',fontSize:'25px'}}/>
+                  <Typography onClick={handleChangePass} sx={{fontSize:'18px' , }}>
                   Change Password
-                </Typography>
-              </MenuItem>
-              <MenuItem onClick={handleOpenCurrencyDialog}>
-                <Typography sx={{ textAlign: "center" }}>
+                  </Typography>
+                </Box>
+                <Divider sx={{ backgroundColor: "lightgray", height: "1px",borderRadius:'2px',}}/>
+                <Box sx={{ display: "flex",alignItems: "center",gap:'5px' ,":&hover:":{cursor:'pointer'},padding:'2%' }}>
+                  <CurrencyExchangeIcon sx={{padding:'1%',fontSize:'25px'}}/>
+                  <Typography onClick={handleOpenCurrencyDialog} sx={{fontSize:'18px' , }}>
                   Choose Currency
-                </Typography>
-              </MenuItem>
-              <MenuItem onClick={handleDeleteAccount}>
-                <Typography sx={{ textAlign: "center", color: "#ff4d4d" }}>
+                  </Typography>
+                </Box>
+                <Divider sx={{ backgroundColor: "lightgray", height: "1px",borderRadius:'2px',}}/>
+                <Box sx={{ display: "flex",alignItems: "center",gap:'5px' ,":&hover:":{cursor:'pointer'},padding:'2%' }}>
+                  <LogoutIcon sx={{padding:'1%',fontSize:'28px'}}/>
+                  <Typography onClick={handleLogout} sx={{fontSize:'18px' , }}>
+                    Logout
+                  </Typography>
+                </Box>
+                <Divider sx={{ backgroundColor: "lightgray", height: "1px",borderRadius:'2px',}}/>
+                <Box sx={{ display: "flex",alignItems: "center",gap:'5px' ,":&hover:":{cursor:'pointer'} ,padding:'2%', color:'#ff4d4d'}}>
+                  <DeleteIcon sx={{padding:'1%',fontSize:'28px'}}/>
+                  <Typography onClick={handleDeleteAccount} sx={{fontSize:'18px' , }}>
                   delete account
-                </Typography>
-              </MenuItem>
+                  </Typography>
+                </Box>
+                <Divider sx={{ backgroundColor: "lightgray", height: "1px",borderRadius:'2px',}}/>
+                </Box>
+            </Drawer>
+           
+             
               {/* Button to Open Currency Dialog */}
 
               {/* Currency Conversion Dialog */}
-              <CurrencyConversion
+              {/* <CurrencyConversion
                 open={openCurrencyDialog}
                 onClose={handleCloseCurrencyDialog}
               />
-            </Menu>
+            </Menu> */}
           </Box>
         </Toolbar>
       </Container>

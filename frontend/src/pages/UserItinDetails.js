@@ -223,7 +223,7 @@ const ItineraryDetails = () => {
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={6}>
                   <Box sx={{ display: "flex",margin: "2% 0", }}>
-                    <CalendarMonthIcon sx={{color:'#ff4d4d', fontSize:'30px',}}/>
+                    <CalendarMonthIcon sx={{color:'#ff4d4d', fontSize:'28px',}}/>
                     <Box sx={{color:'#126782', marginLeft:'10px',display:'flex', flexDirection:'column', gap:'5px'}}>
                       {/* <Typography variant="body1" sx={{ fontWeight: "bold" }}>
                         Start Date:
@@ -241,23 +241,21 @@ const ItineraryDetails = () => {
                   </Box>
                 </Grid>
                 <Grid item xs={12} sm={6}>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      marginBottom: "10px",
-                    }}
-                  >
-                    <AccessTimeIcon
-                      sx={{ marginRight: "10px", color: "#126782" }}
-                    />
-                    <Box>
-                      <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                        End Date:
-                      </Typography>
-                      <Typography variant="body2">
+                  <Box sx={{ display: "flex",margin: "2% 0", }}>
+                    <CalendarMonthIcon sx={{color:'#ff4d4d', fontSize:'28px',}}/>
+                    <Box sx={{color:'#126782', marginLeft:'10px',display:'flex', flexDirection:'column', gap:'5px'}}>
+                      {/* <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                        Start Date:
+                      </Typography> */}
+                      <Typography variant="body2" sx={{fontSize:'18px'}}>
                         {formatDateTime(end_date)}
                       </Typography>
+                      <Box sx={{display:'flex', gap:'5px', color:'#126782'}}>
+                        <AccessTimeIcon sx={{fontSize: "22px",}}/>
+                        <Typography sx={{ }}>
+                            {formatDateHour(end_date)}
+                        </Typography>
+                        </Box>
                     </Box>
                   </Box>
                 </Grid>

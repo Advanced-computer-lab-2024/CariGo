@@ -1,16 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../../styles/index.css";
 import TouristNB from "./components/TouristNavBar";
-import {
-  Box,
-  Grid,
-  Menu,
-  TextField,
-  Button,
-  IconButton,
-  CircularProgress,
-  Typography,
-  MenuItem,
+import { Box,Grid,Menu,TextField,Button,IconButton,CircularProgress,Typography,MenuItem,
 } from "@mui/material";
 import { styled, alpha } from "@mui/material/styles";
 import SearchIcon from "@mui/icons-material/Search";
@@ -21,50 +12,12 @@ import PersonPinIcon from "@mui/icons-material/PersonPin"; // New icon for Tour 
 import ItineraryReviewForm from "frontend/src/components/itineraryReviewForm.js"; // Import the itinerary review form
 import TourGuideReviewForm from "frontend/src/components/TourGuideReviewForm.js"; // Import the new Tour Guide review form
 
-const Search = styled("div")(({ theme }) => ({
-  position: "relative",
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.common.white, 0.15),
-  "&:hover": {
-    backgroundColor: alpha(theme.palette.common.white, 0.25),
-  },
-  marginRight: theme.spacing(2),
-  marginLeft: 0,
-  width: "100%",
-  [theme.breakpoints.up("sm")]: {
-    marginLeft: theme.spacing(3),
-    width: "auto",
-  },
-}));
-
-const SearchIconWrapper = styled("div")(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: "100%",
-  position: "absolute",
-  pointerEvents: "none",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: "inherit",
-  "& .MuiInputBase-input": {
-    padding: theme.spacing(1, 1, 1, 0),
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create("width"),
-    width: "100%",
-    [theme.breakpoints.up("md")]: {
-      width: "20ch",
-    },
-  },
-}));
 
 const MyBookings = () => {
   const [itineraries, setItineraries] = useState([]);
   const [filteredActivities, setFilteredActivities] = useState([]);
   const [filters, setFilters] = useState({
-    status: "",
+    status: "All",
   });
   const [searchTerm, setSearchTerm] = useState("");
   const [openReviewForm, setOpenReviewForm] = useState(false); // State to control form visibility for itinerary review
@@ -90,30 +43,37 @@ const MyBookings = () => {
     setOption("");
   };
 
-  const handleSearch = () => {
-    const today = new Date();
-    const filtered = itineraries.filter((itinerary) => {
-      const itineraryStartDate = new Date(itinerary.ItineraryId.start_date);
-      const matchesStatus =
-        filters.status === ""
-          ? true
-          : filters.status === "Booked"
-          ? itinerary.Status === true && itineraryStartDate >= today
-          : filters.status === "Canceled Bookings"
-          ? itinerary.Status === false
-          : filters.status === "Done"
-          ? itinerary.Status === true && itineraryStartDate < today
-          : false;
-      const matchesSearchTerm =
-        itinerary.ItineraryId.title &&
-        itinerary.ItineraryId.title
-          .toLowerCase()
+    // status filtering
+    useEffect(() => {
+      const filtered = itineraries.filter((itinerary) => {
+        // Filtering based on status
+        const itineraryStartDate = new Date(itinerary.ItineraryId.start_date);
+        const today = new Date();
+        const matchesStatus =
+          filters.status === "All"
+            ? true
+            : filters.status === "Booked"
+            ? itinerary.Status === true && itineraryStartDate >= today
+            : filters.status === "Canceled Bookings"
+            ? itinerary.Status === false
+            : filters.status === "Done"
+            ? itinerary.Status === true && itineraryStartDate < today
+            : false;
+        return matchesStatus;
+      });
+  
+      setFilteredActivities(filtered);
+    }, [itineraries, filters]); // Re-run the filtering logic whenever activities, filters
+  
+     // Function to handle search by title
+     const handleSearch = () => {
+      const filtered = itineraries.filter((itinerary) => {
+        return itinerary.ItineraryId?.title
+          ?.toLowerCase()
           .includes(searchTerm.toLowerCase());
-      return matchesStatus && matchesSearchTerm;
-    });
-    setFilteredActivities(filtered);
-    setOption(filters.status);
-  };
+      });
+      setFilteredActivities(filtered);
+    };
 
   useEffect(() => {
     const fetchItineraries = async () => {
@@ -168,70 +128,80 @@ const MyBookings = () => {
   };
 
   return (
-    <div>
+    <Box>
       <TouristNB />
-      <form>
+      <Box sx={{display:'flex', flexDirection:'column', gap:"2vh",margin:'5% 12%', mb:'0%', mt:'3%'}}>
+      {/*Search bar*/}
+        <Box sx={{ display: "flex" }}>
+         <Box sx={{}}>
+          <TextField
+            id="search-bar"
+            className="text"
+            onInput={(e) => {
+              setSearchTerm(e.target.value);
+            }}
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                "&.Mui-focused fieldset": {
+                  borderColor: "#ff4d4daa",
+                },
+              },  
+              justifyContent:'center',        
+            }}
+            variant="outlined"
+            placeholder="Search..."
+            size="small"
+            />
+          <IconButton type="submit" aria-label="search" 
+            sx={{ width:"40px", height:"40px",
+                //marginBottom:"-5px",
+                //marginLeft:"-3px",
+                backgroundColor: "#ff4d4d", 
+                color: "white", 
+                borderRadius: "3px",
+                "&:hover": {
+                  backgroundColor: "#e63939"
+                } 
+              }}>
+            <SearchIcon  onClick={handleSearch} sx={{ }}/>
+          </IconButton>
+          </Box>
+      </Box>
+       {/*End of Search bar*/}
+      {/* <form> */}
         <TextField
           select
-          label="Status"
+          //label="Status"
           variant="outlined"
           name="status"
+          size="small"
           value={filters.status}
           onChange={handleFilterChange}
-          sx={{ mb: 2, mr: 2, width: "200px" }}
+          sx={{ mb: 1, mr: 1, width: "10%", height: "5%",
+            "& .MuiOutlinedInput-root": {
+              //color:'#473d3f',
+              "&.Mui-focused fieldset": {
+                  borderColor: "#ff4d4daa",
+                },
+            },
+           }}
         >
+          <MenuItem value="All">All</MenuItem>
           <MenuItem value="Done">Done</MenuItem>
           <MenuItem value="Booked">Booked</MenuItem>
           <MenuItem value="Canceled Bookings">Canceled Bookings</MenuItem>
         </TextField>
-        <Button variant="contained" onClick={resetFilters} sx={{ ml: 2 }}>
-          Reset Filters
-        </Button>
-      </form>
+      {/* </form> */}
+    </Box>
 
-      <Box sx={{ display: "flex" }}>
-        <Search>
-          <SearchIconWrapper>
-            <SearchIcon />
-          </SearchIconWrapper>
-          <StyledInputBase
-            placeholder="Search…"
-            inputProps={{ "aria-label": "search" }}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </Search>
-        <Button variant="contained" onClick={handleSearch} sx={{ ml: 2 }}>
-          Search
-        </Button>
-      </Box>
-
-      <Box
-        sx={{
-          width: "1150px",
-          overflow: "hidden",
-          margin: "0 auto",
-          padding: "20px",
-          height: "80vh",
-          overflow: "auto",
-          "&::-webkit-scrollbar": {
-            display: "none",
-          },
-        }}
-      >
-        <Box
-          sx={{
-            height: "100%",
-            width: "100%",
+    <Box
+          sx={{height: "80vh", width: "80%", overflow: "auto",ml:'10%',
             "&::-webkit-scrollbar": { display: "none" },
           }}
         >
-          <Grid
-            container
-            spacing={0}
-            sx={{ flexDirection: "column", width: "100vw" }}
-          >
+          <Box sx={{display:'flex', flexDirection:'column', width: '100%',marginTop:'-1%'}}>
             {filteredActivities.map((itinerary, index) => (
-              <Grid item key={index} sx={{ justifyContent: "left" }}>
+               <Box item key={itinerary._id} sx={{ justifyContent: "left" , width:'70%',margin:'2%'}}>
                 <BookingCard
                   bookId={itinerary._id}
                   id={itinerary.ItineraryId._id}
@@ -246,14 +216,14 @@ const MyBookings = () => {
                   TotalPrice={itinerary.TotalPrice}
                   price={itinerary.ItineraryId.price}
                 />
-                <IconButton
+                {/* <IconButton
                   onClick={() =>
                     openReviewFormHandler(itinerary.ItineraryId._id)
                   }
                   disabled={option !== "Done"}
                 >
                   <RateReviewIcon />
-                </IconButton>
+                </IconButton> */}
                 {/* Add a separate icon button for the tour guide review */}
                 <IconButton
                   onClick={() =>
@@ -263,20 +233,18 @@ const MyBookings = () => {
                 >
                   <PersonPinIcon />
                 </IconButton>
-              </Grid>
+              </Box>
             ))}
-          </Grid>
+          </Box>
         </Box>
-      </Box>
-
       {/* Render the itinerary review form dialog */}
-      {selectedItineraryId && (
+      {/* {selectedItineraryId && (
         <ItineraryReviewForm
           itineraryId={selectedItineraryId}
           open={openReviewForm}
           onClose={closeReviewFormHandler}
         />
-      )}
+      )} */}
 
       {/* Render the tour guide review form dialog */}
       {selectedTourGuideId && openTourGuideReviewForm && (
@@ -286,7 +254,7 @@ const MyBookings = () => {
           onClose={closeTourGuideReviewFormHandler}
         />
       )}
-    </div>
+    </Box>
   );
 };
 
