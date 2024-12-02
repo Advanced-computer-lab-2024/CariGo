@@ -10,11 +10,188 @@ import { useState, useEffect } from "react";
 import ProductReviews from "../../components/ProductReviews";
 import NavBar from "../../components/NavBarAdvertiser";
 import ResponsiveAppBar from "./components/TouristNavBar";
+
+import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
+import FavoriteOutlinedIcon from '@mui/icons-material/FavoriteOutlined';
+
 const { Title, Paragraph, Text } = Typography;
 
 const ProductDetails = () => {
   const { id } = useParams(); // Extracts the `id` from the URL
   const [product, setProduct] = useState(null); // Initialize as null to check loading state
+
+  const [isInWishlist, setIsInWishlist] = useState(false); // Initially, the icon will be the outlined one
+
+// Fetch user data and check if the product is in the wishlist
+  const isTheproductInTheWishlist = async () => {
+    const token = localStorage.getItem("jwt");
+    const userId = localStorage.getItem("id");
+    if (!token || !userId) {
+      throw new Error("No token or user ID found. Please log in.");
+    }
+
+    try {
+      // Fetch user data
+      const userResponse = await fetch(`http://localhost:4000/cariGo/users/${userId}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!userResponse.ok) {
+        throw new Error("Error fetching user data");
+      }
+
+      const user = await userResponse.json();
+      // setUserData(user);
+
+      // Check if the product is in the user's wishlist
+      const productExistsInWishlist = user.wishList.includes(id);
+      setIsInWishlist(productExistsInWishlist); // Set initial icon state based on wishlist status
+    } catch (error) {
+      console.error("Error checking product in wishlist:", error);
+    }
+  };
+
+
+  const handleWishlistClick = () => {
+    // Toggle the state to switch between filled and outlined
+    setIsInWishlist((prevState) => {
+      const newState = !prevState; // Toggle the state
+      // Add or remove product from wishlist based on the new state
+      if (newState) {
+        console.log("Add product to wishlist."); // Add to wishlist logic
+        addProductToWishlist(); // Call function to add to wishlist
+        // Here you would call an API or update local state to add the product to wishlist
+      } else {
+        console.log("Remove product from wishlist."); // Remove from wishlist logic
+        removeProductFromWishlist(); // Call function to remove from wishlist
+        // Here you would call an API or update local state to remove the product from wishlist
+      }
+      return newState; // Update the state
+    });
+  };
+
+  // Add product to wishlist
+  const addProductToWishlist = async () => {
+    try {
+      const token = localStorage.getItem("jwt");
+      const userId=localStorage.getItem("id");
+      if (!token) {
+        throw new Error("No token found. Please log in.");
+      }
+  
+      // Fetch the user by userId
+      const userResponse = await fetch(`http://localhost:4000/cariGo/users/${userId}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+  
+      if (!userResponse.ok) {
+        throw new Error("Error fetching user data");
+      }
+  
+      const userData = await userResponse.json();
+      
+      // Check if the product is already in the wishlist
+      const productExistsInWishlist = userData.wishList.includes(product._id);
+  
+      if (productExistsInWishlist) {
+        console.log("Product already in the wishlist.");
+        return; // Do nothing if it's already in the wishlist
+      }
+  
+      // If not, add the product to the wishlist and update the user
+      const updateData = { wishList: [...userData.wishList, product._id] };
+  
+      const updateResponse = await fetch(
+        `http://localhost:4000/cariGo/users/update/${userId}`, // Use the correct endpoint for updating user data
+        {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updateData), // Send the updated wishlist
+        }
+      );
+  
+      if (!updateResponse.ok) {
+        throw new Error("Error updating wishlist");
+      }
+  
+      const updatedUser = await updateResponse.json();
+      console.log("Product added to wishlist:", updatedUser);
+    } catch (error) {
+      console.error("Error adding product to wishlist:", error);
+    }
+  };
+
+  // Remove product from wishlist
+const removeProductFromWishlist = async () => {
+  try {
+    const token = localStorage.getItem("jwt");
+    const userId=localStorage.getItem("id");
+    if (!token) {
+      throw new Error("No token found. Please log in.");
+    }
+
+    // Fetch the user by userId
+    const userResponse = await fetch(`http://localhost:4000/cariGo/users/${userId}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!userResponse.ok) {
+      throw new Error("Error fetching user data");
+    }
+
+    const userData = await userResponse.json();
+    
+    // Check if the product is already in the wishlist
+    const productExistsInWishlist = userData.wishList.includes(product._id);
+
+    if (!productExistsInWishlist) {
+      console.log("Product is not in the wishlist.");
+      return; // Do nothing if the product is not in the wishlist
+    }
+
+    // If the product exists in the wishlist, remove it
+    const updatedWishlist = userData.wishList.filter(id => id.toString() !== product._id);
+
+    // Send PATCH request to update the wishlist
+    const updateData = { wishList: updatedWishlist };
+
+    const updateResponse = await fetch(
+      `http://localhost:4000/cariGo/users/update/${userId}`, // Use the correct endpoint for updating user data
+      {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updateData), // Send the updated wishlist
+      }
+    );
+
+    if (!updateResponse.ok) {
+      throw new Error("Error updating wishlist");
+    }
+
+    const updatedUser = await updateResponse.json();
+    console.log("Product removed from wishlist:", updatedUser);
+  } catch (error) {
+    console.error("Error removing product from wishlist:", error);
+  }
+};
 
   useEffect(() => {
     const fetchProductDetails = async () => {
@@ -23,7 +200,7 @@ const ProductDetails = () => {
         if (!token) {
           throw new Error("No token found. Please log in.");
         }
-
+        
         const response = await fetch(
           `http://localhost:4000/cariGo/products/${id}`,
           {
@@ -46,7 +223,10 @@ const ProductDetails = () => {
         console.error("Error fetching product details:", error);
       }
     };
-
+    
+    // Check if the product is in the wishlist before loading the product details
+    isTheproductInTheWishlist();
+    
     fetchProductDetails();
   }, [id]);
 
@@ -106,6 +286,19 @@ const ProductDetails = () => {
               <Title level={3}>
                 ${(product.price * conversionRate).toFixed(2)} {code}
               </Title>
+              {/* Wishlist Icon */}
+              <span
+                onClick={handleWishlistClick}
+                style={{ fontSize: "24px", marginLeft: "10px", cursor: "pointer" }}
+              >
+              {isInWishlist ? (
+              <FavoriteOutlinedIcon style={{ fontSize: "24px" }} />
+              ) : (
+              <FavoriteBorderOutlinedIcon style={{ fontSize: "24px" }} />
+              )}
+              </span>
+
+              
 
               {/* Description Section */}
               <Paragraph style={{ marginTop: "16px" }}>

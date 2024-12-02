@@ -15,7 +15,8 @@ import CurrencyConversion from "../../../components/CurrencyConversion";
 import axios from "axios";
 import Badge from '@mui/material/Badge';
 import { UserOutlined, BellOutlined, MessageOutlined, CheckCircleOutlined, WarningOutlined } from '@ant-design/icons'; // Import the icons
-
+import BookmarkBorderOutlinedIcon from '@mui/icons-material/BookmarkBorderOutlined';
+import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 const pages = [
   "Suggested For You",
   "Activities",
@@ -546,32 +547,55 @@ function TouristNB() {
           {/* end of main options box */}
 
             {/* Notification Icon */}
+          {/* Icons Section */}
+        <Box sx={{ display: 'flex', alignItems: 'center', marginRight: 2 }}>
+          {/* Favorite Icon */}
           <IconButton
-  size="large"
-  aria-label="show notifications"
-  aria-controls="notification-menu"
-  aria-haspopup="true"
-  onClick={handleOpenNotifications}
-  color="inherit"
->
+            size="large"
+            aria-label="show favorites"
+            color="inherit"
+            sx={{ marginRight: 1 }}
+          >
+            <FavoriteBorderOutlinedIcon sx={{ fontSize: '33px', color: 'white' }} />
+          </IconButton>
 
-  <Badge
-    badgeContent={notifications.length}
-    color="error"
-    sx={{
-      '& .MuiBadge-badge': {
-        right: 1.5,
-        top: 10,
-        fontSize: '0.75rem',
-        minWidth: '16px',
-        height: '16px',
-        borderRadius: '50%',
-      },
-    }}
-  >
-    <BellOutlined style={{ fontSize: '33px', color: 'white', marginRight: '1px' }} />
-  </Badge>
-</IconButton>
+          {/* Bookmark Icon */}
+          <IconButton
+            size="large"
+            aria-label="show bookmarks"
+            color="inherit"
+            sx={{ marginRight: 1 }}
+          >
+            <BookmarkBorderOutlinedIcon sx={{ fontSize: '33px', color: 'white' }} />
+          </IconButton>
+
+          {/* Notification Icon */}
+          <IconButton
+            size="large"
+            aria-label="show notifications"
+            aria-controls="notification-menu"
+            aria-haspopup="true"
+            onClick={handleOpenNotifications}
+            color="inherit"
+          >
+            <Badge
+              badgeContent={notifications.length}
+              color="error"
+              sx={{
+                '& .MuiBadge-badge': {
+                  right: 1.5,
+                  top: 10,
+                  fontSize: '0.75rem',
+                  minWidth: '16px',
+                  height: '16px',
+                  borderRadius: '50%',
+                },
+              }}
+            >
+              <BellOutlined style={{ fontSize: '33px', color: 'white', marginRight: '1px' }} />
+            </Badge>
+          </IconButton>
+        </Box>
 
 
 <Menu
