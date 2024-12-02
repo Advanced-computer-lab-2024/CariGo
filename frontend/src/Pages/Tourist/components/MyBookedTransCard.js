@@ -21,7 +21,8 @@ const MyBookedTransCard = ({
   price, 
   author, 
   NumberOfTickets, 
-  TotalPrice 
+  TotalPrice ,
+  bookId
 }) => {
   const [isPast, setIsPast] = React.useState(false);
   const formatTime = (hours, minutes, dayTime) => {
@@ -51,7 +52,7 @@ const MyBookedTransCard = ({
         }
 
         // Corrected the syntax for axios request
-        await axios.patch(`http://localhost:4000/cariGo/transportation/CancelBooking/${id}`, {}, {
+        await axios.patch(`http://localhost:4000/cariGo/transportation/CancelBooking/${bookId}`, {}, {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",

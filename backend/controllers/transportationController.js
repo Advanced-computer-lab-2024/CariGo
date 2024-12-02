@@ -460,13 +460,14 @@ const MyTransportationBookings = async (req, res) => {
 
 const CancelBooking = async (req, res) => {
      UserId  = req.user.id; // User ID from request body
-    const { TransportationId } = req.params; // Event ID from URL parameters
-    if (mongoose.Types.ObjectId.isValid(TransportationId) && mongoose.Types.ObjectId.isValid(UserId)) {
+    const { bookId } = req.params; // Event ID from URL parameters
+    if (mongoose.Types.ObjectId.isValid(bookId) && mongoose.Types.ObjectId.isValid(UserId)) {
         try {
-            const bookings = await bookingModel.updateMany(
-                { UserId, TransportationId }, // Filter to find documents with both UserId and ActivityId
+            const bookings = await bookingModel.updateOne(
+                { _id:bookId }, // Filter to find documents with both UserId and ActivityId
                 { $set: { Status: false } } // Update to set Status to false
               );
+              const TransportationId = bookings.TransportationId;
               await Transportation.updateOne(
                 { _id: TransportationId }, 
                 { $set: { isBooked: false } }

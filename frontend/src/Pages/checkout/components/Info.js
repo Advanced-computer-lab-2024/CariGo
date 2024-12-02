@@ -18,28 +18,26 @@ function Info({ totalPrice = 0, activityDetails, quantity, SetDiscount }) {
   const conversionRate =
     parseFloat(localStorage.getItem("conversionRate")) || 1;
   const code = localStorage.getItem("currencyCode") || "EGP";
-
   const [error, setError] = React.useState(false);
   const [promoCode, setPromoCode] = React.useState(""); // State to store the promo code input
   const handleRedeem = async () => {
-    
     try {
       const token = localStorage.getItem("jwt");
       if (!token) {
         throw new Error("No token found. Please log in.");
       }
-      console.log(promoCode);
-      const response = await axios.get(
-        "http://localhost:4000/cariGo/Event/getDiscount",
+      console.log(token);
+      const response = await axios.post(
+        "http://localhost:4000/cariGo/Event/redeemPromoCode",
+        { code: promoCode },
         {
-          params: { code: promoCode }, // Pass promoCode in params
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`, // Optional if token is needed
+            Authorization: `Bearer ${token}`, // Make sure token is passed in the correct format
           },
         }
       );
-     
+
       if (response.status === 200) {
         SetDiscount(response.data.discount); // Set discount when promo code is valid
         setError(true); // Clear error state
@@ -48,7 +46,38 @@ function Info({ totalPrice = 0, activityDetails, quantity, SetDiscount }) {
       console.error("Error redeeming promo code:", err);
       setError(false); // Show error if promo code is invalid
       alert("Invalid promo code");
-      SetDiscount(100);  
+      SetDiscount(100);
+    }
+  };
+  const handleCancel = async () => {
+    try {
+      const token = localStorage.getItem("jwt");
+      if (!token) {
+        throw new Error("No token found. Please log in.");
+      }
+      console.log(promoCode);
+      const response = await axios.post(
+        "http://localhost:4000/cariGo/Event/cancelPromoCode",
+        { code: promoCode },
+        {
+          
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`, // Make sure token is passed in the correct format
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        SetDiscount(100); // Set discount when promo code is valid
+        setError(false); // Clear error state
+        setPromoCode(''); // Reset the text field value
+      }
+    } catch (err) {
+      console.error("Error redeeming promo code:", err);
+      setError(true); // Show error if promo code is invalid
+      alert("Invalid promo code");
+      SetDiscount(100);
     }
   };
   return (
@@ -80,7 +109,7 @@ function Info({ totalPrice = 0, activityDetails, quantity, SetDiscount }) {
           <Typography gutterBottom>Redeem Promo Code</Typography>
           <Box
             sx={{
-              width: "100%", // Adjust to ensure full width
+              width: "170%", // Ensure the container spans full width
               display: "flex",
               flexDirection: "column",
               alignItems: "stretch",
@@ -90,23 +119,27 @@ function Info({ totalPrice = 0, activityDetails, quantity, SetDiscount }) {
               error={!error} // Error styling applied when promo code is invalid
               id="outlined-error-helper-text"
               label="Promo Code"
+              disabled={error}
               helperText={
                 error ? "Promo code accepted" : "Please enter a valid code"
               }
               variant="outlined"
               onChange={(e) => setPromoCode(e.target.value)} // Update state on input change
+              value={promoCode} // Bind the input value to the state
               sx={{
-                marginBottom: 1,
+                marginBottom: 2, // More spacing after the text field
                 textAlign: "center", // Center the default text
                 "& .MuiInputLabel-root.Mui-focused": {
                   fontWeight: "bold", // Make label text bold when focused
                   color: "orange", // Change label text color to orange when focused
                 },
+                "& .MuiInputBase-input": {
+                  textAlign: "center", // Center the text in the input field
+                },
               }}
               InputProps={{
                 style: {
-                  width: "165%", // Ensure the text field spans full width
-                  textAlign: "center", // Center the text in the input field
+                  width: "100%", // Make sure the input spans full width
                 },
               }}
               FormHelperTextProps={{
@@ -120,18 +153,46 @@ function Info({ totalPrice = 0, activityDetails, quantity, SetDiscount }) {
               }}
             />
 
-            <Button
-              variant="contained"
-              color="primary"
+            {/* Buttons Container */}
+            <Box
               sx={{
-                alignSelf: "flex-start", // Align the button to the left
-                marginTop: 1, // Space between the text field and button
-                width: "165%", // Make the button span the full width of the container
+                width: "100%", // Ensure the container spans full width
+                display: "flex", // Enable flexbox
+                justifyContent: "space-between", // Add space between the buttons
+                marginTop: 2, // Add some space from the text field
               }}
-              onClick={handleRedeem}
             >
-              Redeem
-            </Button>
+              <Button
+                disabled={!error} // Disable the button when promo code is invalid
+                variant="contained"
+                sx={{
+                  backgroundColor: "#fb9017", // Set the color to #fb9017
+                  width: "48%", // Make the buttons take about half the container's width
+                  padding: "12px", // Increase the padding for bigger buttons
+                  fontSize: "1rem", // Adjust the font size for better readability
+                  fontWeight: "bold", // Make the text bold
+                }}
+                onClick={handleCancel} // Assuming you have a `handleCancel` function
+              >
+                Cancel
+              </Button>
+
+              <Button
+                variant="contained"
+                disabled={error} // Disable the button when promo code is invalid
+                sx={{
+                  
+                  backgroundColor: "#fb9017", // Set the color to #fb9017
+                  width: "48%", // Same width as the Cancel button
+                  padding: "12px", // Increase the padding for bigger buttons
+                  fontSize: "1rem", // Adjust the font size for better readability
+                  fontWeight: "bold", // Make the text bold
+                }}
+                onClick={handleRedeem} // Assuming you have a `handleRedeem` function
+              >
+                Redeem
+              </Button>
+            </Box>
           </Box>
         </Box>
         <Divider />
