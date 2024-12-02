@@ -195,7 +195,7 @@ const MyBookedActivities = () => {
       {/* </form> */}
     </Box>
         <Box
-          sx={{height: "80vh", width: "80%", overflow: "auto",ml:'10%',
+          sx={{height: "67vh", width: "80%", overflow: "auto",ml:'10%',
             "&::-webkit-scrollbar": { display: "none" },
           }}
         >

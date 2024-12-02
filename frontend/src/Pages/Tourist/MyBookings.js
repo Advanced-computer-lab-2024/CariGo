@@ -225,6 +225,7 @@ const MyBookings = () => {
                   <RateReviewIcon />
                 </IconButton> */}
                 {/* Add a separate icon button for the tour guide review */}
+                <Box sx={{display: "flex",gap:'0%', alignItems:'center'}}>
                 <IconButton
                   onClick={() =>
                     openTourGuideReviewFormHandler(itinerary.ItineraryId.author)
@@ -233,6 +234,8 @@ const MyBookings = () => {
                 >
                   <PersonPinIcon />
                 </IconButton>
+                <Typography sx={{fontSize:'14px', color:'gray'}}>rate Tour Guide</Typography>
+              </Box>
               </Box>
             ))}
           </Box>
