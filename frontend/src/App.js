@@ -2,7 +2,7 @@
 import "./styles/App.css";
 
 import AdvertiserProfile from "./AdvertiserProfile"; // Adjust the path based on your structure
-
+import OrderItem, {OrderProvider} from "./Pages/Tourist/Orders/components/user/OrderItem.jsx"
 import UserViewItineraries from "./Pages/UserViewItineraries.js";
 import ItineraryUpdate from "./components/ItineraryUpdate";
 import ItineraryDetails from "./Pages/ItineraryDetails.js";
@@ -116,7 +116,11 @@ import ReviewAccounts from "./Pages/accounts/docsReview.jsx";
 import ProductDetailsT from "./Pages/Tourist/productdetailsT"
 import ProductDetailsSeller from "./Pages/products/ProductDetailsSeller.jsx";
 import TotalReport from "./Pages/TotalReport.js";
+import BookmarkedItineraries from "./Pages/BookmarkedItineraries.js";
+import BookmarkedActivities from "./Pages/BookmarkedActivities.js";
 //import ChooseSignUP from "./Pages/ChooseSignUp";
+import OrderListScreen from "./Pages/Tourist/Orders/OrderListScreen.jsx";
+import OrderDetailScreen from "./Pages/Tourist/Orders/OrderDetailScreen.jsx";
 
 import ViewReport from "./components/Report/ViewReport.jsx";
 import Table from "./components/Report/Table.jsx";
@@ -145,6 +149,10 @@ function App() {
   //  <AuthProvider>
     <Router>
     <Routes>
+    <Route path="/Tourist/orders" element={<OrderListScreen />} />
+    
+    <Route path="Tourist/order_detail/:id" element={<OrderDetailScreen />} />
+    
         <Route path="/" element={<Home />} /> {/* Default route */}
         <Route path="/tourist/MyBookings" element={<MyBookings />} /> {/* Default route */}
         <Route path="/tourist/MyBookedActivities" element={<MyBookedActivities />} /> {/* Default route */}
@@ -189,6 +197,8 @@ function App() {
         <Route path="/Tourist-History" element={<TouristHistory />} />
         <Route path="/tourist/file-complaint" element={<FileComplaintForm />} />
         <Route path="/tourist/complaint-history" element={<ComplaintHistory />} />
+        <Route path="/tourist/BookmarkedItineraries" element={<BookmarkedItineraries />} />
+        <Route path="/tourist/BookmarkedActivities" element={<BookmarkedActivities />} />
         {/* <Route path="/guest-places" element={<GuestViewVintage/>} /> */}
         <Route path="/createActivity" element={<CreateActivityForm userId={localStorage.getItem("id")} />} />
         <Route path="/createTransportation" element={<CreateTransportation userId={localStorage.getItem("id")} />} /> 
@@ -265,6 +275,7 @@ function App() {
         {/* Add more routes as needed */}
       </Routes>
       </Router>
+      
      // </AuthProvider>
   );
 }

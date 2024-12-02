@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import {
   Box,IconButton,Avatar,Tooltip,Typography,Divider,
   List,ListItem, ListItemButton,ListItemText,Drawer,
@@ -12,6 +12,9 @@ import { Link } from "react-router-dom";
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import CurrencyConversion from "../../../components/CurrencyConversion";
+import axios from "axios";
+import Badge from '@mui/material/Badge';
+import { UserOutlined, BellOutlined, MessageOutlined, CheckCircleOutlined, WarningOutlined } from '@ant-design/icons'; // Import the icons
 
 const pages = [
   "Suggested For You",
@@ -29,6 +32,40 @@ function TouristNB() {
   const [anchorElBookings, setAnchorElBookings] = React.useState(null);
   const [openCurrencyDialog, setOpenCurrencyDialog] = React.useState(false); // State for dialog
   const [anchorElComplaints, setAnchorElComplaints] = React.useState(null); // Complaints menu state
+  const [anchorElNotifications, setAnchorElNotifications] = useState(null); // Notification menu anchor
+  const [notifications, setNotifications] = useState([]);
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const token = localStorage.getItem('jwt');
+        const response = await axios.get('http://localhost:4000/cariGo/notifications/', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setNotifications(response.data.data.notifications);
+      } catch (error) {
+        console.error('Error fetching notifications:', error);
+      }
+    };
+    fetchNotifications();
+  }, []);
+  const markAsRead = async (id) => {
+    try {
+      const token = localStorage.getItem('jwt');
+      await axios.patch(
+        `http://localhost:4000/cariGo/notifications/${id}/mark-read`,
+        null,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      // Update state to remove the marked notification
+      setNotifications((prev) => prev.filter((notification) => notification._id !== id));
+    } catch (error) {
+      console.error('Error marking notification as read:', error);
+    }
+  };
+
 
   // Open and Close Dialog Functions
   const handleOpenCurrencyDialog = () => {
@@ -50,6 +87,22 @@ function TouristNB() {
   const handleCloseNavMenu = () => setAnchorElNav(null);
   const handleCloseUserMenu = () => setAnchorElUser(null);
   const handleCloseBookingsMenu = () => setAnchorElBookings(null);
+
+  const handleOpenNotifications = (event) => {
+    setAnchorElNotifications(event.currentTarget);
+  };
+  const handleCloseNotifications = () => {
+    setAnchorElNotifications(null);
+  };
+
+  const getIcon = (type) => {
+    switch (type) {
+      case 'success': return <CheckCircleOutlined style={{ color: 'green' }} />;
+      case 'warning': return <WarningOutlined style={{ color: 'orange' }} />;
+      case 'info': return <MessageOutlined style={{ color: 'blue' }} />;
+      default: return <BellOutlined />;
+    }
+  };
 
   // Navigation functions
   const loadSuggestedForYou = () => {
@@ -165,6 +218,7 @@ function TouristNB() {
     { label: "Logout", onClick: handleLogout },
     { label: "Change Password", onClick: handleChangePass },
     { label: "Choose Currency", onClick: handleOpenCurrencyDialog },
+    { label: "Bookmarks", onClick: handleOpenCurrencyDialog },
     { label: "Delete Account", onClick: handleDeleteAccount, color: "#ff4d4d" },
   ];
 
@@ -491,6 +545,101 @@ function TouristNB() {
           {/* </Box> */}
           {/* end of main options box */}
 
+            {/* Notification Icon */}
+          <IconButton
+  size="large"
+  aria-label="show notifications"
+  aria-controls="notification-menu"
+  aria-haspopup="true"
+  onClick={handleOpenNotifications}
+  color="inherit"
+>
+
+  <Badge
+    badgeContent={notifications.length}
+    color="error"
+    sx={{
+      '& .MuiBadge-badge': {
+        right: 1.5,
+        top: 10,
+        fontSize: '0.75rem',
+        minWidth: '16px',
+        height: '16px',
+        borderRadius: '50%',
+      },
+    }}
+  >
+    <BellOutlined style={{ fontSize: '33px', color: 'white', marginRight: '1px' }} />
+  </Badge>
+</IconButton>
+
+
+<Menu
+  id="notification-menu"
+  anchorEl={anchorElNotifications}
+  anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+  keepMounted
+  transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+  open={Boolean(anchorElNotifications)}
+  onClose={handleCloseNotifications}
+  sx={{
+    mt: 1,
+    boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)', // Soft shadow
+    borderRadius: '8px', // Rounded corners
+    overflow: 'hidden',
+    minWidth: '300px', // Ensure a consistent width
+  }}
+>
+  {notifications.length > 0 ? (
+    notifications.map((notification) => (
+      <MenuItem
+        key={notification._id}
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          py: 1, // Padding for better spacing
+          gap: 2, // Space between the icon and message
+          borderBottom: '1px solid #e0e0e0', // Divider between notifications
+        }}
+      >
+        <Box sx={{ display: 'flex', alignItems: 'center', flex: 1 }}>
+          {getIcon(notification.type)}
+          <Box sx={{ ml: 1 }}>
+            <Typography variant="body1">
+              {notification.message}
+            </Typography>
+            <Typography
+              variant="caption"
+              sx={{ color: 'gray', fontSize: '0.75rem' }}
+            >
+              {/* {new Date(notification.date).toLocaleTimeString()} Time */}
+            </Typography>
+          </Box>
+        </Box>
+        <Button
+          size="small"
+          variant="text"
+          sx={{
+            color: notifications.length > 0 ? '#2196F3' : 'gray',
+            textTransform: 'none',
+            fontSize: '0.75rem',
+            ':hover': {
+              color: 'black',
+            },
+          }}
+          onClick={() => markAsRead(notification._id)}
+        >
+          Mark as Read
+        </Button>
+      </MenuItem>
+    ))
+  ) : (
+    <MenuItem>
+      <Typography>No new notifications</Typography>
+    </MenuItem>
+  )}
+</Menu>
           {/* User Badge */}
           <UserBadge userId={userId} />
 
@@ -525,6 +674,11 @@ function TouristNB() {
               <MenuItem onClick={handleOpenCurrencyDialog}>
                 <Typography sx={{ textAlign: "center" }}>
                   Choose Currency
+                </Typography>
+              </MenuItem>
+              <MenuItem>
+                <Typography sx={{ textAlign: "center" }}>
+                  Bookmarks
                 </Typography>
               </MenuItem>
               <MenuItem onClick={handleDeleteAccount}>

@@ -50,3 +50,75 @@ input[type="file"] {
     transform: rotate(360deg);
   }
 }
+.order-item-details {
+  background-color: #f9f9f9;
+  border: 1px solid #ececec;
+  border-radius: 8px;
+  padding: 20px 30px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  font-family: 'Inter', sans-serif;
+}
+
+.order-item-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #126782;
+  margin-bottom: 20px;
+}
+
+.order-info-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.order-info-item {
+  flex: 1;
+  min-width: 200px;
+}
+
+.label {
+  display: block;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 4px;
+}
+
+.value {
+  font-size: 14px;
+  color: #6d6d6d;
+}
+
+.value.status-shipped {
+  color: #126782;
+}
+
+.value.status-delivered {
+  color: #7ad005;
+}
+
+.value.status-pending {
+  color: #ff4d4d;
+}
+
+.order-actions {
+  text-align: right;
+}
+
+.order-actions a {
+  background-color: #126782;
+  color: white;
+  text-decoration: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.order-actions a:hover {
+  background-color: #ff4d4d;
+  color: white;
+}

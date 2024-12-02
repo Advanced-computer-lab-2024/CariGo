@@ -208,6 +208,34 @@ const getActivities = async (req, res) => {
   }
 };
 
+const getActivitiesByIds = async (req, res) => {
+  try {
+    // Extract 'ids' from query string
+    const { ids } = req.query;
+
+    if (!ids) {
+      return res.status(400).json({ message: "Missing 'ids' query parameter." });
+    }
+
+    // Split the IDs from the query string
+    const activityIds = ids.split(',');
+
+    // Fetch activities based on the provided IDs
+    const activities = await Activity.find({ '_id': { $in: activityIds } });
+
+    if (!activities || activities.length === 0) {
+      return res.status(404).json({ message: "Activities not found" });
+    }
+    console.log(activities);
+    // If activities are found, return them
+    res.status(200).json(activities);
+  } catch (error) {
+    console.error('Error fetching activities by IDs:', error);
+    return res.status(500).json({ message: 'Error fetching activities by IDs', error: error.message });
+  }
+};
+
+
 const getActivitiesForAdmin = async (req, res) => {
   const today = new Date();
   let sortBy = req.query.sort || "-createdAt"; // Default to "-createdAt" if no parameter is provided
@@ -741,5 +769,6 @@ module.exports = {
   BookActivity,
   MyActivityBookings,
   CancelActivityBooking,
+  getActivitiesByIds,
   getTitlesForEachUser
 };

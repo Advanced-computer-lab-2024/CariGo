@@ -337,6 +337,17 @@ async function getMyOrders(req, res) {
     res.status(500).json({ message: 'An error occurred while fetching your orders.' });
   }
 }
+async function getOrder(req, res) {
+  try {
+    // 1. Fetch orders by userId
+    const order = await Order.findById(req.params.id);
 
+
+    res.json(order);
+  } catch (error) {
+    console.error('Error fetching orders:', error);
+    res.status(500).json({ message: 'An error occurred while fetching your orders.' });
+  }
+}
    
-module.exports = { getCart, editProductInCart, removeItemFromCart, clearCart, checkout ,getMyOrders,CancelOrder};
+module.exports = { getCart, editProductInCart, removeItemFromCart, clearCart, checkout ,getMyOrders,CancelOrder,getOrder};

@@ -17,7 +17,7 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import {useEffect, useState } from 'react';
 import axios from "axios";
-
+import Badge from '@mui/material/Badge';
 const pages = [
   "Activities",
   "Itinerary",
@@ -34,34 +34,37 @@ function TouristNB() {
   const navigate = useNavigate();
   const [anchorElNotifications, setAnchorElNotifications] = useState(null); // Notification menu anchor
   const [notifications, setNotifications] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  React.useEffect(() => {
+
+  useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        setLoading(true);
-        const token = localStorage.getItem('token');
-        if (!token) {
-          throw new Error('No authentication token found');
-        }
-
-        const { data } = await axios.get("http://localhost:4000/cariGo/notifications/", {
+        const token = localStorage.getItem('jwt');
+        const response = await axios.get('http://localhost:4000/cariGo/notifications/', {
           headers: { Authorization: `Bearer ${token}` },
         });
-
-        setNotifications(data.data.notifications || []);
-        setError(null);
+        setNotifications(response.data.data.notifications);
       } catch (error) {
         console.error('Error fetching notifications:', error);
-        setError(error.message || 'Failed to fetch notifications');
-        setNotifications([]);
-      } finally {
-        setLoading(false);
       }
     };
-
     fetchNotifications();
   }, []);
+  const markAsRead = async (id) => {
+    try {
+      const token = localStorage.getItem('jwt');
+      await axios.patch(
+        `http://localhost:4000/cariGo/notifications/${id}/mark-read`,
+        null,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      // Update state to remove the marked notification
+      setNotifications((prev) => prev.filter((notification) => notification._id !== id));
+    } catch (error) {
+      console.error('Error marking notification as read:', error);
+    }
+  };
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -198,7 +201,6 @@ function TouristNB() {
             CariGO
           </Typography>
 
- {/* Notification Icon */}
  
 
 
@@ -269,41 +271,103 @@ function TouristNB() {
             </Button> */}
           </Box>
 {/* Notification Icon */}
-<Box>
-          <Tooltip title="View notifications">
-            <IconButton onClick={handleOpenNotifications} style={{ color: 'white' }}>
-              <BellOutlined />
-            </IconButton>
-          </Tooltip>
-          <Menu
-            id="menu-notifications"
-            anchorEl={anchorElNotifications}
-            open={Boolean(anchorElNotifications)}
-            onClose={handleCloseNotifications}
-            sx={{ mt: '45px' }}
-          >
-            <Typography variant="h6" sx={{ padding: '10px 15px', backgroundColor: '#f5f5f5', fontWeight: 'bold' }}>
-              Notifications
+<IconButton
+  size="large"
+  aria-label="show notifications"
+  aria-controls="notification-menu"
+  aria-haspopup="true"
+  onClick={handleOpenNotifications}
+  color="inherit"
+>
+  <Badge
+    badgeContent={notifications.length}
+    color="error"
+    sx={{
+      '& .MuiBadge-badge': {
+        right: 1.5,
+        top: 10,
+        fontSize: '0.75rem',
+        minWidth: '16px',
+        height: '16px',
+        borderRadius: '50%',
+      },
+    }}
+  >
+    <BellOutlined style={{ fontSize: '33px', color: 'white', marginRight: '-3px' }} />
+  </Badge>
+</IconButton>
+
+
+<Menu
+  id="notification-menu"
+  anchorEl={anchorElNotifications}
+  anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+  keepMounted
+  transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+  open={Boolean(anchorElNotifications)}
+  onClose={handleCloseNotifications}
+  sx={{
+    mt: 1,
+    boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)', // Soft shadow
+    borderRadius: '8px', // Rounded corners
+    overflow: 'hidden',
+    minWidth: '300px', // Ensure a consistent width
+  }}
+>
+  {notifications.length > 0 ? (
+    notifications.map((notification) => (
+      <MenuItem
+        key={notification._id}
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          py: 1, // Padding for better spacing
+          gap: 2, // Space between the icon and message
+          borderBottom: '1px solid #e0e0e0', // Divider between notifications
+        }}
+      >
+        <Box sx={{ display: 'flex', alignItems: 'center', flex: 1 }}>
+          {getIcon(notification.type)}
+          <Box sx={{ ml: 1 }}>
+            <Typography variant="body1">
+              {notification.message}
             </Typography>
-            {notifications.length > 0 ? (
-              notifications.map((notification) => (
-                <MenuItem key={notification._id}>
-                  {getIcon(notification.type)}
-                  <Box>
-                    <Typography variant="body1">{notification.message}</Typography>
-                    <Typography variant="body2" style={{ color: '#999' }}>
-                      {new Date(notification.createdAt).toLocaleString()}
-                    </Typography>
-                  </Box>
-                </MenuItem>
-              ))
-            ) : (
-              <MenuItem>
-                <Typography>No notifications</Typography>
-              </MenuItem>
-            )}
-          </Menu>
+            <Typography
+              variant="caption"
+              sx={{ color: 'gray', fontSize: '0.75rem' }}
+            >
+              {/* {new Date(notification.date).toLocaleTimeString()} Time */}
+            </Typography>
+          </Box>
         </Box>
+        <Button
+          size="small"
+          variant="text"
+          sx={{
+            color: notifications.length > 0 ? '#2196F3' : 'gray',
+            textTransform: 'none',
+            fontSize: '0.75rem',
+            ':hover': {
+              color: 'black',
+            },
+          }}
+          onClick={() => markAsRead(notification._id)}
+        >
+          Mark as Read
+        </Button>
+      </MenuItem>
+    ))
+  ) : (
+    <MenuItem>
+      <Typography>No new notifications</Typography>
+    </MenuItem>
+  )}
+</Menu>
+
+
+
+
           {/* User Settings Menu */}
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
