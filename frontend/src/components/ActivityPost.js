@@ -129,7 +129,7 @@ export default function ActivityPost({ id, author, img, start_date, end_date, du
     
     if (!token || !userId) {
       console.error('No token or user ID found. Please log in.');
-      return;
+      navigate("/login")
     }
 
     try {
@@ -286,11 +286,11 @@ export default function ActivityPost({ id, author, img, start_date, end_date, du
             <IconButton aria-label="share" onClick={handleShare}>
               <ShareIcon />
             </IconButton>
-            {isUserTourist() && (
+            
               <IconButton aria-label="bookmark" onClick={handleBookmark}>
                 {isBookmarked ? <BookmarkIcon /> : <BookmarkBorderIcon />}
               </IconButton>
-            )}
+            
             <IconButton
               onClick={handleExpandClick}
               aria-expanded={expanded}
