@@ -19,6 +19,14 @@ const promoCodeSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
+  usedUsers:{
+    type: [mongoose.Schema.ObjectId],
+  },
+  codeType:{
+    type: String, // Specify the type as String
+    enum: ["birthDay", "normal"],
+    default: "normal",
+  }
 });
 
 const PromoCode = mongoose.model('PromoCode', promoCodeSchema);

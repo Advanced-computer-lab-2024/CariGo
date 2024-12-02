@@ -24,7 +24,8 @@ const {
   suggestedActivities,
   create_payment_form,
 
-  getDiscount,
+  redeemPromoCode,
+  cancelPromoCode,
 
   openBookings
 
@@ -41,10 +42,6 @@ router.get(
   readAllItineraries
 ); // itineraries
 
-router.get(
-  "/getDiscount",
-  getDiscount
-);
 
 
 router.get("/readSingleItinerary/:itineraryId", readSingleItinerary); // itineraries/:id
@@ -118,6 +115,18 @@ router.patch(
   "/CancelItineraryBooking",
   authController.restrictTo("Tourist"),
   CancelItineraryBooking
+);
+
+router.post(
+  "/redeemPromoCode",
+  authController.restrictTo("Tourist"),
+  redeemPromoCode
+);
+
+router.post(
+  "/cancelPromoCode",
+  authController.restrictTo("Tourist"),
+  cancelPromoCode
 );
 
 router.post(

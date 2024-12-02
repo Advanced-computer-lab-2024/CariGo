@@ -118,6 +118,9 @@ import ProductDetailsSeller from "./Pages/products/ProductDetailsSeller.jsx";
 import TotalReport from "./Pages/TotalReport.js";
 import BookmarkedItineraries from "./Pages/BookmarkedItineraries.js";
 import BookmarkedActivities from "./Pages/BookmarkedActivities.js";
+import UserReport from "./Pages/UserReport.jsx";
+import CartComponent from "./Pages/ProductsCart.js";
+import WishlistPage from "./Pages/viewWishlist.js";
 //import ChooseSignUP from "./Pages/ChooseSignUp";
 import OrderListScreen from "./Pages/Tourist/Orders/OrderListScreen.jsx";
 import OrderDetailScreen from "./Pages/Tourist/Orders/OrderDetailScreen.jsx";
@@ -171,6 +174,7 @@ function App() {
       <Route path="tour_guide/report" element={<ViewReport />} />
       <Route path="/Tourist/Products" element={<ViewProductsTourist />} />
       <Route path="/Tourist/Products/ViewProduct/:id" element={<ViewProductTourist />} />
+      <Route path="/Tourist/cart" element={<CartComponent />} />
       <Route
         path="tour_guide/itineraries/new"
         element={<CreateItineraryForm />}
@@ -253,6 +257,7 @@ function App() {
         </Route>
 
         <Route path="admin/reports" element={<TotalReport />} />
+        <Route path="/admin/user_reports" element={<UserReport />} />
        
         <Route path="/orders" element={<MyOrders />} />
         <Route path="/guest-places" element={<GuestViewVintage/>} />
@@ -267,6 +272,8 @@ function App() {
         <Route path="/sellerProfile" element={<SellerProfile userId={localStorage.getItem("id")} />} />
         <Route path="/change-password" element={<Pass/>} />
         <Route path="/upload" element={<UploadDocumentsPage/>} />
+        <Route path="/wishlist" element={<WishlistPage/>} />
+
 
       
         <Route path="/ExtraServicesCheckOut/:type" element={<ServicesCheckout />} />
