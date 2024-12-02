@@ -64,5 +64,9 @@ router.patch(
   userController.RedeemPoints
 );
 
+// router.get(
+//   "/wishlist",
+//   userController.getWishList
+// )
 
 module.exports = router;

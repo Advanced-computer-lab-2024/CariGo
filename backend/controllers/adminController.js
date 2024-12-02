@@ -379,7 +379,10 @@ const revenueReport = async (req, res) => {
     let productRevenueM = Array(12).fill(0);
 
     // Calculate total product sales by summing the quantities of each purchase
-    const purchases = await Purchase.find().populate("ProductId", "price");
+    const purchases = await Purchase.find({ isCancelled: false }).populate(
+      "ProductId",
+      "price"
+    );
     if (purchases && purchases.length > 0) {
       totalProductSales = purchases.reduce(
         (acc, purchase) => acc + (purchase.Quantity || 0),
@@ -427,16 +430,17 @@ const revenueReport = async (req, res) => {
       bookings.forEach((booking) => {
         const month = new Date(booking.createdAt).getMonth();
         if (booking.ItineraryId && booking.ItineraryId.price) {
-          const revenue = booking.ItineraryId.price * (booking.NumberOfTickets || 0);
+          const revenue =
+            booking.ItineraryId.price * (booking.NumberOfTickets || 0);
           console.log(`Itinerary Revenue for Month ${month}:`, revenue);
           itineraryRevenueM[month] += revenue;
         } else if (booking.ActivityId && booking.ActivityId.price) {
-          const revenue = booking.ActivityId.price * (booking.NumberOfTickets || 0);
+          const revenue =
+            booking.ActivityId.price * (booking.NumberOfTickets || 0);
           console.log(`Activity Revenue for Month ${month}:`, revenue);
           eventRevenueM[month] += revenue;
         }
       });
-      
     }
 
     // Calculate revenue per month from product purchases
@@ -471,6 +475,37 @@ const revenueReport = async (req, res) => {
   }
 };
 
+const userReport = async (req, res) => {
+  try {
+    const users = await userModel.find();
+    const userCount = users.length;
+    const userRoles = {
+      Tour_Guide: 0,
+      Advertiser: 0,
+      Seller: 0,
+      Tourism_Governer: 0,
+      Tourist: 0,
+      Admin: 0,
+    };
+    let newUsersPerMonth = Array(12).fill(0);
+    for (let user of users) {
+      userRoles[user.role] += 1;
+      const month = new Date(user.createdAt).getMonth();
+      newUsersPerMonth[month] += 1;
+    }
+    res.status(200).json({
+      status: "success",
+      data: {
+        userCount,
+        userRoles,
+        newUsersPerMonth,
+      },
+    });
+  } catch (err) {
+    res.status(500).send({ message: "error fetching user reports" });
+  }
+};
+
 module.exports = {
   addAdmin,
   getUser,
@@ -489,4 +524,5 @@ module.exports = {
   rejectDocument,
   createPromoCode,
   revenueReport,
+  userReport,
 };

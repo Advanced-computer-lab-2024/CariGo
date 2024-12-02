@@ -24,15 +24,41 @@ import { useState, useEffect } from 'react';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 
-
-export default function ActivityPost({ id,author, img, start_date, end_date, duration, tag, description, title,location,
-    price,category,discount,isOpened, rating}) {
+export default function ActivityPost({ id, author, img, start_date, end_date, duration, tag, description, title, location,
+    price, category, discount, isOpened, rating }) {
   const [expanded, setExpanded] = React.useState(false);
   const [snackbarOpen, setSnackbarOpen] = React.useState(false);
   const [snackbarMessage, setSnackbarMessage] = React.useState('');
   const [isBookmarked, setIsBookmarked] = React.useState(false);
-  const [savedActivities, setSavedActivities] = React.useState([]);
+  const [savedActivities, setSavedActivities] = useState([]);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchSavedActivities = async () => {
+      const token = localStorage.getItem('jwt');
+      const userId = localStorage.getItem('id');
+      
+      if (!token || !userId) {
+        console.error('No token or user ID found. Please log in.');
+        return;
+      }
+
+      try {
+        const response = await axios.get(`/cariGo/users/${userId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const userSavedActivities = response.data.savedEvents || [];
+        setSavedActivities(userSavedActivities);
+        setIsBookmarked(userSavedActivities.includes(id));
+      } catch (error) {
+        console.error('Error fetching saved activities:', error);
+      }
+    };
+
+    fetchSavedActivities();
+  }, [id]);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -90,38 +116,27 @@ export default function ActivityPost({ id,author, img, start_date, end_date, dur
     setSnackbarOpen(false);
   };
 
-  //check user role
   const isUserTourist = () => {
-    const userRole = localStorage.getItem('role');  // Get the role from localStorage
-    return userRole === 'Tourist';  // Return true if the user is a Tourist
+    const userRole = localStorage.getItem('role');
+    return userRole === 'Tourist';
   };
-
 
   const handleBookmark = async (e) => {
     e.stopPropagation();
-  
+
     const token = localStorage.getItem('jwt');
     const userId = localStorage.getItem('id');
-    console.log('Token:', token);
-    console.log('User ID:', userId);
-  
+    
     if (!token || !userId) {
       console.error('No token or user ID found. Please log in.');
-      return;
+      navigate("/login")
     }
-  
+
     try {
-      // Get the current saved Activities from localStorage (or state if already loaded)
-      let currentSavedActivities = JSON.parse(localStorage.getItem('savedActivities')) || [];
-  
-      // Update the saved Activities list based on whether it's bookmarked or not
       const updatedSavedActivities = isBookmarked
-        ? currentSavedActivities.filter((activityId) => activityId !== id)
-        : [...currentSavedActivities, id];
-  
-      console.log("Updated Saved Activities", updatedSavedActivities);
-  
-      // Update the saved Activities on the backend
+        ? savedActivities.filter((activityId) => activityId !== id)
+        : [...savedActivities, id];
+
       await axios.patch(
         `/cariGo/users/update/${userId}`,
         { savedEvents: updatedSavedActivities },
@@ -131,11 +146,7 @@ export default function ActivityPost({ id,author, img, start_date, end_date, dur
           },
         }
       );
-  
-      // Ensure the state and localStorage are updated with the new list
-      localStorage.setItem('savedActivities', JSON.stringify(updatedSavedActivities));
-  
-      // Update the state to trigger a re-render
+
       setSavedActivities(updatedSavedActivities);
       setIsBookmarked(!isBookmarked);
       setSnackbarMessage(
@@ -150,18 +161,15 @@ export default function ActivityPost({ id,author, img, start_date, end_date, dur
       setSnackbarOpen(true);
     }
   };
-  
 
-
-const conversionRate = localStorage.getItem("conversionRate")||1;
-const code = localStorage.getItem("currencyCode")||"EGP";
+  const conversionRate = localStorage.getItem("conversionRate") || 1;
+  const code = localStorage.getItem("currencyCode") || "EGP";
 
   return (
     <Card
       sx={{
-        //width: '100%', // Use full width of the container
-        width: '100%', // Set a max width
-        height:'370px',
+        width: '100%',
+        height: '370px',
         maxHeight: '500px',
         color: '#126782',
         fontSize: '18px',
@@ -193,46 +201,29 @@ const code = localStorage.getItem("currencyCode")||"EGP";
           }}
         />
         
-        <Box sx={{ display: 'flex', flexDirection: 'column' , margin:'15px', marginLeft:'25px',}}>
-          <Box
-            sx={{
-              //width: '400px',
-              //padding: '20px',
-              display: 'flex',
-              flexDirection: 'column',
-              overflow: 'overflow',
-            }}
-          >
+        <Box sx={{ display: 'flex', flexDirection: 'column', margin: '15px', marginLeft: '25px' }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', overflow: 'overflow' }}>
             <CardHeader
-            // avatar={<Avatar sx={{ bgcolor: red[500] }}>R</Avatar>}
               title={
-                <Typography variant="h5" sx={{ width: '300px', fontWeight: 'bold', fontSize: '24px', marginLeft:'-5px' }}>
+                <Typography variant="h5" sx={{ width: '300px', fontWeight: 'bold', fontSize: '24px', marginLeft: '-5px' }}>
                   {title}
                 </Typography>
               }
             />
 
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginLeft: '10px' }}>
-              {tag != null && <Chip label={tag} sx={{backgroundColor :'#126782', color: 'white' }} />}
+              {tag != null && <Chip label={tag} sx={{ backgroundColor: '#126782', color: 'white' }} />}
             </Box>
           </Box>
           
-          {/* Data Stuff */}
-          <Box
-            sx={{
-              display: 'flex',
-              flexFlow: 'column', 
-              margin:'10px',
-              marginLeft: '15px',
-            }}
-          >
+          <Box sx={{ display: 'flex', flexFlow: 'column', margin: '10px', marginLeft: '15px' }}>
             <Typography>
-              category: {category != null ? category:"no specified category"}
+              category: {category != null ? category : "no specified category"}
             </Typography>
 
-            <Box sx={{display:'flex', }}>
-            <StarIcon sx={{scale:'0.9'}}/>
-            <Typography sx={{fontSize: '16px',marginTop:'1px'}}>{""+rating+""}</Typography>
+            <Box sx={{ display: 'flex' }}>
+              <StarIcon sx={{ scale: '0.9' }} />
+              <Typography sx={{ fontSize: '16px', marginTop: '1px' }}>{rating}</Typography>
             </Box>
             <Box sx={{
               fontSize: '16px',
@@ -244,89 +235,81 @@ const code = localStorage.getItem("currencyCode")||"EGP";
             }}>
               <Typography sx={{ marginLeft: '6px', marginBottom: '2px' }}>
                 {isOpened || "status"}
-                </Typography>
-                </Box>
+              </Typography>
+            </Box>
         
-            <Box sx={{ display: 'flex',
-                marginTop: '5px',
-                margoinLeft:'-10px' ,
-                
-                }}>
-            <AttachMoneyIcon />
-            <Typography sx={{
-                marginLeft:'5px',
+            <Box sx={{ display: 'flex', marginTop: '5px', marginLeft: '-10px' }}>
+              <AttachMoneyIcon />
+              <Typography sx={{
+                marginLeft: '5px',
                 color: '#126782',
                 marginRight: '5px',
-            }}> {
-              price != null?
-              ((price*conversionRate).toFixed(2)) +` ${code}`   //((price.range?.max*conversionRate).toFixed(2)+"-"+(price.range?.min*conversionRate).toFixed(2) ) +` ${code}`
-              :'no specified price'}
+              }}>
+                {price != null ? ((price * conversionRate).toFixed(2)) + ` ${code}` : 'no specified price'}
               </Typography>
 
               <Box sx={{
-                backgroundColor : '#ff4d4d',
+                backgroundColor: '#ff4d4d',
                 display: 'flex',
                 marginLeft: '5px',
                 borderRadius: '5px',
                 padding: '0px',
               }}>
-                <Typography sx={{marginLeft:'5px', color: "white"}}>{"-"+discount+"%" || ''}</Typography>
-                <SellIcon sx={{scale: '0.7', color: 'white', marginTop:'2px', marginLeft:'-2px'}}/>
+                <Typography sx={{ marginLeft: '5px', color: "white" }}>{"-" + discount + "%" || ''}</Typography>
+                <SellIcon sx={{ scale: '0.7', color: 'white', marginTop: '2px', marginLeft: '-2px' }} />
               </Box>
             </Box>
           </Box>
         </Box>
       </Box>
-      <Box sx={{display:'flex', flexDirection:'column', }}>
-      {/* Description */}
-      <CardContent sx={{ flexGrow: 1 }}>
-        <Typography
-          variant="body2"
-          sx={{
-            color: 'text.secondary',
-            marginTop: '-10px',
-            marginLeft: '-5px',
-            flexWrap: 'wrap',
-            fontSize: '16px',
-            width: '460px',
-            position: 'absolute',
-            top: '290px',
-          }}
-        >
-          {description}
-        </Typography>
-      </CardContent>
-
-      <CardActions disableSpacing>
-        <Box sx={{ position: 'absolute', bottom: '2px', left: '2px' }}>
-        
-          <IconButton aria-label="share" onClick={handleShare}>
-            <ShareIcon />
-          </IconButton>
-          {isUserTourist() && (
-            <IconButton aria-label="bookmark" onClick={handleBookmark}>
-            {isBookmarked ? <BookmarkIcon /> : <BookmarkBorderIcon />}
-            </IconButton>
-          )}
-          <IconButton
-            onClick={handleExpandClick}
-            aria-expanded={expanded}
-            aria-label="show more"
+      <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+        <CardContent sx={{ flexGrow: 1 }}>
+          <Typography
+            variant="body2"
+            sx={{
+              color: 'text.secondary',
+              marginTop: '-10px',
+              marginLeft: '-5px',
+              flexWrap: 'wrap',
+              fontSize: '16px',
+              width: '460px',
+              position: 'absolute',
+              top: '290px',
+            }}
           >
-            <MoreVertIcon />
-          </IconButton>
-        </Box>
-      </CardActions>
-      <Snackbar
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'center',
-        }}
-        open={snackbarOpen}
-        autoHideDuration={6000}
-        onClose={handleSnackbarClose}
-        message={snackbarMessage}
-      />
+            {description}
+          </Typography>
+        </CardContent>
+
+        <CardActions disableSpacing>
+          <Box sx={{ position: 'absolute', bottom: '2px', left: '2px' }}>
+            <IconButton aria-label="share" onClick={handleShare}>
+              <ShareIcon />
+            </IconButton>
+            
+              <IconButton aria-label="bookmark" onClick={handleBookmark}>
+                {isBookmarked ? <BookmarkIcon /> : <BookmarkBorderIcon />}
+              </IconButton>
+            
+            <IconButton
+              onClick={handleExpandClick}
+              aria-expanded={expanded}
+              aria-label="show more"
+            >
+              <MoreVertIcon />
+            </IconButton>
+          </Box>
+        </CardActions>
+        <Snackbar
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'center',
+          }}
+          open={snackbarOpen}
+          autoHideDuration={6000}
+          onClose={handleSnackbarClose}
+          message={snackbarMessage}
+        />
       </Box>
     </Card>
   );
