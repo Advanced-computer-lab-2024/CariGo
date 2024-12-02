@@ -47,7 +47,11 @@ const ProductDetails = () => {
       // setUserData(user);
 
       // Check if the product is in the user's wishlist
-      const productExistsInWishlist = user.wishList.includes(id);
+      let ids=[];
+      for (const item of user.wishList) {
+        ids.push(item._id)
+      }
+      const productExistsInWishlist = ids.includes(id);
       setIsInWishlist(productExistsInWishlist); // Set initial icon state based on wishlist status
     } catch (error) {
       console.error("Error checking product in wishlist:", error);
@@ -97,8 +101,13 @@ const ProductDetails = () => {
   
       const userData = await userResponse.json();
       
+      let ids=[];
+      for (const item of userData.wishList) {
+       ids.push(item._id)
+      }
+
       // Check if the product is already in the wishlist
-      const productExistsInWishlist = userData.wishList.includes(product._id);
+      const productExistsInWishlist = ids.includes(product._id);
   
       if (productExistsInWishlist) {
         console.log("Product already in the wishlist.");
@@ -155,8 +164,13 @@ const removeProductFromWishlist = async () => {
 
     const userData = await userResponse.json();
     
+    let ids=[];
+    for (const item of userData.wishList) {
+      ids.push(item._id)
+    }
+
     // Check if the product is already in the wishlist
-    const productExistsInWishlist = userData.wishList.includes(product._id);
+    const productExistsInWishlist = ids.includes(product._id);
 
     if (!productExistsInWishlist) {
       console.log("Product is not in the wishlist.");
@@ -164,10 +178,15 @@ const removeProductFromWishlist = async () => {
     }
 
     // If the product exists in the wishlist, remove it
-    const updatedWishlist = userData.wishList.filter(id => id.toString() !== product._id);
+    const updatedWishlist = userData.wishList.filter(id => id._id.toString() !== product._id);
 
     // Send PATCH request to update the wishlist
-    const updateData = { wishList: updatedWishlist };
+    let IDS=[];
+    for (const item of updatedWishlist) {
+      IDS.push(item._id)
+    }
+    const updateData = { wishList: IDS };
+    
 
     const updateResponse = await fetch(
       `http://localhost:4000/cariGo/users/update/${userId}`, // Use the correct endpoint for updating user data

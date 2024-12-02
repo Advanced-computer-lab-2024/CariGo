@@ -120,6 +120,7 @@ import BookmarkedItineraries from "./Pages/BookmarkedItineraries.js";
 import BookmarkedActivities from "./Pages/BookmarkedActivities.js";
 import UserReport from "./Pages/UserReport.jsx";
 import CartComponent from "./Pages/ProductsCart.js";
+import WishlistPage from "./Pages/viewWishlist.js";
 //import ChooseSignUP from "./Pages/ChooseSignUp";
 
 function App() {
@@ -262,6 +263,8 @@ function App() {
         <Route path="/sellerProfile" element={<SellerProfile userId={localStorage.getItem("id")} />} />
         <Route path="/change-password" element={<Pass/>} />
         <Route path="/upload" element={<UploadDocumentsPage/>} />
+        <Route path="/wishlist" element={<WishlistPage/>} />
+
 
       
         <Route path="/ExtraServicesCheckOut/:type" element={<ServicesCheckout />} />
