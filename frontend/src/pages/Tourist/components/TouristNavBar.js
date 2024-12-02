@@ -95,6 +95,9 @@ function TouristNB() {
   const handleCloseNotifications = () => {
     setAnchorElNotifications(null);
   };
+  const handleWishlist=()=>{
+    navigate("/wishlist")
+  }
 
   const getIcon = (type) => {
     switch (type) {
@@ -554,6 +557,7 @@ function TouristNB() {
             size="large"
             aria-label="show favorites"
             color="inherit"
+            onClick={handleWishlist}
             sx={{ marginRight: 1 }}
           >
             <FavoriteBorderOutlinedIcon sx={{ fontSize: '33px', color: 'white' }} />
