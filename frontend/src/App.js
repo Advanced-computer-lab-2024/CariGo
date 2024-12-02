@@ -119,6 +119,7 @@ import TotalReport from "./Pages/TotalReport.js";
 import BookmarkedItineraries from "./Pages/BookmarkedItineraries.js";
 import BookmarkedActivities from "./Pages/BookmarkedActivities.js";
 import UserReport from "./Pages/UserReport.jsx";
+import CartComponent from "./Pages/ProductsCart.js";
 //import ChooseSignUP from "./Pages/ChooseSignUp";
 
 function App() {
@@ -163,6 +164,7 @@ function App() {
       <Route path="tour_guide/itineraries/:id" element={<ItineraryDetails />} />
       <Route path="/Tourist/Products" element={<ViewProductsTourist />} />
       <Route path="/Tourist/Products/ViewProduct/:id" element={<ViewProductTourist />} />
+      <Route path="/Tourist/cart" element={<CartComponent />} />
       <Route
         path="tour_guide/itineraries/new"
         element={<CreateItineraryForm />}
