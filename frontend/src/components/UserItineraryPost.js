@@ -24,7 +24,6 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import { useState, useEffect } from 'react';
-//import React, { useState } from 'react';
 
 export default function UserItineraryPost({
   id,
@@ -33,7 +32,7 @@ export default function UserItineraryPost({
   title,
   start_date,
   end_date,
-  locations = [], // Default to an empty array
+  locations = [],
   price,
   tags,
   transportation,
@@ -47,12 +46,37 @@ export default function UserItineraryPost({
   const [snackbarMessage, setSnackbarMessage] = React.useState('');
   const [isBookmarked, setIsBookmarked] = React.useState(false);
   const [savedItineraries, setSavedItineraries] = React.useState([]);
-  const [userId, setUserId] = React.useState(null);
 
-  //check the role of the user 
+  useEffect(() => {
+    const fetchSavedItineraries = async () => {
+      const token = localStorage.getItem('jwt');
+      const userId = localStorage.getItem('id');
+      
+      if (!token || !userId) {
+        console.error('No token or user ID found. Please log in.');
+        return;
+      }
+
+      try {
+        const response = await axios.get(`/cariGo/users/${userId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const userSavedItineraries = response.data.savedItineraries || [];
+        setSavedItineraries(userSavedItineraries);
+        setIsBookmarked(userSavedItineraries.includes(id));
+      } catch (error) {
+        console.error('Error fetching saved itineraries:', error);
+      }
+    };
+
+    fetchSavedItineraries();
+  }, [id]);
+
   const isUserTourist = () => {
-    const userRole = localStorage.getItem('role');  // Get the role from localStorage
-    return userRole === 'Tourist';  // Return true if the user is a Tourist
+    const userRole = localStorage.getItem('role');
+    return userRole === 'Tourist';
   };
 
   const formatDateTime = (dateString) => {
@@ -60,9 +84,6 @@ export default function UserItineraryPost({
       year: 'numeric',
       month: 'long',
       day: 'numeric',
-      //hour: '2-digit',
-      //minute: '2-digit',
-      //hour12: true,
     };
     return new Date(dateString).toLocaleString(undefined, options);
   };
@@ -71,7 +92,7 @@ export default function UserItineraryPost({
     const options = {
       hour: '2-digit',
       minute: '2-digit',
-      hour12: true, // Use 12-hour format with AM/PM
+      hour12: true,
     };
     return new Date(dateString).toLocaleString(undefined, options);
   };
@@ -140,63 +161,46 @@ export default function UserItineraryPost({
     }
   };
 
-  useEffect(() => {
-    const storedSavedItineraries = JSON.parse(localStorage.getItem('savedItineraries')) || [];
-    setSavedItineraries(storedSavedItineraries);
-}, []);
+  const handleBookmark = async (e) => {
+    e.stopPropagation();
 
-const handleBookmark = async (e) => {
-  e.stopPropagation();
+    const token = localStorage.getItem('jwt');
+    const userId = localStorage.getItem('id');
+    
+    if (!token || !userId) {
+      console.error('No token or user ID found. Please log in.');
+      return;
+    }
 
-  const token = localStorage.getItem('jwt');
-  const userId = localStorage.getItem('id');
-  
-  if (!token || !userId) {
-    console.error('No token or user ID found. Please log in.');
-    return;
-  }
+    try {
+      const updatedSavedItineraries = isBookmarked
+        ? savedItineraries.filter((itineraryId) => itineraryId !== id)
+        : [...savedItineraries, id];
 
-  try {
-    // Get the current saved itineraries from localStorage (or state if already loaded)
-    let currentSavedItineraries = JSON.parse(localStorage.getItem('savedItineraries')) || [];
+      await axios.patch(
+        `/cariGo/users/update/${userId}`,
+        { savedItineraries: updatedSavedItineraries },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-    // Update the saved itineraries list based on whether it's bookmarked or not
-    const updatedSavedItineraries = isBookmarked
-      ? currentSavedItineraries.filter((itineraryId) => itineraryId !== id)
-      : [...currentSavedItineraries, id];
-
-    console.log("Updated Saved Itineraries:", updatedSavedItineraries);
-
-    // Update the saved itineraries on the backend
-    await axios.patch(
-      `/cariGo/users/update/${userId}`,
-      { savedItineraries: updatedSavedItineraries },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    // Ensure the state and localStorage are updated with the new list
-    localStorage.setItem('savedItineraries', JSON.stringify(updatedSavedItineraries));
-
-    // Update the state to trigger a re-render
-    setSavedItineraries(updatedSavedItineraries);
-    setIsBookmarked(!isBookmarked);
-    setSnackbarMessage(
-      isBookmarked
-        ? "Itinerary removed from bookmarks"
-        : "Itinerary bookmarked successfully"
-    );
-    setSnackbarOpen(true);
-  } catch (error) {
-    console.error("Error bookmarking itinerary:", error);
-    setSnackbarMessage("Failed to bookmark itinerary. Please try again later.");
-    setSnackbarOpen(true);
-  }
-};
-
+      setSavedItineraries(updatedSavedItineraries);
+      setIsBookmarked(!isBookmarked);
+      setSnackbarMessage(
+        isBookmarked
+          ? "Itinerary removed from bookmarks"
+          : "Itinerary bookmarked successfully"
+      );
+      setSnackbarOpen(true);
+    } catch (error) {
+      console.error("Error bookmarking itinerary:", error);
+      setSnackbarMessage("Failed to bookmark itinerary. Please try again later.");
+      setSnackbarOpen(true);
+    }
+  };
 
   const handleSnackbarClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -205,13 +209,13 @@ const handleBookmark = async (e) => {
     setSnackbarOpen(false);
   };
   
-  const conversionRate = localStorage.getItem("conversionRate")||1;
-  const code = localStorage.getItem("currencyCode")||"EGP";
+  const conversionRate = localStorage.getItem("conversionRate") || 1;
+  const code = localStorage.getItem("currencyCode") || "EGP";
+
   return (
     <Card
       sx={{
         width: '100%',
-        //width: '800px',
         height: '400px',
         color: '#126782',
         fontSize: '18px',
@@ -265,36 +269,29 @@ const handleBookmark = async (e) => {
               <Typography sx={{ fontSize: '16px', marginTop: '1px' }}>{rating || "No rating"}</Typography>
             </Box>
             
-            {/* dates box */}
             <Box sx={{ display: 'flex', gap:'5px'}}>
-            <Box sx={{display:'flex', flexDirection:'column'}}>
-              <Box sx={{display:'flex',padding:'5px', paddingLeft:'0px'}}>
-                <CalendarMonthIcon sx={{color:'#ff4d4d'}}/>
-                <Typography sx={{marginTop:'2px'}}>{formatDateTime(start_date)}</Typography>
+              <Box sx={{display:'flex', flexDirection:'column'}}>
+                <Box sx={{display:'flex',padding:'5px', paddingLeft:'0px'}}>
+                  <CalendarMonthIcon sx={{color:'#ff4d4d'}}/>
+                  <Typography sx={{marginTop:'2px'}}>{formatDateTime(start_date)}</Typography>
+                </Box>
+                <Box sx={{display:'flex',padding:'5px', paddingLeft:'0px', gap:'2px'}}>
+                  <AccessTimeIcon sx={{color:'#126782',marginLeft:'20px'}}/>
+                  <Typography sx={{marginTop:'2px'}}>{formatDateHour(start_date)}</Typography>
+                </Box>
               </Box>
-              <Box sx={{display:'flex',padding:'5px', paddingLeft:'0px', gap:'2px'}}>
-                <AccessTimeIcon sx={{color:'#126782',marginLeft:'20px'}}/>
-                <Typography sx={{marginTop:'2px'}}>{formatDateHour(start_date)}</Typography>
+              <Typography sx={{margin:'2px',marginTop:'5px', color:'#ff4d4d', fontWeight:'600'}}>to</Typography>
+              <Box sx={{display:'flex', flexDirection:'column', marginLeft:'5px'}}>
+                <Box sx={{display:'flex',padding:'5px', paddingLeft:'0px'}}>
+                  <CalendarMonthIcon sx={{color:'#ff4d4d'}}/>
+                  <Typography sx={{marginTop:'0px',}}>{formatDateTime(end_date)}</Typography>
+                </Box>
+                <Box sx={{display:'flex',padding:'5px', paddingLeft:'0px', gap:'2px'}}>
+                  <AccessTimeIcon sx={{color:'#126782',marginLeft:'20px'}}/>
+                  <Typography sx={{marginTop:'2px'}}>{formatDateHour(end_date)}</Typography>
+                </Box>
               </Box>
             </Box>
-            <Typography sx={{margin:'2px',marginTop:'5px', color:'#ff4d4d', fontWeight:'600'}}>to</Typography>
-            <Box sx={{display:'flex', flexDirection:'column', marginLeft:'5px'}}>
-              <Box sx={{display:'flex',padding:'5px', paddingLeft:'0px'}}>
-                <CalendarMonthIcon sx={{color:'#ff4d4d'}}/>
-                <Typography sx={{marginTop:'0px',}}>{formatDateTime(end_date)}</Typography>
-              </Box>
-              <Box sx={{display:'flex',padding:'5px', paddingLeft:'0px', gap:'2px'}}>
-                <AccessTimeIcon sx={{color:'#126782',marginLeft:'20px'}}/>
-                <Typography sx={{marginTop:'2px'}}>{formatDateHour(end_date)}</Typography>
-              </Box>
-            </Box>
-            </Box>
-            {/* <Typography sx={{ fontSize: '16px' }}>
-              From: {formatDateTime(start_date)}
-            </Typography>
-            <Typography sx={{ fontSize: '16px' }}>
-              To: {formatDateTime(end_date)}
-            </Typography> */}
 
             <Box sx={{ display: 'flex', marginTop: '5px' }}>
               <PinDropIcon />
@@ -321,13 +318,12 @@ const handleBookmark = async (e) => {
 
       <CardActions disableSpacing>
         <Box sx={{ position: 'absolute', bottom: '2px', left: '2px' }}>
-         
           <IconButton aria-label="share" onClick={handleShare}>
             <ShareIcon />
           </IconButton>
           {isUserTourist() && (
             <IconButton aria-label="bookmark" onClick={handleBookmark}>
-            {isBookmarked ? <BookmarkIcon /> : <BookmarkBorderIcon />}
+              {isBookmarked ? <BookmarkIcon /> : <BookmarkBorderIcon />}
             </IconButton>
           )}
         </Box>
@@ -345,3 +341,4 @@ const handleBookmark = async (e) => {
     </Card>
   );
 }
+
