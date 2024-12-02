@@ -6,6 +6,7 @@ const {
   clearCart,
   checkout,
   getMyOrders,
+  getOrder,
   CancelOrder,
 } = require("../controllers/cartController");
 const authController = require("../controllers/authController");
@@ -16,7 +17,7 @@ router.use(authController.protect);
 
 // Get user's cart
 router.get("/", getCart);
-
+router.get("/order/:id",authController.restrictTo("Tourist"),getOrder);
 // Edit product quantity in cart (add/update)
 router.patch("/edit", editProductInCart);
 

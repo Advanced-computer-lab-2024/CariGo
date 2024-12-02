@@ -8,9 +8,9 @@ const generateSalesReport = async (req, res) => {
   try {
     // Step 1: Extract filters from the request query
     const { date, month, title, groupBy } = req.query;
-
+    console.log("idddddddddd"+ req.user.id);
     // Step 2: Find activities authored by the user with optional title filter
-    const activityFilter = { author: req.user.id };
+    const activityFilter = { author: req.user.id };   
     if (title) {
       activityFilter.title = { $regex: title, $options: "i" }; // Case-insensitive search by title
     }
@@ -73,22 +73,31 @@ const generateSalesReport = async (req, res) => {
           }
         }
       ]);
-
+     //console.log(sales[0])
       // Step 5: Add the results to the report
       sales.forEach(sale => {
         report.push({
           activityId: sale.activityId, // Activity ID
+          activityName : sale.title,
           period: sale.period, // Period based on grouping
           totalRevenue: sale.totalRevenue, // Total sales for this activity on this date/month
           distinctUserCount: sale.distinctUserCount // The number of distinct users for this period/activity
         });
       });
     }
-
+    let i =0;
+    
+    let totalRevenue = 0;
+    while(i<report.length)
+      totalRevenue+= report[i++].totalRevenue;
+  
+  //console.log(totalRevenue); // Output: 600
+  
     // Step 6: Return the final sales report as a response
     res.json({
       success: true,
       report: report, // Send the sales report back to the client
+      Revenue:totalRevenue
     });
 
   } catch (error) {
