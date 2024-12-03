@@ -32,13 +32,14 @@ import Divider from "@mui/material/Divider";
 import Grid from "@mui/material/Grid";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
-
+import { useNavigate } from "react-router-dom";
 
 const stripePromise = loadStripe('pk_test_51QLoL4AkXvwFjwTIX8acMj27pC8YxdOhmoUzn0wbUhej1xUFgFlfgYtXRGmggbKUI6Yfpxz08i9shcsfszv6y9iP0007q608Ny'); // Publishable key
 
 const API_BASE_URL = "http://localhost:4000/cariGo";
 
 const CartComponent = () => {
+  const navigate = useNavigate();
   const [error, setError] = React.useState(false);
   const [discount,SetDiscount] = React.useState(100);
   const [promoCode, setPromoCode] = React.useState(""); // State to store the promo code input
@@ -234,6 +235,7 @@ const CartComponent = () => {
       alert("Checkout successful!");
       await fetchCart();
       setIsPaymentPopupOpen(false);
+      navigate("/orders");
     } catch (error) {
       console.error("Error during checkout:", error);
       alert("Checkout failed. Please try again.");
@@ -289,7 +291,6 @@ const CartComponent = () => {
       if (!token) {
         throw new Error("No token found. Please log in.");
       }
-      console.log(token);
       const response = await axios.post(
         "http://localhost:4000/cariGo/Event/redeemPromoCode",
         { code: promoCode },
@@ -318,7 +319,6 @@ const CartComponent = () => {
       if (!token) {
         throw new Error("No token found. Please log in.");
       }
-      console.log(promoCode);
       const response = await axios.post(
         "http://localhost:4000/cariGo/Event/cancelPromoCode",
         { code: promoCode },
