@@ -43,6 +43,11 @@ const OrderSchema = new Schema(
       default: "processing",
       enum: ["processing", "shipped", "delivered", "cancelled"],
     },
+    PaymentMethod: {
+      type: String,
+      required: true,
+      enum: ["card", "wallet","cash"],
+    },
     deliveryDate: {
       type: Date,
     },

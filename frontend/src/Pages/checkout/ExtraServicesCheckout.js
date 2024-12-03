@@ -75,11 +75,12 @@ export default function ExtraServicesCheckout(props,) {
       } else {
         price = flight.price.total
       }
-      console.log("zeft:" ,price);
-      setTotalPrice((price * orderData.quantity).toFixed(2));
-      console.log("zeft:" ,totalPrice);
+      let priceAfterDiscount = price *(1-(discount/100));
+      if(priceAfterDiscount == 0)
+        priceAfterDiscount = price;
+      setTotalPrice((priceAfterDiscount * orderData.quantity).toFixed(2));
     }
-  }, [orderData.quantity]);
+  }, [orderData.quantity,discount]);
 
   React.useEffect(() => {
     // const fetchDetails = async () => {
@@ -293,6 +294,7 @@ export default function ExtraServicesCheckout(props,) {
             }}
           >
             <Info
+              SetDiscount={SetDiscount}
               totalPrice={`${totalPrice}`}
               activityDetails={activityDetails}
               type={type}
