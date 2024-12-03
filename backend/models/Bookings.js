@@ -20,6 +20,7 @@ const BookingSchema = new schema({
     type: mongoose.Schema.ObjectId,
     ref: "Transportation",
   },
+  
   hotelData: Object,
   flightData: Object,
   Status: {

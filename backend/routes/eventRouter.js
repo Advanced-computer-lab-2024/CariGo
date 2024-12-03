@@ -24,12 +24,15 @@ const {
   suggestedActivities,
   create_payment_form,
 
-  getDiscount,
+  redeemPromoCode,
+  cancelPromoCode,
 
   openBookings
 
 } = require("../controllers/eventController");
 const authController = require("../controllers/authController");
+const { readItinerariesByIds } = require("../controllers/eventController");
+
 const router = express.Router();
 
 router.get("/currencyConversion",currencyConversion);
@@ -39,10 +42,7 @@ router.get(
   readAllItineraries
 ); // itineraries
 
-router.get(
-  "/getDiscount",
-  getDiscount
-);
+
 
 router.get("/readSingleItinerary/:itineraryId", readSingleItinerary); // itineraries/:id
 router.get("/readSingleVintage/:vintageId", readSingleVintage);
@@ -118,9 +118,24 @@ router.patch(
 );
 
 router.post(
+  "/redeemPromoCode",
+  authController.restrictTo("Tourist"),
+  redeemPromoCode
+);
+
+router.post(
+  "/cancelPromoCode",
+  authController.restrictTo("Tourist"),
+  cancelPromoCode
+);
+
+router.post(
   "/create_payment_form",
   authController.restrictTo("Tourist"),
   create_payment_form
 );
+
+router.get("/readItinerariesByIds", readItinerariesByIds);
+
 
 module.exports = router;

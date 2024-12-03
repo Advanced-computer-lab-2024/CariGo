@@ -22,9 +22,9 @@ import { Button, Menu } from 'antd';
 import { Link } from 'react-router-dom';
 
 const items = [
-  { key: '1', icon: <PieChartOutlined />, label: <Link to="/">Dashboard Overview</Link> },
+  { key: '1', icon: <PieChartOutlined />, label: <Link to="/admin">Dashboard Overview</Link> },
   { key: '2', icon: <UserOutlined />, label: <Link to="/user-management">User Management</Link> },
-  { key: '3', icon: <ContainerOutlined />, label: <Link to="/product-management">Product Management</Link> },
+  { key: '3', icon: <ContainerOutlined />, label: <Link to="/admin/view-products">Product Management</Link> },
   {
     key: 'complaints', 
     icon: <ExclamationCircleOutlined />, 
@@ -40,7 +40,7 @@ const items = [
     label: 'Reports',
     icon: <BarChartOutlined />,
     children: [
-      { key: '5', icon: <FileTextOutlined />, label: 'User Activity Report' },
+      { key: '5', icon: <FileTextOutlined />, label: <Link to="/admin/user_reports">User Activity Report</Link> },
       { key: '6', icon: <FileTextOutlined />, label: <Link to="/admin/reports">Sales Report</Link>  },
       { key: '7', icon: <FileSearchOutlined />, label: 'Traffic Report' },
       { key: '8', icon: <FileSearchOutlined />, label: 'Error Logs' },

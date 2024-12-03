@@ -8,7 +8,7 @@ import SmallButton from './components/smallButton'; // Import SmallButton here
 import './styles/AdvertiserProfile.css';
 import coverImage from './assets/header.png'; 
 import logoImage from './assets/profile.png'; 
-
+import Button from '@mui/material/Button';
 const AdvertiserProfile = ({ userId }) => {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -80,8 +80,25 @@ const AdvertiserProfile = ({ userId }) => {
         />
         
         <SmallButton profile={profile} setProfile={setProfile} setRefreshKey={setRefreshKey} /> {/* Pass setRefreshKey */}
+        
         <CenteredTabs />
+        <Button 
+        variant="contained" 
+        size="small" 
+      //  onClick={handleOpen}
+        sx={{
+          backgroundColor: '#ff683c',
+          color: '#fff',
+          '&:hover': {
+            backgroundColor: '#577b98',
+          },
+        }}
+        //startIcon={<EditRoundedIcon />}
+      >
+        Edit Info1
+      </Button>
       </div>
+    
     </div>
   );
 };

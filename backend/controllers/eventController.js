@@ -18,8 +18,7 @@ const notificationController = require("../controllers/notificationController");
 
 const PromoCode = require("../models/PromoCode"); // Adjust the path as necessary
 
-const NotificationController = require('../controllers/notificationController');
-
+const NotificationController = require("../controllers/notificationController");
 
 const createItinerary = async (req, res) => {
   const userId = new mongoose.Types.ObjectId(req.body.author); // Convert to ObjectId
@@ -251,6 +250,22 @@ const updateItinerary = async (req, res) => {
 //       res.status(500).json({ message: "An error occurred", error });
 //   }
 // };
+const readItinerariesByIds = async (req, res) => {
+  try {
+    const { ids } = req.query; // Extract the ids from query string
+    const itineraryIds = ids.split(","); // Split the ids into an array
+    // Fetch the itineraries from the database based on these IDs
+    const itineraries = await Itinerary.find({ _id: { $in: itineraryIds } })
+    .populate('author');
+    
+
+    res.status(200).json(itineraries);
+  } catch (error) {
+    console.error("Error fetching itineraries:", error);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
 
 const readAllItineraries = async (req, res) => {
   const sort = req.query.sort || "-createdAt"; // Default to "-createdAt" if no parameter is provided
@@ -743,7 +758,7 @@ const MyItineraryBookings = async (req, res) => {
 };
 
 const CancelItineraryBooking = async (req, res) => {
-  const  UserId  = req.user.id; // User ID from request body
+  const UserId = req.user.id; // User ID from request body
   const { bookingId } = req.body; // Event ID from URL parameters
   if (
     mongoose.Types.ObjectId.isValid(bookingId) &&
@@ -762,20 +777,26 @@ const CancelItineraryBooking = async (req, res) => {
         const hoursDifference = timeDifference / (1000 * 60 * 60); // Convert to hours
         if (hoursDifference >= 48) {
           const bookings = await bookingModel.updateOne(
-            { _id:bookingId }, // Filter to find documents with both UserId and ItineraryId
+            { _id: bookingId }, // Filter to find documents with both UserId and ItineraryId
             { $set: { Status: false } } // Update to set Status to false
           );
           res.status(200).json({
             message: "Bookings canceled successfully",
             updatedBookingsCount: bookings.modifiedCount, // shows how many bookings were updated
           });
+          console.log("???????????in first????????????");
           const canceled = await bookingModel.findOne({
             ItineraryId: ItineraryId,
             status: true,
           });
+          console.log("???????????in second????????????");
           if (!canceled) {
-            await Itinerary.findByIdAndUpdate(ItineraryId, { isBooked: false });
+            await Itinerary.updateOne(
+              { _id: ItineraryId },
+              { $set: { isBooked: false } }
+            );
           }
+          console.log("???????????in third????????????");
         } else {
           res.status(400).json({
             message:
@@ -841,32 +862,77 @@ const create_payment_form = async (req, res) => {
   }
 };
 
-
-const getDiscount = async (req,res)=>{
-  const {code} = req.query;
-  try{
-    
-    const promo = await PromoCode.findOne({code,isActive:true});
-    if(!promo){
+const redeemPromoCode = async (req, res) => {
+  const { code } = req.body;
+  const userId = req.user.id;
+  if (!mongoose.Types.ObjectId.isValid(userId)){
+    return res.status(400).json({ error: "Invalid event ID format" });
+  }
+  try {
+    const promo = await PromoCode.findOne({ code, isActive: true, usedUsers: { $ne: userId } });
+    if (!promo) {
       return res.status(404).send("invalid promo code");
     }
-    console.log("promo:"+promo)
-    console.log("??????????"+promo.discount+"??????????????????")
-    res.status(200).send({ discount: promo.discount });
-  }catch(error){
+    if (promo.codeType === "birthDay") {
+      await PromoCode.updateOne(
+        { _id: promo._id },
+        { $set: { isActive: false } }
+      ); // Update operation)
+    } else {
+        // User not found, add them to the array
+        await PromoCode.updateOne(
+          { _id: promo._id },
+          { $addToSet: { usedUsers: userId } } // `$addToSet` ensures no duplicate entries
+        );
+      
+    }
+      res.status(200).send({ discount: promo.discount });
+  } catch (error) {
     res.status(500).send({ error: error.message });
   }
-}
+};
+
+const cancelPromoCode = async (req, res) => {
+  const { code } = req.body;
+  const userId = req.user.id;
+  if (!mongoose.Types.ObjectId.isValid(userId)){
+    return res.status(400).json({ error: "Invalid event ID format" });
+  }
+  try {
+    const promo = await PromoCode.findOne({ code });
+    if (!promo) {
+      return res.status(404).send("invalid promo code");
+    }
+    if (promo.codeType === "birthDay") {
+      await PromoCode.updateOne(
+        { _id: promo._id },
+        { $set: { isActive: true } }
+      ); // Update operation)
+    } else {
+        // User found, remove them from the array
+        await PromoCode.updateOne(
+          { _id: promo._id },
+          { $pull: { usedUsers: userId } } // `$pull` removes the specified value from the array
+        );
+    }
+    console.log("inside cancel promo code");
+    res.status(200).send({ message: "Promo code canceled successfully" });
+  } catch (error) {
+    res.status(500).send({ error: error.message });
+  }
+};
 
 const openBookings = async (req, res) => {
   try {
     const itineraryId = req.params.id;
-    let itinerary = await itineraryModel.findById(itineraryId).populate('interestedUsers');
+    let itinerary = await itineraryModel
+      .findById(itineraryId)
+      .populate("interestedUsers");
 
     if (!itinerary) {
       return res.status(404).json({
-        status: 'fail',
-        message: 'Itinerary not found'
+        status: "fail",
+        message: "Itinerary not found",
       });
     }
 
@@ -880,29 +946,27 @@ const openBookings = async (req, res) => {
         await NotificationController.sendNotification(
           user._id,
           message,
-          'upcoming_event',
+          "upcoming_event",
           itineraryId,
-          'Itinerary'
+          "Itinerary"
         );
       }
     }
 
     res.status(200).json({
-      status: 'success',
-      message: 'Bookings opened successfully',
+      status: "success",
+      message: "Bookings opened successfully",
       data: {
-        itinerary
-      }
+        itinerary,
+      },
     });
-
   } catch (error) {
     res.status(500).json({
-      status: 'error',
-      message: error.message
+      status: "error",
+      message: error.message,
     });
   }
 };
-
 
 module.exports = {
   createItinerary,
@@ -928,9 +992,11 @@ module.exports = {
   suggestedItineraries,
   suggestedActivities,
   create_payment_form,
+  readItinerariesByIds,
 
-  getDiscount,
 
-  openBookings
+  redeemPromoCode,
+  cancelPromoCode,
 
+  openBookings,
 };

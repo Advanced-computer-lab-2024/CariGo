@@ -13,9 +13,9 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import logoImage from "../assets/cropped_image.png";
 import { useNavigate } from "react-router-dom";
-
+import Table from "./Report/Table";
 // Updated pages without "Activities"
-const pages = ["Itineraries", "Inactive Itineraries"];
+const pages = ["Itineraries", "Inactive Itineraries","View Report"];
 const settings = ["Profile", "Logout",'Change Password'];
 
 function ResponsiveAppBar() {
@@ -50,7 +50,10 @@ function ResponsiveAppBar() {
     handleCloseNavMenu();
     navigate("/tour_guide/inactive_itineraries");
   };
-
+  const loadReport = () => {
+    handleCloseNavMenu();
+    navigate("/tour_guide/report");
+  };
   const handleDeleteAccount = async () => {
     const token = localStorage.getItem('jwt');
     try{
@@ -150,6 +153,12 @@ function ResponsiveAppBar() {
             >
               {pages[1]}
             </Button>
+            <Button
+              onClick={loadReport}
+              sx={{ my: 2, color: "white", display: "block" }}
+            >
+              {pages[2]}
+            </Button>
           </Box>
 
           {/* User Settings Menu */}
@@ -206,7 +215,9 @@ function ResponsiveAppBar() {
             </Menu>
           </Box>
         </Toolbar>
+        
       </Container>
+      
     </AppBar>
   );
 }

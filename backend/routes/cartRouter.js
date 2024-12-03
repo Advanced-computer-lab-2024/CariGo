@@ -5,6 +5,9 @@ const {
   removeItemFromCart,
   clearCart,
   checkout,
+  getMyOrders,
+  getOrder,
+  CancelOrder,
 } = require("../controllers/cartController");
 const authController = require("../controllers/authController");
 
@@ -14,7 +17,7 @@ router.use(authController.protect);
 
 // Get user's cart
 router.get("/", getCart);
-
+router.get("/order/:id",authController.restrictTo("Tourist"),getOrder);
 // Edit product quantity in cart (add/update)
 router.patch("/edit", editProductInCart);
 
@@ -23,7 +26,8 @@ router.patch("/remove/:id", removeItemFromCart);
 
 // clear cart
 router.patch("/clear", clearCart);
-
+router.get('/MyOrders',authController.restrictTo("Tourist"),getMyOrders);
+router.patch('/cancel',authController.restrictTo("Tourist"),CancelOrder);
 // Checkout
 router.post("/checkout", checkout);
 

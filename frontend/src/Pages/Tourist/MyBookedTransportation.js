@@ -209,6 +209,7 @@ const MyBookedTransportation = () => {
     return (
       <Grid item key={index} sx={{ justifyContent: "left" }}>
         <MyBookedTransCard
+          bookId={activity._id}
           id={activity.TransportationId._id}
           author={activity.TransportationId.author}
           name={activity.TransportationId.carType}

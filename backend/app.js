@@ -25,6 +25,9 @@ const transportationRouter = require("./routes/transportationRouter.js");
 const purchaseRouter = require("./routes/purchaseRouter.js");
 const DeleteRequestRouter = require("./routes/deleteRequestRouter.js");
 const notificationRoutes = require('./routes/notificationRouter.js');
+const salesReportRouter = require("./routes/salesReportRouter.js");
+
+
 const app = express();
 
 
@@ -68,6 +71,7 @@ app.use("/cariGo/flights",amadusRouter)
 app.use("/cariGo/transportation",transportationRouter)
 app.use("/cariGo/tourist",touristRouter);
 app.use("/cariGo/delReq",DeleteRequestRouter)
+app.use("/cariGo/report",salesReportRouter)
 
 
 app.use("/cariGo/Event", eventRouter)

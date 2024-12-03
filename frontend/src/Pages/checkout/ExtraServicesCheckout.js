@@ -45,6 +45,7 @@ export default function ExtraServicesCheckout(props,) {
 
    // === Step 1: Add state for checkbox tracking ===
    const [isTermsChecked, setIsTermsChecked] = React.useState(false);
+   const [discount,SetDiscount] = React.useState(100);
    const { state } = useLocation();
    const { type, id } = useParams();
    console.log(type);
@@ -53,6 +54,7 @@ export default function ExtraServicesCheckout(props,) {
   const flight =type==="flight" ?state.flightData :"";
    // === Step 2: Checkbox change handler ===
    console.log(flight);
+   console.log(totalPrice);
    const handleCheckboxChange = (event) => {
      setIsTermsChecked(event.target.checked);
    };
@@ -75,6 +77,7 @@ export default function ExtraServicesCheckout(props,) {
       }
       console.log("zeft:" ,price);
       setTotalPrice((price * orderData.quantity).toFixed(2));
+      console.log("zeft:" ,totalPrice);
     }
   }, [orderData.quantity]);
 
@@ -243,7 +246,7 @@ export default function ExtraServicesCheckout(props,) {
         throw new Error("Unknown step");
     }
   }
-
+ 
   return (
     <AppTheme {...props}>
       <CssBaseline enableColorScheme />
@@ -290,9 +293,10 @@ export default function ExtraServicesCheckout(props,) {
             }}
           >
             <Info
-              totalPrice={`$${totalPrice}`}
+              totalPrice={`${totalPrice}`}
               activityDetails={activityDetails}
               type={type}
+              quantity={orderData.quantity}
             />
           </Box>
         </Grid>

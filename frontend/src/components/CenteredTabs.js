@@ -8,7 +8,7 @@ import CreateActivityForm from '../Pages/CreateActivityForm';
 import CreateTransportationForm from './CreateTransportationForm';
 import TransportListAdvertiser from './TransportListAdvertiser';
 import { jwtDecode } from "jwt-decode";
-
+import Repo from './Report/dashboard/Dashboard';
 // Example Components for the tabs
 
 
@@ -46,7 +46,8 @@ export default function CenteredTabs() {
         <Tab label="Create Activity" />
         <Tab label="Activity Post" />
         <Tab label="My Transportations" />
-        <Tab label="CreateTransportation" />
+        <Tab label="Create Transportation" />
+        <Tab label="View Report" />
       </Tabs>
 
       {/* Conditional Rendering Based on the Tab Selection */}
@@ -55,6 +56,7 @@ export default function CenteredTabs() {
         {value === 1 && <ActivityPostAdvList />}  {/* Render Activity Post in Tab 2 */}
         {value === 2 && <TransportListAdvertiser/>}  {/* Placeholder for Settings in Tab 3 */}
         {value === 3 && <CreateTransportationForm/>}  {/* Placeholder for Settings in Tab 3 */}
+        {value === 4 && <Repo/>}  {/* Placeholder for Settings in Tab 3 */}
       </Box>
     </Box>
   );
