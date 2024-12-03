@@ -10,30 +10,30 @@ const logError = (context, error) => {
   console.error(`Error in ${context}:`, error);
 };
 
-// Schedule a task to run every minute to check for scheduled notifications
-cron.schedule('*/1 * * * *', async () => {
-  console.log('Running scheduled notification check...');
-  const now = new Date();
-  try {
-    const scheduledNotifications = await Notification.find({
-      scheduledFor: { $lte: now },
-      emailSent: false
-    });
+// // Schedule a task to run every minute to check for scheduled notifications
+// cron.schedule('*/1 * * * *', async () => {
+//   console.log('Running scheduled notification check...');
+//   const now = new Date();
+//   try {
+//     const scheduledNotifications = await Notification.find({
+//       scheduledFor: { $lte: now },
+//       emailSent: false
+//     });
 
-    console.log(`Found ${scheduledNotifications.length} notifications to send.`);
+//     console.log(`Found ${scheduledNotifications.length} notifications to send.`);
 
-    for (const notification of scheduledNotifications) {
-      try {
-        await notificationController.sendEmail(notification);
-        console.log(`Sent notification: ${notification._id}`);
-      } catch (error) {
-        logError('sending email', error);
-      }
-    }
-  } catch (error) {
-    logError('scheduled notification check', error);
-  }
-});
+//     for (const notification of scheduledNotifications) {
+//       try {
+//         await notificationController.sendEmail(notification);
+//         console.log(`Sent notification: ${notification._id}`);
+//       } catch (error) {
+//         logError('sending email', error);
+//       }
+//     }
+//   } catch (error) {
+//     logError('scheduled notification check', error);
+//   }
+// });
 
 // Schedule a task to run daily at midnight to check for tomorrow's events
 cron.schedule('0 0 * * *', async () => {

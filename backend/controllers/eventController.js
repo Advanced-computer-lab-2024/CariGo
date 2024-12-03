@@ -851,19 +851,7 @@ const openBookings = async (req, res) => {
     itinerary.isOpened = true;
     await itinerary.save();
 
-    // Send notifications and emails to all interested users
-    if (itinerary.interestedUsers && itinerary.interestedUsers.length > 0) {
-      const message = `Bookings are now open for the itinerary: ${itinerary.title}`;
-      for (const user of itinerary.interestedUsers) {
-        await NotificationController.sendNotification(
-          user._id,
-          message,
-          'upcoming_event',
-          itineraryId,
-          'Itinerary'
-        );
-      }
-    }
+    await notificationController.sendBookingOpenedNotification(itineraryId, "Itinerary");
 
     res.status(200).json({
       status: 'success',

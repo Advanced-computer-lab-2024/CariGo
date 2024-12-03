@@ -1,5 +1,5 @@
-
 import "./styles/App.css";
+import ReactDOM from 'react-dom';
 
 import AdvertiserProfile from "./AdvertiserProfile"; // Adjust the path based on your structure
 
@@ -12,6 +12,7 @@ import UserItinDetails from "./Pages/UserItinDetails.js";
 import TourGuideProfile from "./Pages/TourGuideProfile.js";
 import  TouristItineraries from "./Pages/Tourist/TouristItineraries.js";
 import  GuestItineraries from "./Pages/Guest/GuestItineraries.js";
+
 import  GuestViewVintage from "./Pages/Guest/GuestPlaces.js";
 import  TouristVintage from "./Pages/Tourist/TouristPlaces.js";
 import CreateVintageForm from "./Pages/CreateVintageForm.js";
@@ -23,11 +24,11 @@ import SignIn from "./Pages/SignUp/SignIn.js";
 import PaymentCheckout from './Pages/checkout/Checkout';
 import ServicesCheckout from './Pages/checkout/ExtraServicesCheckout';
 import UserViewActivities from "./Pages/Tourist/TouristActivities.js";
-import AdminHome from './Pages/Home.js';
 import React, { lazy, Suspense } from 'react'; // Keep this line
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom'; // Combined imports from react-router-dom
 import Loadable from '@loadable/component'; // Keep other necessary imports
-import Home from './Pages/Home.js';  // Ensure this import is case-sensitive
+// import Home from './Pages/open-react-template/app/(default)/page.jsx';  // Ensure this import is case-sensitive
+import HomePageGuest from './Pages/HomePageGuest/App/page.jsx';  // Ensure this import is case-sensitive
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Sidebar from './Pages/Sidebar.jsx';
@@ -52,7 +53,7 @@ import SignUp from './Pages/Signup.js';
 import { jwtDecode } from 'jwt-decode';
 import CreateActivityForm from "./Pages/CreateActivityForm.js";
 import TouristProfile from "./Pages/Tourist/TouristProfile.js";
-import TouristGuestHome from "./Pages/Tourist-Guest/TouristGuestHome.js";
+import TouristGuestHome from "./Pages/HomePageTourist/App/page.jsx";
 import ViewProductsTourist from "./Pages/Tourist/TouristProducts.js";
 import GuestHome from "./Pages/Guest/GuestHome.js";
 import TouristActivities from './Pages/Tourist/TouristActivities.js';
@@ -141,7 +142,7 @@ function App() {
   //  <AuthProvider>
     <Router>
     <Routes>
-        <Route path="/" element={<Home />} /> {/* Default route */}
+        <Route path="/" element={<HomePageGuest />} /> {/* Default route */}
         <Route path="/tourist/MyBookings" element={<MyBookings />} /> {/* Default route */}
         <Route path="/tourist/MyBookedActivities" element={<MyBookedActivities />} /> {/* Default route */}
         <Route path="/tourist/MyBookedTransportation" element={<MyBookedTransportation />} /> 
