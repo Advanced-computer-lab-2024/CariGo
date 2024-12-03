@@ -367,6 +367,7 @@ const OrderDetailScreen = () => {
             // setRevenue(json.Revenue);
             console.log("Fetched Titles:", json.products);
             setOrder(json)
+            
             setProducts(json.products)
           //  setTitles(json.activityTitles)
             //setEvents(json.report); // Set activities if response is okay
@@ -377,6 +378,7 @@ const OrderDetailScreen = () => {
         }
     }
     fetchTitles();
+    console.log(order?order.state:"null");
 }, [])
 let message;
 const [done,setDone] = useState(false)
