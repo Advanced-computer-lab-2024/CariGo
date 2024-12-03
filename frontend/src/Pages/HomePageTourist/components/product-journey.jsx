@@ -14,8 +14,8 @@ export default function ProductJourney() {
         </h4>
         <p className="mt-4 text-lg text-transparent bg-gradient-to-r from-[#4f7489] to-[#037bba] bg-clip-text">
           Escape the chaos of daily life and find tranquility in just a few
-          minutes. Carigo makes it easy for you to plan out your
-          journey from A to Z.
+          minutes. Carigo makes it easy for you to plan out your journey from A
+          to Z.
         </p>
       </div>
       <Spotlight
@@ -28,18 +28,22 @@ export default function ProductJourney() {
               <TicketsPlane className="h-5 w-3 text-white" />
               <span>Smooth Travel</span>
             </CardTitle>
+          </CardHeader>
+          <div className="flex justify-content-center align-center">
             <img
               className="inline-flex"
               src={WorflowImg01}
-              width={350}
-              height={288}
+              width={200}
+              height={200}
               alt="Workflow 01"
             />
-          </CardHeader>
+          </div>
+
           <CardContent span="Book flights and hotels">
             <p className="text-sm text-gray-300">
-              Find flights and book hotels for yor destinations. With everything you need 
-              to take care of in one place, traveling couldn't be any easier.
+              Find flights and book hotels for yor destinations. With everything
+              you need to take care of in one place, traveling couldn't be any
+              easier.
             </p>
           </CardContent>
         </Card>
@@ -59,8 +63,9 @@ export default function ProductJourney() {
           </CardHeader>
           <CardContent span="Find Itineraries and Activities">
             <p className="text-sm text-gray-300">
-              Whether you're searching for a relaxing activity, or wanting a full thrilling journey, 
-              Find Itineraries and Activities that match your needs.
+              Whether you're searching for a relaxing activity, or wanting a
+              full thrilling journey, Find Itineraries and Activities that match
+              your needs.
             </p>
           </CardContent>
         </Card>
@@ -80,8 +85,9 @@ export default function ProductJourney() {
           </CardHeader>
           <CardContent span="Buy Products">
             <p className="text-sm text-gray-300">
-              Why not go shopping for a souviner? Only you don't have to search around for what
-              you want. All products are just at the tip of your fingers.
+              Why not go shopping for a souviner? Only you don't have to search
+              around for what you want. All products are just at the tip of your
+              fingers.
             </p>
           </CardContent>
         </Card>
