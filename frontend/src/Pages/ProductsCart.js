@@ -17,10 +17,32 @@ import RateReviewIcon from "@mui/icons-material/RateReview";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import Navbar from "./Tourist/components/TouristNavBar";
 import AddressManager from "../components/AdressManager.jsx";
+import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import { loadStripe } from '@stripe/stripe-js';
+import PaymentPopup from './PaymentPopup';
+import { Elements } from '@stripe/react-stripe-js';
+import axios from "axios";
+
+import PropTypes from "prop-types";
+
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import Divider from "@mui/material/Divider";
+import Grid from "@mui/material/Grid";
+import Stack from "@mui/material/Stack";
+import TextField from "@mui/material/TextField";
+
+
+const stripePromise = loadStripe('pk_test_51QLoL4AkXvwFjwTIX8acMj27pC8YxdOhmoUzn0wbUhej1xUFgFlfgYtXRGmggbKUI6Yfpxz08i9shcsfszv6y9iP0007q608Ny'); // Publishable key
 
 const API_BASE_URL = "http://localhost:4000/cariGo";
 
 const CartComponent = () => {
+  const [error, setError] = React.useState(false);
+  const [discount,SetDiscount] = React.useState(100);
+  const [promoCode, setPromoCode] = React.useState(""); // State to store the promo code input
+  const [isPaymentPopupOpen, setIsPaymentPopupOpen] = useState(false);
   const [cartItems, setCartItems] = useState([]);
   const [totalCost, setTotalCost] = useState(0);
   const [isReviewFormOpen, setIsReviewFormOpen] = useState(false);
@@ -36,11 +58,11 @@ const CartComponent = () => {
   useEffect(() => {
     fetchCart();
     fetchAddresses();
-  }, []);
+  }, [isPaymentPopupOpen]);
 
   useEffect(() => {
     calculateTotal();
-  }, [cartItems]);
+  }, [cartItems,discount]);
 
   const fetchCart = async () => {
     try {
@@ -68,6 +90,7 @@ const CartComponent = () => {
     }
   };
 
+  const [user, setUser] = React.useState();
   const fetchAddresses = async () => {
     try {
       const token = localStorage.getItem("jwt");
@@ -89,8 +112,8 @@ const CartComponent = () => {
       if (!response.ok) {
         throw new Error("Failed to fetch addresses");
       }
-
       const data = await response.json();
+      setUser(data)
       setAddresses(data.addresses || []);
     } catch (error) {
       console.error("Error fetching addresses:", error);
@@ -102,7 +125,10 @@ const CartComponent = () => {
       (sum, item) => sum + item.productId.price * item.quantity,
       0
     );
-    setTotalCost(total);
+    let priceAfterDiscount = total *(1-(discount/100));
+    if(priceAfterDiscount == 0)
+      priceAfterDiscount = total;
+    setTotalCost(priceAfterDiscount);
   };
 
   const updateQuantity = async (id, change) => {
@@ -160,7 +186,20 @@ const CartComponent = () => {
     }
   };
 
-  const checkoutCart = async () => {
+  const handleCkeckoutClick = () => {
+    const token = localStorage.getItem("jwt");
+      if (!token) {
+        console.error("User is not logged in.");
+        return;
+      }
+    if (!selectedAddress) {
+      alert("Please select a shipping address");
+      return;
+    }
+    setIsPaymentPopupOpen(true);
+  };
+
+  const checkoutCart = async (PaymentMethod) => {
     try {
       const token = localStorage.getItem("jwt");
       if (!token) {
@@ -181,6 +220,8 @@ const CartComponent = () => {
         },
         body: JSON.stringify({
           shippingAddress: selectedAddress,
+          paymentAmount:totalCost,
+          PaymentMethod:PaymentMethod,
         }),
       });
 
@@ -192,9 +233,11 @@ const CartComponent = () => {
       console.log("Checkout successful:", result);
       alert("Checkout successful!");
       await fetchCart();
+      setIsPaymentPopupOpen(false);
     } catch (error) {
       console.error("Error during checkout:", error);
       alert("Checkout failed. Please try again.");
+      setIsPaymentPopupOpen(false);
     }
   };
 
@@ -237,6 +280,67 @@ const CartComponent = () => {
       setSelectedAddress(newAddress);
     } catch (error) {
       console.error("Error adding new address:", error);
+    }
+  };
+
+  const handleRedeem = async () => {
+    try {
+      const token = localStorage.getItem("jwt");
+      if (!token) {
+        throw new Error("No token found. Please log in.");
+      }
+      console.log(token);
+      const response = await axios.post(
+        "http://localhost:4000/cariGo/Event/redeemPromoCode",
+        { code: promoCode },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`, // Make sure token is passed in the correct format
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        SetDiscount(response.data.discount); // Set discount when promo code is valid
+        setError(true); // Clear error state
+      }
+    } catch (err) {
+      console.error("Error redeeming promo code:", err);
+      setError(false); // Show error if promo code is invalid
+      alert("Invalid promo code");
+      SetDiscount(100);
+    }
+  };
+  const handleCancel = async () => {
+    try {
+      const token = localStorage.getItem("jwt");
+      if (!token) {
+        throw new Error("No token found. Please log in.");
+      }
+      console.log(promoCode);
+      const response = await axios.post(
+        "http://localhost:4000/cariGo/Event/cancelPromoCode",
+        { code: promoCode },
+        {
+          
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`, // Make sure token is passed in the correct format
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        SetDiscount(100); // Set discount when promo code is valid
+        setError(false); // Clear error state
+        setPromoCode(''); // Reset the text field value
+      }
+    } catch (err) {
+      console.error("Error redeeming promo code:", err);
+      setError(true); // Show error if promo code is invalid
+      alert("Invalid promo code");
+      SetDiscount(100);
     }
   };
 
@@ -307,6 +411,94 @@ const CartComponent = () => {
           <Typography variant="h5">
             Total Cost: ${(totalCost * conversionRate).toFixed(2)} {code}
           </Typography>
+          <Typography gutterBottom>Redeem Promo Code</Typography>
+          <Box
+            sx={{
+              width: "100%", // Ensure the container spans full width
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "stretch",
+            }}
+          >
+            <TextField
+              error={!error} // Error styling applied when promo code is invalid
+              id="outlined-error-helper-text"
+              label="Promo Code"
+              disabled={error}
+              helperText={
+                error ? "Promo code accepted" : "Please enter a valid code"
+              }
+              variant="outlined"
+              onChange={(e) => setPromoCode(e.target.value)} // Update state on input change
+              value={promoCode} // Bind the input value to the state
+              sx={{
+                marginBottom: 2, // More spacing after the text field
+                textAlign: "center", // Center the default text
+                "& .MuiInputLabel-root.Mui-focused": {
+                  fontWeight: "bold", // Make label text bold when focused
+                  color: "orange", // Change label text color to orange when focused
+                },
+                "& .MuiInputBase-input": {
+                  textAlign: "center", // Center the text in the input field
+                },
+              }}
+              InputProps={{
+                style: {
+                  width: "100%", // Make sure the input spans full width
+                },
+              }}
+              FormHelperTextProps={{
+                sx: {
+                  color: error ? "green" : "red", // Green for accepted, red for invalid
+                  marginLeft: -1, // Align the helper text with the input
+                  marginTop: 0, // Optional: reduces spacing between helper text and input
+                  textAlign: "center", // Center-align the text
+                  fontWeight: "bold", // Optional: Make the helper text bold
+                },
+              }}
+            />
+
+            {/* Buttons Container */}
+            <Box
+              sx={{
+                width: "100%", // Ensure the container spans full width
+                display: "flex", // Enable flexbox
+                justifyContent: "space-between", // Add space between the buttons
+                marginTop: 2, // Add some space from the text field
+              }}
+            >
+              <Button
+                disabled={!error} // Disable the button when promo code is invalid
+                variant="contained"
+                sx={{
+                  backgroundColor: "#fb9017", // Set the color to #fb9017
+                  width: "40%", // Make the buttons take about half the container's width
+                  padding: "12px", // Increase the padding for bigger buttons
+                  fontSize: "1rem", // Adjust the font size for better readability
+                  fontWeight: "bold", // Make the text bold
+                }}
+                onClick={handleCancel} // Assuming you have a `handleCancel` function
+              >
+                Cancel
+              </Button>
+
+              <Button
+                variant="contained"
+                disabled={error} // Disable the button when promo code is invalid
+                sx={{
+                  
+                  backgroundColor: "#fb9017", // Set the color to #fb9017
+                  width: "40%", // Same width as the Cancel button
+                  padding: "12px", // Increase the padding for bigger buttons
+                  fontSize: "1rem", // Adjust the font size for better readability
+                  fontWeight: "bold", // Make the text bold
+                }}
+                onClick={handleRedeem} // Assuming you have a `handleRedeem` function
+              >
+                Redeem
+              </Button>
+            </Box>
+          </Box>
         </Box>
         <AddressManager
           addresses={addresses}
@@ -317,10 +509,19 @@ const CartComponent = () => {
           variant="contained"
           color="primary"
           sx={styles.checkoutButton}
-          onClick={checkoutCart}
+          onClick={handleCkeckoutClick}
         >
           Proceed to Checkout
         </Button>
+        <Elements stripe={stripePromise}>
+       {isPaymentPopupOpen&& <PaymentPopup
+          open={handleCkeckoutClick}
+          onClose={() => setIsPaymentPopupOpen(false)}
+          checkoutCart={checkoutCart}
+          amount={totalCost}
+          user={user}
+        />}
+         </Elements>
       </Container>
 
       <Modal open={isReviewFormOpen} onClose={() => setIsReviewFormOpen(false)}>
