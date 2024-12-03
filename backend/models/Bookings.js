@@ -20,6 +20,7 @@ const BookingSchema = new schema({
     type: mongoose.Schema.ObjectId,
     ref: "Transportation",
   },
+  
   hotelData: Object,
   flightData: Object,
   Status: {
@@ -41,8 +42,8 @@ const BookingSchema = new schema({
   TotalPrice: {
     type: Number,
     
-  },
-});
+  }
+}, { timestamps: true});
 
 BookingSchema.pre(/^find/, function (next) {
   this.populate({

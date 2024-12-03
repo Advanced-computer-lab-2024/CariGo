@@ -10,8 +10,9 @@ const MyBookedActivityCard = ({bookId, id, name, startDate, endDate, location, s
   React.useEffect(() => {
     const checkDate = () => {
       const today = new Date();
-      const start = new Date(endDate);
-      setIsPast(start < today); // Sets isPast to true if startDate is before today
+      const start = new Date(startDate);
+
+      setIsPast(start <= today); // Sets isPast to true if startDate is before today
     };
 
     checkDate();
@@ -41,8 +42,8 @@ const MyBookedActivityCard = ({bookId, id, name, startDate, endDate, location, s
         const rate = parseFloat(JSON.parse(localStorage.getItem("conversionRate")))||1;
         console.log(rate);
         await axios.patch(`/cariGo/users/UpdateWallet`, {
-          numOfTickets:NumberOfTickets,
-          price:price,
+          numOfTickets:1,
+          price:TotalPrice,
           conversionRate:1
         },
         {

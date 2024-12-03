@@ -7,7 +7,8 @@ import ItineraryList from "../components/ItirenaryList";
 import { useNavigate } from "react-router-dom";
 // const navigate = useNavigate();
 import { Button } from '@mui/material'; // Using Material-UI for styling
-
+import Table from "../components/Report/Table";
+import { PrimeReactProvider } from 'primereact/api';
 const UserViewItirenaries = () => {
     const handleNavigate = () => {
   navigate("/tour_guide/itineraries/new");
@@ -24,6 +25,7 @@ const navigate = useNavigate();
       >
         Create new Itinerary
     </Button>
+    
       {/* <CreateItineraryForm/> */}
       <Box
         sx={{
@@ -52,6 +54,7 @@ const navigate = useNavigate();
           <ItineraryList />
         </Box>
       </Box>
+      
     </div>
   );
 };

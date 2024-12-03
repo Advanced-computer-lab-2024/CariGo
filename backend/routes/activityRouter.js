@@ -1,6 +1,7 @@
 const express = require('express');
 const activityController = require('../controllers/activityController');
 const authController = require('../controllers/authController');
+const { getActivitiesByIds } = require("../controllers/activityController"); 
 
 
 
@@ -8,10 +9,12 @@ const router = express.Router();
 
 
 
+router.get("/readActivitiesByIds", getActivitiesByIds);
+
 router.get('/', activityController.getActivities);
 router.get('/adminActivities', activityController.getActivitiesForAdmin);
 router.get('/getadvact',[authController.protect ,authController.restrictTo("Advertiser")], activityController.getAdvActivities);
-
+router.get('/getTitles/:id',activityController.getTitlesForEachUser)
 router.get('/getOne/:id', activityController.getActivity);
 
 

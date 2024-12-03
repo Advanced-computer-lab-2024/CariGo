@@ -47,7 +47,7 @@ export default function Checkout(props, { activityId },) {
 
    // === Step 1: Add state for checkbox tracking ===
    const [isTermsChecked, setIsTermsChecked] = React.useState(false);
-
+   const [discount,SetDiscount] = React.useState(100);
    // === Step 2: Checkbox change handler ===
    const handleCheckboxChange = (event) => {
      setIsTermsChecked(event.target.checked);
@@ -69,9 +69,13 @@ export default function Checkout(props, { activityId },) {
       } else {
         price = parseFloat(activityDetails.price);
       }
-      setTotalPrice((price * orderData.quantity).toFixed(2));
+      let priceAfterDiscount = price *(1-(discount/100));
+      if(priceAfterDiscount == 0)
+        priceAfterDiscount = price;
+      console.log(priceAfterDiscount);
+      setTotalPrice((priceAfterDiscount * orderData.quantity).toFixed(2));
     }
-  }, [activityDetails, orderData.quantity]);
+  }, [activityDetails, orderData.quantity,discount]);
 
   React.useEffect(() => {
     const fetchDetails = async () => {
@@ -189,7 +193,7 @@ export default function Checkout(props, { activityId },) {
       const payload = {
         PaymentMethod:
           orderData.paymentMethod === "creditCard" ? "Card" : "Wallet",
-        TotalPrice: orderData.quantity * price,
+        TotalPrice: totalPrice,
         NumberOfTickets: orderData.quantity,
       };
 
@@ -358,7 +362,8 @@ export default function Checkout(props, { activityId },) {
             }}
           >
             <Info
-              totalPrice={`$${totalPrice}`}
+              totalPrice={`${totalPrice}`}
+              SetDiscount={SetDiscount}
               activityDetails={activityDetails}
               type={type}
               quantity={orderData.quantity}

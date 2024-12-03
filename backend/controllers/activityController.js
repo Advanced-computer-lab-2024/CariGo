@@ -1,6 +1,7 @@
 const Activity = require("../models/Activity");
 const Category = require("../models/Category");
 const Tag = require("../models/Tag");
+const itinerary = require("../models/Itinerary")
 const APIFeatures = require("../utils/apiFeatures");
 // const User = require('./../models/userModel');
 const activityModel = require("../models/Activity");
@@ -206,6 +207,34 @@ const getActivities = async (req, res) => {
       .json({ message: "Error retrieving activities", error: error.message });
   }
 };
+
+const getActivitiesByIds = async (req, res) => {
+  try {
+    // Extract 'ids' from query string
+    const { ids } = req.query;
+
+    if (!ids) {
+      return res.status(400).json({ message: "Missing 'ids' query parameter." });
+    }
+
+    // Split the IDs from the query string
+    const activityIds = ids.split(',');
+
+    // Fetch activities based on the provided IDs
+    const activities = await Activity.find({ '_id': { $in: activityIds } });
+
+    if (!activities || activities.length === 0) {
+      return res.status(404).json({ message: "Activities not found" });
+    }
+    console.log(activities);
+    // If activities are found, return them
+    res.status(200).json(activities);
+  } catch (error) {
+    console.error('Error fetching activities by IDs:', error);
+    return res.status(500).json({ message: 'Error fetching activities by IDs', error: error.message });
+  }
+};
+
 
 const getActivitiesForAdmin = async (req, res) => {
   const today = new Date();
@@ -471,7 +500,32 @@ const getActivity = async (req, res) => {
     res.status(500).json({ message: "An error occurred", error });
   }
 };
-
+const getTitlesForEachUser = async (req, res) => {
+  const id  = req.params.id;
+  console.log(id)
+  try {
+    const activities = await Activity.find({author:id}); // Fixed from ActivityModel to Activity, and use findById(id)
+    const itineraries = await itinerary.find({author:id})
+    if (!activities & !itineraries) {
+      return res.status(404).json({ message: "Activity not found" });
+    }
+  //console.log(activities)
+ // console.log("---------------")
+  //console.log(itineraries)
+    const Atitles =(activities)?activities.map(activity => activity.title):[];
+    
+    const Ititles = (itineraries)?itineraries.map(activity => activity.title):[];
+    //const titles = ;
+   // Atitles.push(...Ititles);
+    res.status(200).json(
+      {activityTitles:Atitles,
+        success:true,
+       iteineraryTitles:Ititles
+      });
+  } catch (error) {
+    res.status(500).json({ message: "An error occurred", error });
+  }
+};
 const sortActivities = async (req, res) => {
   const today = new Date();
   const sortBy = req.query.type || "discount"; // Default to "discount" if no parameter is provided
@@ -658,9 +712,9 @@ const CancelActivityBooking = async (req, res) => {
   ) {
     try {
       const booking = await bookingModel.findById(bookingId);
-      const ActivityId = booking.ActivityId;
-      const activityDate = ActivityId.start_date;
-
+      const Activity = booking.ActivityId;
+      const ActivityId = Activity._id;
+      const activityDate = Activity.start_date;
       if (activityDate) {
         const currDate = new Date();
         const timeDifference = activityDate.getTime() - currDate.getTime(); // Difference in milliseconds
@@ -715,4 +769,6 @@ module.exports = {
   BookActivity,
   MyActivityBookings,
   CancelActivityBooking,
+  getActivitiesByIds,
+  getTitlesForEachUser
 };
