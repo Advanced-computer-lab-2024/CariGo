@@ -5,6 +5,7 @@ import PinDropIcon from "@mui/icons-material/PinDrop";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import StarIcon from "@mui/icons-material/Star";
 import ResponsiveAppBar from "./Tourist/components/TouristNavBar";
+import GuestNavBar from "../components/NavBarTourist";
 import UserAcList from "../components/UserAcList"; // Import the new MarkerList component
 import "../components/styles/CompanyInfo.css";
 import logoImage from "../assets/itinerary.png"; // Correct relative path
@@ -19,19 +20,22 @@ import HotelIcon from "@mui/icons-material/Hotel";
 import AccessibleIcon from "@mui/icons-material/Accessible";
 import Divider from "@mui/material/Divider";
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 const ItineraryDetails = () => {
   const { id } = useParams(); // Get the itinerary ID from the URL
   const [itinerary, setItinerary] = useState(null);
   const [localInterestedUsers, setLocalInterestedUsers] = useState([]);
   const navigate = useNavigate();
+  const token = localStorage.getItem('jwt');
+  const [tourist,setTourist]= useState(false);
+
 
   const handleClick = () => {
     if (token)
       navigate(`/checkout/itinerary/${id}`); // Update the navigation path
     else navigate(`/login`);
   };
-
+  
   useEffect(() => {
     const fetchItineraryDetails = async () => {
       try {
@@ -56,6 +60,7 @@ const ItineraryDetails = () => {
         if(data.interestedUsers) {
           setLocalInterestedUsers(data.interestedUsers);
         }
+        if (!token) setTourist(false);
       } catch (error) {
         console.error("Error fetching itinerary details:", error);
       }
@@ -67,27 +72,9 @@ const ItineraryDetails = () => {
     return <Typography>Loading...</Typography>;
   }
 
-  const {
-    start_date,
-    end_date,
-    locations,
-    price,
-    tags,
-    activities,
-    transportation,
-    accommodation,
-    ratingsAverage,
-    language,
-    pick_up,
-    drop_off,
-    accessibility,
-    title,
-    isOpened
+  const {start_date,end_date,locations,price,tags,activities,transportation,accommodation,
+    ratingsAverage,language,pick_up,drop_off,accessibility,title,isOpened
   } = itinerary;
-
-  // if (itinerary.interestedUsers) {
-  //   setInterestedUsers(itinerary.interestedUsers);
-  // }
 
    // Function to format the date and time
    const formatDateTime = (dateString) => {
@@ -132,6 +119,7 @@ const ItineraryDetails = () => {
           interestedUsers: users,
         }),
       });
+      if (!token) setTourist(false);
     } catch (error) {
       console.error("Error", error);
     }
@@ -139,10 +127,24 @@ const ItineraryDetails = () => {
 
   const conversionRate = localStorage.getItem("conversionRate") || 1;
   const code = localStorage.getItem("currencyCode") || "EGP";
-  const token = localStorage.getItem("jwt");
+
   return (
     <>
-      <ResponsiveAppBar />
+      {tourist? <ResponsiveAppBar />: <GuestNavBar/>}
+      <Button
+         onClick={() => navigate(`/Tourist-itineraries`)}
+          sx={{
+            backgroundColor: "white",
+            color: "#126782",
+            borderRadius: "8px",
+            width: "80px",
+            ml: "11%",mt:'2%',mb:'0%',
+            fontSize:'18px'
+          }}
+        >
+          <ArrowBackIosIcon/>
+          Back
+        </Button>
       <Box>
         <Paper
           elevation={3}
@@ -158,43 +160,49 @@ const ItineraryDetails = () => {
                   marginBottom: "20px",
                 }}
               >
-                <Typography
-                  variant="h4"
+                {/* Title and Rating Container */}
+                <Box
                   sx={{
-                    marginBottom: "10px",
-                    fontWeight: "bold",
+                    display: "flex",
+                    justifyContent: "space-between", // Push content to edges
+                    alignItems: "center",
+                    width: "90%", // Ensure it spans full width
                     color: "#126782",
                   }}
                 >
-                  {title || "Anonymous"}
-                </Typography>
+                  {/* Title */}
+                  <Typography
+                    variant="h4"
+                    sx={{
+                      marginBottom: "10px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {title || "Anonymous"}
+                  </Typography>
+
+                  {/* Rating */}
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    <StarIcon sx={{ color: "#FFD700", marginRight: "5px",fontSize:'30px' }} />
+                    <Typography variant="h6" sx={{ fontWeight: "bold" ,fontSize:'20px' }}>
+                      {ratingsAverage || "No rating"}
+                    </Typography>
+                  </Box>
+                </Box>
+
                 <Box
-                  sx={{
-                    display: "flex",
-                    flexWrap: "wrap",
-                    gap: "10px",
-                    marginBottom: "15px",
-                  }}
+                  sx={{display: "flex",flexWrap: "wrap",gap: "10px",marginBottom: "15px",}}
                 >
                   {tags?.map((tag) => (
-                    <Chip
-                      key={tag._id}
-                      label={tag.title}
+                    <Chip key={tag._id}label={tag.title}
                       sx={{ backgroundColor: "#126782", color: "white" }}
                     />
                   ))}
-                </Box>
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    marginBottom: "15px",
-                  }}
-                >
-                  <StarIcon sx={{ color: "#FFD700", marginRight: "5px" }} />
-                  <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-                    {ratingsAverage || "No rating"}
-                  </Typography>
                 </Box>
               </Box>
 
@@ -446,7 +454,7 @@ const ItineraryDetails = () => {
 
               <Typography
                 variant="h5"
-                sx={{ marginBottom: "15px", color: "#126782" }}
+                sx={{ mb:'0.5%', color: "#126782" }}
               >
                 Activities
               </Typography>
