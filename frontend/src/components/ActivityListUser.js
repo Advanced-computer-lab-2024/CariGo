@@ -41,7 +41,7 @@ export default function ActivityList({ fetchedActivities }) {
                                 isOpened={activity.bookingOpened ? 'open' : 'closed'}
                                 tag={activity.tag?.title || "No tag available"}
                                 description={activity.description || "No description available"}
-                                img={activity.img || "default-image.jpg"}
+                                img={activity.img || "activity.jpg"}
                             />
                         </Box>
                     ))}

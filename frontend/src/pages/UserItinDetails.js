@@ -26,7 +26,7 @@ const ItineraryDetails = () => {
   const [itinerary, setItinerary] = useState(null);
   const [localInterestedUsers, setLocalInterestedUsers] = useState([]);
   const navigate = useNavigate();
-  const token = localStorage.getItem('jwt');
+  const [token,setToken] = useState(localStorage.getItem('jwt'));
   const [tourist,setTourist]= useState(false);
 
 
@@ -39,7 +39,6 @@ const ItineraryDetails = () => {
   useEffect(() => {
     const fetchItineraryDetails = async () => {
       try {
-        const token = localStorage.getItem("jwt");
         const response = await fetch(
           `/cariGo/Event/readSingleItinerary/${id}`,
           {
@@ -130,7 +129,7 @@ const ItineraryDetails = () => {
 
   return (
     <>
-      {tourist? <ResponsiveAppBar />: <GuestNavBar/>}
+      {token? <ResponsiveAppBar />: <GuestNavBar/>}
       <Button
          onClick={() => navigate(`/Tourist-itineraries`)}
           sx={{
@@ -337,7 +336,7 @@ const ItineraryDetails = () => {
                     />
                     <Box>
                       <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                        Language of Tour Guide:
+                        Language of Tour Guide
                       </Typography>
                       <Typography variant="body2">
                         {language || "Not specified"}
@@ -358,7 +357,7 @@ const ItineraryDetails = () => {
                     />
                     <Box>
                       <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                        Transportation:
+                        Transportation
                       </Typography>
                       <Typography variant="body2">
                         {transportation || "Not specified"}
@@ -379,7 +378,7 @@ const ItineraryDetails = () => {
                     />
                     <Box>
                       <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                        Pick-up:
+                        Pick-up
                       </Typography>
                       <Typography variant="body2">
                         {pick_up || "Not specified"}
@@ -400,7 +399,7 @@ const ItineraryDetails = () => {
                     />
                     <Box>
                       <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                        Drop-off:
+                        Drop-off
                       </Typography>
                       <Typography variant="body2">
                         {drop_off || "Not specified"}
@@ -419,7 +418,7 @@ const ItineraryDetails = () => {
                     <HotelIcon sx={{ marginRight: "10px", color: "#126782" }} />
                     <Box>
                       <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                        Accommodation:
+                        Accommodation
                       </Typography>
                       <Typography variant="body2">
                         {accommodation || "Not specified"}
@@ -440,7 +439,7 @@ const ItineraryDetails = () => {
                     />
                     <Box>
                       <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                        Accessibility:
+                        Accessibility
                       </Typography>
                       <Typography variant="body2">
                         {accessibility || "Not specified"}
