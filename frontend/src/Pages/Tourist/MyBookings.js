@@ -9,8 +9,8 @@ import InputBase from "@mui/material/InputBase";
 import BookingCard from "./components/BookingCard";
 import RateReviewIcon from "@mui/icons-material/RateReview"; // Review icon for itinerary
 import PersonPinIcon from "@mui/icons-material/PersonPin"; // New icon for Tour Guide review
-import ItineraryReviewForm from "frontend/src/components/itineraryReviewForm.js"; // Import the itinerary review form
-import TourGuideReviewForm from "frontend/src/components/TourGuideReviewForm.js"; // Import the new Tour Guide review form
+import ItineraryReviewForm from "../../components/itineraryReviewForm.js"; // Import the itinerary review form
+import TourGuideReviewForm from "../../components/TourGuideReviewForm.js"; // Import the new Tour Guide review form
 
 
 const MyBookings = () => {

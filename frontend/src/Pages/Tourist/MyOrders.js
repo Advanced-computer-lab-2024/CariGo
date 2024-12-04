@@ -14,7 +14,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
 import MyOrderCard from "./components/MyOrderCard";
 import RateReviewIcon from "@mui/icons-material/RateReview"; // Review icon for activity
-import ActivityReviewForm from "frontend/src/components/ActivityReviewForm.js"; // Renamed to ActivityReviewForm
+import ActivityReviewForm from "../../components/ActivityReviewForm.js"; // Renamed to ActivityReviewForm
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
