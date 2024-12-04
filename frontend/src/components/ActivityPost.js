@@ -180,7 +180,7 @@ export default function ActivityPost({ id, author, img, start_date, end_date, du
       <Box sx={{ display: 'flex', flexDirection: 'row', flexGrow: 1 }}>
         <CardMedia
           component="img"
-          image={img || "/0ae1e586-0d84-43c3-92d4-924c13c01059.jpeg"}
+          image={img || "/activity.jpg"}
           alt={title}
           sx={{
             width: '400px',
