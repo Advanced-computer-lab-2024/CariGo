@@ -12,20 +12,16 @@ import { Link } from "react-router-dom";
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import CurrencyConversion from "../../../components/CurrencyConversion";
-<<<<<<< HEAD
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import LogoutIcon from '@mui/icons-material/Logout';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
-
-=======
 import axios from "axios";
 import Badge from '@mui/material/Badge';
 import { UserOutlined, BellOutlined, MessageOutlined, CheckCircleOutlined, WarningOutlined } from '@ant-design/icons'; // Import the icons
 import BookmarkBorderOutlinedIcon from '@mui/icons-material/BookmarkBorderOutlined';
-import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
->>>>>>> main
+
 const pages = [
   "Suggested For You",
   "Activities",
@@ -216,7 +212,6 @@ function TouristNB() {
   // handling side bar
    const [drawerOpen, setDrawerOpen] = useState(false);
 
-<<<<<<< HEAD
    // Function to toggle the drawer open/close
    const toggleDrawer = () => {
     setDrawerOpen(!drawerOpen);
@@ -228,26 +223,7 @@ function TouristNB() {
   //   { label: "Choose Currency", onClick: handleOpenCurrencyDialog },
   //   { label: "Delete Account", onClick: handleDeleteAccount, color: "#ff4d4d" },
   // ];
-=======
-  const toggleDrawer = (open) => (event) => {
-    if (
-      event.type === "keydown" &&
-      (event.key === "Tab" || event.key === "Shift")
-    ) {
-      return;
-    }
-    setDrawerOpen(open);
-  };
 
-  const userOptions = [
-    { label: "My Profile", onClick: loadProfile },
-    { label: "Logout", onClick: handleLogout },
-    { label: "Change Password", onClick: handleChangePass },
-    { label: "Choose Currency", onClick: handleOpenCurrencyDialog },
-    { label: "Bookmarks", onClick: handleOpenCurrencyDialog },
-    { label: "Delete Account", onClick: handleDeleteAccount, color: "#ff4d4d" },
-  ];
->>>>>>> main
 
   return (
     <AppBar position="static" sx={{ backgroundColor: "#004c74" , padding:'0.5%' ,}}>
@@ -562,7 +538,6 @@ function TouristNB() {
                 },
               }}
             >
-<<<<<<< HEAD
               {/* Back arrow to close */}
               <IconButton onClick={toggleDrawer} sx={{ alignSelf: 'flex-start', padding: 1 }}>
                 <ArrowBackIcon sx={{ fill: 'white' }} />
@@ -680,37 +655,6 @@ function TouristNB() {
                 </List>
               </Box>
             </Drawer>
-
-           
-             
-=======
-              <MenuItem onClick={loadProfile}>
-                <Typography sx={{ textAlign: "center" }}>My Profile</Typography>
-              </MenuItem>
-              <MenuItem onClick={handleLogout}>
-                <Typography sx={{ textAlign: "center" }}>Logout</Typography>
-              </MenuItem>
-              <MenuItem onClick={handleChangePass}>
-                <Typography sx={{ textAlign: "center" }}>
-                  Change Password
-                </Typography>
-              </MenuItem>
-              <MenuItem onClick={handleOpenCurrencyDialog}>
-                <Typography sx={{ textAlign: "center" }}>
-                  Choose Currency
-                </Typography>
-              </MenuItem>
-              <MenuItem>
-                <Typography sx={{ textAlign: "center" }}>
-                  Bookmarks
-                </Typography>
-              </MenuItem>
-              <MenuItem onClick={handleDeleteAccount}>
-                <Typography sx={{ textAlign: "center", color: "#ff4d4d" }}>
-                  delete account
-                </Typography>
-              </MenuItem>
->>>>>>> main
               {/* Button to Open Currency Dialog */}
 
               {/* Currency Conversion Dialog */}
