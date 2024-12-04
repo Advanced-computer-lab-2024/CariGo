@@ -15,7 +15,7 @@ const signToken = (id) => {
 
 exports.signup = catchAsync(async (req, res, next) => {
   const userType = req.body.role;
-  console.log(req.body);
+  // console.log(req.body);
   if (userType === "admin" || userType === "Tourism_Governer") {
     return next(
       new AppError(
@@ -31,7 +31,7 @@ exports.signup = catchAsync(async (req, res, next) => {
     );
   }
 
-  console.log(userType);
+  // console.log(userType);
 
   let newUserData;
   if (userType === "Advertiser") {
@@ -47,7 +47,7 @@ exports.signup = catchAsync(async (req, res, next) => {
       passwordChangedAt: Date.now(),
     };
   } else if (userType === "Tourist") {
-    console.log("object", req.body.selectedTags);
+    // console.log("object", req.body.selectedTags);
     newUserData = {
       username: req.body.username,
       email: req.body.email,
@@ -73,7 +73,7 @@ exports.signup = catchAsync(async (req, res, next) => {
       years_of_experience:req.body.years_of_experience,
       passwordChangedAt: Date.now(),
     }
-    console.log(newUserData);
+    // console.log(newUserData);
   }else if(userType === "Seller"){
     newUserData = {
       username: req.body.username,
@@ -239,8 +239,8 @@ exports.AcceptAdvertiser = catchAsync(async (req, res, next) => {
 exports.restrictTo = (...roles) => {
 
   return (req, res, next) => {
-    console.log(req.user.role)
-    console.log("verifying role");
+    // console.log(req.user.role)
+    // console.log("verifying role");
     if (!roles.includes(req.user.role)) {
 
       return next(
