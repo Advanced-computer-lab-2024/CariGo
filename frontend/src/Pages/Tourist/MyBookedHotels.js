@@ -54,7 +54,7 @@ const MyBookedHotels = () => {
   const [activities, setActivities] = useState([]); // Changed from itineraries to activities
   const [filteredActivities, setFilteredActivities] = useState([]);
   const [filters, setFilters] = useState({
-    status: "",
+    status: "All",
   });
   const [searchTerm, setSearchTerm] = useState("");
   const [openActivityReviewForm, setOpenActivityReviewForm] = useState(false); // Renamed to openActivityReviewForm
@@ -77,30 +77,37 @@ const MyBookedHotels = () => {
     setFilteredActivities(activities);
     setSearchTerm("");
   };
-
-  const handleSearch = () => {
-    const today = new Date();
-    const filtered = activities.filter((activity) => { // Changed from itineraries.filter to activities.filter
-      const transportationStartDate = new Date(activity.hotelData.offer.checkInDate ); // Changed itineraryStartDate to activityStartDate
-      const matchesStatus =
-        filters.status === ""
-          ? true
-          : filters.status === "Booked"
-          ? activity.Status === true && transportationStartDate >= today
-          : filters.status === "Canceled Bookings"
-          ? activity.Status === false
-          : filters.status === "Done"
-          ? activity.Status === true && transportationStartDate < today
-          : false;
-    //   const matchesSearchTerm =
-    //     activity.TransportationId.departureLocation.description &&
-    //     activity.TransportationId.arrivalLocation.description
-    //       .toLowerCase()
-    //       .includes(searchTerm.toLowerCase());
-      return matchesStatus ;
-    });
-    setFilteredActivities(filtered);
-  };
+    // status filtering
+    useEffect(() => {
+      const filtered = activities.filter((activity) => {
+        // Filtering based on status
+        const activityStartDate = new Date(activity.hotelData.offer.checkInDate);
+        const today = new Date();
+        const matchesStatus =
+          filters.status === "All"
+            ? true
+            : filters.status === "Booked"
+            ? activity.Status === true && activityStartDate >= today
+            : filters.status === "Canceled Bookings"
+            ? activity.Status === false
+            : filters.status === "Done"
+            ? activity.Status === true && activityStartDate < today
+            : false;
+        return matchesStatus;
+      });
+  
+      setFilteredActivities(filtered);
+    }, [activities, filters]); // Re-run the filtering logic whenever activities, filters
+  
+    // Function to handle search by title
+    const handleSearch = () => {
+      const filtered = activities.filter((activity) => {
+        return activity.ActivityId?.hotelData.hotelName
+          ?.toLowerCase()
+          .includes(searchTerm.toLowerCase());
+      });
+      setFilteredActivities(filtered);
+    };
 
   useEffect(() => {
     const fetchActivities = async () => { // Renamed from fetchItineraries to fetchActivities
@@ -143,43 +150,71 @@ const MyBookedHotels = () => {
   };
 
   return (
-    <div>
+    <Box>
       <TouristNB />
-      <form>
+      <Box sx={{display:'flex', flexDirection:'column', gap:"2vh",margin:'5% 12%', mb:'0%', mt:'3%'}}>
+      {/*Search bar*/}
+        <Box sx={{ display: "flex" }}>
+         <Box sx={{}}>
+          <TextField
+            id="search-bar"
+            className="text"
+            onInput={(e) => {
+              setSearchTerm(e.target.value);
+            }}
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                "&.Mui-focused fieldset": {
+                  borderColor: "#ff4d4daa",
+                },
+              },  
+              justifyContent:'center',        
+            }}
+            variant="outlined"
+            placeholder="Search..."
+            size="small"
+            />
+          <IconButton type="submit" aria-label="search" 
+            sx={{ width:"40px", height:"40px",
+                //marginBottom:"-5px",
+                //marginLeft:"-3px",
+                backgroundColor: "#ff4d4d", 
+                color: "white", 
+                borderRadius: "3px",
+                "&:hover": {
+                  backgroundColor: "#e63939"
+                } 
+              }}>
+            <SearchIcon  onClick={handleSearch} sx={{ }}/>
+          </IconButton>
+          </Box>
+      </Box>
+       {/*End of Search bar*/}
+      {/* <form> */}
         <TextField
           select
-          label="Status"
+          //label="Status"
           variant="outlined"
           name="status"
+          size="small"
           value={filters.status}
           onChange={handleFilterChange}
-          sx={{ mb: 2, mr: 2, width: "200px" }}
+          sx={{ mb: 1, mr: 1, width: "10%", height: "5%",
+            "& .MuiOutlinedInput-root": {
+              //color:'#473d3f',
+              "&.Mui-focused fieldset": {
+                  borderColor: "#ff4d4daa",
+                },
+            },
+           }}
         >
+          <MenuItem value="All">All</MenuItem>
           <MenuItem value="Done">Done</MenuItem>
           <MenuItem value="Booked">Booked</MenuItem>
           <MenuItem value="Canceled Bookings">Canceled Bookings</MenuItem>
         </TextField>
-        <Button variant="contained" onClick={resetFilters} sx={{ ml: 2 }}>
-          Reset Filters
-        </Button>
-      </form>
-
-      <Box sx={{ display: "flex" }}>
-        <Search>
-          <SearchIconWrapper>
-            <SearchIcon />
-          </SearchIconWrapper>
-          <StyledInputBase
-            placeholder="Search…"
-            inputProps={{ "aria-label": "search" }}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </Search>
-        <Button variant="contained" onClick={handleSearch} sx={{ ml: 2 }}>
-          Search
-        </Button>
-      </Box>
-
+      {/* </form> */}
+    </Box>
       <Box
         sx={{
           width: "1150px",
@@ -253,7 +288,7 @@ const MyBookedHotels = () => {
           tourGuideId={selectedTourGuideId}
         />
       )} */}
-    </div>
+    </Box>
   );
 };
 

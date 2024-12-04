@@ -12,11 +12,17 @@ import { Link } from "react-router-dom";
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import CurrencyConversion from "../../../components/CurrencyConversion";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import LogoutIcon from '@mui/icons-material/Logout';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
 import axios from "axios";
 import Badge from '@mui/material/Badge';
 import { UserOutlined, BellOutlined, MessageOutlined, CheckCircleOutlined, WarningOutlined } from '@ant-design/icons'; // Import the icons
 import BookmarkBorderOutlinedIcon from '@mui/icons-material/BookmarkBorderOutlined';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
+
 const pages = [
   "Suggested For You",
   "Activities",
@@ -205,26 +211,20 @@ function TouristNB() {
   const handleCloseComplaintsMenu = () => setAnchorElComplaints(null); // Close complaints menu
 
   // handling side bar
-  const [isDrawerOpen, setDrawerOpen] = useState(false);
+   const [drawerOpen, setDrawerOpen] = useState(false);
 
-  const toggleDrawer = (open) => (event) => {
-    if (
-      event.type === "keydown" &&
-      (event.key === "Tab" || event.key === "Shift")
-    ) {
-      return;
-    }
-    setDrawerOpen(open);
-  };
+   // Function to toggle the drawer open/close
+   const toggleDrawer = () => {
+    setDrawerOpen(!drawerOpen);
+   };
+  // const userOptions = [
+  //   { label: "My Profile", onClick: loadProfile },
+  //   { label: "Logout", onClick: handleLogout },
+  //   { label: "Change Password", onClick: handleChangePass },
+  //   { label: "Choose Currency", onClick: handleOpenCurrencyDialog },
+  //   { label: "Delete Account", onClick: handleDeleteAccount, color: "#ff4d4d" },
+  // ];
 
-  const userOptions = [
-    { label: "My Profile", onClick: loadProfile },
-    { label: "Logout", onClick: handleLogout },
-    { label: "Change Password", onClick: handleChangePass },
-    { label: "Choose Currency", onClick: handleOpenCurrencyDialog },
-    { label: "Bookmarks", onClick: handleOpenCurrencyDialog },
-    { label: "Delete Account", onClick: handleDeleteAccount, color: "#ff4d4d" },
-  ];
 
   return (
     <AppBar position="static" sx={{ backgroundColor: "#004c74" , padding:'0.5%' ,}}>
@@ -284,24 +284,7 @@ function TouristNB() {
               <MenuItem onClick={handleOpenBookingsMenu}>
                 <Typography sx={{ textAlign: "center" }}>Bookings</Typography>
               </MenuItem>
-              {/* <Menu
-                id="bookings-menu-mobile"
-                anchorEl={anchorElBookings}
-                open={Boolean(anchorElBookings)}
-                onClose={handleCloseBookingsMenu}
-                anchorOrigin={{ vertical: "top", horizontal: "left" }}
-                transformOrigin={{ vertical: "top", horizontal: "left" }}
-              >
-                <MenuItem onClick={loadBookServices}>
-                  <Typography>Book Services</Typography>
-                </MenuItem>
-                <MenuItem onClick={loadBookedActivities}>
-                  <Typography>Booked Activities</Typography>
-                </MenuItem>
-                <MenuItem onClick={loadBookedItineraries}>
-                  <Typography>Booked Itineraries</Typography>
-                </MenuItem>
-              </Menu> */}
+            
             </Menu>
           </Box>
 
@@ -384,84 +367,10 @@ function TouristNB() {
             >
               {pages[4]}
             </Button>
-            {/* Complaints Dropdown in Desktop View */}
-            {/* <Box> */}
-              <Button
-                onClick={handleOpenComplaintsMenu}
-                className={Boolean(anchorElComplaints) ? "menu-open" : ""} // Add a class if menu is open
-                sx={{ 
-                  my: 2, color: "white", display: "block" ,
-                  transition: "all 0.3s ease", 
-                  fontSize:'15px',
-                  "&:hover ": {
-                    fontSize: "16px",
-                    paddingLeft: "1%", 
-                    paddingRight:'2.4%',
-                    "& .arrow-icon": {
-                      opacity: 1,
-                      transform: "translateX(0)", 
-                    },
-                  },
-                  "&.menu-open": {
-                    fontSize: "16px",
-                    paddingLeft: "1%", 
-                    paddingRight:'2.4%',
-                    "& .arrow-icon": {
-                      opacity: 1,
-                      transform: "translateX(0)", 
-                    },
-                  },
-                }}
-              >
-                Complaints
-                {/* kol da 3la 7tet arrow */}
-                {Boolean(anchorElComplaints) ? (
-                  <KeyboardArrowDownIcon
-                    className="arrow-icon"
-                    sx={{
-                      fontSize: "26px",
-                      marginLeft: "0.2%",
-                      opacity: 1,
-                      transition: "all 0.3s ease", 
-                      position: "absolute",
-                      top: "20%",
-                    }}
-                  />
-                ) : (
-                  <ArrowForwardIosIcon
-                  className="arrow-icon"
-                  sx={{
-                    fontSize: "18px",
-                    marginLeft: "0.2%", // Space between text and icon
-                    opacity: Boolean(anchorElComplaints) ? 1 : 0, // Show if menu is open
-                    transition: "all 0.3s ease", 
-                    position: "absolute",
-                    top: "25%",
-                  }}
-                />
-              )}
-               {/*aaaaaaaaaaaaaaaaaaaaaaa*/}
-              </Button>
-              <Menu
-                id="complaints-menu"
-                anchorEl={anchorElComplaints}
-                open={Boolean(anchorElComplaints)}
-                onClose={handleCloseComplaintsMenu}
-                anchorOrigin={{ vertical: "top", horizontal: "left" }}
-                transformOrigin={{ vertical: "top", horizontal: "left" }}
-                sx={{ marginTop: "2%" }}
-              >
-                <MenuItem onClick={loadFileComplaint}>File Complaint</MenuItem>
-                <MenuItem onClick={loadComplaintHistory}>
-                  Complaint History
-                </MenuItem>
-              </Menu>
-            {/* </Box> */}
-
             {/* Bookings Dropdown in Desktop View */}
             {/* <Box> */}
               <Button
-                onClick={handleOpenBookingsMenu}
+                onClick={loadBookServices}
                 className={Boolean(anchorElBookings) ? "menu-open" : ""} // Add a class if menu is open
                 sx={{ 
                   my: 2, color: "white", display: "block" ,
@@ -471,79 +380,12 @@ function TouristNB() {
                     fontSize: "16px",
                     paddingLeft: "1%", 
                     paddingRight:'1%',
-                    "& .arrow-icon": {
-                      opacity: 1,
-                      transform: "translateX(0)", 
-                    },
-                  },
-                  "&.menu-open": {
-                    fontSize: "16px",
-                    paddingLeft: "1%", 
-                    paddingRight:'1%',
-                    "& .arrow-icon": {
-                      opacity: 1,
-                      transform: "translateX(0)", 
-                    },
                   },
                 }}
               >
-                Bookings
-                 {/* kol da 3la 7tet arrow */}
-                 {Boolean(anchorElBookings) ? (
-                  <KeyboardArrowDownIcon
-                    className="arrow-icon"
-                    sx={{
-                      fontSize: "26px",
-                      marginLeft: "0.2%",
-                      opacity: 1,
-                      transition: "all 0.3s ease", 
-                      position: "absolute",
-                      top: "20%",
-                    }}
-                  />
-                ) : (
-                  <ArrowForwardIosIcon
-                  className="arrow-icon"
-                  sx={{
-                    fontSize: "18px",
-                    marginLeft: "0.2%", // Space between text and icon
-                    opacity: Boolean(anchorElBookings) ? 1 : 0, // Show if menu is open
-                    transition: "all 0.3s ease", 
-                    position: "absolute",
-                    top: "25%",
-                  }}
-                />
-              )}
-               {/*aaaaaaaaaaaaaaaaaaaaaaa*/}
+                Book Services
               </Button>
-              <Menu
-                id="bookings-menu"
-                anchorEl={anchorElBookings}
-                open={Boolean(anchorElBookings)}
-                onClose={handleCloseBookingsMenu}
-                anchorOrigin={{ vertical: "top", horizontal: "left" }}
-                transformOrigin={{ vertical: "top", horizontal: "left" }}
-                sx={{ marginTop: "2%" }}
-              >
-                <MenuItem onClick={loadBookServices}>
-                  <Typography>Book Services</Typography>
-                </MenuItem>
-                <MenuItem onClick={loadBookedActivities}>
-                  <Typography>Booked Activities</Typography>
-                </MenuItem>
-                <MenuItem onClick={loadBookedItineraries}>
-                  <Typography>Booked Itineraries</Typography>
-                </MenuItem>
-                <MenuItem onClick={loadBookedHotels}>
-                  <Typography>Booked Hotels</Typography>
-                </MenuItem>
-                <MenuItem onClick={loadBookedFlights}>
-                  <Typography>Booked Flights</Typography>
-                </MenuItem>
-                <MenuItem onClick={loadBookedTransportation}>
-                  <Typography>Booked Transportation</Typography>
-                </MenuItem>
-              </Menu>
+              
             </Box>
           </Box>
           {/* </Box> */}
@@ -674,54 +516,154 @@ function TouristNB() {
           {/* User Settings Menu */}
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+              <IconButton onClick={toggleDrawer} sx={{ p: 0 }}>
                 <Avatar alt="User Avatar" />
               </IconButton>
             </Tooltip>
-            <Menu
-              sx={{ mt: "45px" }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{ vertical: "top", horizontal: "right" }}
-              keepMounted
-              transformOrigin={{ vertical: "top", horizontal: "right" }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
+
+            <Drawer
+              anchor="right"
+              open={drawerOpen}
+              onClose={toggleDrawer}
+              PaperProps={{
+                sx: {
+                  width: '15%',
+                  height: '100%',
+                  backgroundColor: '#004c74',
+                  color: 'white',
+                  borderLeft: '1px solid #126782',
+                  overflowY: 'auto',
+                  '&::-webkit-scrollbar': {
+                    display: 'none',
+                  },
+                },
+              }}
             >
-              <MenuItem onClick={loadProfile}>
-                <Typography sx={{ textAlign: "center" }}>My Profile</Typography>
-              </MenuItem>
-              <MenuItem onClick={handleLogout}>
-                <Typography sx={{ textAlign: "center" }}>Logout</Typography>
-              </MenuItem>
-              <MenuItem onClick={handleChangePass}>
-                <Typography sx={{ textAlign: "center" }}>
-                  Change Password
-                </Typography>
-              </MenuItem>
-              <MenuItem onClick={handleOpenCurrencyDialog}>
-                <Typography sx={{ textAlign: "center" }}>
-                  Choose Currency
-                </Typography>
-              </MenuItem>
-              <MenuItem>
-                <Typography sx={{ textAlign: "center" }}>
-                  Bookmarks
-                </Typography>
-              </MenuItem>
-              <MenuItem onClick={handleDeleteAccount}>
-                <Typography sx={{ textAlign: "center", color: "#ff4d4d" }}>
-                  delete account
-                </Typography>
-              </MenuItem>
+              {/* Back arrow to close */}
+              <IconButton onClick={toggleDrawer} sx={{ alignSelf: 'flex-start', padding: 1 }}>
+                <ArrowBackIcon sx={{ fill: 'white' }} />
+              </IconButton>
+
+              {/* Drawer Content */}
+              <Box sx={{ padding: '5%' }}>
+                <List sx={{ padding: 0 }}>
+                  {/* Profile */}
+                  <ListItemButton  onClick={loadProfile} sx={{ padding: '5% 2%', gap: 1 }}>
+                    <Avatar alt="User Avatar" sx={{scale:'0.8'}} />
+                    <Typography sx={{ fontSize: '18px' }}>My Profile</Typography>
+                  </ListItemButton>
+                  <Divider sx={{ backgroundColor: 'lightgray' }} />
+
+                  {/* Change Password */}
+                  <ListItemButton  onClick={handleChangePass} sx={{ padding: '5% 2%', gap: 1 }}>
+                    <EditIcon sx={{ fontSize: '25px' }} />
+                    <Typography sx={{ fontSize: '18px' }}>Change Password</Typography>
+                  </ListItemButton>
+                  <Divider sx={{ backgroundColor: 'lightgray' }} />
+
+                  {/* Choose Currency */}
+                  <ListItemButton  onClick={handleOpenCurrencyDialog} sx={{ padding: '5% 2%', gap: 1 }}>
+                    <CurrencyExchangeIcon sx={{ fontSize: '25px' }} />
+                    <Typography sx={{ fontSize: '18px' }}>Choose Currency</Typography>
+                  </ListItemButton>
+                  <Divider sx={{ backgroundColor: 'lightgray' }} />
+
+                  {/* File Complaint */}
+                  <ListItemButton onClick={loadFileComplaint} sx={{ padding: '5% 2%', gap: 1 }}>
+                    <Typography sx={{ fontSize: '18px' }}>File Complaint</Typography>
+                  </ListItemButton>
+                  <Divider sx={{ backgroundColor: 'lightgray' }} />
+
+                  {/* Complaint History */}
+                  <ListItemButton onClick={loadComplaintHistory} sx={{ padding: '5% 2%', gap: 1 }}>
+                    <Typography sx={{ fontSize: '18px' }}>Complaint History</Typography>
+                  </ListItemButton>
+                  <Divider sx={{ backgroundColor: 'lightgray' }} />
+
+                  {/* My Bookings */}
+                  <ListItemButton
+                    onClick={() => setAnchorElBookings(!anchorElBookings)}
+                    sx={{
+                      padding: '5% 2%',
+                      gap: 0.3,
+                      '&:hover .arrow-icon': {
+                        opacity: 1, // Make arrow visible on hover
+                        transform: 'translateX(0)',
+                      },
+                    }}
+                  >
+                    <Typography sx={{ fontSize: '18px' }}>My Bookings</Typography>
+                    <Box
+                      className="arrow-icon"
+                      sx={{
+                        opacity: anchorElBookings ? 1 : 0, // Always visible if `anchorElBookings` is true
+                        transform: anchorElBookings ? 'translateX(0)' : 'translateX(10px)', // Slight movement when hidden
+                        transition: 'opacity 0.3s ease, transform 0.3s ease', // Smooth appearance and disappearance
+                      }}
+                    >
+                      {anchorElBookings ? (
+                        <KeyboardArrowDownIcon sx={{ fontSize: '26px',mt:'1%' }} />
+                      ) : (
+                        <ArrowForwardIosIcon sx={{ fontSize: '16px' }} />
+                      )}
+                    </Box>
+                  </ListItemButton>
+
+                  {anchorElBookings && (
+                    <List sx={{ paddingLeft: 4 ,left:0,'& .MuiListItemButton-root': { justifyContent: 'flex-start', },mt:'-5%',}}>
+                      <ListItemButton onClick={loadBookedActivities} >
+                        <Typography sx={{ fontSize: '16px', ml:'-10%' }}>Booked Activities</Typography>
+                      </ListItemButton>
+                      <Divider sx={{ backgroundColor: 'lightgray' }} />
+                      <ListItemButton button onClick={loadBookedItineraries}>
+                        <Typography sx={{ fontSize: '16px', ml:'-10%'  }}>Booked Itineraries</Typography>
+                      </ListItemButton>
+                      <Divider sx={{ backgroundColor: 'lightgray' }} />
+                      <ListItemButton button onClick={loadBookedHotels}>
+                        <Typography sx={{ fontSize: '16px', ml:'-10%'  }}>Booked Hotels</Typography>
+                      </ListItemButton>
+                      <Divider sx={{ backgroundColor: 'lightgray' }} />
+                      <ListItemButton onClick={loadBookedFlights}>
+                        <Typography sx={{ fontSize: '16px', ml:'-10%'  }}>Booked Flights</Typography>
+                      </ListItemButton>
+                      <Divider sx={{ backgroundColor: 'lightgray' }} />
+                      <ListItemButton onClick={loadBookedTransportation}>
+                        <Typography sx={{ fontSize: '16px', ml:'-10%', }}>Booked Transportation</Typography>
+                      </ListItemButton>
+                    </List>
+                  )}
+                  <Divider sx={{ backgroundColor: 'lightgray' }} />
+
+                  {/* My Orders */}
+                  <ListItemButton onClick={loadBookedFlights} sx={{ padding: '5% 2%', gap: 1 }}>
+                    <Typography sx={{ fontSize: '18px' }}>My Orders</Typography>
+                  </ListItemButton>
+                  <Divider sx={{ backgroundColor: 'lightgray' }} />
+
+                  {/* Logout */}
+                  <ListItemButton onClick={handleLogout} sx={{ padding: '5% 2%', gap: 1 }}>
+                    <LogoutIcon sx={{ fontSize: '24px' }} />
+                    <Typography sx={{ fontSize: '18px' }}>Logout</Typography>
+                  </ListItemButton>
+                  <Divider sx={{ backgroundColor: 'lightgray' }} />
+
+                  {/* Delete Account */}
+                  <ListItemButton onClick={handleDeleteAccount} sx={{ padding: '5% 2%', gap: 1 ,color: '#ff4d4d' }}>
+                    <DeleteIcon sx={{ fontSize: '24px' }} />
+                    <Typography sx={{ fontSize: '18px' }}>Delete Account</Typography>
+                  </ListItemButton>
+                  <Divider sx={{ backgroundColor: 'lightgray' }} />
+                </List>
+              </Box>
+            </Drawer>
               {/* Button to Open Currency Dialog */}
 
               {/* Currency Conversion Dialog */}
-              <CurrencyConversion
+              {/* <CurrencyConversion
                 open={openCurrencyDialog}
                 onClose={handleCloseCurrencyDialog}
               />
-            </Menu>
+            </Menu> */}
           </Box>
         </Toolbar>
       </Container>

@@ -173,25 +173,7 @@ const OrderItem = ({ order }) => {
       color: 'white',
     }),
   };
-  let status="cancelled";
-  const now = new Date();
-  const deliveryDate = new Date(order.deliveryDate);
   
-  // Calculate the difference in milliseconds
-  const differenceInMilliseconds = deliveryDate - now;
-  // Convert milliseconds to days
-const differenceInDays = Math.floor(differenceInMilliseconds / (1000 * 60 * 60 * 24));
-if(!order.isCancelled){
-if(differenceInDays<1)
-  status = "delivered"
-else
-   if(differenceInDays<3)
-    status="shipped"
-else
-  if(differenceInDays<7)
-    status="pending"
-}
-console.log(differenceInDays)
 localStorage.setItem("orderStatus",order.state) 
 return (
     <OrderItemWrapper>
@@ -270,7 +252,7 @@ return (
         Order Status
       </span>
       <span
-        className={`value status-${!order.isCancelled?status:order.state.toLowerCase()}`}
+        className={`value status-${!order.isCancelled?order.state:order.state.toLowerCase()}`}
         style={{
           fontSize: '14px',
           fontWeight: 'bold',
@@ -284,7 +266,7 @@ return (
               : '#ff4d4d',
         }}
       >
-        {!order.isCancelled?status:order.state}
+        {!order.isCancelled?order.state:order.state}
       </span>
     </div>
 

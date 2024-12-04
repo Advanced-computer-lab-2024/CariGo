@@ -116,8 +116,14 @@ export default function BookHotels(){
             const data = await response.json();
             console.log("Hotel data:", data); 
             setHotels(data.data);// Handle the hotel data as needed
-            if(hotels.length == 0) {
-              setError("no Hotels available");
+            if (Array.isArray(data.data)) {
+              setHotels(data.data);
+              if (data.data.length === 0) {
+                setError("No Hotels available");
+              }
+            } else {
+              setHotels([]);
+              setError("No Hotels available");
             }
             sessionStorage.setItem('hotels', JSON.stringify(data.data)); 
           } catch (error) {
@@ -175,7 +181,7 @@ export default function BookHotels(){
                         />
                         {isFromDropdownOpen && fromSuggestions.length > 0 && (
                           <List sx={{ maxHeight: 150, overflowY: 'auto', border: '1px solid #ccc',position:'absolute',zIndex: 100,backgroundColor:'white',cursor: 'pointer', }}>
-                            {fromSuggestions.map((cityObj) => (
+                            {(fromSuggestions || []).map((cityObj) => (
                               <ListItem button key={cityObj.city} onClick={() => handleCitySelect(cityObj)}>
                                 {cityObj.city} ({cityObj.iataCode})
                               </ListItem>

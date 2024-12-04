@@ -168,10 +168,11 @@ const HotelDetails = () =>{
         {/*cancelation deadline*/}
         <Box sx={{ display: 'flex', gap: '5px', padding: '5px', marginLeft: '-10px' }}>
             <Typography>can cancel before</Typography>
-            {offer.policies.cancellations[0] &&
+            {Array.isArray(offer.policies?.cancellations) && offer.policies.cancellations[0] ?(
               <Typography color="#ff4d4d">
               {new Date(offer.policies.cancellations[0].deadline).toLocaleDateString()}
-            </Typography>}
+            </Typography>):
+            (<Typography sx={{color:'#ff4d4d'}}>no date specified</Typography>)}
         </Box>
         
         <Box sx={{display:'flex', width:'100%',justifyContent: 'space-between',margin:'10px',marginBottom:'0px',marginLeft:'-10px', marginTop:'25px'}}>{/*price and book box*/}
