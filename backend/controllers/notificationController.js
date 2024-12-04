@@ -24,7 +24,7 @@ exports.sendNotification = async (
     scheduledFor,
   });
 
-  if (["flagged_content", "upcoming_event", "out_of_stock"].includes(type)) {
+  if (["flagged_content", "upcoming_event", "out_of_stock", "booking_opened"].includes(type)) {
     await sendEmail(notification);
   }
 
@@ -180,7 +180,7 @@ exports.sendBookingOpenedNotification = async (eventId, eventType) => {
     event = await Activity.findById(eventId).populate('interestedUsers');
   }
   if (eventType === "Itinerary"){
-    event = await Itinerary.findById(eventId).populate('bookedUsers');
+    event = await Itinerary.findById(eventId).populate('interestedUsers');
   }
   if (event && event.interestedUsers.length > 0) {
     const message = `Bookings are now open for the ${eventType.toLowerCase()}: ${event.title}`;
