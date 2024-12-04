@@ -216,60 +216,41 @@ const MyBookedHotels = () => {
       {/* </form> */}
     </Box>
       <Box
-        sx={{
-          width: "1150px",
-          overflow: "hidden",
-          margin: "0 auto",
-          padding: "20px",
-          height: "80vh",
-          overflow: "auto",
-          "&::-webkit-scrollbar": {
-            display: "none",
-          },
-        }}
-      >
-        <Box
-          sx={{
-            height: "100%",
-            width: "100%",
+          sx={{height:'60vh',maxHeight: "70vh", width: "80%", overflow: "auto",ml:'10%',
             "&::-webkit-scrollbar": { display: "none" },
           }}
         >
-          <Grid container spacing={0} sx={{ flexDirection: "column", width: "100vw" }}>
+          <Box sx={{display:'flex', flexDirection:'column', width: '100%',marginTop:'-1%'}}>
           {filteredActivities.length > 0 ? (
-  filteredActivities.map((activity, index) => {
+              filteredActivities.map((activity, index) => {return (
+                <Box item key={activity._id} sx={{ justifyContent: "left", width:'70%',margin:'2%', }}>
+                  <MyBookedHotelCard
+                    bookId={activity._id}
+                    hotelname={activity.hotelData.hotelName|| " "}
+                    img={"frontend/public/assets/images/itinerary.png"}
+                    checkInDate={activity.hotelData.offer.checkInDate || " "}
+                    checkOutDate={activity.hotelData.offer.checkOutDate || " "}
+                    offer ={activity.hotelData.offer}
+                    status={activity.Status}
+                    NumberOfTickets={activity.NumberOfTickets ||1}
+                    TotalPrice={activity.TotalPrice|| 0}
+                    price={activity.hotelData.offer.price.total ||0}
+                    hotelData={activity.hotelData}
+                  />
+                  {/* <IconButton onClick={() => openActivityReviewFormHandler(activity.TransportationId._id)}>
+                    <RateReviewIcon />
+                  </IconButton> */}
+                </Box>
+              );
+              })
+            ) : (
+              <Typography variant="h6" sx={{ textAlign: 'center' }}>
+                No activities found.
+              </Typography>
+            )}
 
-
-    return (
-      <Grid item key={index} sx={{ justifyContent: "left" }}>
-        <MyBookedHotelCard
-          bookId={activity._id}
-          hotelname={activity.hotelData.hotelName|| " "}
-          img={"frontend/public/assets/images/itinerary.png"}
-          checkInDate={activity.hotelData.offer.checkInDate || " "}
-          checkOutDate={activity.hotelData.offer.checkOutDate || " "}
-          offer ={activity.hotelData.offer}
-          status={activity.Status}
-          NumberOfTickets={activity.NumberOfTickets ||1}
-          TotalPrice={activity.TotalPrice|| 0}
-          price={activity.hotelData.offer.price.total ||0}
-          hotelData={activity.hotelData}
-        />
-        {/* <IconButton onClick={() => openActivityReviewFormHandler(activity.TransportationId._id)}>
-          <RateReviewIcon />
-        </IconButton> */}
-      </Grid>
-    );
-  })
-) : (
-  <Typography variant="h6" sx={{ textAlign: 'center' }}>
-    No activities found.
-  </Typography>
-)}
-
-          </Grid>
+          </Box>
         </Box>
-      </Box>
 
       {/* Render the activity review form dialog */}
       {selectedActivityId && (

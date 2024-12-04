@@ -27,6 +27,7 @@ const MyBookedHotelCard = ({
     return `${hours}:${minutes < 10 ? '0' + minutes : minutes} ${dayTime}`;
   };
 
+  const code = localStorage.getItem("currencyCode")||"EGP";
 
   console.log(hotelData);
   React.useEffect(() => {
@@ -98,16 +99,19 @@ const MyBookedHotelCard = ({
 
   const rate = parseFloat(JSON.parse(localStorage.getItem("conversionRate")))||1;
   return (
-    <div className="booking-card">
-      <img
+    <Box className="booking-card" sx={{width:'70%'}}>
+      {/* <img
         src={logoImage}
         alt={`${hotelname}1`}
         className="booking-card__image"
-      />
+      /> */}
       <div className="booking-card__details">
-        <h2 className="booking-card__name">{hotelname}</h2>
-   
-        <p className="booking-card__location">hotel name: {hotelname}</p>
+        <Typography 
+          sx={{ color: '#126782', fontSize: '20px', fontWeight: 'bold', padding: '10px', width:'80%', overflow: 'auto' }}
+        >
+          {hotelname}
+        </Typography>
+        <Divider sx={{ borderBottomWidth: 2 , width:'90%',ml:'2%'}} />
         {/* <p className="booking-card__location">checkindate: {checkInDate}</p>
        
         <p className="booking-card__time">checkoutdate: {checkOutDate}</p> */}
@@ -162,15 +166,35 @@ const MyBookedHotelCard = ({
             </Link>
           </Box> */}
         </Box>
-        <p className="booking-card__status">
-          Total Price: {(TotalPrice*rate).toFixed(2) }
-        </p>
-        <p className="booking-card__status">
-          Status: {isPast && status ? "Done" : status ? "Booked" : "Canceled Bookings"}
-        </p>
-        <p className="booking-card__tickets">
-  Number of Tickets: {NumberOfTickets}
-</p>
+        <Box sx={{display: 'flex', flexDirection: 'column',gap:'10px', color:'#126782'}}>
+          <Box sx={{display:'flex', gap:'2%'}}>
+            <Typography className="booking-card__tickets" sx={{fontWeight:'bold', marginLeft:'2%',}}>
+            Number of Tickets 
+            </Typography>
+            <Typography sx={{}}>
+            {NumberOfTickets}
+            </Typography>
+          </Box>
+          <Box sx={{gap:'2px'}}>
+            <Box sx={{ display: 'flex',color: '#126782'  }}>
+              <AttachMoneyIcon sx={{ marginTop: '0px', }} />
+              <Typography className="booking-card__status" sx={{fontWeight:'bold'}}>
+                Total Price 
+              </Typography>
+            </Box>
+            <Typography sx={{ color: '#ff4d4d', fontSize: '16px', ml: "7%" }}>
+            {(TotalPrice*rate).toFixed(2)} {`${code}` || "no price specified"}
+            </Typography>
+          </Box>
+        <Box sx={{display:'flex', gap:'2%'}}>
+          <Typography className="booking-card__status" sx={{fontWeight:'bold', marginLeft:'2%',mb:'2%'}}>
+            Status 
+          </Typography>
+          <Typography sx={{}}>
+            {isPast&&status ? "Done" : status ? "Booked" : "Canceled Bookings"}
+          </Typography>
+          </Box>
+          </Box>
       </div>
       <button
         className="booking-card__cancel-button"
@@ -179,7 +203,7 @@ const MyBookedHotelCard = ({
       >
         Cancel
       </button>
-    </div>
+    </Box>
   );
 };
 
