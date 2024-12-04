@@ -367,6 +367,7 @@ const OrderDetailScreen = () => {
             // setRevenue(json.Revenue);
             console.log("Fetched Titles:", json.products);
             setOrder(json)
+            
             setProducts(json.products)
           //  setTitles(json.activityTitles)
             //setEvents(json.report); // Set activities if response is okay
@@ -377,6 +378,7 @@ const OrderDetailScreen = () => {
         }
     }
     fetchTitles();
+    console.log(order?order.state:"null");
 }, [])
 let message;
 const [done,setDone] = useState(false)
@@ -494,6 +496,7 @@ const currencyCode = localStorage.getItem("currencyCode") || "USD";
       borderBottom: "1px solid #ececec",
       paddingBottom: "15px",
       marginBottom: "15px",
+      marginLeft:"1px"
     }}
   >
     <div className="order-d-top-l">
@@ -627,7 +630,8 @@ const currencyCode = localStorage.getItem("currencyCode") || "USD";
     className="order-additional-info"
     style={{
       borderTop: "1px solid #ececec",
-      paddingTop: "15px",
+      paddingTop: "10px",
+      marginBottom:"5px",
       marginLeft:"20px",
       fontSize: "14px",
       color: "#6d6d6d",
