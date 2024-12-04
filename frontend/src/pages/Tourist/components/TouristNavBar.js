@@ -22,6 +22,7 @@ import Badge from '@mui/material/Badge';
 import { UserOutlined, BellOutlined, MessageOutlined, CheckCircleOutlined, WarningOutlined } from '@ant-design/icons'; // Import the icons
 import BookmarkBorderOutlinedIcon from '@mui/icons-material/BookmarkBorderOutlined';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
 const pages = [
   "Suggested For You",
@@ -41,6 +42,25 @@ function TouristNB() {
   const [anchorElComplaints, setAnchorElComplaints] = React.useState(null); // Complaints menu state
   const [anchorElNotifications, setAnchorElNotifications] = useState(null); // Notification menu anchor
   const [notifications, setNotifications] = useState([]);
+  const [anchorElBookmark, setAnchorElBookmark] = useState(null);
+  const [anchorElCart, setAnchorElCart] = useState(null);
+
+
+  // ... [previous useEffect and handler functions remain the same]
+
+  const handleOpenCartMenu = (event) => {
+    setAnchorElCart(event.currentTarget);
+  };
+
+  const handleCloseCartMenu = () => {
+    setAnchorElCart(null);
+  };
+
+  const navigateToCart = () => {
+    navigate("/tourist/cart");
+    handleCloseCartMenu();
+  };
+
 
   useEffect(() => {
     const fetchNotifications = async () => {
@@ -73,7 +93,24 @@ function TouristNB() {
     }
   };
 
+  const handleOpenBookmarkMenu = (event) => {
+    setAnchorElBookmark(event.currentTarget);
+  };
 
+  const handleCloseBookmarkMenu = () => {
+    setAnchorElBookmark(null);
+  };
+
+  const navigateToBookmarkedItineraries = () => {
+    navigate("/tourist/BookmarkedItineraries");
+    handleCloseBookmarkMenu();
+  };
+
+  const navigateToBookmarkedActivities = () => {
+    navigate("/tourist/BookmarkedActivities");
+    handleCloseBookmarkMenu();
+  };
+  
   // Open and Close Dialog Functions
   const handleOpenCurrencyDialog = () => {
     setOpenCurrencyDialog(true);
@@ -407,13 +444,16 @@ function TouristNB() {
 
           {/* Bookmark Icon */}
           <IconButton
-            size="large"
-            aria-label="show bookmarks"
-            color="inherit"
-            sx={{ marginRight: 1 }}
-          >
-            <BookmarkBorderOutlinedIcon sx={{ fontSize: '33px', color: 'white' }} />
-          </IconButton>
+              size="large"
+              aria-label="show bookmarks"
+              aria-controls="bookmark-menu"
+              aria-haspopup="true"
+              onClick={handleOpenBookmarkMenu}
+              color="inherit"
+              sx={{ marginRight: 1 }}
+            >
+              <BookmarkBorderOutlinedIcon sx={{ fontSize: '33px', color: 'white' }} />
+            </IconButton>
 
           {/* Notification Icon */}
           <IconButton
@@ -568,6 +608,13 @@ function TouristNB() {
                   </ListItemButton>
                   <Divider sx={{ backgroundColor: 'lightgray' }} />
 
+                  {/* cart */}
+                  <ListItemButton  onClick={navigateToCart} sx={{ padding: '5% 2%', gap: 1 }}>
+                  <ShoppingCartIcon sx={{ fontSize: '25px' }} />
+                  <Typography sx={{ fontSize: '18px' }}>View Cart</Typography>
+                  </ListItemButton>
+                  <Divider sx={{ backgroundColor: 'lightgray' }} />
+
                   {/* File Complaint */}
                   <ListItemButton onClick={loadFileComplaint} sx={{ padding: '5% 2%', gap: 1 }}>
                     <Typography sx={{ fontSize: '18px' }}>File Complaint</Typography>
@@ -667,6 +714,28 @@ function TouristNB() {
           </Box>
         </Toolbar>
       </Container>
+      <Menu
+        id="bookmark-menu"
+        anchorEl={anchorElBookmark}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+        keepMounted
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        open={Boolean(anchorElBookmark)}
+        onClose={handleCloseBookmarkMenu}
+      >
+        <MenuItem onClick={navigateToBookmarkedItineraries}>
+          Bookmarked Itineraries
+        </MenuItem>
+        <MenuItem onClick={navigateToBookmarkedActivities}>
+          Bookmarked Activities
+        </MenuItem>
+      </Menu>
     </AppBar>
   );
 }
