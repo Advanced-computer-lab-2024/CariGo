@@ -72,6 +72,7 @@ exports.getUnreadNotifications = catchAsync(async (req, res, next) => {
 });
 
 exports.getAllNotifications = catchAsync(async (req, res, next) => {
+  console.log('getAllNotifications');
   const notifications = await Notification.find({ userId: req.user._id }).sort("-createdAt");
   res.status(200).json({
     status: 'success',
@@ -180,12 +181,13 @@ exports.sendBookingOpenedNotification = async (eventId, eventType) => {
     event = await Activity.findById(eventId).populate('interestedUsers');
   }
   if (eventType === "Itinerary"){
-    event = await Itinerary.findById(eventId).populate('bookedUsers');
+    event = await Itinerary.findById(eventId).populate('interestedUsers');
   }
   if (event && event.interestedUsers.length > 0) {
     const message = `Bookings are now open for the ${eventType.toLowerCase()}: ${event.title}`;
     for (const user of event.interestedUsers) {
       await this.sendNotification(user._id, message, 'booking_opened', eventId, eventType);
+
     }
   }
 };

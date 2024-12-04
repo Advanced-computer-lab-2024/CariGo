@@ -134,7 +134,7 @@ const clearCart = async (req, res) => {
 const checkout = async (req, res) => {
   try {
     const userId = req.user.id;
-    const { shippingAddress } = req.body;
+    const { shippingAddress,PaymentMethod,paymentAmount } = req.body;
 
     // Find the user's cart and populate product details
     const cart = await Cart.findOne({ userId }).populate(
@@ -147,7 +147,7 @@ const checkout = async (req, res) => {
     }
 
     // Check stock availability and calculate total price
-    let totalOrderPrice = 0;
+    let totalOrderPrice = paymentAmount;
     for (const item of cart.products) {
       const product = item.productId;
 
@@ -157,9 +157,19 @@ const checkout = async (req, res) => {
           message: `Not enough stock for ${product.name}. Available: ${product.quantity}`,
         });
       }
-      totalOrderPrice += product.price * item.quantity;
+      
     }
-
+    const user = await User.findById(userId);
+    if(PaymentMethod === "wallet"){
+      const newWalletValue = user.wallet - totalOrderPrice;
+      user.wallet = newWalletValue;
+      await user.save({ validateBeforeSave: false });
+    }
+      // Add loyalty points
+      // user.addLoyaltyPoints(itinerary.price);
+      user.addLoyaltyPoints(totalOrderPrice);
+      user.addAvailablePoints(totalOrderPrice);
+      await user.save({ validateBeforeSave: false });
     let purchaseIds = [];
     for (const item of cart.products) {
       let purchase = await Purchase.create({
@@ -170,7 +180,6 @@ const checkout = async (req, res) => {
       purchaseIds.push(purchase._id);
       console.log("new purchase is " + purchase);
     }
-
     // Create the order
     const order = await Order.create({
       userId,
@@ -179,6 +188,7 @@ const checkout = async (req, res) => {
         quantity: item.quantity,
         totalPrice: item.productId.price * item.quantity,
       })),
+      PaymentMethod,
       shippingAddress,
       totalPrice: totalOrderPrice,
       deliveryDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days from now

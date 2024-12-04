@@ -19,6 +19,15 @@ const logError = (context, error) => {
 //       scheduledFor: { $lte: now },
 //       emailSent: false
 //     });
+// // Schedule a task to run every minute to check for scheduled notifications
+// cron.schedule('*/1 * * * *', async () => {
+//   console.log('Running scheduled notification check...');
+//   const now = new Date();
+//   try {
+//     const scheduledNotifications = await Notification.find({
+//       scheduledFor: { $lte: now },
+//       emailSent: false
+//     });
 
 //     console.log(`Found ${scheduledNotifications.length} notifications to send.`);
 

@@ -301,7 +301,7 @@ const readAllItineraries = async (req, res) => {
     } else {
       // If tagTitle is provided, filter based on tags
       const tagIds = await tagModel.find({ title: tagTitle }).select("_id");
-      console.log(tagIds);
+      // console.log(tagIds);
       query = query.where("tags").in(tagIds);
 
       // Delete the 'tags' key from req.query
@@ -467,7 +467,7 @@ const deleteVintage = async (req, res) => {
 
 const readSingleItinerary = (req, res) => {
   if (mongoose.Types.ObjectId.isValid(req.params.itineraryId)) {
-    console.log("inside the the read");
+    // console.log("inside the the read");
     itineraryModel
       .findOne({ _id: new mongoose.Types.ObjectId(req.params.itineraryId) })
       .populate("tags")
@@ -475,7 +475,7 @@ const readSingleItinerary = (req, res) => {
       .populate("author")
       .sort({ createdAt: -1 })
       .then((result) => {
-        console.log(result);
+        // console.log(result);
         res.status(201).json(result);
       })
       .catch((error) => {
@@ -939,19 +939,7 @@ const openBookings = async (req, res) => {
     itinerary.isOpened = true;
     await itinerary.save();
 
-    // Send notifications and emails to all interested users
-    if (itinerary.interestedUsers && itinerary.interestedUsers.length > 0) {
-      const message = `Bookings are now open for the itinerary: ${itinerary.title}`;
-      for (const user of itinerary.interestedUsers) {
-        await NotificationController.sendNotification(
-          user._id,
-          message,
-          "upcoming_event",
-          itineraryId,
-          "Itinerary"
-        );
-      }
-    }
+    await notificationController.sendBookingOpenedNotification(itineraryId, "Itinerary");
 
     res.status(200).json({
       status: "success",

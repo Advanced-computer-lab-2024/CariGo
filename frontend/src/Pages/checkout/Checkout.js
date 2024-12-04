@@ -72,7 +72,6 @@ export default function Checkout(props, { activityId },) {
       let priceAfterDiscount = price *(1-(discount/100));
       if(priceAfterDiscount == 0)
         priceAfterDiscount = price;
-      console.log(priceAfterDiscount);
       setTotalPrice((priceAfterDiscount * orderData.quantity).toFixed(2));
     }
   }, [activityDetails, orderData.quantity,discount]);
