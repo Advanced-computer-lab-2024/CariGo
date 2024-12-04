@@ -288,7 +288,7 @@ const readAllItineraries = async (req, res) => {
     let query = itineraryModel.find({
       start_date: { $gte: today },
       isActive: true,
-    });
+    }).populate("tags");
 
     // Check if a tag title is provided
     let itineraries = []; // Declare itineraries with let
@@ -381,6 +381,7 @@ const suggestedItineraries = async (req, res) => {
     // Find itineraries with matching tags
     const itineraries = await itineraryModel
       .find({
+        // start_date: { $gte: today },
         isActive: true,
         isFlagged: false,
         tags: { $in: tags },
@@ -406,6 +407,7 @@ const suggestedActivities = async (req, res) => {
     // Fetch activities that match any tag in the `tags` array
     const itineraries = await activityModel
       .find({
+        // start_date: { $gte: today },
         isActive: true,
         isFlagged: false,
         tag: { $in: tagIds }, // Check if activity's tag is in the provided tags list

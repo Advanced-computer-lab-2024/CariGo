@@ -76,7 +76,17 @@ const activitySchema = new mongoose.Schema(
     isActive :{
       type :Boolean,
       default :true
-    }
+    },
+    isOpened:{
+      type :Boolean,
+      default :false
+    },
+    interestedUsers:[
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: "User",
+      }
+    ]
   },
   { timestamps: true }
 );
