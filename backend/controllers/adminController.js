@@ -368,6 +368,7 @@ const createPromoCode = async (req, res) => {
 
 const revenueReport = async (req, res) => {
   try {
+    const { product, startDate, endDate, month } = req.query;
     let totalRevenue = 0;
     let totalBookings = 0;
     let totalProductRevenue = 0;
@@ -377,12 +378,54 @@ const revenueReport = async (req, res) => {
     let itineraryRevenueM = Array(12).fill(0);
     let eventRevenueM = Array(12).fill(0);
     let productRevenueM = Array(12).fill(0);
+    const purchaseFilters = { isCancelled: false };
+    const bookingFilters = { Status: true };
 
+    // Validate and apply product filter
+    if (product) {
+      if (!mongoose.Types.ObjectId.isValid(product)) {
+        return res.status(400).json({ status: "error", message: "Invalid product ID" });
+      }
+      purchaseFilters.ProductId = new mongoose.Types.ObjectId(product);
+    }
+
+    // Apply date filtering
+    if (startDate || endDate) {
+      const start = startDate ? new Date(startDate) : null;
+      const end = endDate ? new Date(endDate) : null;
+
+      // Adjust end date to include the entire day
+      if (end) {
+        end.setHours(23, 59, 59, 999);
+      }
+
+      // If only start date is provided
+      if (start && !end) {
+        purchaseFilters.createdAt = { $gte: start };
+        bookingFilters.createdAt = { $gte: start };
+      }
+      // If only end date is provided
+      else if (!start && end) {
+        purchaseFilters.createdAt = { $lte: end };
+        bookingFilters.createdAt = { $lte: end };
+      }
+      // If both start and end dates are provided
+      else if (start && end) {
+        purchaseFilters.createdAt = {
+          $gte: start,
+          $lte: end
+        };
+        bookingFilters.createdAt = {
+          $gte: start,
+          $lte: end
+        };
+      }
+    }
+    
     // Calculate total product sales by summing the quantities of each purchase
-    const purchases = await Purchase.find({ isCancelled: false }).populate(
-      "ProductId",
-      "price"
-    );
+    const purchases = await Purchase.find(purchaseFilters).populate("ProductId", "price");
+    console.log("Purchases:", purchases);
+
     if (purchases && purchases.length > 0) {
       totalProductSales = purchases.reduce(
         (acc, purchase) => acc + (purchase.Quantity || 0),
@@ -393,11 +436,21 @@ const revenueReport = async (req, res) => {
           acc + (purchase.Quantity || 0) * (purchase.ProductId?.price || 0),
         0
       );
+      purchases.forEach((purchase) => {
+        const month = new Date(purchase.createdAt).getMonth();
+        const quantity = purchase.Quantity || 0;
+        const price = purchase.ProductId?.price || 0;
+        if (quantity > 0 && price > 0) {
+          console.log(`Product Revenue for Month ${month}: Quantity = ${quantity}, Price = ${price}`);
+          productRevenueM[month] += quantity * price;
+        }
+      });
     }
+
 
     // Fetch all bookings
     const bookings = await bookingModel
-      .find({ Status: true })
+      .find(bookingFilters)
       .populate("ItineraryId", "price")
       .populate("ActivityId", "price");
     console.log("Bookings found:", bookings.length);
@@ -444,11 +497,11 @@ const revenueReport = async (req, res) => {
     }
 
     // Calculate revenue per month from product purchases
-    purchases.forEach((purchase) => {
-      const month = new Date(purchase.createdAt).getMonth();
-      productRevenueM[month] +=
-        (purchase.Quantity || 0) * (purchase.ProductId?.price || 0);
-    });
+    // purchases.forEach((purchase) => {
+    //   const month = new Date(purchase.createdAt).getMonth();
+    //   productRevenueM[month] +=
+    //     (purchase.Quantity || 0) * (purchase.ProductId?.price || 0);
+    // });
 
     // Send response
     res.status(200).json({
