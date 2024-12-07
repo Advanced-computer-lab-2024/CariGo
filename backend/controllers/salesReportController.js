@@ -195,11 +195,16 @@ const generateSalesReportForItinerary = async (req, res) => {
         });
       });
     }
-
+    let i =0;
+    
+    let totalRevenue = 0;
+    while(i<report.length)
+      totalRevenue+= report[i++].totalRevenue;
     // Step 6: Return the final sales report as a response
     res.json({
       success: true,
       report: report, // Send the sales report back to the client
+     Revenue:totalRevenue
     });
 
   } catch (error) {
