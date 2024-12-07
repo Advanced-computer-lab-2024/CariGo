@@ -8,7 +8,7 @@ import TopBar from './TopBar.jsx';
 const CreatePromoCode = () => {
   const [form] = Form.useForm();
   const token = localStorage.getItem('jwt');
-
+ const navigate =useNavigate();
   const handleSubmit = async (values) => {
   try {
     const response = await axios.post('http://localhost:4000/Admin/promo-code', values, {
@@ -82,6 +82,9 @@ const CreatePromoCode = () => {
           </Button>
         </Form.Item>
       </Form>
+    </div>
+    </div>
+    </div>
     </div>
   );
 };
