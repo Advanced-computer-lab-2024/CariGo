@@ -14,7 +14,7 @@ import CloseIcon from '@mui/icons-material/Close';
 //import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 //import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'; 
 const SalesOverview = ({ onHandleRev, onHandleEvents, onHandleTour, onH }) => {
-
+  const role = localStorage.getItem("role");
     // select
     const [month, setMonth] = React.useState('1');
     const [filter, setFilter] = useState(false)
@@ -46,10 +46,12 @@ const SalesOverview = ({ onHandleRev, onHandleEvents, onHandleTour, onH }) => {
         const fetchTitles = async () => {
             const token = localStorage.getItem('jwt'); // Get the token from local storage
             const userId = localStorage.getItem("id"); // Get user ID if needed
+            
             console.log(userId);
             console.log(token);
             //const revenue =null;
             try {
+              if(role!=="Seller"){
                 const response = await fetch(`http://localhost:4000/cariGo/activity/getTitles/${userId}`, {
                     method: "GET", // Change this to "POST" if your backend expects it
                     headers: {
@@ -75,8 +77,12 @@ const SalesOverview = ({ onHandleRev, onHandleEvents, onHandleTour, onH }) => {
                 //setEvents(json.report); // Set activities if response is okay
                 //  if(revenue)
                 //onHandleRev(json.Revenue)
+              }
+              else{
+                ////////YOUR PART /////////////////////////////////////////////////////////////////////////////
+              }
             } catch (error) {
-                console.log('Error fetching activities:', error);
+                console.log('Error fetching :', error);
             }
         }
         fetchTitles();
@@ -219,6 +225,7 @@ const SalesOverview = ({ onHandleRev, onHandleEvents, onHandleTour, onH }) => {
         console.log(token);
         //const revenue =null;
         try {
+          if(role!=="Seller"){
             const response = await fetch(`http://localhost:4000/cariGo/report/${finalFilter}`, {
                 method: "GET", // Change this to "POST" if your backend expects it
                 headers: {
@@ -248,7 +255,10 @@ const SalesOverview = ({ onHandleRev, onHandleEvents, onHandleTour, onH }) => {
             console.log(sum);
             onHandleTour(sum)
             onHandleRev(json.Revenue)
-            onH(events)
+            onH(events)}
+            else{
+              ////////////////////YOUR PARTTTTTTTTTTTTT/////////////////////////////////////////////////
+            }
 
 
             //setEvents(json.report); // Set activities if response is okay
