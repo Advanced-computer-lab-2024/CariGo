@@ -1,5 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Menu, TextField, Button, CircularProgress, Typography, MenuItem ,IconButton, Select, Checkbox, ListItemText, InputLabel, FormControl} from '@mui/material';
+import {
+  Box,
+  TextField,
+  Button,
+  CircularProgress,
+  Typography,
+  MenuItem,
+  IconButton,
+  Select,
+  Checkbox,
+  ListItemText,
+  InputLabel,
+  FormControl,
+  Grid,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  AppBar,
+  Toolbar,
+} from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import NavBar from './components/TouristNavBar.js';
@@ -154,207 +174,106 @@ export default function TouristItineraries (){
     };
   
     return(
-      <div>
-      {!tourist? <GuestNavBar/>: <NavBar/>}
-
-      <Box sx={{
-        width:'100%' ,
-        overflow: 'hidden',
-        margin: '3%', 
-        marginLeft:'0%',
-        //padding:'2%',
-        height: '90vh', // Set a fixed height for the scrolling area
-        display:'flex',
-        gap:'3%',
-        '&::-webkit-scrollbar': {
-        display: 'none', // Hides the scrollbar for WebKit browsers (Chrome, Safari)
-      },
-        }}>
-
-
-          {/* vintages list */}
-          {loading && <CircularProgress />}
-          {error && <Typography color="error">{error}</Typography>}
-        <Box sx={{ 
-          height: '90%',
-          //marginLeft: '100px',
-          width: '70%',
-          display: "flex",
-          flexDirection: "column",
-          gap: "15px",
-          overflowX: 'hidden',
-          overflowY: 'auto', 
-          marginTop:'20px', 
-          '&::-webkit-scrollbar': {
-            width: '7px', 
-            height: '90%', 
-            },
-          '&::-webkit-scrollbar-thumb': {
-            backgroundColor: '#ff4d4d', // Color of the scrollbar thumb
-            borderRadius: '10px', // Rounded corners for the scrollbar thumb
-            },
-          '&::-webkit-scrollbar-track': {
-            backgroundColor: '#f1f1f1', // Color of the scrollbar track
-            borderRadius: '10px', // Rounded corners for the scrollbar track
-          },
-          }}> {/* Enable vertical scrolling only */}
-
-          <VintageList fetchedVintages={filteredVintages} />
-        </Box>
-
-        <Box sx={{display:'flex', flexDirection:'column', gap:'20px', marginTop:'5%'}}>
-        {/*Search bar*/}
-        <Box sx={{}}>
-          <TextField
-            id="search-bar"
-            className="text"
-            onInput={(e) => {
-              setSearchTerm(e.target.value);
-            }}
+      <Box sx={{ backgroundColor: "#f9f9f9", minHeight: "100vh" }}>
+      {!tourist ? <GuestNavBar /> : <NavBar />}
+      <Box sx={{ flexGrow: 1 }}>
+        <AppBar
+          position="static"
+          color="transparent"
+          elevation={0}
+          sx={{ backgroundColor: "#ffffff", padding: "16px", borderRadius: "8px" }}
+        >
+          <Toolbar
             sx={{
-              "& .MuiOutlinedInput-root": {
-                "&.Mui-focused fieldset": {
-                  borderColor: "#ff4d4daa",
-                },
-              },            
+              display: "flex",
+              justifyContent: "space-between",
+              gap: 2,
             }}
-            variant="outlined"
-            placeholder="Search..."
-            size="small"
+          >
+            <TextField
+              variant="outlined"
+              placeholder="Search itineraries..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              InputProps={{
+                endAdornment: (
+                  <IconButton onClick={handleSearch}>
+                    <SearchIcon />
+                  </IconButton>
+                ),
+              }}
+              sx={{
+                width: "50%",
+                borderRadius: "50px",
+                backgroundColor: "#ffffff",
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: "50px",
+                },
+              }}
             />
-          <IconButton type="submit" aria-label="search" 
-            sx={{ width:"40px", height:"40px",
-                 marginBottom:"-5px",
-                 marginLeft:"-3px",
-                 backgroundColor: "#ff4d4d", 
-                color: "white", 
-                borderRadius: "3px",
-                "&:hover": {
-                  backgroundColor: "#e63939"
-                } 
-              }}>
-              <SearchIcon  onClick={handleSearch} sx={{ }}/>
-                </IconButton>
-              </Box>
-              {/*End of Search bar*/}
-                {/* for filter and sort next to each other*/}
-                {/* <Box sx={{display:'flex',
-                 flexDirection: anchorEl ? 'column' : 'row' ,
-                  marginTop: '30px',marginLeft :'120px',}}>  */}
-                  
-                {/*Filter menu*/}
-                <Box
-                sx={{
-                  position: 'relative',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  }}
-                >
-                <FilterAltIcon
-                onClick={handleFilterClick}
-                sx={{
-                  color : "gray",
-                  cursor: 'pointer',
-                }}
+            <IconButton
+              onClick={() => setIsFilterOpen(true)}
+              sx={{
+                backgroundColor: "#00355a",
+                color: "#ffffff",
+                "&:hover": { backgroundColor: "#1a4975" },
+              }}
+            >
+              <FilterAltIcon />
+            </IconButton>
+          </Toolbar>
+        </AppBar>
+      </Box>
+
+      <Box sx={{ padding: "20px" }}>
+        {loading && <CircularProgress />}
+        {error && <Typography color="error">{error}</Typography>}
+        <VintageList fetchedVintages={filteredVintages} />
+      </Box>
+
+      <Dialog
+        open={isFilterOpen}
+        onClose={() => setIsFilterOpen(false)}
+        fullWidth
+        maxWidth="sm"
+      >
+        <DialogTitle>Filters</DialogTitle>
+        <DialogContent>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "20px",
+            }}
+          >
+            <FormControl fullWidth>
+              <InputLabel>Tags</InputLabel>
+              <Select
+                multiple
+                value={filterInputValues.tags}
+                onChange={handleTagFilterChange}
+                renderValue={(selected) => selected.join(", ")}
               >
-              </FilterAltIcon>
-              {Boolean(anchorEl) && ( // Conditional rendering based on anchorEl
-                <Box
-                  sx={{
-                    //padding: '20px',
-                    position: 'absolute', 
-                    top: '50px', 
-                    left: '0', 
-                    //paddingTop:'10px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap:'10px',
-                    borderRadius: '20px',
-                    backgroundColor: 'white', 
-                    borderColor: '1px solid #ff4d4d', 
-                    width: '150%',
-                  }}
-                >
-                <Box sx={{display:'flex',width:'100%', flexWrap: 'wrap',marginLeft:'5px', gap:'5px'}}>
-                  {/* <TextField
-                      label="tags"
-                      variant="outlined"
-                      name="tags"
-                      value={filterInputValues.tags}
-                      onChange={handleFilterChange}
-                      type="text"
-                      sx={{ width:'45%', height:'20%'}}
-                  /> */}
-                  <Box sx={{ width: '45%', height: 'auto' ,position:'relative',color:'#126782'}}>
-                    <FormControl fullWidth>
-                      <InputLabel id="tags-select-label" 
-                      sx={{"&.Mui-focused": {color: "#ff4d4d",},}}
-                      >Tags</InputLabel>
-                      <Select
-                        label="tags"
-                        //id="tags-select"
-                        multiple
-                        value={filterInputValues.tag || []}
-                        onChange={handleTagFilterChange}
-                        renderValue={(selected) => selected.join(', ')} // Displays selected tags as comma-separated values
-                        MenuProps={{
-                          PaperProps: {
-                            style: {
-                              maxHeight: 200, 
-                              //width:'10%',
-                            },
-                          },
-                        }}
-                        sx={{
-                          "& .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "#ccc", // Default border color
-                          },
-                          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "#ff4d4d", // Border color on focus
-                          },
-                        }}
-                      >
-                        {tagNames.map((tag, index) => (
-                          <MenuItem key={index} value={tag} sx={{ color: '#126782','&.Mui-selected': {backgroundColor: 'transparent',},}}>
-                            <Checkbox  
-                            //checked={filterInputValues.tags.includes(tag)} 
-                            //onChange={() => handleTagToggle(tag)} // Toggle the tag selection
-                            checked={filterInputValues.tag.includes(tag)}
-                            sx={{marginLeft:'-5%',
-                              '&.Mui-checked': {
-                                color: '#ff4d4d', 
-                                backgroundColor:'white', 
-                              },
-                              // "&:hover": {
-                              //   color: "#ff7a7a", // Lighter shade of red on hover
-                              // },
-                            }} 
-                            />
-                            <ListItemText primary={tag} />
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </Box>
-                  </Box>
-                  <Box sx={{display:'flex', marginLeft:'-5px'}}>
-                  <Button variant="contained" onClick={handleFilter} sx={{ ml: 2 , backgroundColor: '#ff4d4d' , width : '50px',}}>
-                      Filter
-                  </Button>
-                  <Button variant="contained" onClick={resetFilters} sx={{ ml: 2 ,backgroundColor: '#ff4d4d',width : '50px'}}>
-                      Reset 
-                  </Button>
-                  </Box>
-                  </Box>
-                  )}
-              </Box>
-              {/* END OF FILTER MENU */}
-  
-              {/* </Box> */}
-              </Box>
-              
+                {/* {tagNames.map((tag) => (
+                  <MenuItem key={tag} value={tag}>
+                    <Checkbox
+                      checked={filterInputValues.tags.indexOf(tag) > -1}
+                    />
+                    <ListItemText primary={tag} />
+                  </MenuItem>
+                ))} */}
+              </Select>
+            </FormControl>
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={resetFilters}>Reset</Button>
+          <Button onClick={handleFilter} variant="contained" sx={{ backgroundColor: "#00355a" }}>
+            Apply Filters
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
-    </div>
     
   );
   }

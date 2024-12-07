@@ -140,7 +140,7 @@ const getActivities = async (req, res) => {
     start_date: { $gte: today },
     isFlagged: false,
     isActive: true, // Only include activities that are not flagged and are active
-  });
+  }).populate("tag").populate("author");
 
   console.log(query.data);
   // Add category filter if it exists
