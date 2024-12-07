@@ -65,8 +65,11 @@ const MonthlyEarnings = ({tourists}) => {
       }
     >
       <>
-        {tourists &&<Typography variant="h3" fontWeight="700" mt="-20px">
+        {tourists>0 &&<Typography variant="h3" fontWeight="700" mt="-20px">
           {tourists}
+        </Typography>}
+        {tourists===0 &&<Typography variant="h3" fontWeight="700" mt="-20px">
+          {0}
         </Typography>}
         <Stack direction="row" spacing={1} my={1} alignItems="center">
           <Avatar sx={{ bgcolor: errorlight, width: 27, height: 27 }}>

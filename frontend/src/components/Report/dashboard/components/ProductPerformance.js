@@ -13,6 +13,7 @@ import DashboardCard from './DashboardCard';
 
 
 const ProductPerformance = ({events}) => {
+    const role = localStorage.getItem("role")
     // const [events,setEvents] = useState(null);
     // const [revenue,setRevenue] = useState(null);
     // const [tourists,setTourists] = useState(null);
@@ -103,7 +104,7 @@ const ProductPerformance = ({events}) => {
                     </TableHead>
                     <TableBody>
                         {events.map((product) => (
-                            <TableRow key={product.activityId}>
+                            <TableRow key={role==="Advertiser"?product.activityId:role==="Seller"?product.productId:product.itineraryId}>
                                 <TableCell>
                                     <Typography
                                         sx={{
@@ -111,7 +112,7 @@ const ProductPerformance = ({events}) => {
                                             fontWeight: "500",
                                         }}
                                     >
-                                        {product.activityId}
+                                        {role==="Advertiser"?product.activityId:role==="Seller"?product.productId:product.itineraryId}
                                     </Typography>
                                 </TableCell>
                                 <TableCell>

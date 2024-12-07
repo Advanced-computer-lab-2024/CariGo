@@ -65,7 +65,7 @@ const HotelDetails = () =>{
         };
 
   return (
-    <Box sx={{display:'flex', flexDirection:'column', gap:'0px', margin:'20px', marginLeft:'10%'}}>
+    <Box sx={{display:'flex', flexDirection:'column', gap:'0px', margin:'20px', marginLeft:'10%',alignItems:'center'}}>
       <Button onClick={handleBackCLick}
           sx={{ backgroundColor: "#126782", color: 'white', borderRadius: '8px', width: '80px', fontSize:'18px', marginLeft:'20px' }}>
           Back
@@ -209,6 +209,9 @@ const HotelDetails = () =>{
       
     </Box>
     </Box>
+    <h4 className="bg-gradient-to-r from-[#01324c] via-[#01324c] to-[#01324c] bg-clip-text text-2xl font-semibold text-transparent md:text-5xl" overflowX="auto">
+          ___________________________ 🦌 ___________________________
+        </h4>
     </Box>
   );
 };

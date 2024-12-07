@@ -14,7 +14,7 @@ import CloseIcon from '@mui/icons-material/Close';
 //import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 //import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'; 
 const SalesOverview = ({ onHandleRev, onHandleEvents, onHandleTour, onH }) => {
-
+  const role = localStorage.getItem("role");
     // select
     const [month, setMonth] = React.useState('1');
     const [filter, setFilter] = useState(false)
@@ -46,11 +46,13 @@ const SalesOverview = ({ onHandleRev, onHandleEvents, onHandleTour, onH }) => {
         const fetchTitles = async () => {
             const token = localStorage.getItem('jwt'); // Get the token from local storage
             const userId = localStorage.getItem("id"); // Get user ID if needed
+            
             console.log(userId);
             console.log(token);
             //const revenue =null;
             try {
-                const response = await fetch(`http://localhost:4000/cariGo/activity/getTitles/${userId}`, {
+              
+                const response = await fetch(`http://localhost:4000/cariGo/${role==="Seller"?"products/":"activity"}getTitles/${userId}`, {
                     method: "GET", // Change this to "POST" if your backend expects it
                     headers: {
                         "Authorization": `Bearer ${token}`, // Send the token in the Authorization header
@@ -70,13 +72,16 @@ const SalesOverview = ({ onHandleRev, onHandleEvents, onHandleTour, onH }) => {
                     throw new Error('Invalid JSON response');
                 });
                 // setRevenue(json.Revenue);
-                console.log("Fetched Titles:", json.activityTitles);
-                setTitles(json.activityTitles)
+                console.log("Fetched Titles:", role!=="Seller"?json.activityTitles:json.productTitles);
+                setTitles(role!=="Seller"?json.activityTitles:json.productTitles)
                 //setEvents(json.report); // Set activities if response is okay
                 //  if(revenue)
                 //onHandleRev(json.Revenue)
+              
+                ////////YOUR PART /////////////////////////////////////////////////////////////////////////////
+              
             } catch (error) {
-                console.log('Error fetching activities:', error);
+                console.log('Error fetching :', error);
             }
         }
         fetchTitles();
@@ -219,7 +224,8 @@ const SalesOverview = ({ onHandleRev, onHandleEvents, onHandleTour, onH }) => {
         console.log(token);
         //const revenue =null;
         try {
-            const response = await fetch(`http://localhost:4000/cariGo/report/${finalFilter}`, {
+          if(role==="Seller"){
+            const response = await fetch(`http://localhost:4000/cariGo/report/${role==="Seller"?"S":role!=="Advertiser"?"I":""}/${finalFilter}`, {
                 method: "GET", // Change this to "POST" if your backend expects it
                 headers: {
                     "Authorization": `Bearer ${token}`, // Send the token in the Authorization header
@@ -227,7 +233,7 @@ const SalesOverview = ({ onHandleRev, onHandleEvents, onHandleTour, onH }) => {
                 }
             });
 
-            // console.log(Request.json())
+             //console.log(`http://localhost:4000/cariGo/report/S/${finalFilter}`)
 
             if (!response.ok) {
                 console.log(response)
@@ -240,7 +246,7 @@ const SalesOverview = ({ onHandleRev, onHandleEvents, onHandleTour, onH }) => {
             });
 
             // setRevenue(json.Revenue);
-            console.log("Fetched activities:", json.report);
+            console.log("Fetched activities:", json);
             const events = json.report;
 
             const list = json.report.map(activity => activity.distinctUserCount)
@@ -248,7 +254,10 @@ const SalesOverview = ({ onHandleRev, onHandleEvents, onHandleTour, onH }) => {
             console.log(sum);
             onHandleTour(sum)
             onHandleRev(json.Revenue)
-            onH(events)
+            onH(events)}
+            else{
+              ////////////////////YOUR PARTTTTTTTTTTTTT/////////////////////////////////////////////////
+            }
 
 
             //setEvents(json.report); // Set activities if response is okay
@@ -274,10 +283,10 @@ const SalesOverview = ({ onHandleRev, onHandleEvents, onHandleTour, onH }) => {
         if(filterOption)
             filterSoFar+=`title=${filterOption}`
         if(Month | Month===0)
-            filterSoFar+=`&month=${Month+1}`
+            filterSoFar+=`&month=${Month+1}&groupBy=month`
         else
           if(date)
-            filterSoFar+=`&date=${date}`
+            filterSoFar+=`&date=${date}&groupBy=date`
         //    console.log(Month | Month===0?Month:"No month is given")
         //    console.log(date?date:"No Date is given")
         //    console.log(filterOption?filterOption:"No option is given")

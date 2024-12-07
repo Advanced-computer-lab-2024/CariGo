@@ -1,56 +1,69 @@
-import React, { useState } from 'react';
-import { Form, Input, Button, DatePicker, InputNumber, message } from 'antd';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import Sidebar from './Sidebar.jsx';
-import TopBar from './TopBar.jsx';
+import React, { useState } from "react";
+import { Form, Input, Button, DatePicker, InputNumber, message } from "antd";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import Sidebar from "./Sidebar.jsx";
+import TopBar from "./TopBar.jsx";
 
 const CreatePromoCode = () => {
   const [form] = Form.useForm();
-  const navigate = useNavigate(); // Use navigate hook
-  const token = localStorage.getItem('jwt');
+  const token = localStorage.getItem("jwt");
+  const navigate = useNavigate();
 
   const handleSubmit = async (values) => {
     try {
-      // Format the expiration date
-      const formattedValues = {
-        ...values,
-        expirationDate: values.expirationDate.format('YYYY-MM-DD'),
-      };
-
-      const response = await axios.post('http://localhost:4000/Admin/promo-code', formattedValues, {
-        headers: { authorization: `Bearer ${token}` },
-      });
-
-      message.success('Promo Code created successfully!');
-      console.log('Server Response:', response.data);
+      const response = await axios.post(
+        "http://localhost:4000/Admin/promo-code",
+        values,
+        {
+          headers: { authorization: `Bearer ${token}` },
+        }
+      ); // Update with your endpoint
+      message.success("Promo Code created successfully!");
+      console.log("Server Response:", response.data);
     } catch (error) {
-      console.error('Error creating promo code:', error);
-      message.error('Failed to create promo code. Please try again.');
+      console.error("Error creating promo code:", error);
+      message.error("Failed to create promo code. Please try again.");
     }
   };
 
+  // const navigate = useNavigate();
   return (
-    <div style={{ display: 'flex', height: '100vh' }}>
+    <div style={{ display: "flex", height: "100vh" }}>
       {/* Sidebar */}
       <Sidebar />
 
       {/* Main Content */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+      <div
+        style={{
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
+          overflow: "hidden",
+        }}
+      >
         {/* TopBar */}
         <TopBar />
 
         {/* Page Content */}
-        <div style={{ padding: '20px', overflowY: 'auto' }}>
+        <div style={{ padding: "20px", overflowY: "auto" }}>
           <Button
             type="primary"
-            onClick={() => navigate('/admin')} // Redirects to /admin
-            style={{ marginBottom: '20px' }}
+            // type="default"
+            onClick={() => navigate("/admin")} // Redirects to /admin
+            style={{ marginBottom: "20px" }}
           >
             Back
           </Button>
-
-          <div style={{ maxWidth: 600, margin: '0 auto', padding: '20px', backgroundColor: '#fff', borderRadius: '8px' }}>
+          <div
+            style={{
+              maxWidth: 600,
+              margin: "0 auto",
+              padding: "20px",
+              backgroundColor: "#fff",
+              borderRadius: "8px",
+            }}
+          >
             <h2>Create Promo Code</h2>
             <Form
               form={form}
@@ -63,7 +76,9 @@ const CreatePromoCode = () => {
               <Form.Item
                 label="Promo Code"
                 name="code"
-                rules={[{ required: true, message: 'Please enter a promo code' }]}
+                rules={[
+                  { required: true, message: "Please enter a promo code" },
+                ]}
               >
                 <Input placeholder="Enter promo code" />
               </Form.Item>
@@ -71,17 +86,32 @@ const CreatePromoCode = () => {
               <Form.Item
                 label="Discount Percentage"
                 name="discount"
-                rules={[{ required: true, message: 'Please enter a discount percentage' }]}
+                rules={[
+                  {
+                    required: true,
+                    message: "Please enter a discount percentage",
+                  },
+                ]}
               >
-                <InputNumber min={1} max={100} placeholder="Enter discount percentage" style={{ width: '100%' }} />
+                <InputNumber
+                  min={1}
+                  max={100}
+                  placeholder="Enter discount percentage"
+                  style={{ width: "100%" }}
+                />
               </Form.Item>
 
               <Form.Item
                 label="Expiration Date"
                 name="expirationDate"
-                rules={[{ required: true, message: 'Please select an expiration date' }]}
+                rules={[
+                  {
+                    required: true,
+                    message: "Please select an expiration date",
+                  },
+                ]}
               >
-                <DatePicker style={{ width: '100%' }} />
+                <DatePicker style={{ width: "100%" }} />
               </Form.Item>
 
               <Form.Item>
