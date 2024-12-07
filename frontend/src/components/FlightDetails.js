@@ -9,6 +9,8 @@ import { useLocation } from 'react-router-dom';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import AirlinesIcon from '@mui/icons-material/Airlines';
 import TimelapseIcon from '@mui/icons-material/Timelapse';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+
 
 const FlightDetails = () =>{
   const { state } = useLocation();
@@ -45,22 +47,30 @@ const FlightDetails = () =>{
     };
 
   return (
-    <Box sx={{display:'flex', flexDirection:'column', gap:'0px', margin:'20px', marginLeft:'10%'}}>
-      <Button onClick={handleBackCLick}
-          sx={{ backgroundColor: "#126782", color: 'white', borderRadius: '8px', width: '80px', fontSize:'18px', marginLeft:'20px' }}>
+    <Box sx={{display:'flex', flexDirection:'column', gap:'0px',width:'70%', margin:'2% 15%', alignItems:'center'}}>
+      <Button
+         onClick={handleBackCLick}
+          sx={{
+            backgroundColor: "white",
+            color: "#126782",
+            borderRadius: "8px",
+            width: "80px",
+            ml: "2%",mb:'0%',
+            fontSize:'18px',
+            alignSelf:'flex-start'
+          }}
+        >
+          <ArrowBackIosIcon/>
           Back
-      </Button>
+        </Button>
     <Box   sx={{
       border: '2px solid #126782', 
       borderColor:'#126782',
       borderRadius:'10px', 
       maxHeight:'1000px',
-      //display: 'inline-flex', 
-      //flexDirection:'column', 
-      width:'950px', 
-      margin:'20px',
-      marginTop:'20px',
-      marginRight:'60px',
+      width:'89%', 
+      mb:'2%',
+      //width:'950px',
       color:'#126782',
       }}>
       <Box sx={{margin:'20px', position:'relative'}}>  {/*gives some spacing from borders */}
@@ -195,6 +205,10 @@ const FlightDetails = () =>{
       
     </Box>
     </Box>
+    <h4 className="bg-gradient-to-r from-[#01324c] via-[#01324c] to-[#01324c] bg-clip-text text-2xl font-semibold text-transparent md:text-5xl" 
+       style={{margin:"2% 0%"}}>
+    ___________________________ 🦌 ___________________________
+        </h4>
     </Box>
   );
 };
