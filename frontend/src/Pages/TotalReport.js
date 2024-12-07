@@ -12,12 +12,34 @@ import {
   Button,
   Tabs,
   Tab,
+  TextField,
+  IconButton,
+  Drawer,
+  InputLabel, 
+  FormControl,
 } from "@mui/material";
+import { FilterList as FilterListIcon } from "@mui/icons-material"; // Icon for filter button
+import ClearIcon from '@mui/icons-material/Clear';
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import { Layout } from "antd";
 import Sider from "antd/es/layout/Sider";
 import { ToastContainer } from "react-toastify";
 import { Content, Header } from "antd/es/layout/layout";
-import { CalendarToday as CalendarIcon } from "@mui/icons-material";
+import { format } from 'date-fns';
+import dayjs from 'dayjs';
+import { styled } from '@mui/material/styles';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+// import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
+// import { DatePicker } from "@mui/lab";
+import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
+import { startOfMonth, endOfMonth } from 'date-fns';  // Importing date-fns functions
+
+// import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"; // You can also use Day.js or Moment.js for the adapter
+import { Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -47,6 +69,7 @@ ChartJS.register(
   Legend
 );
 
+
 // Custom theme with blue and orange
 const theme = createTheme({
   palette: {
@@ -74,7 +97,12 @@ export default function SalesReportMUI() {
   const [totalItineraryRevenue, setTotalItineraryRevenue] = useState(0);
   const [totalEventRevenue, setTotalEventRevenue] = useState(0);
   const appCommission = totalRevenue * 0.1;
-
+  const [selectedProduct, setSelectedProduct] = useState('');
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [productOptions, setProductOptions] = useState([]);
+  
   useEffect(() => {
     const fetchRevenueReport = async () => {
       try {
@@ -114,6 +142,82 @@ export default function SalesReportMUI() {
     fetchRevenueReport();
   }, []);
 
+  const handleDatesChange = (date) => {
+    setStartDate(date.startDate);
+    setEndDate(date.endDate);
+  };
+
+  
+  const filterDataByDate = async () => {
+    const params = {};
+    
+    if (selectedProduct) {
+      params.product = selectedProduct;
+    }
+    if (startDate) {
+      params.startDate = startDate.toISOString();
+    }
+    if (endDate) {
+      params.endDate = endDate.toISOString();
+    }
+  
+    try {
+      const response = await axios.get("http://localhost:4000/Admin/report", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+        },
+        params, // Pass query parameters here
+      });
+  
+      const data = response.data.data;
+      // Update your state with the filtered data
+      setTotalRevenue(data.totalRevenue);
+      setTotalBookings(data.totalBookings);
+      setTotalProductRevenue(data.totalProductRevenue);
+      setTotalItineraryBookings(data.totalItineraryBookings);
+      setTotalEventBookings(data.totalEventBookings);
+      setTotalProductSales(data.totalProductSales);
+      setItineraryRevenueM(data.itineraryRevenueM);
+      setEventRevenueM(data.eventRevenueM);
+      setProductRevenueM(data.productRevenueM);
+    } catch (error) {
+      console.error("Error fetching filtered report:", error);
+    }
+  };
+  
+  useEffect(() => {
+    const fetchProductOptions = async () => {
+      try {
+        const response = await axios.get("http://localhost:4000/cariGo/products", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+          },
+        });
+        const productOptions = response.data.map(product => ({
+          id: product._id,       // Extract the product ID
+          name: product.name,    // Extract the product name
+        }));
+  
+        setProductOptions(productOptions);
+      } catch (error) {
+        console.error("Error fetching product options:", error);
+        setProductOptions([]);
+      }
+    };
+  
+    fetchProductOptions();
+  }, []);
+  
+    const [expanded, setExpanded] = useState("datesAccordion"); // State to manage which accordion is open
+    // const [startDate, setStartDate] = useState(null);
+    // const [endDate, setEndDate] = useState(null);
+  
+    const handleAccordionChange = (panel) => (event, isExpanded) => {
+      setExpanded(isExpanded ? panel : false); // Toggle accordion open/close
+    };
+  
+
+  
   const handleTimeframeChange = (event) => {
     setTimeframe(event.target.value);
   };
@@ -320,27 +424,201 @@ export default function SalesReportMUI() {
                 <Typography variant="h4" component="h1" gutterBottom>
                   Sales Report
                 </Typography>
-                <Box sx={{ display: "flex", alignItems: "center" }}>
-                  <Select
-                    value={timeframe}
-                    onChange={handleTimeframeChange}
-                    sx={{ mr: 2 }}
-                    startAdornment={<CalendarIcon />}
+                <Box>
+                  <IconButton
+                    color="primary"
+                    onClick={() => setDrawerOpen(true)}
                   >
-                    <MenuItem value="daily">Daily</MenuItem>
-                    <MenuItem value="weekly">Weekly</MenuItem>
-                    <MenuItem value="monthly">Monthly</MenuItem>
-                    <MenuItem value="yearly">Yearly</MenuItem>
-                  </Select>
+                    <FilterListIcon />
+                  </IconButton>
                   <Button
                     variant="contained"
                     color="primary"
                     onClick={handleDownloadReport}
+                    sx={{ ml: 2 }}
                   >
                     Download Report
                   </Button>
                 </Box>
               </Box>
+
+              {/* Drawer for Filters */}
+              <Drawer
+  anchor="right"
+  open={drawerOpen}
+  onClose={() => setDrawerOpen(false)}
+  PaperProps={{
+    sx: {
+      width: 400, // Adjust the width
+      background: "linear-gradient(to bottom, #f8f9fa, #ffffff)",
+      boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.2)",
+    },
+  }}
+>
+  <Box
+    sx={{
+      p: 4,
+      display: "flex",
+      flexDirection: "column",
+      gap: 3, // Spacing between components
+      overflowY: "auto", // Allow scroll if content overflows
+      maxHeight: "100vh", // Ensure it fits in the viewport
+      "&::-webkit-scrollbar": {
+        width: "8px", // Thin scrollbar
+      },
+      "&::-webkit-scrollbar-thumb": {
+        backgroundColor: "#888", // Gray thumb
+        borderRadius: "8px", // Rounded thumb
+      },
+      "&::-webkit-scrollbar-thumb:hover": {
+        backgroundColor: "#555", // Darker thumb on hover
+      },
+      "&::-webkit-scrollbar-track": {
+        backgroundColor: "transparent", // Invisible track
+      },
+    }}
+  >
+    <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+      Filters
+    </Typography>
+                    {/* Product ID Filter */}
+                    <Box
+  sx={{
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-start",
+    gap: 2,
+  }}
+>
+                    <FormControl fullWidth sx={{ mb: 2 }}>
+  <InputLabel id="product-select-label">Select Product</InputLabel>
+ 
+                    <Select
+  value={selectedProduct}
+  onChange={(e) => setSelectedProduct(e.target.value)}
+ sx={{
+                "& .MuiSelect-icon": { color: "gray" }, // Custom color for the dropdown arrow
+              }}
+            >
+  {productOptions.map((product) => (
+    <MenuItem key={product.id} value={product.id}>
+      {product.name}
+    </MenuItem>
+  ))}
+</Select>
+</FormControl>
+<Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <ClearIcon
+              sx={{ color: "blue", cursor: "pointer" }}
+              onClick={() => setSelectedProduct("")}
+            />
+            <Typography
+              variant="body2"
+              sx={{
+                color: "blue",
+                fontWeight: "bold",
+                cursor: "pointer",
+                "&:hover": { textDecoration: "underline" },
+              }}
+              onClick={() => setSelectedProduct("")}
+            >
+              Clear
+            </Typography>
+          </Box>
+        </Box>
+
+      {/* Dates Accordion */}
+      <Accordion
+          expanded={expanded === "datesAccordion"}
+          onChange={handleAccordionChange("datesAccordion")}
+          sx={{
+            width: "100%", // Ensure the accordion takes up the entire width
+            boxShadow: "none", // Remove default box shadow
+          }}
+        >
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="dates-content"
+            id="dates-header"
+            sx={{
+              padding: "0 16px", // Adjust padding
+              borderTop: "1px solid #ddd", // Divider line at the top of the accordion
+            }}
+          >
+            <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+              Dates
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails sx={{ padding: "8px 16px" }}>
+            {/* Start Date Filter */}
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+              <Typography variant="body1">Start Date</Typography>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DateCalendar
+                  value={startDate}
+                  onChange={(newValue) => setStartDate(newValue)}
+                />
+              </LocalizationProvider>
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <ClearIcon
+              sx={{ color: "blue", cursor: "pointer" }}
+              onClick={() => setSelectedProduct("")}
+            />
+             <Typography
+              variant="body2"
+              sx={{
+                color: "blue",
+                fontWeight: "bold",
+                cursor: "pointer",
+                "&:hover": { textDecoration: "underline" },
+              }}
+              onClick={() => setStartDate(null)}
+
+              >
+              Clear
+            </Typography>
+            </Box>
+              {/* End Date Filter */}
+              <Typography variant="body1">End Date</Typography>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DateCalendar
+                  value={endDate}
+                  onChange={(newValue) => setEndDate(newValue)}
+                />
+              </LocalizationProvider>
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <ClearIcon
+              sx={{ color: "blue", cursor: "pointer" }}
+              onClick={() => setSelectedProduct("")}
+            />
+            <Typography
+              variant="body2"
+              sx={{
+                color: "blue",
+                fontWeight: "bold",
+                cursor: "pointer",
+                "&:hover": { textDecoration: "underline" },
+              }}
+              onClick={() =>setEndDate(null)}
+
+              >
+              Clear
+            </Typography>
+            </Box>
+            </Box>
+          </AccordionDetails>
+        </Accordion>
+
+                  {/* Apply Filters Button */}
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={filterDataByDate}
+                  >
+                    Apply Filters
+                  </Button>
+                </Box>
+              </Drawer>
 
               <Tabs value={tabValue} onChange={handleTabChange} sx={{ mb: 3 }}>
                 <Tab label="Overview" />
@@ -367,7 +645,7 @@ export default function SalesReportMUI() {
                     </Grid>
                     <Grid item xs={12} sm={6} md={3}>
                       <Card>
-                        <CardHeader title="App Commission (10%)" />
+                        <CardHeader title="App Commission " />
                         <CardContent>
                           <Typography variant="h5">
                             ${appCommission.toLocaleString()}

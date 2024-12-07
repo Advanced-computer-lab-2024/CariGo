@@ -270,6 +270,7 @@ function TouristNB() {
             {pages[4]}
             </Button> */}
           </Box>
+
 {/* Notification Icon */}
 <IconButton
   size="large"
@@ -277,27 +278,33 @@ function TouristNB() {
   aria-controls="notification-menu"
   aria-haspopup="true"
   onClick={handleOpenNotifications}
-  color="inherit"
+  sx={{
+    color: 'inherit',
+    position: 'relative',
+  }}
 >
   <Badge
     badgeContent={notifications.length}
     color="error"
     sx={{
       '& .MuiBadge-badge': {
-        right: 1.5,
-        top: 10,
+        right: 5.5,
+        top: 5,
         fontSize: '0.75rem',
         minWidth: '16px',
         height: '16px',
         borderRadius: '50%',
+        backgroundColor: '#f44336',
+        color: 'white',
+        boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.2)',
       },
     }}
   >
-    <BellOutlined style={{ fontSize: '33px', color: 'white', marginRight: '-3px' }} />
+    <BellOutlined style={{ fontSize: '33px', color: 'white' }} />
   </Badge>
 </IconButton>
 
-
+{/* Notification Menu */}
 <Menu
   id="notification-menu"
   anchorEl={anchorElNotifications}
@@ -306,13 +313,17 @@ function TouristNB() {
   transformOrigin={{ vertical: 'top', horizontal: 'right' }}
   open={Boolean(anchorElNotifications)}
   onClose={handleCloseNotifications}
-  sx={{
-    mt: 1,
-    boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)', // Soft shadow
-    borderRadius: '8px', // Rounded corners
-    overflow: 'hidden',
-    minWidth: '300px', // Ensure a consistent width
-  }}
+  // sx={{
+  //   mt: 1,
+  //   backgroundColor: '#ffffff',
+  //   boxShadow: '0px 6px 20px rgba(0, 0, 0, 0.15)',
+  //   borderRadius: '24px', // More rounded corners for the menu
+  //   minWidth: '280px', // Narrower width
+  //   maxWidth: '300px',
+  //   minHeight: '450px', // Increased height for a longer menu
+  //   overflowY: 'auto',
+  //   padding: '8px',
+  // }}
 >
   {notifications.length > 0 ? (
     notifications.map((notification) => (
@@ -322,34 +333,42 @@ function TouristNB() {
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          py: 1, // Padding for better spacing
-          gap: 2, // Space between the icon and message
-          borderBottom: '1px solid #e0e0e0', // Divider between notifications
+          py: 1.5,
+          gap: 2,
+          border: '1px solid #e0e0e0',
+          borderRadius: '12px',
+          marginBottom: '8px',
+          ':hover': {
+            backgroundColor: '#f9f9f9',
+          },
         }}
       >
         <Box sx={{ display: 'flex', alignItems: 'center', flex: 1 }}>
           {getIcon(notification.type)}
           <Box sx={{ ml: 1 }}>
-            <Typography variant="body1">
+            <Typography variant="body1" sx={{ fontWeight: 'bold', fontSize: '0.875rem' }}>
               {notification.message}
             </Typography>
             <Typography
               variant="caption"
-              sx={{ color: 'gray', fontSize: '0.75rem' }}
+              sx={{ color: 'gray', fontSize: '0.75rem', mt: 0.5 }}
             >
-              {/* {new Date(notification.date).toLocaleTimeString()} Time */}
+              {/* {new Date(notification.date).toLocaleTimeString()} */}
             </Typography>
           </Box>
         </Box>
         <Button
           size="small"
-          variant="text"
+          variant="outlined"
           sx={{
-            color: notifications.length > 0 ? '#2196F3' : 'gray',
+            color: '#2196F3',
+            borderColor: '#2196F3',
             textTransform: 'none',
             fontSize: '0.75rem',
             ':hover': {
-              color: 'black',
+              color: 'white',
+              backgroundColor: '#2196F3',
+              borderColor: '#2196F3',
             },
           }}
           onClick={() => markAsRead(notification._id)}
@@ -359,11 +378,20 @@ function TouristNB() {
       </MenuItem>
     ))
   ) : (
-    <MenuItem>
-      <Typography>No new notifications</Typography>
+    <MenuItem
+      sx={{
+        border: '1px solid #e0e0e0',
+        borderRadius: '12px',
+      }}
+    >
+      <Typography sx={{ color: '#999', textAlign: 'center', width: '100%' }}>
+        No new notifications
+      </Typography>
     </MenuItem>
   )}
 </Menu>
+
+
 
 
 
