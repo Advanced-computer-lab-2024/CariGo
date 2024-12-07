@@ -37,7 +37,7 @@ const Report = () => {
 
   }
   return (
-    <PageContainer title="Dashboard" description="this is Dashboard">
+    <PageContainer  description="this is Dashboard">
       <Box>
         <Grid container spacing={3}>
           <Grid item xs={12} lg={8}>
