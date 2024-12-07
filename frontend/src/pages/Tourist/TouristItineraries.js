@@ -149,19 +149,20 @@ export default function TouristItineraries() {
   };
 
   return (
-    <div>
+    <Box sx={{ backgroundColor: "#f9f9f9", minHeight: "100vh" }}>
       {!tourist ? <GuestNavBar /> : <NavBar />}
       <Box sx={{ flexGrow: 1 }}>
-        <AppBar position="static" color="default" elevation={0}>
+        <AppBar
+          position="static"
+          color="transparent"
+          elevation={0}
+          sx={{ backgroundColor: "#ffffff", padding: "16px", borderRadius: "8px" }}
+        >
           <Toolbar
             sx={{
               display: "flex",
-              justifyContent: "left",
-              alignItems: "left",
-              gap: 2, // Adds spacing between elements
-              padding: 2, // Adds some padding to the toolbar
-              backgroundColor: "#f5f5f5", // Optional background color for aesthetics
-              borderRadius: "8px", // Rounds the toolbar edges slightly
+              justifyContent: "space-between",
+              gap: 2,
             }}
           >
             <TextField
@@ -177,23 +178,20 @@ export default function TouristItineraries() {
                 ),
               }}
               sx={{
-                width: "50%", // Make the search bar smaller
-                maxWidth: "700px", // Limit the width to 300px
-                borderRadius: "50px", // Rounded edges for the search bar
-                backgroundColor: "#ffffff", // White background for contrast
+                width: "50%",
+                borderRadius: "50px",
+                backgroundColor: "#ffffff",
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: "50px",
+                },
               }}
             />
             <IconButton
               onClick={() => setIsFilterOpen(true)}
               sx={{
-                backgroundColor: "#0D1D25", // Blue background for the button
-                color: "#ffffff", // White icon color
-                width: "40px", // Set width for circular shape
-                height: "40px", // Set height for circular shape
-                borderRadius: "50%", // Make it circular
-                "&:hover": {
-                  backgroundColor: "#115293", // Darker shade on hover
-                },
+                backgroundColor: "#00355a",
+                color: "#ffffff",
+                "&:hover": { backgroundColor: "#1a4975" },
               }}
             >
               <FilterAltIcon />
@@ -221,7 +219,6 @@ export default function TouristItineraries() {
               display: "flex",
               flexDirection: "column",
               gap: "20px",
-              mt: 2,
             }}
           >
             <FormControl fullWidth>
@@ -285,11 +282,11 @@ export default function TouristItineraries() {
         </DialogContent>
         <DialogActions>
           <Button onClick={resetFilters}>Reset</Button>
-          <Button onClick={handleFilter} variant="contained" color="primary">
+          <Button onClick={handleFilter} variant="contained" sx={{ backgroundColor: "#00355a" }}>
             Apply Filters
           </Button>
         </DialogActions>
       </Dialog>
-    </div>
+    </Box>
   );
 }

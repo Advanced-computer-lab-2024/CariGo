@@ -202,144 +202,164 @@ export default function UserItineraryPost({
 
   const styles = {
     card: {
-      maxWidth: '400px',
-      backgroundColor: '#F5F5F5',
-      color: '#C6C6D0',
-      borderRadius: '8px',
-      overflow: 'hidden',
-      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+      maxWidth: "400px",
+      height: "100%", // Ensure card fills the available height
+      backgroundColor: "#FFFFFF", // Subtle off-white for a clean look
+      color: "#003055", // Darker Blue for text
+      borderRadius: "8px",
+      overflow: "hidden",
+      boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+      display: "flex", // Flexbox for alignment
+      flexDirection: "column", // Stack content vertically
     },
     imageContainer: {
-      height: '200px',
-      backgroundColor: '#104C64',
-      position: 'relative',
+      height: "200px", // Fixed height for image section
+      backgroundColor: "#00355a", // Dark Navy
+      position: "relative",
     },
     image: {
-      width: '100%',
-      height: '100%',
-      objectFit: 'cover',
-    },
-    iconContainer: {
-      position: 'absolute',
-      top: '8px',
-      right: '8px',
-      display: 'flex',
-      gap: '8px',
-    },
-    iconButton: {
-      backgroundColor: '#0D1D25',
-      color: '#C6C6D0',
-      border: 'none',
-      borderRadius: '50%',
-      width: '32px',
-      height: '32px',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      cursor: 'pointer',
+      width: "100%",
+      height: "100%",
+      objectFit: "cover",
     },
     content: {
-      padding: '24px',
+      padding: "24px",
+      flexGrow: 1, // Make content fill available space
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "space-between", // Space out title, description, and footer
+    },
+    iconContainer: {
+      position: "absolute",
+      top: "8px",
+      right: "8px",
+      display: "flex",
+      gap: "8px",
+    },
+    iconButton: {
+      backgroundColor: "#F6F6F6", // White for contrast
+      border: "none",
+      borderRadius: "50%",
+      width: "40px",
+      height: "40px",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      cursor: "pointer",
+      boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+      transition: "background-color 0.3s",
+    },
+    iconBookmark: {
+      color: "#cc5b22", // Dark Shrimp Toast for the bookmarked state
+      fontSize: "20px",
+    },
+    iconBookmarkUnmarked: {
+      color: "#00355a", // Dark Navy for the unbookmarked state
+      fontSize: "20px",
     },
     title: {
-      fontSize: '24px',
-      fontWeight: 'bold',
-      color: '#0D1D25',
-      marginBottom: '4px',
+      fontSize: "24px",
+      fontWeight: "bold",
+      color: "#002b4d", // Darker Blue
+      marginBottom: "4px",
     },
     author: {
-      fontSize: '14px',
-      color: '#C0754D',
-      marginBottom: '8px',
+      fontSize: "14px",
+      color: "#cc5b22", // Dark Shrimp Toast
+      marginBottom: "8px",
     },
     ratingContainer: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: '4px',
-      marginBottom: '16px',
+      display: "flex",
+      alignItems: "center",
+      gap: "4px",
+      marginBottom: "16px",
     },
     star: {
-      color: '#B6410F',
-      fontSize: '16px',
+      color: "#ff6b35", // Bright Orange
+      fontSize: "16px",
     },
     ratingText: {
-      fontSize: '14px',
-      color: '#C0754D',
+      fontSize: "14px",
+      color: "#cc5b22", // Dark Shrimp Toast
     },
     description: {
-      fontSize: '14px',
-      color: '#C6C6D0',
-      marginBottom: '16px',
+      fontSize: "14px",
+      color: "#003055", // Dark Blue
+      marginBottom: "16px",
     },
     dateContainer: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: '8px',
-      color: '#0D1D25',
-      marginBottom: '16px',
+      display: "flex",
+      alignItems: "center",
+      gap: "8px",
+      color: "#1a4975", // Dark Jazz Blue
+      marginBottom: "16px",
     },
     dateText: {
-      fontSize: '14px',
+      fontSize: "14px",
     },
     tagsContainer: {
-      marginBottom: '16px',
+      marginBottom: "16px",
     },
     tagsTitle: {
-      fontSize: '16px',
-      fontWeight: 'bold',
-      color: '#D59D80',
-      marginBottom: '8px',
+      fontSize: "16px",
+      fontWeight: "bold",
+      color: "#cc5b22", // Dark Shrimp Toast
+      marginBottom: "8px",
     },
     tagsList: {
-      display: 'flex',
-      flexWrap: 'wrap',
-      gap: '8px',
+      display: "flex",
+      flexWrap: "wrap",
+      gap: "8px",
     },
     tag: {
-      backgroundColor: '#104C64',
-      color: '#C6C6D0',
-      padding: '4px 8px',
-      borderRadius: '16px',
-      fontSize: '12px',
+      backgroundColor: "#00355a", // Dark Navy
+      color: "#ffffff", // White for contrast
+      padding: "4px 8px",
+      borderRadius: "16px",
+      fontSize: "12px",
     },
     actionButton: {
-      width: '100%',
-      backgroundColor: '#B6410F',
-      color: '#C6C6D0',
-      border: 'none',
-      borderRadius: '4px',
-      padding: '8px 16px',
-      fontSize: '16px',
-      fontWeight: 'bold',
-      cursor: 'pointer',
+      width: "100%",
+      backgroundColor: "#ff6b35", // Bright Orange
+      color: "#ffffff", // White for contrast
+      border: "none",
+      borderRadius: "4px",
+      padding: "8px 16px",
+      fontSize: "16px",
+      fontWeight: "bold",
+      cursor: "pointer",
+      transition: "background-color 0.3s",
+    },
+    actionButtonHover: {
+      backgroundColor: "#1a4975", // Darker Jazz Blue on hover
     },
     price: {
-      fontSize: '20px',
-      fontWeight: 'bold',
-      color: '#B6410F',
-      backgroundColor: '#D59D80',
-      padding: '4px 8px',
-      borderRadius: '4px',
-      display: 'inline-block',
+      fontSize: "20px",
+      fontWeight: "bold",
+      color: "#F6F6F6", // White for contrast
+      backgroundColor: "#ff6b35", // Bright Orange
+      padding: "2px 8px",
+      borderRadius: "4px",
+      display: "inline-block",
     },
     locations: {
-      fontSize: '14px',
-      color: '#C6C6D0',
-      marginBottom: '8px',
+      fontSize: "14px",
+      color: "#003055", // Dark Blue
+      marginBottom: "8px",
     },
     priceLanguageContainer: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      marginBottom: '16px',
-      marginTop: '16px',
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      marginBottom: "16px",
+      marginTop: "2px",
     },
     language: {
-      fontSize: '14px',
-      color: '#C6C6D0',
+      fontSize: "14px",
+      color: "#1a4975", // Dark Jazz Blue
     },
   };
-
+  
   return (
     <div style={styles.card}>
       <div style={styles.imageContainer}>
@@ -399,7 +419,7 @@ export default function UserItineraryPost({
           </span>
         </div>
         <div style={styles.priceLanguageContainer}>
-          <span style={styles.price}>${price.toFixed(2)}</span>
+          <span style={styles.price}>${(price * conversionRate).toFixed(2)} {code}</span>
           <span style={styles.language}>{language}</span>
         </div>
         <div style={styles.dateContainer}>
@@ -423,7 +443,7 @@ export default function UserItineraryPost({
           </span>
         </div>
         <div style={styles.tagsContainer}>
-          {tags?.length> 0 ? <h3 style={styles.tagsTitle}>Tags</h3> : null}
+          {tags?.length> 0 ? <h3 style={styles.tagsTitle}>Tags</h3> : <h4 style={styles.tagsTitle}>No tags to view</h4>}
           <div style={styles.tagsList}>
             {tags.map((tag, index) => (
               <span key={index} style={styles.tag}>

@@ -386,7 +386,7 @@ const suggestedItineraries = async (req, res) => {
         isFlagged: false,
         tags: { $in: tags },
       })
-      .populate("tags");
+      .populate("tags").populate("author"); // Ensure populated tag information is returned
     res.json(itineraries);
   } catch (error) {
     res.status(500).json({ error: "Error fetching itineraries" });
@@ -412,7 +412,7 @@ const suggestedActivities = async (req, res) => {
         isFlagged: false,
         tag: { $in: tagIds }, // Check if activity's tag is in the provided tags list
       })
-      .populate("tag"); // Ensure populated tag information is returned
+      .populate("tag author"); // Ensure populated tag information is returned
     console.log(itineraries);
     res.json(itineraries);
   } catch (error) {
