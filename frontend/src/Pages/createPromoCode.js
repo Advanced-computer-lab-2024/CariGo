@@ -8,6 +8,7 @@ import TopBar from "./TopBar.jsx";
 const CreatePromoCode = () => {
   const [form] = Form.useForm();
   const token = localStorage.getItem("jwt");
+  const navigate = useNavigate();
 
   const handleSubmit = async (values) => {
     try {
@@ -27,7 +28,6 @@ const CreatePromoCode = () => {
   };
 
   const navigate = useNavigate();
-
   return (
     <div style={{ display: "flex", height: "100vh" }}>
       {/* Sidebar */}
