@@ -27,7 +27,7 @@ const CreatePromoCode = () => {
     }
   };
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   return (
     <div style={{ display: "flex", height: "100vh" }}>
       {/* Sidebar */}
