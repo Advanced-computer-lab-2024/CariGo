@@ -11,7 +11,9 @@ import Blog from './components/Blog';
 import MonthlyEarnings from './components/MonthlyEarnings';
 
 
-const Repo = () => {
+const Report = () => {
+  const role = localStorage.getItem("role");
+  console.log(role);
   const [revenue,setRevenue] = useState(null);
   const [tourists,setTourists] = useState(null);
   const [events,setEvents] = useState(null)
@@ -57,13 +59,13 @@ const Repo = () => {
           <Grid item xs={12} lg={8}>
             <ProductPerformance  events={events} />
           </Grid>
-          <Grid item xs={12}>
-            <Blog />
-          </Grid>
+          {/* <Grid item xs={12}>
+            
+          </Grid> */}
         </Grid>
       </Box>
     </PageContainer>
   );
 };
 
-export default Repo;
+export default Report;
