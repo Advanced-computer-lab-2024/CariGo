@@ -288,7 +288,7 @@ const readAllItineraries = async (req, res) => {
     let query = itineraryModel.find({
       start_date: { $gte: today },
       isActive: true,
-    }).populate("tags");
+    }).populate("tags author");
 
     // Check if a tag title is provided
     let itineraries = []; // Declare itineraries with let

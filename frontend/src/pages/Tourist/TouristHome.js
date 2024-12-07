@@ -76,7 +76,7 @@ const TouristHome = () => {
               <Grid item key={index} sx={{ display: "flex", justifyContent: "left" }}>
                 <UserItineraryPost
                   id={itinerary._id}
-                  author={itinerary.author?.name}
+                  author={itinerary.author}
                   title={itinerary.title}
                   img={"frontend/public/assets/images/itirenary.png"}
                   start_date={itinerary.start_date}
