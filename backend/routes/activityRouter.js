@@ -7,7 +7,11 @@ const { getActivitiesByIds } = require("../controllers/activityController");
 
 const router = express.Router();
 
-
+router.patch(
+    "/openActivity/:id",
+    // authController.restrictTo("Tour_Guide"),
+    activityController.openActivityBookings
+);
 
 router.get("/readActivitiesByIds", getActivitiesByIds);
 
@@ -22,7 +26,7 @@ router.get('/getOne/:id', activityController.getActivity);
 router.post('/createActivity',[authController.protect ,authController.restrictTo("Advertiser")], activityController.createActivity);
 
 // router.post('/createActivity',[authController.protect ,authController.restrictTo("Advertiser")], activityController.createActivity);
-router.patch('/updateActivity/:id',[authController.protect ,authController.restrictTo("Advertiser","Admin")],activityController.updateActivity);
+router.patch('/updateActivity/:id',[authController.protect ,authController.restrictTo("Advertiser", "Admin", "Tourist")],activityController.updateActivity);
 
 
 router.delete('/deleteActivity/:id', [authController.protect ,authController.restrictTo("Advertiser")],activityController.deleteActivity);
@@ -36,5 +40,6 @@ router.post('/BookActivity/:ActivityId',[authController.protect,authController.r
 router.get('/MyActivityBookings',[authController.protect,authController.restrictTo("Tourist")],activityController.MyActivityBookings);
 
 router.patch('/CancelActivityBooking',[authController.protect,authController.restrictTo("Tourist")],activityController.CancelActivityBooking);
+
 
 module.exports = router;

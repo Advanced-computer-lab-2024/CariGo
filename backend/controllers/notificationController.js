@@ -24,7 +24,7 @@ exports.sendNotification = async (
     scheduledFor,
   });
 
-  if (["flagged_content", "upcoming_event", "out_of_stock"].includes(type)) {
+  if (["flagged_content", "upcoming_event", "out_of_stock", "booking_opened"].includes(type)) {
     await sendEmail(notification);
   }
 

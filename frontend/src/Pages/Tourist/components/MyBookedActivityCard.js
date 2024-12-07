@@ -8,7 +8,7 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import PinDropIcon from '@mui/icons-material/PinDrop';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import { Height } from '@mui/icons-material';
-import ActivityReviewForm from "frontend/src/components/ActivityReviewForm.js"; // Renamed to ActivityReviewForm
+import ActivityReviewForm from "../../../components/ActivityReviewForm.js"; // Renamed to ActivityReviewForm
 
 
 
