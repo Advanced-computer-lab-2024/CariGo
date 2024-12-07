@@ -87,9 +87,6 @@ const CreatePromoCode = () => {
     </div>
     </div>
     </div>
-    </div>
-    </div>
-    </div>
   );
 };
 
