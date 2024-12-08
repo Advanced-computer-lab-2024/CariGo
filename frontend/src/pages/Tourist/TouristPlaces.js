@@ -22,8 +22,10 @@ import {
 } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
-import NavBar from './components/TouristNavBar.js';
-import GuestNavBar from "../../components/NavBarTourist";
+import TouristNavBar from './components/TouristNavBar.js';
+import GuestNavBar from "./components/GuestNavBar";
+import TouristSideBar from './components/TouristSideBar.js';
+import GuestSideBar from "./components/GuestSideBar";
 import VintageList from "../../components/VintageListTourist";
 import SelectTags from '../../components/SelectTags.js';
 import { Tag } from '@mui/icons-material';
@@ -175,8 +177,23 @@ export default function TouristItineraries (){
     };
   
     return(
-      <Box sx={{ backgroundColor: "#f9f9f9", minHeight: "100vh" }}>
-      {!tourist ? <GuestNavBar /> : <NavBar />}
+      <Box sx={{ display: "flex", backgroundColor: "#f9f9f9", minHeight: "100vh" }}>
+    {/* Sidebar */}
+    <Box>
+      {!tourist ? <GuestSideBar /> : <TouristSideBar />}
+    </Box>
+
+    {/* Main Content Area */}
+    <Box
+      sx={{
+        flexGrow: 1,
+        marginLeft: "80px", // Sidebar width
+        marginTop: "64px", // AppBar height
+        padding: "16px",
+      }}
+    >
+      {/* Top Navbar */}
+      {!tourist ? <GuestNavBar /> : <TouristNavBar />}
       {/* AppBar with Search Bar and Filter Button */}
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position="static" color="transparent" elevation={0} sx={{ backgroundColor: "white", padding: "16px", borderRadius: "8px" , paddingLeft:"4%"}}>
@@ -273,7 +290,8 @@ export default function TouristItineraries (){
         </DialogActions>
       </Dialog> */}
     </Box>
-    
+        </Box>
+
   );
   }
 
