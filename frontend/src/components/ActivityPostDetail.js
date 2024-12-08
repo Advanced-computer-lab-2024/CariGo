@@ -36,39 +36,13 @@ export default function ActivityDetail() {
   const [activity, setActivities] = useState({});
   const navigate = useNavigate();
   const [localInterestedUsers, setLocalInterestedUsers] = useState([]);
+  const [tourist,setTourist]= useState(false);
   const token = localStorage.getItem("jwt");
-  const [user, setUser] = useState();
-const [tourist,setTourist]= useState(false);
+  const [tourist,setTourist]= useState(false);
 
-  if(token) setTourist(true);
-  
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const token = localStorage.getItem("jwt");
-        const id = jwtDecode(token).id;
-  
-        const response = await axios.get(
-          `http://localhost:4000/cariGo/users/${id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-          
-        console.log("API Response Data:", response.data); // Logs the fetched data
-        setUser(Object.assign({}, response.data));
-      } catch (err) {
-        console.error("Error fetching profile:", err);
-      }
-    };
-   
-    fetchUser();
-    }, []);
-
-  const [isPaymentPopupOpen, setIsPaymentPopupOpen] = useState(false);
-
+  if(token){
+    setTourist(true);
+  }
   const handleClick = () => {
     if (token)
       setIsPaymentPopupOpen(true);
@@ -185,7 +159,7 @@ const [tourist,setTourist]= useState(false);
   };
 
   return (
-   <Box sx={{ display: "flex", backgroundColor: "#f9f9f9", minHeight: "100vh" }}>
+    <Box sx={{ display: "flex", backgroundColor: "#f9f9f9", minHeight: "100vh" }}>
     {/* Sidebar */}
     <Box>
       {!tourist ? <GuestSideBar /> : <TouristSideBar />}
@@ -202,6 +176,7 @@ const [tourist,setTourist]= useState(false);
     >
       {/* Top Navbar */}
       {!tourist ? <GuestNavBar /> : <TouristNavBar />}
+
       <Box>
         <Button
           onClick={() => navigate(`/activities`)}
@@ -210,7 +185,7 @@ const [tourist,setTourist]= useState(false);
             color: "#126782",
             borderRadius: "8px",
             width: "80px",
-            ml: "1%",
+            ml: "11%",
             mt: "2%",
             mb: "0%",
             fontSize: "18px",
@@ -514,7 +489,7 @@ const [tourist,setTourist]= useState(false);
                 sx={{
                   padding: "20px",
                   position: "sticky",
-                  top: "70px",
+                  top: "20px",
                   backgroundColor: activity.isOpened ? "#ffffff" : "#f0f4f8",
                   border: activity.isOpened ? "none" : "2px dashed #126782",
                   transition: "all 0.3s ease-in-out",
@@ -573,7 +548,7 @@ const [tourist,setTourist]= useState(false);
                     </Elements>
                   </>
                 ) : (
-                  <Box sx={{ textAlign: "center" }}>
+                  <Box sx={{ textAlign: "center", top:"80px" }}>
                     <Typography
                       variant="h6"
                       sx={{ marginBottom: "15px", color: "#126782" }}
@@ -633,7 +608,5 @@ const [tourist,setTourist]= useState(false);
           </Grid>
         </Paper>
       </Box>
-      </Box>
-      </Box> 
-  );
+</Box></Box>  );
 }

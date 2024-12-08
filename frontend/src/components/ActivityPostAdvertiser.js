@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { Card, CardContent, CardMedia, Typography, IconButton, Box, Chip, Grid, Snackbar } from '@mui/material';
+import { Card, CardContent, CardMedia, Typography, IconButton, Box, Chip, Grid } from '@mui/material';
 import { Info as InfoIcon, Event as EventIcon } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
 import DetailsModal from './ActivityDetailsModal';
-import axios from 'axios';
 
 const StyledCard = styled(Card)(({ theme }) => ({
   display: 'flex',
@@ -49,32 +48,9 @@ const ActivityPost = ({
   description,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [activityStatus, setActivityStatus] = useState(isOpened);
 
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
-
-  const handleOpenBookings = async () => {
-    try {
-      const response = await axios.patch(`http://localhost:4000/cariGo/activity/openActivity/${id}`);
-      if (response.data.status === "success") {
-        setActivityStatus(true);
-        setSnackbarMessage("Bookings opened successfully!");
-      } else {
-        setSnackbarMessage("Failed to open bookings.");
-      }
-    } catch (error) {
-      setSnackbarMessage("Error opening bookings.");
-    } finally {
-      setSnackbarOpen(true);
-    }
-  };
-
-  const handleCloseSnackbar = () => {
-    setSnackbarOpen(false);
-  };
 
   return (
     <>
@@ -150,7 +126,7 @@ const ActivityPost = ({
                 >
                   Status:{' '}
                   <span style={{ fontWeight: 400, color: '#ff6b35' }}>
-                    {activityStatus ? 'Open' : 'Closed'}
+                    {isOpened ? 'Open' : 'Closed'}
                   </span>
                 </Typography>
               </Grid>
@@ -198,9 +174,9 @@ const ActivityPost = ({
             <IconButton size="small" onClick={handleOpenModal}>
               <InfoIcon sx={{ color: 'primary.main' }} />
             </IconButton>
-            {!isOpened&&<IconButton size="small" onClick={handleOpenBookings}>
+            <IconButton size="small">
               <EventIcon sx={{ color: 'secondary.main' }} />
-            </IconButton>}
+            </IconButton>
           </IconsWrapper>
         </ContentWrapper>
       </StyledCard>
@@ -224,12 +200,6 @@ const ActivityPost = ({
           tag,
           description,
         }}
-      />
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={6000}
-        onClose={handleCloseSnackbar}
-        message={snackbarMessage}
       />
     </>
   );
