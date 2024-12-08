@@ -1,6 +1,7 @@
 import React from 'react';
 import ItineraryCard from "./UserItineraryPost";
 import { Grid, Box } from '@mui/material';
+import ItineraryImage from '../assets/itinerary.png';
 
 const ItineraryList = ({ fetched }) => {
     return (
@@ -12,7 +13,7 @@ const ItineraryList = ({ fetched }) => {
                             id={itinerary._id}
                             author={itinerary.author}
                             title={itinerary.title}
-                            img="/assets/images/itinerary.png"
+                            img={ItineraryImage}
                             start_date={itinerary.start_date}
                             end_date={itinerary.end_date}
                             locations={itinerary.locations}

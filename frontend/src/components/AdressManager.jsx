@@ -11,8 +11,9 @@ import {
   InputLabel,
 } from "@mui/material";
 import { Add as AddIcon, LocationOn as LocationOnIcon } from '@mui/icons-material';
+
 const AddressManager = ({ addresses, onAddressSelect, onAddNewAddress }) => {
-  const [selectedAddress, setSelectedAddress] = useState("");
+  const [selectedAddress, setSelectedAddress] = useState(null);
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [newAddress, setNewAddress] = useState({
     street: "",
@@ -23,16 +24,16 @@ const AddressManager = ({ addresses, onAddressSelect, onAddNewAddress }) => {
   });
 
   useEffect(() => {
-    if (addresses.length > 0 && selectedAddress === "") {
-      setSelectedAddress(0);
+    if (addresses.length > 0 && !selectedAddress) {
+      setSelectedAddress(addresses[0]);
       onAddressSelect(addresses[0]);
     }
-  }, [addresses, onAddressSelect]);
+  }, [addresses, onAddressSelect, selectedAddress]);
 
   const handleAddressChange = (event) => {
-    const index = event.target.value;
-    setSelectedAddress(index);
-    onAddressSelect(addresses[index]);
+    const address = JSON.parse(event.target.value);
+    setSelectedAddress(address);
+    onAddressSelect(address);
   };
 
   const handleAddNewClick = () => {
@@ -44,7 +45,10 @@ const AddressManager = ({ addresses, onAddressSelect, onAddNewAddress }) => {
   };
 
   const handleAddNewAddress = () => {
-    onAddNewAddress(newAddress);
+    const addedAddress = { ...newAddress };
+    onAddNewAddress(addedAddress);
+    setSelectedAddress(addedAddress);
+    onAddressSelect(addedAddress);
     setIsAddingNew(false);
     setNewAddress({
       street: "",
@@ -61,16 +65,16 @@ const AddressManager = ({ addresses, onAddressSelect, onAddNewAddress }) => {
         <FormControl sx={{ flex: 1 }} variant="outlined">
           <InputLabel sx={styles.inputLabel}>Delivery Address</InputLabel>
           <Select
-            value={selectedAddress}
+            value={selectedAddress ? JSON.stringify(selectedAddress) : ""}
             onChange={handleAddressChange}
             label="Delivery Address"
             sx={styles.select}
           >
             <MenuItem value="" disabled>
-          Select an address
-        </MenuItem>
+              Select an address
+            </MenuItem>
             {addresses.map((address, index) => (
-              <MenuItem key={index} value={address}>
+              <MenuItem key={index} value={JSON.stringify(address)}>
                 <LocationOnIcon sx={styles.locationIcon} />
                 {`${address.street}, ${address.city}, ${address.state} ${address.postalCode}, ${address.country}`}
               </MenuItem>

@@ -1,6 +1,7 @@
 import React from "react";
 import ActivityPost from "./ActivityPost.js";
 import { Box, Typography, Grid } from "@mui/material";
+import activityImage from "../assets/activity.jpg";
 
 export default function ActivityList({ fetchedActivities }) {
   const StringDate = (date) => {
@@ -51,7 +52,7 @@ export default function ActivityList({ fetchedActivities }) {
                 isOpened={activity.bookingOpened ? "open" : "closed"}
                 tag={activity.tag?.title || "No tag available"}
                 description={activity.description || "No description available"}
-                img={activity.img || "activity.jpg"}
+                img={activityImage}
               />
             </Grid>
           ))}
