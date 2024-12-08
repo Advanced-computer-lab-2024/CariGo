@@ -60,9 +60,8 @@ import { CardElement } from '@stripe/react-stripe-js';
   }));
   
 
-const BookingPaymentPopUp = ({ open, onClose, amount,checkoutCart,user, itineraryName ,startDate ,endDate,arrivalTime,departureTime,type }) => {
+const ExtraServicesPaymenPopUp = ({ open, onClose, amount,checkoutCart,user, ServiceName ,startDate ,endDate ,flightNumber,type,currency}) => {
   const [paymentMethod, setPaymentMethod] = useState('card');
-  const [ticketCount, setTicketCount] = useState(1);
   const [isPromoExpanded, setIsPromoExpanded] = useState(false);
   const [promoCode, setPromoCode] = useState('');
   const [promoCodeError, setPromoCodeError] = useState('');
@@ -74,15 +73,10 @@ const BookingPaymentPopUp = ({ open, onClose, amount,checkoutCart,user, itinerar
   // const [totalCost, setTotalCost] = useState(0);
 
   const basePrice = amount;
-  const totalPrice = (basePrice * ticketCount) * (1 - discount/100);
+  const totalPrice = (basePrice) * (1 - discount/100);
 
 
-  const handleTicketChange = (change) => {
-    const newCount = ticketCount + change;
-    if (newCount >= 1) {
-      setTicketCount(newCount);
-    }
-  };
+
 
   const handleRedeem = async () => {
     try {
@@ -195,7 +189,7 @@ const BookingPaymentPopUp = ({ open, onClose, amount,checkoutCart,user, itinerar
           alert("Payment successful!");
         }
 
-        checkoutCart("Card",totalPrice,ticketCount);//TotalPrice,NumberOfTickets
+        checkoutCart("Card",totalPrice);//TotalPrice,NumberOfTickets
       } catch (error) {
         console.error("Payment failed:", error);
       }
@@ -206,7 +200,7 @@ const BookingPaymentPopUp = ({ open, onClose, amount,checkoutCart,user, itinerar
       if (user.wallet >= amount) {
         // Simulating API call to process wallet payment
         setTimeout(() => {
-          checkoutCart("Wallet",totalPrice,ticketCount);//TotalPrice,NumberOfTickets
+          checkoutCart("Wallet",totalPrice);//TotalPrice,NumberOfTickets
         }, 1000);
       } else {
         console.error("Insufficient wallet balance");
@@ -240,47 +234,14 @@ const BookingPaymentPopUp = ({ open, onClose, amount,checkoutCart,user, itinerar
         {/* Itinerary Details */}
         <Box sx={{ mb: 3 }}>
           <Typography variant="h6" sx={{ color: '#004e89', mb: 1 }}>
-            {itineraryName}
+            {ServiceName}  
           </Typography>
+          {type=="flight"&&<Typography variant="body2" sx={{ color: '#1a659e' }}>
+            flightNumber: {flightNumber}
+          </Typography>}  
           <Typography variant="body2" sx={{ color: '#1a659e' }}>
-            date: {new Date(startDate).toLocaleDateString()} - {new Date(endDate).toLocaleDateString()}
+            date : {new Date(startDate).toLocaleDateString()} - {new Date(endDate).toLocaleDateString()}
           </Typography>
-          {type&&<Typography variant="body2" sx={{ color: '#1a659e' }}>
-            time: {departureTime} - {arrivalTime}
-          </Typography>}
-        </Box>
-
-        {/* Ticket Quantity */}
-        <Box sx={{ 
-          display: 'flex', 
-          justifyContent: 'space-between', 
-          alignItems: 'center',
-          mb: 3,
-          p: 2,
-          backgroundColor: 'white',
-          borderRadius: '8px'
-        }}>
-          <Typography sx={{ color: '#004e89' }}>
-            Price per ticket: ${basePrice}
-          </Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <IconButton 
-              onClick={() => handleTicketChange(-1)}
-              disabled={ticketCount <= 1}
-              sx={{ color: '#1a659e' }}
-            >
-              <RemoveIcon />
-            </IconButton>
-            <Typography sx={{ color: '#004e89', mx: 2 }}>
-              {ticketCount}
-            </Typography>
-            <IconButton 
-              onClick={() => handleTicketChange(1)}
-              sx={{ color: '#1a659e' }}
-            >
-              <AddIcon />
-            </IconButton>
-          </Box>
         </Box>
 
         {/* Promo Code Section */}
@@ -412,7 +373,7 @@ const BookingPaymentPopUp = ({ open, onClose, amount,checkoutCart,user, itinerar
             Total Price
           </Typography>
           <Typography variant="h6" sx={{ color: '#ff6b36' }}>
-            ${(totalPrice* conversionRate).toFixed(2)} {code}
+            ${(totalPrice* conversionRate).toFixed(2)} {type=="hotel"?currency:code}
           </Typography>
         </Box>
 
@@ -482,4 +443,4 @@ const CARD_ELEMENT_OPTIONS = {
 };
 
 
-export default BookingPaymentPopUp;
+export default ExtraServicesPaymenPopUp;
