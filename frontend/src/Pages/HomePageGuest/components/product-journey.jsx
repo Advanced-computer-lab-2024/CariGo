@@ -1,11 +1,26 @@
 import { TicketsPlane, Sparkles, ShoppingBag } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { useNavigate } from "react-router-dom";
 import Spotlight from "./spotlight";
 import WorflowImg01 from "./images/workflow-01.png";
 import WorflowImg02 from "./images/workflow-02.png";
 import WorflowImg03 from "./images/workflow-03.png";
 
 export default function ProductJourney() {
+  const navigate = useNavigate();
+
+  const navigateToBookServices = () => {
+    navigate("/book-services");
+  };  
+ 
+  const navigateToItirenaries = () => {
+    navigate("/user_itineraries");
+  };  
+  
+  const navigateToProducts = () => {
+    navigate("/Tourist/Products");
+  };
+
   return (
     <section className="mx-auto max-w-6xl px-4 py-24 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-3xl pb-12 text-center md:pb-20">
@@ -22,7 +37,10 @@ export default function ProductJourney() {
         className="group mx-auto mt-16 grid max-w-sm items-start gap-6 lg:max-w-none lg:grid-cols-3"
         spotlightColor="#037bba"
       >
-        <Card className="bg-[#01324c] text-white">
+        <Card
+          className="bg-[#01324c] text-white"
+          onClick={navigateToBookServices}
+        >
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <TicketsPlane className="h-5 w-3 text-white" />
@@ -46,7 +64,7 @@ export default function ProductJourney() {
             </p>
           </CardContent>
         </Card>
-        <Card className="bg-[#01324c] text-white">
+        <Card className="bg-[#01324c] text-white" onClick={navigateToItirenaries}>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Sparkles className="h-5 w-3 text-white" />
@@ -70,7 +88,7 @@ export default function ProductJourney() {
             </p>
           </CardContent>
         </Card>
-        <Card className="bg-[#01324c] text-white">
+        <Card className="bg-[#01324c] text-white" onClick={navigateToProducts}>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <ShoppingBag className="h-5 w-3 text-white" />

@@ -60,7 +60,7 @@ import { CardElement } from '@stripe/react-stripe-js';
   }));
   
 
-const BookingPaymentPopUp = ({ open, onClose, amount,checkoutCart,user, itineraryName ,startDate ,endDate }) => {
+const BookingPaymentPopUp = ({ open, onClose, amount,checkoutCart,user, itineraryName ,startDate ,endDate,arrivalTime,departureTime,type }) => {
   const [paymentMethod, setPaymentMethod] = useState('card');
   const [ticketCount, setTicketCount] = useState(1);
   const [isPromoExpanded, setIsPromoExpanded] = useState(false);
@@ -243,8 +243,11 @@ const BookingPaymentPopUp = ({ open, onClose, amount,checkoutCart,user, itinerar
             {itineraryName}
           </Typography>
           <Typography variant="body2" sx={{ color: '#1a659e' }}>
-            {new Date(startDate).toLocaleDateString()} - {new Date(endDate).toLocaleDateString()}
+            date: {new Date(startDate).toLocaleDateString()} - {new Date(endDate).toLocaleDateString()}
           </Typography>
+          {type&&<Typography variant="body2" sx={{ color: '#1a659e' }}>
+            time: {departureTime} - {arrivalTime}
+          </Typography>}
         </Box>
 
         {/* Ticket Quantity */}

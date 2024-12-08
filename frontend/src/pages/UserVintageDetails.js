@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Box, Typography, Chip, Avatar } from "@mui/material";
 import PinDropIcon from "@mui/icons-material/PinDrop";
+<<<<<<< HEAD
 import ResponsiveAppBar from "./Tourist/components/TouristNavBar";
 import GuestNavBar from "../components/NavBarTourist";
 import "../components/styles/CompanyInfo.css";
@@ -22,12 +23,29 @@ import { jwtDecode } from "jwt-decode";
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 const stripePromise = loadStripe('pk_test_51QLoL4AkXvwFjwTIX8acMj27pC8YxdOhmoUzn0wbUhej1xUFgFlfgYtXRGmggbKUI6Yfpxz08i9shcsfszv6y9iP0007q608Ny'); // Publishable key
+=======
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import TouristNavBar from "./Tourist/components/TouristNavBar.js";
+import GuestNavBar from "./Tourist/components/GuestNavBar";
+import GuestSideBar from "./Tourist/components/GuestSideBar";
+import TouristSideBar from "./Tourist/components/TouristSideBar";
+>>>>>>> main
 
 const UserVintageDetails = () => {
   const { id } = useParams(); // Get the vintage ID from the URL
   const [vintage, setVintage] = useState(null);
+<<<<<<< HEAD
   const navigate = useNavigate();
   const token = localStorage.getItem("jwt");
+=======
+  const token = localStorage.getItem('jwt');
+  const [tourist,setTourist]= useState(false);
+
+  
+  if(token){
+    setTourist(true);
+  }
+>>>>>>> main
 
   useEffect(() => {
     const fetchVintageDetails = async () => {
@@ -106,6 +124,7 @@ const UserVintageDetails = () => {
   }
 
   return (
+<<<<<<< HEAD
     <>
       {token? <ResponsiveAppBar />: <GuestNavBar/>}
       <Button
@@ -118,6 +137,34 @@ const UserVintageDetails = () => {
         <Paper
           elevation={3}
           sx={{ padding: "30px", maxWidth: "1200px", margin: "20px auto" }}
+=======
+    <Box sx={{ display: "flex", backgroundColor: "#f9f9f9", minHeight: "100vh" }}>
+    {/* Sidebar */}
+    <Box>
+      {!tourist ? <GuestSideBar /> : <TouristSideBar />}
+    </Box>
+
+    {/* Main Content Area */}
+    <Box
+      sx={{
+        flexGrow: 1,
+        marginLeft: "80px", // Sidebar width
+        marginTop: "64px", // AppBar height
+        padding: "16px",
+      }}
+    >
+      {/* Top Navbar */}
+      {!tourist ? <GuestNavBar /> : <TouristNavBar />}
+
+      <Box sx={{ padding: "20px", maxWidth: "1200px", margin: "auto" }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            marginBottom: "20px",
+          }}
+>>>>>>> main
         >
           <Grid container spacing={4}>
             <Grid item xs={12} md={8}>
@@ -255,7 +302,12 @@ const UserVintageDetails = () => {
           </Grid>
         </Paper>
       </Box>
+<<<<<<< HEAD
     </>
+=======
+      </Box>
+      </Box>
+>>>>>>> main
   );
 };
 
