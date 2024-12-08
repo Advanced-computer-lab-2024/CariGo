@@ -21,6 +21,7 @@ export default function TouristViewVintage() {
   // Fetch activities
   useEffect(() => {
     const fetchActivities = async () => {
+      setLoading(true);
       try {
         const queryParams = new URLSearchParams();
         if (filters.price) queryParams.append("price", filters.price);
@@ -134,7 +135,7 @@ export default function TouristViewVintage() {
       {/* Content Area */}
       <Box sx={{ padding: "20px",}}>
         {loading ? (
-          <CircularProgress />
+          <CircularProgress sx={{color:"#00355a", m:'2% 5%', fontSize:'20px'}}/>
         ) : error ? (
           <Typography sx={{color:"#00355a", m:'2% 5%', fontSize:'20px'}}>{error}</Typography>
         ) : (
