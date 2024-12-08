@@ -1,28 +1,6 @@
 import * as React from "react";
-import { styled } from "@mui/material/styles";
-import Card from "@mui/material/Card";
-import CardHeader from "@mui/material/CardHeader";
-import CardMedia from "@mui/material/CardMedia";
-import CardContent from "@mui/material/CardContent";
-import CardActions from "@mui/material/CardActions";
-import Avatar from "@mui/material/Avatar";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
-import { red } from "@mui/material/colors";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import ShareIcon from "@mui/icons-material/Share";
-import DeleteIcon from "@mui/icons-material/Delete";
-import { Box, Chip, Snackbar } from "@mui/material";
-import PinDropIcon from "@mui/icons-material/PinDrop";
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-import StarIcon from "@mui/icons-material/Star";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import logoImage from "../assets/itinerary.png";
-import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
-import BookmarkIcon from "@mui/icons-material/Bookmark";
 import { useState, useEffect } from "react";
 
 export default function UserItineraryPost({
@@ -38,8 +16,10 @@ export default function UserItineraryPost({
   transportation,
   accommodation,
   rating,
+  ratingsQuantity,
   isBooked,
   accessibility,
+  language,
 }) {
   const navigate = useNavigate();
   const [snackbarOpen, setSnackbarOpen] = React.useState(false);
@@ -78,14 +58,9 @@ export default function UserItineraryPost({
     const userRole = localStorage.getItem("role");
     return userRole === "Tourist";
   };
-
-  const formatDateTime = (dateString) => {
-    const options = {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    };
-    return new Date(dateString).toLocaleString(undefined, options);
+  const formatDate = (dateString) => {
+    const options = { year: "numeric", month: "long", day: "numeric" };
+    return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
   const formatDateHour = (dateString) => {
@@ -225,223 +200,265 @@ export default function UserItineraryPost({
   const conversionRate = localStorage.getItem("conversionRate") || 1;
   const code = localStorage.getItem("currencyCode") || "EGP";
 
+  const styles = {
+    card: {
+      maxWidth: "400px",
+      height: "100%", // Ensure card fills the available height
+      backgroundColor: "#FFFFFF", // Subtle off-white for a clean look
+      color: "#003055", // Darker Blue for text
+      borderRadius: "8px",
+      overflow: "hidden",
+      boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+      display: "flex", // Flexbox for alignment
+      flexDirection: "column", // Stack content vertically
+    },
+    imageContainer: {
+      height: "200px", // Fixed height for image section
+      backgroundColor: "#00355a", // Dark Navy
+      position: "relative",
+    },
+    image: {
+      width: "100%",
+      height: "100%",
+      objectFit: "cover",
+    },
+    content: {
+      padding: "24px",
+      flexGrow: 1, // Make content fill available space
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "space-between", // Space out title, description, and footer
+    },
+    iconContainer: {
+      position: "absolute",
+      top: "8px",
+      right: "8px",
+      display: "flex",
+      gap: "8px",
+    },
+    iconButton: {
+      backgroundColor: "#F6F6F6", // White for contrast
+      border: "none",
+      borderRadius: "50%",
+      width: "40px",
+      height: "40px",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      cursor: "pointer",
+      boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+      transition: "background-color 0.3s",
+    },
+    iconBookmark: {
+      color: "#cc5b22", // Dark Shrimp Toast for the bookmarked state
+      fontSize: "20px",
+    },
+    iconBookmarkUnmarked: {
+      color: "#00355a", // Dark Navy for the unbookmarked state
+      fontSize: "20px",
+    },
+    title: {
+      fontSize: "24px",
+      fontWeight: "bold",
+      color: "#002b4d", // Darker Blue
+      marginBottom: "4px",
+    },
+    author: {
+      fontSize: "14px",
+      color: "#cc5b22", // Dark Shrimp Toast
+      marginBottom: "8px",
+    },
+    ratingContainer: {
+      display: "flex",
+      alignItems: "center",
+      gap: "4px",
+      marginBottom: "16px",
+    },
+    star: {
+      color: "#ff6b35", // Bright Orange
+      fontSize: "16px",
+    },
+    ratingText: {
+      fontSize: "14px",
+      color: "#cc5b22", // Dark Shrimp Toast
+    },
+    description: {
+      fontSize: "14px",
+      color: "#003055", // Dark Blue
+      marginBottom: "16px",
+    },
+    dateContainer: {
+      display: "flex",
+      alignItems: "center",
+      gap: "8px",
+      color: "#1a4975", // Dark Jazz Blue
+      marginBottom: "16px",
+    },
+    dateText: {
+      fontSize: "14px",
+    },
+    tagsContainer: {
+      marginBottom: "16px",
+    },
+    tagsTitle: {
+      fontSize: "16px",
+      fontWeight: "bold",
+      color: "#cc5b22", // Dark Shrimp Toast
+      marginBottom: "8px",
+    },
+    tagsList: {
+      display: "flex",
+      flexWrap: "wrap",
+      gap: "8px",
+    },
+    tag: {
+      backgroundColor: "#00355a", // Dark Navy
+      color: "#ffffff", // White for contrast
+      padding: "4px 8px",
+      borderRadius: "16px",
+      fontSize: "12px",
+    },
+    actionButton: {
+      width: "100%",
+      backgroundColor: "#ff6b35", // Bright Orange
+      color: "#ffffff", // White for contrast
+      border: "none",
+      borderRadius: "4px",
+      padding: "8px 16px",
+      fontSize: "16px",
+      fontWeight: "bold",
+      cursor: "pointer",
+      transition: "background-color 0.3s",
+    },
+    actionButtonHover: {
+      backgroundColor: "#1a4975", // Darker Jazz Blue on hover
+    },
+    price: {
+      fontSize: "20px",
+      fontWeight: "bold",
+      color: "#F6F6F6", // White for contrast
+      backgroundColor: "#ff6b35", // Bright Orange
+      padding: "2px 8px",
+      borderRadius: "4px",
+      display: "inline-block",
+    },
+    locations: {
+      fontSize: "14px",
+      color: "#003055", // Dark Blue
+      marginBottom: "8px",
+    },
+    priceLanguageContainer: {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      marginBottom: "16px",
+      marginTop: "2px",
+    },
+    language: {
+      fontSize: "14px",
+      color: "#1a4975", // Dark Jazz Blue
+    },
+  };
+  
   return (
-    <Card
-      sx={{
-        width: "100%",
-        height: "400px",
-        color: "#126782",
-        fontSize: "18px",
-        display: "flex",
-        flexDirection: "column",
-        borderRadius: "10px",
-        position: "relative",
-        margin: "20px",
-        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-        transition: "transform 0.3s ease",
-        "&:hover": {
-          transform: "scale(1.02)",
-          cursor: "pointer",
-        },
-      }}
-      onClick={() => navigate(`/user_itineraries/${id}`)}
-    >
-      <Box sx={{ display: "flex", flexDirection: "row", flexGrow: 1 }}>
-        <CardMedia
-          component="img"
-          image={logoImage || "/default-itinerary.jpg"}
-          alt="Itinerary Image"
-          sx={{
-            width: "400px",
-            height: "250px",
-            margin: "5px",
-            borderRadius: "10px",
-            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-          }}
-        />
-
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            width: "60%",
-            padding: "10px",
-          }}
-        >
-          <CardHeader
-            avatar={
-              <Avatar sx={{ bgcolor: red[500] }}>
-                {title?.charAt(0) || "A"}
-              </Avatar>
-            }
-            title={
-              <Typography
-                variant="h5"
-                sx={{ fontWeight: "bold", fontSize: "24px" }}
-              >
-                {title || "Anonymous"}
-              </Typography>
-            }
-          />
-
-          <Box
-            sx={{
-              display: "flex",
-              flexWrap: "wrap",
-              gap: "5px",
-              marginLeft: "15px",
-            }}
+    <div style={styles.card}>
+      <div style={styles.imageContainer}>
+        <img src={"./itirenary.png"} alt={title} style={styles.image} />
+        <div style={styles.iconContainer}>
+          <button style={styles.iconButton} onClick={handleShare}>
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <circle cx="18" cy="5" r="3" />
+              <circle cx="6" cy="12" r="3" />
+              <circle cx="18" cy="19" r="3" />
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+            </svg>
+          </button>
+          <button style={styles.iconButton} onClick={handleBookmark}>
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill={isBookmarked ? "#D59D80" : "none"}
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div style={styles.content}>
+        <h2 style={styles.title}>{title}</h2>
+        <p style={styles.author}>by {author.username}</p>
+        <div style={styles.ratingContainer}>
+          {"★★★★★".split("").map((star, index) => (
+            <span
+              key={index}
+              style={{
+                ...styles.star,
+                opacity: index < Math.floor(rating) ? 1 : 0.5,
+              }}
+            >
+              {star}
+            </span>
+          ))}
+          <span style={styles.ratingText}>
+            {rating}
+          </span>
+        </div>
+        <div style={styles.priceLanguageContainer}>
+          <span style={styles.price}>${(price * conversionRate).toFixed(2)} {code}</span>
+          <span style={styles.language}>{language}</span>
+        </div>
+        <div style={styles.dateContainer}>
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           >
-            {tags?.map((tag) => (
-              <Chip
-                key={tag._id}
-                label={tag.title}
-                sx={{ backgroundColor: "#126782", color: "white" }}
-              />
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+            <line x1="16" y1="2" x2="16" y2="6" />
+            <line x1="8" y1="2" x2="8" y2="6" />
+            <line x1="3" y1="10" x2="21" y2="10" />
+          </svg>
+          <span style={styles.dateText}>
+            {formatDate(start_date)} - {formatDate(end_date)}
+          </span>
+        </div>
+        <div style={styles.tagsContainer}>
+          {tags?.length> 0 ? <h3 style={styles.tagsTitle}>Tags</h3> : <h4 style={styles.tagsTitle}>No tags to view</h4>}
+          <div style={styles.tagsList}>
+            {tags.map((tag, index) => (
+              <span key={index} style={styles.tag}>
+                {tag.title || tag.name || "Unknown Tag"}
+              </span>
             ))}
-          </Box>
-
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              marginLeft: "30px",
-            }}
-          >
-            <Box sx={{ display: "flex" }}>
-              <StarIcon sx={{ scale: "0.9" }} />
-              <Typography sx={{ fontSize: "16px", marginTop: "1px" }}>
-                {rating || "No rating"}
-              </Typography>
-            </Box>
-
-            <Box sx={{ display: "flex", gap: "5px" }}>
-              <Box sx={{ display: "flex", flexDirection: "column" }}>
-                <Box
-                  sx={{ display: "flex", padding: "5px", paddingLeft: "0px" }}
-                >
-                  <CalendarMonthIcon sx={{ color: "#ff4d4d" }} />
-                  <Typography sx={{ marginTop: "2px" }}>
-                    {formatDateTime(start_date)}
-                  </Typography>
-                </Box>
-                <Box
-                  sx={{
-                    display: "flex",
-                    padding: "5px",
-                    paddingLeft: "0px",
-                    gap: "2px",
-                  }}
-                >
-                  <AccessTimeIcon
-                    sx={{ color: "#126782", marginLeft: "20px" }}
-                  />
-                  <Typography sx={{ marginTop: "2px" }}>
-                    {formatDateHour(start_date)}
-                  </Typography>
-                </Box>
-              </Box>
-              <Typography
-                sx={{
-                  margin: "2px",
-                  marginTop: "5px",
-                  color: "#ff4d4d",
-                  fontWeight: "600",
-                }}
-              >
-                to
-              </Typography>
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  marginLeft: "5px",
-                }}
-              >
-                <Box
-                  sx={{ display: "flex", padding: "5px", paddingLeft: "0px" }}
-                >
-                  <CalendarMonthIcon sx={{ color: "#ff4d4d" }} />
-                  <Typography sx={{ marginTop: "0px" }}>
-                    {formatDateTime(end_date)}
-                  </Typography>
-                </Box>
-                <Box
-                  sx={{
-                    display: "flex",
-                    padding: "5px",
-                    paddingLeft: "0px",
-                    gap: "2px",
-                  }}
-                >
-                  <AccessTimeIcon
-                    sx={{ color: "#126782", marginLeft: "20px" }}
-                  />
-                  <Typography sx={{ marginTop: "2px" }}>
-                    {formatDateHour(end_date)}
-                  </Typography>
-                </Box>
-              </Box>
-            </Box>
-
-            <Box sx={{ display: "flex", marginTop: "5px" }}>
-              <PinDropIcon />
-              <Typography sx={{ marginLeft: "5px" }}>
-                {Array.isArray(locations)
-                  ? locations.join(", ")
-                  : "Not specified"}
-              </Typography>
-            </Box>
-
-            <Box sx={{ display: "flex", marginTop: "5px" }}>
-              <AttachMoneyIcon />
-              <Typography
-                sx={{ marginLeft: "5px", color: price ? "#126782" : "#ff4d4d" }}
-              >
-                {price
-                  ? `${(price * conversionRate).toFixed(2)} ${code}`
-                  : "Price not specified"}
-              </Typography>
-            </Box>
-          </Box>
-        </Box>
-      </Box>
-
-      <CardContent sx={{ flexGrow: 1 }}>
-        <Typography
-          variant="body2"
-          sx={{
-            color: "text.secondary",
-            marginTop: "-10px",
-            fontSize: "16px",
-            width: "460px",
-          }}
+          </div>
+        </div>
+        <button
+          style={styles.actionButton}
+          onClick={() => navigate(`/user_itineraries/${id}`)}
         >
-          {transportation || "No transportation info"} |{" "}
-          {accommodation || "No accommodation info"}
-        </Typography>
-      </CardContent>
-
-      <CardActions disableSpacing>
-        <Box sx={{ position: "absolute", bottom: "2px", left: "2px" }}>
-          <IconButton aria-label="share" onClick={handleShare}>
-            <ShareIcon />
-          </IconButton>
-          <IconButton aria-label="bookmark" onClick={handleBookmark}>
-            {isBookmarked ? <BookmarkIcon /> : <BookmarkBorderIcon />}
-          </IconButton>
-        </Box>
-      </CardActions>
-      <Snackbar
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "center",
-        }}
-        open={snackbarOpen}
-        autoHideDuration={6000}
-        onClose={handleSnackbarClose}
-        message={snackbarMessage}
-      />
-    </Card>
+          View Itinerary
+        </button>
+      </div>
+    </div>
   );
 }

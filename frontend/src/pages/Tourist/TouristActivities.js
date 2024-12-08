@@ -1,368 +1,176 @@
-import React, { useState, useEffect } from 'react';
-import ActivityList from '../../components/ActivityListUser.js';
-import {  Box, Menu, TextField, Button, CircularProgress, Typography, MenuItem ,IconButton} from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
-import FilterAltIcon from '@mui/icons-material/FilterAlt';
-import NavBar from './components/TouristNavBar.js';
+import React, { useState, useEffect } from "react";
+import ActivityList from "../../components/ActivityListUser.js";
+import { Box, TextField, Button, CircularProgress, Typography, IconButton, AppBar, Toolbar, Grid, Dialog, DialogTitle, DialogContent, DialogActions, FormControl, InputLabel, Select, MenuItem, Checkbox, ListItemText } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
+import FilterAltIcon from "@mui/icons-material/FilterAlt";
+import NavBar from "./components/TouristNavBar.js";
 import GuestNavBar from "../../components/NavBarTourist";
 
-export default function TouristViewVintage (){
-
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
-    
-    const [activities, setActivities] = useState([]);
-    const [tourist, setTourist] = useState(true);
-  //to show user typed in values
-    const [filterInputValues, setFilterInputValues] = useState({
-        price: "",
-        category: "",
-        rating: "",
-        startDate: "",
-    });
-    //for actual filtering
-    const [filters, setFilters] = useState({
-        price: "",
-        category: "",
-        rating: "",
-        startDate: "",
-       
-    });
-    
-    //handles filter menu opening and closing
-    const [anchorEl, setAnchorEl] = useState(null);
-    const [isFilterOpen, setIsFilterOpen] = useState(false);
+export default function TouristViewVintage() {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [activities, setActivities] = useState([]);
+  const [tourist, setTourist] = useState(true);
+  const [filterInputValues, setFilterInputValues] = useState({ price: "", category: "", rating: "", startDate: "" });
+  const [filters, setFilters] = useState({ price: "", category: "", rating: "", startDate: "" });
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortOption, setSortOption] = useState("");
+  const [filteredActivities, setFilteredActivities] = useState(activities);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
   
-    const handleFilterClick = (event) => {
-      if (isFilterOpen) {
-        handleFilterClose();
-      } else {
-        setAnchorEl(event.currentTarget);
-        setIsFilterOpen(true);
+  // Fetch activities
+  useEffect(() => {
+    const fetchActivities = async () => {
+      setLoading(true);
+      try {
+        const queryParams = new URLSearchParams();
+        if (filters.price) queryParams.append("price", filters.price);
+        if (filters.category) queryParams.append("Category", filters.category);
+        if (filters.rating) queryParams.append("ratingsAverage", filters.rating);
+        if (filters.startDate) queryParams.append("start_date", new Date(filters.startDate).toISOString());
+        if (sortOption) queryParams.append("sort", sortOption);
+        
+        const response = await fetch(`http://localhost:4000/Carigo/Activity/?${queryParams.toString()}`);
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        const json = await response.json();
+        setActivities(json);
+        setFilteredActivities(json);
+        
+        const token = localStorage.getItem("jwt");
+        if (!token) setTourist(false);
+        setError(null);
+      } catch (error) {
+        setError("no activities found");
+      } finally {
+        setLoading(false);
       }
     };
-  
-    const handleFilterClose = () => {
-      setAnchorEl(null);
-      setIsFilterOpen(false);
-    };
-  
-  
-    // handles if filter value changes
-    const handleFilterChange = (e) => {
-        const { name, value } = e.target;
-        //console.log(`Changing ${name} to ${value}`);
-        setFilterInputValues(prevFilters => ({
-            ...prevFilters,
-            [name]: value
-        }));
-    };
-  
-    const handleFilter = () => {
-      // Perform filter action using the `filters` object
-      setFilters(filterInputValues);
-      console.log('Filters applied:', filters);
-      handleFilterClose();
-    };
-  
-    const resetFilters = () => {
-        setFilters({
-            price: "",
-            category: "",
-            rating: "",
-            startDate: "",
-        });
-        setFilteredActivities(activities); // Reset to all activities
-    };
-  
-  //handling sort
-    const [anchorE2, setAnchorE2] = useState(null);
-    const [sortOption, setSortOption] = useState('');
-    
-    const handleSortClick = (event) => {
-        setAnchorE2(event.currentTarget);
-       
-    };
-  
-    const handleSortClose = () => {
-      setAnchorE2(null);
+    fetchActivities();
+  }, [filters, sortOption]);
+
+  // Handle filter changes
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilterInputValues((prevFilters) => ({ ...prevFilters, [name]: value }));
+  };
+
+  const handleFilter = () => {
+    setFilters(filterInputValues);
+    setIsFilterOpen(false);
+  };
+
+  const resetFilters = () => {
+    const emptyFilters = { price: "", category: "", rating: "", startDate: "" };
+    setFilters(emptyFilters); // Reset applied filters
+    setFilterInputValues(emptyFilters); // Reset input fields
+    setFilteredActivities(activities); // Reset displayed activities to the original list
+  };
+
+  const handleSearch = () => {
+    const filtered = activities.filter((activity) => {
+      return (
+        (activity.title && activity.title.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (activity.tag && activity.tag.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (activity.Category && activity.Category.toLowerCase().includes(searchTerm.toLowerCase()))
+      );
+    });
+    setFilteredActivities(filtered);
+  };
+
+  return (
+    <Box sx={{ backgroundColor: "#f9f9f9", minHeight: "100vh" }}>
+      {!tourist ? <GuestNavBar /> : <NavBar />}
       
-    };
-  
-    const handleSortChange = (sortValue) => {
-      setSortOption(sortValue);  // Set the selected sort option
-      handleSortClose();  // Close the menu
-    };
-  
-    
-    const [filteredActivities, setFilteredActivities] = useState(activities); // Store filtered results separately
-  
-     // Combined useEffect for Fetching Activities with Filters and Sort
-     useEffect(() => {
-        const fetchActivities = async () => {
-            try {
-                const queryParams = new URLSearchParams();
-                if (filters.price) queryParams.append('price', filters.price);
-                if (filters.category) queryParams.append('Category', filters.category);
-                if (filters.rating) queryParams.append('ratingsAverage', filters.rating);
-                if (filters.startDate) {
-                    const startDateISO = new Date(filters.startDate).toISOString();
-                    queryParams.append('start_date', startDateISO);
-                }
-                if (sortOption) queryParams.append('sort', sortOption);
-  
-                const response = await fetch(`http://localhost:4000/Carigo/Activity/?${queryParams.toString()}`);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const json = await response.json();
-                console.log("Fetched activities:", json);
-                setActivities(json);
-                setFilteredActivities(json); // Initialize filteredActivities with all activities
-                const token = localStorage.getItem('jwt');
-                if (!token) setTourist(false);
-            } catch (error) {
-                console.log('Error fetching activities:', error);
-                //setError('Failed to fetch activities. Please try again later.');
-            } finally {
-                setLoading(false);
-            }
-            console.log("fetched activities:",filteredActivities)
-        };
-  
-        fetchActivities();
-    }, [filters, sortOption ]); // Re-fetch activities when filters or sort option change
-  
-    //handlign searching
-    const [searchTerm, setSearchTerm] = useState('');
-    
-    const handleSearch = () => {
-      console.log("search term "+searchTerm);
-        if (!searchTerm.trim()) {
-            // If searchTerm is empty, show all activities
-            setFilteredActivities(activities);
-        } else {
-            const filtered = activities.filter((activity) => {
-                return (activity.title && activity.title.toLowerCase().includes(searchTerm.toLowerCase()))
-                    || (activity.tag && activity.tag.toLowerCase().includes(searchTerm.toLowerCase()))
-                    || (activity.Category && activity.Category.toLowerCase().includes(searchTerm.toLowerCase()));
-            });
-            setFilteredActivities(filtered); // Update the filtered activities
-        }
-    };
-  
-    return(
-      <div>
-      {!tourist? <GuestNavBar/>: <NavBar/>}
-
-      <Box sx={{
-        width:'100%' ,
-        overflow: 'hidden',
-        margin: '3%', 
-        marginLeft:'0%',
-        //padding:'2%',
-        height: '90vh', // Set a fixed height for the scrolling area
-        display:'flex',
-        gap:'3%',
-        '&::-webkit-scrollbar': {
-        display: 'none', // Hides the scrollbar for WebKit browsers (Chrome, Safari)
-      },
-        }}>
-
-
-          {/* Activity list */}
-          {loading && <CircularProgress />}
-          {error && <Typography color="error">{error}</Typography>}
-        <Box sx={{ 
-          height: '90%',
-          //marginLeft: '100px',
-          width: '70%',
-          display: "flex",
-          flexDirection: "column",
-          gap: "15px",
-          overflowX: 'hidden',
-          overflowY: 'auto', 
-          '&::-webkit-scrollbar': {
-            width: '8px', // Width of the scrollbar
-            
-            },
-          '&::-webkit-scrollbar-thumb': {
-            backgroundColor: '#ff4d4d', // Color of the scrollbar thumb
-            borderRadius: '10px', // Rounded corners for the scrollbar thumb
-            },
-          '&::-webkit-scrollbar-track': {
-            backgroundColor: '#f1f1f1', // Color of the scrollbar track
-            borderRadius: '10px', // Rounded corners for the scrollbar track
-          },
-          }}> {/* Enable vertical scrolling only */}
-
-          <ActivityList fetchedActivities={filteredActivities} />
-        </Box>
-
-        <Box sx={{display:'flex', flexDirection:'column', gap:'20px', marginTop:'5%'}}>
-        {/*Search bar*/}
-        <Box sx={{}}>
-          <TextField
-            id="search-bar"
-            className="text"
-            onInput={(e) => {
-              setSearchTerm(e.target.value);
-            }}
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                "&.Mui-focused fieldset": {
-                  borderColor: "#ff4d4daa",
-                },
-              },            
-            }}
-            variant="outlined"
-            placeholder="Search..."
-            size="small"
+      {/* AppBar with Search Bar and Filter Button */}
+      <Box sx={{ flexGrow: 1 }}>
+        <AppBar position="static" color="transparent" elevation={0} sx={{ backgroundColor: "white", padding: "16px", borderRadius: "8px" , paddingLeft:"4%"}}>
+          <Toolbar sx={{ display: "flex", justifyContent: "space-between", gap: 2 , width:'60%'}}>
+            <TextField
+              variant="outlined"
+              placeholder="Search activities..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              InputProps={{
+                endAdornment: (
+                  <IconButton onClick={handleSearch}>
+                    <SearchIcon />
+                  </IconButton>
+                ),
+              }}
+              sx={{ width: "50%", borderRadius: "50px", backgroundColor: "#ffffff", "& .MuiOutlinedInput-root": { borderRadius: "50px" } }}
             />
-          <IconButton type="submit" aria-label="search" 
-            sx={{ width:"40px", height:"40px",
-                 marginBottom:"-5px",
-                 marginLeft:"-3px",
-                 backgroundColor: "#ff4d4d", 
-                color: "white", 
-                borderRadius: "3px",
-                "&:hover": {
-                  backgroundColor: "#e63939"
-                } 
-              }}>
-              <SearchIcon  onClick={handleSearch} sx={{ }}/>
-                </IconButton>
-              </Box>
-              {/*End of Search bar*/}
-                {/* for filter and sort next to each other*/}
-                {/* <Box sx={{display:'flex',
-                 flexDirection: anchorEl ? 'column' : 'row' ,
-                  marginTop: '30px',marginLeft :'120px',}}>  */}
+            {/* <IconButton onClick={() => setIsFilterOpen(true)} sx={{ backgroundColor: "#00355a", color: "#ffffff", "&:hover": { backgroundColor: "#1a4975" } }}>
+              <FilterAltIcon />
+            </IconButton> */}
+          </Toolbar>
+        </AppBar>
+      </Box>
+      {/* filters */}
+      <Box sx={{ display: "flex", flexDirection: "row", justifyContent:"space-between",gap: "20px",
+         width:'80%', ml:'5%' , backgroundColor:'#ff6b35' ,padding:'10px', borderRadius:'5px', alignSelf:'center'}}>
+            <FormControl sx={{ flex: 1, minWidth: "150px" }}>
+              <InputLabel>Sort By</InputLabel>
+              <Select value={sortOption} onChange={(e) => setSortOption(e.target.value)} label="Sort By" sx={{ backgroundColor: "white" }}>
+                <MenuItem value="price">Price</MenuItem>
+                <MenuItem value="ratingsAverage">Review</MenuItem>
+                <MenuItem value="-createdAt">Creation Date</MenuItem>
+              </Select>
+            </FormControl>
+            <TextField  label="Max Price" variant="outlined" name="price" type="number" value={filterInputValues.price} 
+            onChange={handleFilterChange} sx={{ flex: 1, minWidth: "150px",backgroundColor: "white",borderRadius: "5px",width:'20%'}}/>
+            <TextField  label="Category" variant="outlined" name="category" value={filterInputValues.category} 
+            onChange={handleFilterChange} sx={{flex: 1, minWidth: "150px", backgroundColor: "white",borderRadius: "5px",}}/>
+            <TextField  label="Rating" variant="outlined" name="rating" value={filterInputValues.rating} 
+            onChange={handleFilterChange} sx={{ flex: 1, minWidth: "150px",backgroundColor: "white",borderRadius: "5px",}} type="number" />
+            <TextField   variant="outlined" name="startDate" value={filterInputValues.startDate} 
+            onChange={handleFilterChange} sx={{ flex: 1, minWidth: "150px",backgroundColor: "white",borderRadius: "5px",}} type="date" />
+            <Button variant="contained" onClick={handleFilter} sx={{ backgroundColor: "#00355a", color: "#ffffff", }}>
+            Apply Filters
+          </Button>
+          <Button variant="outlined" onClick={resetFilters} sx={{ color: "white", borderColor:'white',}}>
+            Reset
+          </Button>
+          </Box>
 
-                  {/*Sort Button*/}
-  
-              <Box sx={{marginLeft :'0px'}}>
-              <Button
-                  id="basic-button"
-                  aria-controls={Boolean(anchorE2) ? 'basic-menu' : undefined}
-                  aria-haspopup="true"
-                  aria-expanded={Boolean(anchorE2) ? 'true' : undefined}
-                  onClick={handleSortClick}
-                  sx={{backgroundColor:"#ff4d4d" , color: "white",}}
-              >
-                  Sort By
-              </Button>
-              <Menu
-                  id="basic-menu"
-                  anchorEl={anchorE2}
-                  open={Boolean(anchorE2)}
-                  onClose={handleSortClose}
-                  MenuListProps={{
-                  'aria-labelledby': 'basic-button',
-                  }}
-                  sx={{width: "200px", }}
-                  onChange={handleSortChange}
-              >
-                  <MenuItem onClick={() => handleSortChange('price')}>Price</MenuItem>
-                  <MenuItem onClick={() => handleSortChange('ratingsAverage')}>Review</MenuItem>
-                  <MenuItem onClick={() => handleSortChange('-createdAt')}>creation date</MenuItem>
-              </Menu>
-              </Box>
-              {/*END OF SORT */}
-                  
-                {/*Filter menu*/}
-                <Box
-                sx={{
-                  position: 'relative',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  }}
-                >
-                <FilterAltIcon
-                onClick={handleFilterClick}
-                sx={{
-                  color : "gray",
-                  cursor: 'pointer',
-                }}
-              >
-              </FilterAltIcon>
-              {Boolean(anchorEl) && ( // Conditional rendering based on anchorEl
-                <Box
-                  sx={{
-                    //padding: '20px',
-                    position: 'absolute', 
-                    top: '50px', 
-                    left: '0', 
-                    //paddingTop:'10px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap:'10px',
-                    borderRadius: '20px',
-                    backgroundColor: 'white', 
-                    borderColor: '1px solid #ff4d4d', 
-                    width: '150%',
-                  }}
-                >
-                <Box sx={{display:'flex',width:'100%', flexWrap: 'wrap',marginLeft:'5px', gap:'5px'}}>
-                  <TextField
-                      label="Price"
-                      variant="outlined"
-                      name="price"
-                      value={filterInputValues.price}
-                      onChange={handleFilterChange}
-                      type="number"
-                      sx={{ width:'45%', height:'5%'}}
-                  />
-                  <TextField
-                      label="Category"
-                      variant="outlined"
-                      name="category"
-                      value={filterInputValues.category}
-                      onChange={handleFilterChange}
-                      type="text"
-                      sx={{ width:'45%', height:'20%'}}
-                  />
-                  <TextField
-                      label="Rating"
-                      variant="outlined"
-                      name="rating"
-                      value={filterInputValues.rating}
-                      onChange={handleFilterChange}
-                      type="number"
-                      sx={{ width:'45%', height:'20%'}}
-                  />
-  
-                  <TextField
-                      //label="Start Date"
-                      variant="outlined"
-                      name="startDate"
-                      value={filterInputValues.startDate}
-                      onChange={handleFilterChange}
-                      type="date"
-                      sx={{ width:'45%', height:'20%'}}
-                  />
-                  </Box>
-                  <Box sx={{display:'flex', marginLeft:'-5px'}}>
-                  <Button variant="contained" onClick={handleFilter} sx={{ ml: 2 , backgroundColor: '#ff4d4d' , width : '50px',}}>
-                      Filter
-                  </Button>
-                  <Button variant="contained" onClick={resetFilters} sx={{ ml: 2 ,backgroundColor: '#ff4d4d',width : '50px'}}>
-                      Reset 
-                  </Button>
-                  </Box>
-                  </Box>
-                  )}
-              </Box>
-              {/* END OF FILTER MENU */}
-  
-              {/* </Box> */}
-              </Box>
-              
+      {/* Content Area */}
+      <Box sx={{ padding: "20px",}}>
+        {loading ? (
+          <CircularProgress sx={{color:"#00355a", m:'2% 5%', fontSize:'20px'}}/>
+        ) : error ? (
+          <Typography sx={{color:"#00355a", m:'2% 5%', fontSize:'20px'}}>{error}</Typography>
+        ) : (
+          <ActivityList fetchedActivities={filteredActivities} />
+        )}
+      </Box>
+
+      {/* Filter Dialog */}
+      {/* <Dialog open={isFilterOpen} onClose={() => setIsFilterOpen(false)} fullWidth maxWidth="sm">
+        <DialogTitle>Filters</DialogTitle>
+        <DialogContent>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+            <FormControl fullWidth>
+              <InputLabel>Sort By</InputLabel>
+              <Select value={sortOption} onChange={(e) => setSortOption(e.target.value)} label="Sort By">
+                <MenuItem value="price">Price</MenuItem>
+                <MenuItem value="ratingsAverage">Review</MenuItem>
+                <MenuItem value="-createdAt">Creation Date</MenuItem>
+              </Select>
+            </FormControl>
+            <TextField fullWidth label="Max Price" variant="outlined" name="price" type="number" value={filterInputValues.price} onChange={handleFilterChange} />
+            <TextField fullWidth label="Category" variant="outlined" name="category" value={filterInputValues.category} onChange={handleFilterChange} />
+            <TextField fullWidth label="Rating" variant="outlined" name="rating" value={filterInputValues.rating} onChange={handleFilterChange} type="number" />
+            <TextField fullWidth label="Start Date" variant="outlined" name="startDate" value={filterInputValues.startDate} onChange={handleFilterChange} type="date" />
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button variant="contained" onClick={handleFilter} sx={{ backgroundColor: "#00355a", color: "#ffffff" }}>
+            Apply Filters
+          </Button>
+          <Button variant="outlined" onClick={resetFilters} sx={{ color: "#00355a" }}>
+            Reset Filters
+          </Button>
+        </DialogActions>
+      </Dialog> */}
     </Box>
-    </div>
-    
   );
-  }
-
-  
-  
+}

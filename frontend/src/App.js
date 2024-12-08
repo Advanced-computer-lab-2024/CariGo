@@ -97,7 +97,7 @@ import BookingServices from "./Pages/Tourist/Booking.js";
 import TransportationSearch from "./Pages/TransportationSearch.js" ;
 
 import AdminViewActivity from "./Pages/activities/AdminViewActivity.js";
-
+import Report from "./components/Report/dashboard/Dashboard.js";
 import Pass from "./Pages/changePassword.js";
 //import UploadDocumentsPage from "./Pages/UploadDocuments.js";
 import UploadDocumentsPage from "./Pages/SignUp/components/UploadDocuments.js"
@@ -156,7 +156,7 @@ function App() {
     <Route path="/Tourist/orders" element={<OrderListScreen />} />
     
     <Route path="Tourist/order_detail/:id" element={<OrderDetailScreen />} />
-    
+          
         <Route path="/" element={<HomePageGuest />} /> {/* Default route */}
         <Route path="/tourist/MyBookings" element={<MyBookings />} /> {/* Default route */}
         <Route path="/tourist/MyBookedActivities" element={<MyBookedActivities />} /> {/* Default route */}
@@ -171,8 +171,9 @@ function App() {
       />
       <Route path="tour_guide/itineraries" element={<UserViewItineraries />} />
       <Route path="tour_guide/inactive_itineraries" element={<InactiveItineraries />} />
+      
       <Route path="tour_guide/itineraries/:id" element={<ItineraryDetails />} />
-      <Route path="tour_guide/report" element={<ViewReport />} />
+      <Route path="Tour-Guide/Report" element={<Report />} />
       <Route path="/Tourist/Products" element={<ViewProductsTourist />} />
       <Route path="/Tourist/Products/ViewProduct/:id" element={<ViewProductTourist />} />
       <Route path="/Tourist/cart" element={<CartComponent />} />
@@ -188,6 +189,7 @@ function App() {
       <Route path="/user_itineraries" element={<AllItineraries />} />
       <Route path="/user_itineraries/:id" element={<UserItinDetails />} />
       <Route path="/Seller" element={<SellerProfile />} />
+      <Route path="/Seller/Report" element={<Report />} />
       <Route path="/Seller/products" element={<ViewProductsSeller />} />
       <Route path="/Seller/products/:id" element={<EditProductD />} />
       <Route path="/Seller/products/addProduct" element={<AddProductSeller />} />

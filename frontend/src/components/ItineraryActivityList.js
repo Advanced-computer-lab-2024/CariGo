@@ -1,6 +1,7 @@
 import * as React from "react";
-import List from "@mui/joy/List";
-import ListItem from "@mui/joy/ListItem";
+import Grid from "@mui/material/Grid";
+// import List from "@mui/joy/List";
+// import ListItem from "@mui/joy/ListItem";
 import Stack from "@mui/joy/Stack";
 import Typography from "@mui/material/Typography";
 import { Modal, Box, Button, TextField } from "@mui/material";
@@ -102,85 +103,97 @@ export default function ItineraryActivityList({ activities, updateActivity, dele
   };
 
   return (
-    <Stack spacing={2} sx={{ padding: 2 }}>
-      <List>
+    <Box sx={{ padding: 2 }}>
+      <Grid container spacing={2}>
         {safeActivities.length > 0 ? (
           safeActivities.map((activity, index) => (
-            <ListItem
-              key={index}
-              sx={{
-                flexDirection: "column",
-                alignItems: "flex-start",
-                backgroundColor: "#f9f9f9",
-                borderRadius: 2,
-                boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
-                padding: 2,
-                marginBottom: 2,
-                transition: "transform 0.2s",
-                "&:hover": {
-                  transform: "scale(1.02)",
-                },
-              }}
-            >
-              <Typography variant="h6" sx={{ fontWeight: "bold", color: "#333" }}>
-                {activity.name || "Unnamed Activity"}
-              </Typography>
-              <Typography variant="body2" sx={{ color: "#555", marginTop: 1 }}>
-                {activity.description || "No description available."}
-              </Typography>
-              <Typography
-                variant="body2"
-                sx={{ color: "#777", marginTop: 1 }}
+            <Grid item xs={12} sm={6} md={4} key={index}>
+              <Box
+                sx={{
+                  backgroundColor: "#f9f9f9",
+                  borderRadius: 2,
+                  boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+                  padding: 2,
+                  height: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  transition: "transform 0.2s",
+                  "&:hover": {
+                    transform: "scale(1.02)",
+                  },
+                }}
               >
-                <strong>Start Date:</strong>{" "}
-                {activity.start_date
-                  ? new Date(activity.start_date).toLocaleString()
-                  : "N/A"}
-              </Typography>
-              <Typography
-                variant="body2"
-                sx={{ color: "#777", marginTop: 1 }}
-              >
-                <strong>End Date:</strong>{" "}
-                {activity.end_date
-                  ? new Date(activity.end_date).toLocaleString()
-                  : "N/A"}
-              </Typography>
-              <Box sx={{ display: "flex", gap: "10px", marginTop: "10px" }}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={() => handleOpen(activity)}
-                  sx={{ textTransform: "none" }}
-                >
-                  Edit
-                </Button>
-                <Button
-                  variant="contained"
-                  color="error"
-                  onClick={() => handleDelete(activity._id)}
-                  sx={{ textTransform: "none" }}
-                >
-                  Delete
-                </Button>
+                <Typography variant="h6" sx={{ fontWeight: "bold", color: "#333" }}>
+                  {activity.name || "Unnamed Activity"}
+                </Typography>
+                <Typography variant="body2" sx={{ color: "#555", marginTop: 1, flexGrow: 1 }}>
+                  {activity.description || "No description available."}
+                </Typography>
+                <Typography variant="body2" sx={{ color: "#777", marginTop: 1 }}>
+                  <strong>Start:</strong>{" "}
+                  {activity.start_date
+                    ? new Date(activity.start_date).toLocaleString()
+                    : "N/A"}
+                </Typography>
+                <Typography variant="body2" sx={{ color: "#777", marginTop: 1 }}>
+                  <strong>End:</strong>{" "}
+                  {activity.end_date
+                    ? new Date(activity.end_date).toLocaleString()
+                    : "N/A"}
+                </Typography>
+                <Box sx={{ display: "flex", gap: "10px", marginTop: "10px" }}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => handleOpen(activity)}
+                    sx={{
+                      backgroundColor: '#004e89', 
+                      '&:hover': { backgroundColor: '#003d6f' },
+                      textTransform: "none",
+                      flex: 1
+                    }}
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="error"
+                    onClick={() => handleDelete(activity._id)}
+                    sx={{ 
+                      backgroundColor: '#a70000',textTransform: "none", flex: 1 }}
+                  >
+                    Delete
+                  </Button>
+                </Box>
               </Box>
-            </ListItem>
+            </Grid>
           ))
         ) : (
-          <ListItem sx={{ backgroundColor: "#f9f9f9", borderRadius: 2, padding: 2 }}>
-            No activities available for this itinerary
-          </ListItem>
+          <Grid item xs={12}>
+            <Box sx={{ backgroundColor: "#f9f9f9", borderRadius: 2, padding: 2 }}>
+              No activities available for this itinerary
+            </Box>
+          </Grid>
         )}
-      </List>
+      </Grid>
 
       {/* Create New Activity Button */}
-      <Button
-        variant="contained"
-        onClick={handleNewActivity}
-        sx={{ backgroundColor: "#007BFF", color: "#fff", textTransform: "none", padding: "10px 20px", borderRadius: 3 }}
-      >
-        Add Activity
-      </Button>
+      <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
+        <Button
+          variant="contained"
+          onClick={handleNewActivity}
+          sx={{
+            backgroundColor: '#004e89', 
+            '&:hover': { backgroundColor: '#003d6f' },
+            color: "#fff",
+            textTransform: "none",
+            padding: "10px 20px",
+            // borderRadius: 3,
+          }}
+        >
+          Add Activity
+        </Button>
+      </Box>
 
       {/* Edit/Create Activity Modal */}
       <Modal open={open} onClose={handleClose}>
@@ -253,6 +266,6 @@ export default function ItineraryActivityList({ activities, updateActivity, dele
           </Button>
         </Box>
       </Modal>
-    </Stack>
+    </Box>
   );
 }

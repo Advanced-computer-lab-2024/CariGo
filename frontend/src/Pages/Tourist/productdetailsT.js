@@ -8,11 +8,33 @@ import ResponsiveAppBar from "./components/TouristNavBar";
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import FavoriteOutlinedIcon from '@mui/icons-material/FavoriteOutlined';
 import { ToastContainer } from "react-toastify";
+import avatar from "../../assets/profilePic.png";
+
+const folderPics = `http://localhost:4000/public/img/products/`;
+
 
 const { Title, Paragraph, Text } = Typography;
 const { Content, Header } = Layout;
 
 const API_BASE_URL = 'http://localhost:4000'; // Replace with your actual API URL
+
+const leftColumnStyle = {
+  // backgroundColor: '#f7c59f',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  padding: '20px',
+  height: '100%',
+};
+
+const rightColumnStyle = {
+  // backgroundColor: '#f7e1c6',
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  padding: '40px',
+  height: '100%',
+};
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -20,6 +42,8 @@ const ProductDetails = () => {
   const [cartItems, setCartItems] = useState([]);
 
   const [isInWishlist, setIsInWishlist] = useState(false); // Initially, the icon will be the outlined one
+
+
 
 // Fetch user data and check if the product is in the wishlist
   const isTheproductInTheWishlist = async () => {
@@ -310,100 +334,91 @@ const removeProductFromWishlist = async () => {
   const code = localStorage.getItem("currencyCode") || "EGP";
 
   return (
-    <Layout style={{ height: "100vh" }}>
-      <Layout>
-        <Header style={{ background: "#001529", padding: 0 }}>
-          <ResponsiveAppBar />
-        </Header>
-        <ToastContainer />
-        <Content style={{ padding: "20px", overflowY: "auto" }}>
-          <Row
-            gutter={[32, 16]}
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-around",
-              alignItems: "flex-start",
-            }}
-          >
-            <Col span={10} style={{ paddingRight: "20px" }}>
-              <ProductImageList images={product.images || []} />
-            </Col>
+    <Layout style={{ minHeight: "100vh" }}>
+      <Header style={{ background: "#001529", padding: 0 }}>
+        <ResponsiveAppBar />
+      </Header>
+      <ToastContainer />
+      <Content style={{ padding: "20px", display: "flex", flexDirection: "column" }}>
+        <Row style={{ flex: 1 }}>
+          {/* Left half: Product Image with container-like structure */}
+          <Col span={12} style={leftColumnStyle}>
+            <div style={{ maxWidth: '100%', maxHeight: '80vh', overflow: 'hidden', borderRadius: '8px' }}>
+              <img
+                src={product.mainImage ? folderPics + product.mainImage : avatar}
+                alt={product.name}
+                style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+              />
+            </div>
+          </Col>
 
-            <Col span={14} style={{ paddingLeft: "20px" }}>
-              <Title level={2}>{product.name}</Title>
-              <Text
-                type="secondary"
-                style={{ display: "block", marginBottom: "8px" }}
-              >
-                Sold by: {(product.author?.sellerName.length > 0 ? product.author?.sellerName : product.author?.username) || "Unknown Seller"}
+          {/* Right half: Product Details with new background color */}
+          <Col span={12} style={rightColumnStyle}>
+            {/* Product Name */}
+            <Title level={2} >{product.name}</Title>
+
+            {/* Product Description */}
+            <Paragraph style={{ fontSize: '16px', marginBottom: '20px' }}>
+              {product.description || "No description available."}
+            </Paragraph>
+
+            {/* Seller Information */}
+            <Text style={{ fontSize: '18px', marginBottom: '16px' }}>
+              Sold by: {(product.author?.sellerName?.length > 0 ? product.author?.sellerName : product.author?.username) || "Unknown Seller"}
+            </Text>
+
+            {/* Ratings */}
+            <div style={{ marginBottom: '16px' }}>
+              <Rate allowHalf disabled value={product.ratingsAverage || 0} />
+              <Text style={{ marginLeft: '8px' }}>
+                {product.ratingsAverage || 0}/5 ({product.ratingsQuantity || 0} reviews)
               </Text>
+            </div>
 
-              <Row>
-                <Rate allowHalf disabled value={product.ratingsAverage || 0} />
-                <Text
-                  type="secondary"
-                  style={{
-                    display: "block",
-                    marginBottom: "8px",
-                    marginLeft: "8px",
-                  }}
-                >
-                  {product.ratingsAverage || 0}/5 (
-                  {product.ratingsQuantity || 0} reviews)
-                </Text>
-              </Row>
-              <Title level={3}>
-                ${(product.price * conversionRate).toFixed(2)} {code}
-              </Title>
-              {/* Wishlist Icon */}
-              <span
-                onClick={handleWishlistClick}
-                style={{ fontSize: "24px", marginLeft: "10px", cursor: "pointer" }}
-              >
-              {isInWishlist ? (
-              <FavoriteOutlinedIcon style={{ fontSize: "24px" }} />
-              ) : (
-              <FavoriteBorderOutlinedIcon style={{ fontSize: "24px" }} />
-              )}
-              </span>
+            {/* Price */}
+            <Title level={3} style={{ marginBottom: '16px' }}>
+              ${(product.price * conversionRate).toFixed(2)} {code}
+            </Title>
 
-              
+            {/* Stock Information */}
+            <Text type="secondary" style={{ fontSize: '16px', marginBottom: '16px' }}>
+              Only {product.quantity || "0"} left in stock!
+            </Text>
 
-              <Paragraph style={{ marginTop: "16px" }}>
-                {product.description || "No description available."}
-              </Paragraph>
-
-              <div style={{ marginTop: "16px" }}>
-                <Text
-                  type="secondary"
-                  style={{ display: "block", marginTop: "8px" }}
-                >
-                  Only {product.quantity || "0"} left in stock!
-                </Text>
-              </div>
-
+            {/* Add to Cart and Wishlist */}
+            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
               <Button 
                 type="primary" 
                 icon={<ShoppingCartOutlined />} 
                 size="large"
                 onClick={addToCart}
-                style={{ marginTop: "16px" }}
+                style={{ marginRight: '16px', height: '50px', fontSize: '18px' }}
               >
                 Add to Cart
               </Button>
-            </Col>
-          </Row>
+              <span
+                onClick={handleWishlistClick}
+                style={{ cursor: 'pointer' }}
+              >
+                {isInWishlist ? (
+                  <FavoriteOutlinedIcon style={{ fontSize: '32px', color: '#ff4d4f' }} />
+                ) : (
+                  <FavoriteBorderOutlinedIcon style={{ fontSize: '32px' }} />
+                )}
+              </span>
+            </div>
+          </Col>
+        </Row>
 
-          <Divider style={{ marginTop: "40px", marginBottom: "40px" }} />
-
-          <Row>
-            <Col span={24}>
-              <ProductReviews id={id} />
-            </Col>
-          </Row>
-        </Content>
-      </Layout>
+        {/* Product Reviews Section */}
+        <Divider style={{ margin: '40px 0' }} />
+        <Row>
+          <Col span={24}>
+            {/* <Title level={3}>Product Reviews</Title> */}
+            <ProductReviews id={id} />
+          </Col>
+        </Row>
+      </Content>
     </Layout>
   );
 };

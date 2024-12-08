@@ -21,25 +21,65 @@ import AccessibleIcon from "@mui/icons-material/Accessible";
 import Divider from "@mui/material/Divider";
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import BookingPaymentPopUp from "./Tourist/components/BookingPaymentPopUp";
+import { jwtDecode } from "jwt-decode";
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+const stripePromise = loadStripe('pk_test_51QLoL4AkXvwFjwTIX8acMj27pC8YxdOhmoUzn0wbUhej1xUFgFlfgYtXRGmggbKUI6Yfpxz08i9shcsfszv6y9iP0007q608Ny'); // Publishable key
+
 const ItineraryDetails = () => {
   const { id } = useParams(); // Get the itinerary ID from the URL
   const [itinerary, setItinerary] = useState(null);
   const [localInterestedUsers, setLocalInterestedUsers] = useState([]);
   const navigate = useNavigate();
-  const token = localStorage.getItem('jwt');
+  const [token,setToken] = useState(localStorage.getItem('jwt'));
   const [tourist,setTourist]= useState(false);
+  const [user, setUser] = useState();
 
+  useEffect(() => {
+  const fetchUser = async () => {
+    try {
+      const token = localStorage.getItem("jwt");
+      const id = jwtDecode(token).id;
+
+      const response = await axios.get(
+        `http://localhost:4000/cariGo/users/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+        
+      console.log("API Response Data:", response.data); // Logs the fetched data
+      setUser(Object.assign({}, response.data));
+    } catch (err) {
+      console.error("Error fetching profile:", err);
+    }
+  };
+ 
+  fetchUser();
+  }, []);
+  // useEffect(() => {
+  //   if (user) {
+  //     console.log("Updated user state:", user); // Logs the state after it updates
+  //   }
+  // }, [user]);
+
+  const [isPaymentPopupOpen, setIsPaymentPopupOpen] = useState(false);
 
   const handleClick = () => {
-    if (token)
-      navigate(`/checkout/itinerary/${id}`); // Update the navigation path
+    if (token){
+      setIsPaymentPopupOpen(true);
+      // navigate(`/checkout/itinerary/${id}`); // Update the navigation path
+    }
+      
     else navigate(`/login`);
   };
   
   useEffect(() => {
     const fetchItineraryDetails = async () => {
       try {
-        const token = localStorage.getItem("jwt");
         const response = await fetch(
           `/cariGo/Event/readSingleItinerary/${id}`,
           {
@@ -73,7 +113,7 @@ const ItineraryDetails = () => {
   }
 
   const {start_date,end_date,locations,price,tags,activities,transportation,accommodation,
-    ratingsAverage,language,pick_up,drop_off,accessibility,title,isOpened
+    ratingsAverage,language,pick_up,drop_off,accessibility,title,isOpened,author,
   } = itinerary;
 
    // Function to format the date and time
@@ -125,17 +165,70 @@ const ItineraryDetails = () => {
     }
   };
 
+  const handlePlaceOrder = async (paymentMethod,TotalPrice,NumberOfTickets) => {
+    // setLoading(true);
+    try {
+      const token = localStorage.getItem("jwt");
+      if (!token) {
+        throw new Error("No token found. Please log in.");
+      }
+      
+
+      const endpoint = `http://localhost:4000/cariGo/Event/BookItinerary/${id}`;
+
+      // const payload = 
+      console.log(paymentMethod,TotalPrice,NumberOfTickets)
+      const response = await axios.post(endpoint, {
+        PaymentMethod:paymentMethod,
+        TotalPrice:TotalPrice,
+        NumberOfTickets:NumberOfTickets
+      }, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.data) {
+        navigate("/tourist/MyBookings");
+      }
+    } catch (error) {
+      console.error("Error during booking:", error);
+      // setError(error.response?.data?.error || 'Booking failed');
+    }
+  };
   const conversionRate = localStorage.getItem("conversionRate") || 1;
   const code = localStorage.getItem("currencyCode") || "EGP";
 
+  const styles = {
+    ratingContainer: {
+      display: "flex",
+      alignItems: "center",
+      gap: "4px",
+      marginBottom: "16px",
+    },
+    star: {
+      color: "#ff6b35",
+      fontSize: "20px",
+    },
+    ratingText: {
+      fontSize: "20px",
+      color: "#cc5b22",
+    },
+    author: {
+      fontSize: "16px",
+      color: "#cc5b22",
+      marginBottom: "8px",
+    },
+  }
   return (
     <>
-      {tourist? <ResponsiveAppBar />: <GuestNavBar/>}
+      {token? <ResponsiveAppBar />: <GuestNavBar/>}
       <Button
          onClick={() => navigate(`/Tourist-itineraries`)}
           sx={{
             backgroundColor: "white",
-            color: "#126782",
+            color: "#00355a",
             borderRadius: "8px",
             width: "80px",
             ml: "11%",mt:'2%',mb:'0%',
@@ -167,10 +260,11 @@ const ItineraryDetails = () => {
                     justifyContent: "space-between", // Push content to edges
                     alignItems: "center",
                     width: "90%", // Ensure it spans full width
-                    color: "#126782",
+                    color: "#00355a",
                   }}
                 >
                   {/* Title */}
+                  <Box sx={{display: "flex", flexDirection: "column",}}>
                   <Typography
                     variant="h4"
                     sx={{
@@ -180,18 +274,22 @@ const ItineraryDetails = () => {
                   >
                     {title || "Anonymous"}
                   </Typography>
-
+                  <p style={styles.author}>by {author?.username ? author?.username :"Big Bang"}</p>
                   {/* Rating */}
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                    }}
-                  >
-                    <StarIcon sx={{ color: "#FFD700", marginRight: "5px",fontSize:'30px' }} />
-                    <Typography variant="h6" sx={{ fontWeight: "bold" ,fontSize:'20px' }}>
-                      {ratingsAverage || "No rating"}
-                    </Typography>
+                  <div style={styles.ratingContainer}>
+                    {"★★★★★".split("").map((star, index) => (
+                      <span
+                        key={index}
+                        style={{
+                          ...styles.star,
+                          opacity: index < Math.floor(ratingsAverage) ? 1 : 0.5,
+                        }}
+                      >
+                        {star}
+                      </span>
+                    ))}
+                    <span style={styles.ratingText}>{ratingsAverage}</span>
+                  </div>
                   </Box>
                 </Box>
 
@@ -200,7 +298,7 @@ const ItineraryDetails = () => {
                 >
                   {tags?.map((tag) => (
                     <Chip key={tag._id}label={tag.title}
-                      sx={{ backgroundColor: "#126782", color: "white" }}
+                      sx={{ backgroundColor: "#00355a", color: "white" }}
                     />
                   ))}
                 </Box>
@@ -223,7 +321,7 @@ const ItineraryDetails = () => {
 
               <Typography
                 variant="h5"
-                sx={{ marginBottom: "15px", color: "#126782" }}
+                sx={{ marginBottom: "15px", color: "#00355a" }}
               >
                 Itinerary Details
               </Typography>
@@ -231,15 +329,15 @@ const ItineraryDetails = () => {
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={6}>
                   <Box sx={{ display: "flex",margin: "2% 0", }}>
-                    <CalendarMonthIcon sx={{color:'#ff4d4d', fontSize:'28px',}}/>
-                    <Box sx={{color:'#126782', marginLeft:'10px',display:'flex', flexDirection:'column', gap:'5px'}}>
+                    <CalendarMonthIcon sx={{color:'#00355a', fontSize:'28px',}}/>
+                    <Box sx={{color:'#00355a', marginLeft:'10px',display:'flex', flexDirection:'column', gap:'5px'}}>
                       {/* <Typography variant="body1" sx={{ fontWeight: "bold" }}>
                         Start Date:
                       </Typography> */}
                       <Typography variant="body2" sx={{fontSize:'18px'}}>
                         {formatDateTime(start_date)}
                       </Typography>
-                      <Box sx={{display:'flex', gap:'5px', color:'#126782'}}>
+                      <Box sx={{display:'flex', gap:'5px', color:'#00355a'}}>
                         <AccessTimeIcon sx={{fontSize: "22px",}}/>
                         <Typography sx={{ }}>
                             {formatDateHour(start_date)}
@@ -250,15 +348,15 @@ const ItineraryDetails = () => {
                 </Grid>
                 <Grid item xs={12} sm={6}>
                   <Box sx={{ display: "flex",margin: "2% 0", }}>
-                    <CalendarMonthIcon sx={{color:'#ff4d4d', fontSize:'28px',}}/>
-                    <Box sx={{color:'#126782', marginLeft:'10px',display:'flex', flexDirection:'column', gap:'5px'}}>
+                    <CalendarMonthIcon sx={{color:'#00355a', fontSize:'28px',}}/>
+                    <Box sx={{color:'#00355a', marginLeft:'10px',display:'flex', flexDirection:'column', gap:'5px'}}>
                       {/* <Typography variant="body1" sx={{ fontWeight: "bold" }}>
                         Start Date:
                       </Typography> */}
                       <Typography variant="body2" sx={{fontSize:'18px'}}>
                         {formatDateTime(end_date)}
                       </Typography>
-                      <Box sx={{display:'flex', gap:'5px', color:'#126782'}}>
+                      <Box sx={{display:'flex', gap:'5px', color:'#00355a'}}>
                         <AccessTimeIcon sx={{fontSize: "22px",}}/>
                         <Typography sx={{ }}>
                             {formatDateHour(end_date)}
@@ -277,10 +375,10 @@ const ItineraryDetails = () => {
                     }}
                   >
                     <PinDropIcon
-                      sx={{ fontSize:'30px', color: "#ff4d4d" }}
+                      sx={{ fontSize:'30px', color: "#00355a" }}
                     />
-                    <Box sx={{color:'#126782', marginLeft:'10px',display:'flex', flexDirection:'column', gap:'5px'}}>
-                      <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                    <Box sx={{color:'#00355a', marginLeft:'10px',display:'flex', flexDirection:'column', gap:'5px'}}>
+                      <Typography variant="body1" sx={{ fontWeight: "bold", color:'#ff6b35' }}>
                       Location {locations.length > 1 ? 's' : ''}
                       </Typography>
                       <Typography variant="body2">
@@ -298,10 +396,10 @@ const ItineraryDetails = () => {
                     }}
                   >
                     <AttachMoneyIcon
-                      sx={{ fontSize:'30px', color: "#ff4d4d" }}
+                      sx={{ fontSize:'30px', color: "#00355a" }}
                     />
-                    <Box sx={{color:'#126782', marginLeft:'10px',display:'flex', flexDirection:'column', gap:'5px'}}>
-                      <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                    <Box sx={{color:'#00355a', marginLeft:'10px',display:'flex', flexDirection:'column', gap:'5px'}}>
+                      <Typography variant="body1" sx={{ fontWeight: "bold", color:'#ff6b35' }}>
                         Price
                       </Typography>
                       <Typography variant="body2">
@@ -318,7 +416,7 @@ const ItineraryDetails = () => {
 
               <Typography
                 variant="h5"
-                sx={{ marginBottom: "15px", color: "#126782" }}
+                sx={{ marginBottom: "15px", color: "#00355a" }}
               >
                 Additional Information
               </Typography>
@@ -333,13 +431,13 @@ const ItineraryDetails = () => {
                     }}
                   >
                     <LanguageIcon
-                      sx={{ marginRight: "10px", color: "#126782" }}
+                      sx={{ marginRight: "10px", color: "#00355a" }}
                     />
                     <Box>
-                      <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                        Language of Tour Guide:
+                      <Typography variant="body1" sx={{ fontWeight: "bold",color:"#ff6b35" }}>
+                        Language of Tour Guide
                       </Typography>
-                      <Typography variant="body2">
+                      <Typography variant="body2"  color= "#00355a" >
                         {language || "Not specified"}
                       </Typography>
                     </Box>
@@ -354,13 +452,13 @@ const ItineraryDetails = () => {
                     }}
                   >
                     <DirectionsBusIcon
-                      sx={{ marginRight: "10px", color: "#126782" }}
+                      sx={{ marginRight: "10px", color: "#00355a" }}
                     />
                     <Box>
-                      <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                        Transportation:
+                      <Typography variant="body1" sx={{ fontWeight: "bold",color:"#ff6b35"  }}>
+                        Transportation
                       </Typography>
-                      <Typography variant="body2">
+                      <Typography variant="body2"  color= "#00355a">
                         {transportation || "Not specified"}
                       </Typography>
                     </Box>
@@ -375,13 +473,13 @@ const ItineraryDetails = () => {
                     }}
                   >
                     <DirectionsBusIcon
-                      sx={{ marginRight: "10px", color: "#126782" }}
+                      sx={{ marginRight: "10px", color: "#00355a" }}
                     />
                     <Box>
-                      <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                        Pick-up:
+                      <Typography variant="body1" sx={{ fontWeight: "bold" ,color:"#ff6b35" }}>
+                        Pick-up
                       </Typography>
-                      <Typography variant="body2">
+                      <Typography variant="body2"  color= "#00355a">
                         {pick_up || "Not specified"}
                       </Typography>
                     </Box>
@@ -396,13 +494,13 @@ const ItineraryDetails = () => {
                     }}
                   >
                     <DirectionsBusIcon
-                      sx={{ marginRight: "10px", color: "#126782" }}
+                      sx={{ marginRight: "10px", color: "#00355a" }}
                     />
                     <Box>
-                      <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                        Drop-off:
+                      <Typography variant="body1" sx={{ fontWeight: "bold",color:"#ff6b35"  }}>
+                        Drop-off
                       </Typography>
-                      <Typography variant="body2">
+                      <Typography variant="body2"  color= "#00355a">
                         {drop_off || "Not specified"}
                       </Typography>
                     </Box>
@@ -416,12 +514,12 @@ const ItineraryDetails = () => {
                       marginBottom: "10px",
                     }}
                   >
-                    <HotelIcon sx={{ marginRight: "10px", color: "#126782" }} />
+                    <HotelIcon sx={{ marginRight: "10px", color: "#00355a" }} />
                     <Box>
-                      <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                        Accommodation:
+                      <Typography variant="body1" sx={{ fontWeight: "bold",color:"#ff6b35"  }}>
+                        Accommodation
                       </Typography>
-                      <Typography variant="body2">
+                      <Typography variant="body2"  color= "#00355a">
                         {accommodation || "Not specified"}
                       </Typography>
                     </Box>
@@ -436,13 +534,13 @@ const ItineraryDetails = () => {
                     }}
                   >
                     <AccessibleIcon
-                      sx={{ marginRight: "10px", color: "#126782" }}
+                      sx={{ marginRight: "10px", color: "#00355a" }}
                     />
                     <Box>
-                      <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                        Accessibility:
+                      <Typography variant="body1" sx={{ fontWeight: "bold",color:"#ff6b35"  }}>
+                        Accessibility
                       </Typography>
-                      <Typography variant="body2">
+                      <Typography variant="body2"  color= "#00355a">
                         {accessibility || "Not specified"}
                       </Typography>
                     </Box>
@@ -454,7 +552,7 @@ const ItineraryDetails = () => {
 
               <Typography
                 variant="h5"
-                sx={{ mb:'0.5%', color: "#126782" }}
+                sx={{ mb:'0.5%', color: "#00355a" }}
               >
                 Activities
               </Typography>
@@ -469,7 +567,7 @@ const ItineraryDetails = () => {
                   position: "sticky",
                   top: "20px",
                   backgroundColor: isOpened ? "#ffffff" : "#f0f4f8",
-                  border: isOpened ? "none" : "2px dashed #126782",
+                  border: isOpened ? "none" : "2px dashed #00355a",
                   transition: "all 0.3s ease-in-out",
                 }}
               >
@@ -477,18 +575,18 @@ const ItineraryDetails = () => {
                   <>
                     <Typography
                       variant="h6"
-                      sx={{ marginBottom: "15px", color: "#126782" }}
+                      sx={{ marginBottom: "15px", color: "#00355a" }}
                     >
                       Book This Itinerary
                     </Typography>
-                    <Typography variant="body1" sx={{ marginBottom: "15px" }}>
+                    <Typography variant="body1" sx={{ marginBottom: "15px" , color: "#00355a" }}>
                       Experience this amazing journey from{" "}
                       {formatDateTime(start_date)} to {formatDateTime(end_date)}
                       .
                     </Typography>
                     <Typography
                       variant="h5"
-                      sx={{ marginBottom: "15px", fontWeight: "bold" }}
+                      sx={{ marginBottom: "15px", fontWeight: "bold", color: "#ff6b35" }}
                     >
                       {price
                         ? `${(price * conversionRate).toFixed(2)} ${code}`
@@ -500,27 +598,41 @@ const ItineraryDetails = () => {
                       fullWidth
                       onClick={handleClick}
                       sx={{
-                        backgroundColor: "#126782",
-                        "&:hover": {
-                          backgroundColor: "#0d4e63",
-                        },
+                        backgroundColor: "#ff6b35",
+                        // "&:hover": {
+                        //   backgroundColor: "#0d4e63",
+                        // },
                       }}
                     >
                       Book Now
                     </Button>
+                    <Elements stripe={stripePromise}>
+                      {isPaymentPopupOpen && (
+                        <BookingPaymentPopUp
+                          open={isPaymentPopupOpen}
+                          onClose={() => setIsPaymentPopupOpen(false)}
+                          checkoutCart={handlePlaceOrder}
+                          amount={(price * conversionRate).toFixed(2)}
+                          user={user}
+                          itineraryName={title} 
+                          startDate={start_date}
+                          endDate={end_date}
+                        />
+                      )}
+                    </Elements>
                   </>
                 ) : (
                   <Box sx={{ textAlign: "center" }}>
                     <Typography
                       variant="h6"
-                      sx={{ marginBottom: "15px", color: "#126782" }}
+                      sx={{ marginBottom: "15px", color: "#00355a" }}
                     >
                       Booking Coming Soon!
                     </Typography>
                     <AccessTimeIcon
                       sx={{
                         fontSize: 60,
-                        color: "#126782",
+                        color: "#00355a",
                         marginBottom: "15px",
                       }}
                     />
@@ -533,8 +645,8 @@ const ItineraryDetails = () => {
                       color="primary"
                       fullWidth
                       sx={{
-                        borderColor: "#126782",
-                        color: "#126782",
+                        borderColor: "#00355a",
+                        color: "#00355a",
                         "&:hover": {
                           backgroundColor: "#e6f7ff",
                         },

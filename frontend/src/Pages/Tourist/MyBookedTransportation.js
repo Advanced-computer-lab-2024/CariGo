@@ -8,8 +8,8 @@ import InputBase from "@mui/material/InputBase";
 import MyBookedTransCard from "./components/MyBookedTransCard.js";
 import RateReviewIcon from '@mui/icons-material/RateReview'; // Review icon for activity
 import PersonPinIcon from '@mui/icons-material/PersonPin'; // New icon for Tour Guide review
-import ActivityReviewForm from "frontend/src/components/ActivityReviewForm.js"; // Renamed to ActivityReviewForm
-import TourGuideReviewForm from "frontend/src/components/TourGuideReviewForm.js"; // Renamed to TourGuideReviewForm
+import ActivityReviewForm from "../../components/ActivityReviewForm.js"; // Renamed to ActivityReviewForm
+import TourGuideReviewForm from "../../components/TourGuideReviewForm.js"; // Renamed to TourGuideReviewForm
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",

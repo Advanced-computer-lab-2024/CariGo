@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Grid, Box } from '@mui/material';
 import PageContainer from './components/PageContainer';
-
+import NavBar from "../../NavBarTourGuide"
 // components
 import SalesOverview from './components/SalesOverview';
 import YearlyBreakup from './components/YearlyBreakup';
@@ -11,7 +11,19 @@ import Blog from './components/Blog';
 import MonthlyEarnings from './components/MonthlyEarnings';
 
 
-const Repo = () => {
+const Report = () => {
+  let TG;let ADV; let mt= 20;
+  const role = localStorage.getItem("role");
+  console.log(role);
+  
+  if(role==="Tour_Guide")
+    TG= true
+  else
+     if(role==="Advertiser"){
+      ADV=true;
+      mt=0;
+     }
+  
   const [revenue,setRevenue] = useState(null);
   const [tourists,setTourists] = useState(null);
   const [events,setEvents] = useState(null)
@@ -35,7 +47,9 @@ const Repo = () => {
 
   }
   return (
-    <PageContainer title="Dashboard" description="this is Dashboard">
+    <PageContainer  description="this is Dashboard">
+      {TG &&<NavBar />}
+      <div style={{marginTop:`${mt}px`}}>
       <Box>
         <Grid container spacing={3}>
           <Grid item xs={12} lg={8}>
@@ -57,13 +71,14 @@ const Repo = () => {
           <Grid item xs={12} lg={8}>
             <ProductPerformance  events={events} />
           </Grid>
-          <Grid item xs={12}>
-            <Blog />
-          </Grid>
+          {/* <Grid item xs={12}>
+            
+          </Grid> */}
         </Grid>
       </Box>
+      </div>
     </PageContainer>
   );
 };
 
-export default Repo;
+export default Report;
