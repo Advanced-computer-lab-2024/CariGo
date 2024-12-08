@@ -4,8 +4,10 @@ import { Box, Typography, Chip, Avatar } from "@mui/material";
 import PinDropIcon from "@mui/icons-material/PinDrop";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import StarIcon from "@mui/icons-material/Star";
-import ResponsiveAppBar from "./Tourist/components/TouristNavBar";
-import GuestNavBar from "../components/NavBarTourist";
+import TouristNavBar from "./Tourist/components/TouristNavBar.js";
+import GuestNavBar from "./Tourist/components/GuestNavBar";
+import GuestSideBar from "./Tourist/components/GuestSideBar";
+import TouristSideBar from "./Tourist/components/TouristSideBar";
 import UserAcList from "../components/UserAcList"; // Import the new MarkerList component
 import "../components/styles/CompanyInfo.css";
 import logoImage from "../assets/itinerary.png"; // Correct relative path
@@ -222,8 +224,23 @@ const ItineraryDetails = () => {
     },
   }
   return (
-    <>
-      {token? <ResponsiveAppBar />: <GuestNavBar/>}
+    <Box sx={{ display: "flex", backgroundColor: "#f9f9f9", minHeight: "100vh" }}>
+    {/* Sidebar */}
+    <Box>
+      {!tourist ? <GuestSideBar /> : <TouristSideBar />}
+    </Box>
+
+    {/* Main Content Area */}
+    <Box
+      sx={{
+        flexGrow: 1,
+        marginLeft: "80px", // Sidebar width
+        marginTop: "64px", // AppBar height
+        padding: "16px",
+      }}
+    >
+      {/* Top Navbar */}
+      {!tourist ? <GuestNavBar /> : <TouristNavBar />}
       <Button
          onClick={() => navigate(`/Tourist-itineraries`)}
           sx={{
@@ -231,7 +248,7 @@ const ItineraryDetails = () => {
             color: "#00355a",
             borderRadius: "8px",
             width: "80px",
-            ml: "11%",mt:'2%',mb:'0%',
+            ml: "1%",mt:'2%',mb:'0%',
             fontSize:'18px'
           }}
         >
@@ -565,7 +582,7 @@ const ItineraryDetails = () => {
                 sx={{
                   padding: "20px",
                   position: "sticky",
-                  top: "20px",
+                  top: "80px",
                   backgroundColor: isOpened ? "#ffffff" : "#f0f4f8",
                   border: isOpened ? "none" : "2px dashed #00355a",
                   transition: "all 0.3s ease-in-out",
@@ -672,8 +689,7 @@ const ItineraryDetails = () => {
             </Grid>
           </Grid>
         </Paper>
-      </Box>
-    </>
+        </Box></Box> </Box>
   );
 };
 
