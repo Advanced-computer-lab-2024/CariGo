@@ -96,6 +96,7 @@ export default function TouristItineraries (){
      // Combined useEffect for Fetching Itineraries with Filters and Sort
      useEffect(() => {
         const fetchVintages = async () => {
+          setLoading(true);
             try {
               const queryParams = new URLSearchParams();
               if(filters.tag) {
@@ -176,23 +177,13 @@ export default function TouristItineraries (){
     return(
       <Box sx={{ backgroundColor: "#f9f9f9", minHeight: "100vh" }}>
       {!tourist ? <GuestNavBar /> : <NavBar />}
+      {/* AppBar with Search Bar and Filter Button */}
       <Box sx={{ flexGrow: 1 }}>
-        <AppBar
-          position="static"
-          color="transparent"
-          elevation={0}
-          sx={{ backgroundColor: "#ffffff", padding: "16px", borderRadius: "8px" }}
-        >
-          <Toolbar
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              gap: 2,
-            }}
-          >
+        <AppBar position="static" color="transparent" elevation={0} sx={{ backgroundColor: "white", padding: "16px", borderRadius: "8px" , paddingLeft:"4%"}}>
+          <Toolbar sx={{ display: "flex", justifyContent: "space-between", gap: 2 , width:'60%'}}>
             <TextField
               variant="outlined"
-              placeholder="Search itineraries..."
+              placeholder="Search historical places..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               InputProps={{
@@ -202,35 +193,43 @@ export default function TouristItineraries (){
                   </IconButton>
                 ),
               }}
-              sx={{
-                width: "50%",
-                borderRadius: "50px",
-                backgroundColor: "#ffffff",
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: "50px",
-                },
-              }}
+              sx={{ width: "50%", borderRadius: "50px", backgroundColor: "#ffffff", "& .MuiOutlinedInput-root": { borderRadius: "50px" } }}
             />
-            <IconButton
-              onClick={() => setIsFilterOpen(true)}
-              sx={{
-                backgroundColor: "#00355a",
-                color: "#ffffff",
-                "&:hover": { backgroundColor: "#1a4975" },
-              }}
-            >
+            {/* <IconButton onClick={() => setIsFilterOpen(true)} sx={{ backgroundColor: "#00355a", color: "#ffffff", "&:hover": { backgroundColor: "#1a4975" } }}>
               <FilterAltIcon />
-            </IconButton>
+            </IconButton> */}
           </Toolbar>
         </AppBar>
       </Box>
 
-      <Box sx={{ padding: "20px" }}>
-        {loading && <CircularProgress />}
-        {error && <Typography color="error">{error}</Typography>}
-        <VintageList fetchedVintages={filteredVintages} />
+      {/* filters */}
+      <Box sx={{ display: "flex", flexDirection: "row", justifyContent:"space-between",gap: "20px",
+         width:'40%', ml:'5%' , backgroundColor:'#ff6b35' ,padding:'10px', borderRadius:'5px', alignSelf:'center'}}>
+           <FormControl sx={{ flex: 1, minWidth: "150px" }}>
+              <InputLabel>Tags</InputLabel>
+              <Select multiple value={filterInputValues.tags} onChange={handleTagFilterChange}
+                renderValue={(selected) => selected.join(", ")} sx={{ backgroundColor: "white" }}
+              >
+              </Select>
+            </FormControl>
+            <Button variant="contained" onClick={handleFilter} sx={{ backgroundColor: "#00355a", color: "#ffffff", }}>
+            Apply Filters
+          </Button>
+          <Button variant="outlined" onClick={resetFilters} sx={{ color: "white", borderColor:'white',}}>
+            Reset
+          </Button>
+         </Box>
+      {/* Content Area */}
+      <Box sx={{ padding: "20px",}}>
+        {loading ? (
+          <CircularProgress sx={{color:"#00355a", m:'2% 5%', fontSize:'20px'}}/>
+        ) : error ? (
+          <Typography sx={{color:"#00355a", m:'2% 5%', fontSize:'20px'}}>{error}</Typography>
+        ) : (
+          <VintageList fetchedVintages={filteredVintages} />
+        )}
       </Box>
-
+{/* 
       <Dialog
         open={isFilterOpen}
         onClose={() => setIsFilterOpen(false)}
@@ -261,7 +260,7 @@ export default function TouristItineraries (){
                     />
                     <ListItemText primary={tag} />
                   </MenuItem>
-                ))} */}
+                ))} 
               </Select>
             </FormControl>
           </Box>
@@ -272,7 +271,7 @@ export default function TouristItineraries (){
             Apply Filters
           </Button>
         </DialogActions>
-      </Dialog>
+      </Dialog> */}
     </Box>
     
   );
