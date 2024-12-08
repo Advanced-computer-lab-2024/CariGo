@@ -90,6 +90,7 @@ import FlightDetails from "./components/FlightDetails";
 import FileComplaintForm from "./Pages/Tourist/FileComplaintForm";
 import ActivityPostDetail from "./components/ActivityPostDetail.js";
 import CreatePromoCode from './Pages/createPromoCode';
+import Demo from "../src/Pages/HowToUse/demo.jsx";
 // import HotelBooking from "./Pages/Tourist/HotelBooking.js";
 
 import BookingPage from "./Pages/Tourist/Booking.js";
@@ -164,6 +165,8 @@ function App() {
         <Route path="/tourist/MyBookedFlights" element={<MyBookedFlights />} /> 
         <Route path="/tourist/MyBookedHotels" element={<MyBookedHotels />} /> 
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/how-to-use" element={<Demo />} />
+
         {/* <Route path="/choose-sign-up" element={<ChooseSignUp/>} /> */}
       <Route
         path="tour_guide/profile"
