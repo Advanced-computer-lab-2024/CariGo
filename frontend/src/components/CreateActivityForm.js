@@ -1,15 +1,22 @@
 import React, { useState } from "react";
-import { FormControl } from '@mui/base/FormControl';
-import { styled } from '@mui/material/styles';
-import { Box } from '@mui/material';
-import { Button as BaseButton } from '@mui/base/Button';
-import SelectTags from "./SelectTags";
-import SelectCategory from "./SelectCategory";
-import { useNavigate } from 'react-router-dom';
-import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
+import { 
+  Box, 
+  TextField, 
+  Button, 
+  FormControl, 
+  InputLabel, 
+  Select, 
+  MenuItem, 
+  Typography 
+} from '@mui/material';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 
+import SelectTags from "./SelectTags";
+import SelectCategory from "./SelectCategory";
 
 export default function CreateActivityForm() {
   const navigate = useNavigate();
@@ -23,7 +30,6 @@ export default function CreateActivityForm() {
   const [lon, setLon] = useState('');
   const [lan, setLan] = useState('');
   const [price, setPrice] = useState(0);
-//  const [maxPrice, setMaxPrice] = useState(0);
   const [discount, setDiscount] = useState(0);
   const [errorMessages, setErrorMessages] = useState({});
 
@@ -37,8 +43,7 @@ export default function CreateActivityForm() {
     if (!lan) errors.lan = "Latitude is required.";
     if (!tag) errors.tag = "Tag is required.";
     if (!category) errors.category = "Category is required.";
-    if (price < 0) errors.price = "price cannot be negative.";
-//    if (maxPrice < 0) errors.maxPrice = "Maximum price cannot be negative.";
+    if (price < 0) errors.price = "Price cannot be negative.";
     if (discount < 0) errors.discount = "Discount cannot be negative.";
     
     return errors;
@@ -64,7 +69,6 @@ export default function CreateActivityForm() {
       lon,
       lan,
       price: parseFloat(price),
-//      maxPrice: parseFloat(maxPrice),
       discount: parseFloat(discount),
       category,
     };
@@ -102,7 +106,6 @@ export default function CreateActivityForm() {
       setLon('');
       setLan('');
       setPrice(0);
-//      setMaxPrice(0);
       setDiscount(0);
       setErrorMessages({});
       console.log("Activity created");
@@ -111,7 +114,6 @@ export default function CreateActivityForm() {
       setErrorMessages({ general: "Failed to create activity. Please try again." });
       console.error(err);
     }
-
   };
 
   return (
@@ -119,167 +121,208 @@ export default function CreateActivityForm() {
       sx={{
         display: 'flex',
         flexDirection: 'column',
-        width: '560px',
-        padding: '10px',
-        color: '#ff4d4d',
-        borderRadius: '15px',
-        boxShadow: '0px 1px 3px rgba(0, 0, 0, 0.1)',
-        gap: '5px',
-        margin: '20px',
-        border: '2px solid #126782',
-        paddingLeft: '30px',
-      }}>
-      <Box sx={{ marginLeft: '50px' }}>
-        <h3 style={{ color: '#ff4d4d' }}>CREATE A NEW ACTIVITY</h3>
-        <Box sx={{ width: '100%', padding: '5px', paddingBottom: '20px' }}>
-          <FormControl required sx={{ marginTop: '20px' }}>
-            <Label>TITLE</Label>
-            <StyledInput
-              placeholder="Write your title here"
-              onChange={(e) => setTitle(e.target.value)}
-              value={title}
-            />
-            {errorMessages.title && <HelperText>{errorMessages.title}</HelperText>}
-          </FormControl>
-
-          <FormControl required>
-            <Label>3k</Label>
-            <StyledInput
-              placeholder="Brief description of your activity"
-              onChange={(e) => setDescription(e.target.value)}
-              value={description}
-            />
-            {errorMessages.description && <HelperText>{errorMessages.description}</HelperText>}
-          </FormControl>
-
-          <FormControl required>
-            <Label>START DATE</Label>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
-                value={startDate}
-                onChange={(newValue) => setStartDate(newValue)}
-                renderInput={(params) => <StyledInput {...params} />}
-              />
-            </LocalizationProvider>
-            {errorMessages.startDate && <HelperText>{errorMessages.startDate}</HelperText>}
-          </FormControl>
-
-          <FormControl required>
-            <Label>END DATE</Label>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
-                value={endDate}
-                onChange={(newValue) => setEndDate(newValue)}
-                renderInput={(params) => <StyledInput {...params} />}
-              />
-            </LocalizationProvider>
-            {errorMessages.endDate && <HelperText>{errorMessages.endDate}</HelperText>}
-          </FormControl>
-
-          <FormControl required>
-            <Label>LON</Label>
-            <StyledInput
-              placeholder="Activity longitude"
-              onChange={(e) => setLon(e.target.value)}
-              value={lon}
-            />
-            {errorMessages.lon && <HelperText>{errorMessages.lon}</HelperText>}
-          </FormControl>
-          <FormControl required>
-            <Label>LAN</Label>
-            <StyledInput
-              placeholder="Activity latitude"
-              onChange={(e) => setLan(e.target.value)}
-              value={lan}
-            />
-            {errorMessages.lan && <HelperText>{errorMessages.lan}</HelperText>}
-          </FormControl>
-
-          <FormControl required>
-            <Label>Tags</Label>
-            <SelectTags tags={tag} setTags={setTags} />
-            {errorMessages.tag && <HelperText>{errorMessages.tag}</HelperText>}
-          </FormControl>
-
-          <FormControl required>
-            <Label>Category</Label>
-            <SelectCategory tags={category} setTags={setCategory} />
-            {errorMessages.category && <HelperText>{errorMessages.category}</HelperText>}
-          </FormControl>
-
-          <FormControl required>
-            <Label>Price</Label>
-            <StyledInput
-              placeholder="Enter activity price"
-              type="number"
-              onChange={(e) => setPrice(e.target.value)}
-              value={price}
-            />
-            {errorMessages.price && <HelperText>{errorMessages.price}</HelperText>}
-          </FormControl>
-
-          {/* <FormControl required>
-            <Label>Maximum Price</Label>
-            <StyledInput
-              placeholder="Enter maximum activity price"
-              type="number"
-              onChange={(e) => setMaxPrice(e.target.value)}
-              value={maxPrice}
-            />
-            {errorMessages.maxPrice && <HelperText>{errorMessages.maxPrice}</HelperText>}
-          </FormControl> */}
-
-          <FormControl>
-            <Label>DISCOUNT</Label>
-            <StyledInput
-              placeholder="Enter any discounts"
-              type="number"
-              onChange={(e) => setDiscount(e.target.value)}
-              value={discount}
-            />
-            {errorMessages.discount && <HelperText>{errorMessages.discount}</HelperText>}
-          </FormControl>
-        </Box>
-        {errorMessages.general && <HelperText>{errorMessages.general}</HelperText>}
-        <Button onClick={handleCreate}>CREATE</Button>
-      </Box>
+        width: '100%',
+        maxWidth: '600px',
+        margin: '0 auto',
+        padding: '20px',
+        backgroundColor: 'background.paper',
+        borderRadius: '8px',
+        boxShadow: '0 3px 5px 2px rgba(0, 0, 0, .1)',
+      }}
+    >
+      <Typography variant="h5" component="h2" gutterBottom sx={{ color: 'primary.main' }}>
+        Create a New Activity
+      </Typography>
+      <form onSubmit={handleCreate}>
+        <TextField
+          fullWidth
+          label="Title"
+          variant="outlined"
+          margin="normal"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          error={!!errorMessages.title}
+          helperText={errorMessages.title}
+          sx={{
+            '& .MuiInputLabel-root': {
+              color: '#ff6b35', // Label color
+            },
+            '& .MuiInputLabel-root.Mui-focused': {
+              color: '#ff6b35', // Label color when focused
+            },
+          }}
+        />
+        <TextField
+          fullWidth
+          label="Description"
+          variant="outlined"
+          margin="normal"
+          multiline
+          rows={4}
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          error={!!errorMessages.description}
+          helperText={errorMessages.description}
+          sx={{
+            '& .MuiInputLabel-root': {
+              color: '#ff6b35', // Label color
+            },
+            '& .MuiInputLabel-root.Mui-focused': {
+              color: '#ff6b35', // Label color when focused
+            },
+          }}
+        />
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DatePicker
+            label="Start Date"
+            value={startDate}
+            onChange={(newValue) => setStartDate(newValue)}
+            renderInput={(params) => <TextField {...params} fullWidth margin="normal" />}
+            sx={{
+              '& .MuiInputLabel-root': {
+                color: '#ff6b35', // Label color
+              },
+              '& .MuiInputLabel-root.Mui-focused': {
+                color: '#ff6b35', // Label color when focused
+              },
+            }}
+          />
+          <DatePicker
+            label="End Date"
+            value={endDate}
+            onChange={(newValue) => setEndDate(newValue)}
+            renderInput={(params) => <TextField {...params} fullWidth margin="normal" />}
+            sx={{
+              '& .MuiInputLabel-root': {
+                color: '#ff6b35', // Label color
+              },
+              '& .MuiInputLabel-root.Mui-focused': {
+                color: '#ff6b35', // Label color when focused
+              },
+            }}
+          />
+        </LocalizationProvider>
+        <TextField
+          fullWidth
+          label="Longitude"
+          variant="outlined"
+          margin="normal"
+          value={lon}
+          onChange={(e) => setLon(e.target.value)}
+          error={!!errorMessages.lon}
+          helperText={errorMessages.lon}
+          sx={{
+            '& .MuiInputLabel-root': {
+              color: '#ff6b35', // Label color
+            },
+            '& .MuiInputLabel-root.Mui-focused': {
+              color: '#ff6b35', // Label color when focused
+            },
+          }}
+        />
+        <TextField
+          fullWidth
+          label="Latitude"
+          variant="outlined"
+          margin="normal"
+          value={lan}
+          onChange={(e) => setLan(e.target.value)}
+          error={!!errorMessages.lan}
+          helperText={errorMessages.lan}
+          sx={{
+            '& .MuiInputLabel-root': {
+              color: '#ff6b35', // Label color
+            },
+            '& .MuiInputLabel-root.Mui-focused': {
+              color: '#ff6b35', // Label color when focused
+            },
+          }}
+        />
+        <FormControl fullWidth margin="normal"
+        sx={{
+          '& .MuiInputLabel-root': {
+            color: '#ff6b35', // Label color
+          },
+          '& .MuiInputLabel-root.Mui-focused': {
+            color: '#ff6b35', // Label color when focused
+          },
+        }}
+        >
+          <InputLabel >Tags</InputLabel>
+          <SelectTags tags={tag} setTags={setTags} />
+          {errorMessages.tag && <Typography color="error">{errorMessages.tag}</Typography>}
+        </FormControl>
+        <FormControl fullWidth margin="normal" sx={{
+          '& .MuiInputLabel-root': {
+            color: '#ff6b35', // Label color
+          },
+          '& .MuiInputLabel-root.Mui-focused': {
+            color: '#ff6b35', // Label color when focused
+          },
+        }}>
+          <InputLabel>Category</InputLabel>
+          <SelectCategory tags={category} setTags={setCategory} />
+          {errorMessages.category && <Typography color="error">{errorMessages.category}</Typography>}
+        </FormControl>
+        <TextField
+          fullWidth
+          label="Price"
+          variant="outlined"
+          margin="normal"
+          type="number"
+          value={price}
+          onChange={(e) => setPrice(e.target.value)}
+          error={!!errorMessages.price}
+          helperText={errorMessages.price}
+          sx={{
+            '& .MuiInputLabel-root': {
+              color: '#ff6b35', // Label color
+            },
+            '& .MuiInputLabel-root.Mui-focused': {
+              color: '#ff6b35', // Label color when focused
+            },
+          }}
+        />
+        <TextField
+          fullWidth
+          label="Discount"
+          variant="outlined"
+          margin="normal"
+          type="number"
+          value={discount}
+          onChange={(e) => setDiscount(e.target.value)}
+          error={!!errorMessages.discount}
+          helperText={errorMessages.discount}
+          sx={{
+            '& .MuiInputLabel-root': {
+              color: '#ff6b35', // Label color
+            },
+            '& .MuiInputLabel-root.Mui-focused': {
+              color: '#ff6b35', // Label color when focused
+            },
+          }}
+        />
+        {errorMessages.general && (
+          <Typography color="error" sx={{ mt: 2 }}>
+            {errorMessages.general}
+          </Typography>
+        )}
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          sx={{
+            mt: 3,
+            backgroundColor: 'primary', // Initial background color
+            '&:hover': {
+              backgroundColor: '#ff6b35', // Hover background color
+            },
+          }}
+        >
+          Create Activity
+        </Button>
+      </form>
     </Box>
   );
 }
 
-// Styled components
-const StyledInput = styled('input')(({ theme }) => `
-    width: 400px;
-    padding: 8px 12px;
-    border-radius: 8px;
-    border: 1px solid ${theme.palette.mode === 'dark' ? '#6B7A90' : '#B0B8C4'};
-    background: ${theme.palette.mode === 'dark' ? '#303740' : '#fff'};
-    color: ${theme.palette.mode === 'dark' ? '#C7D0DD' : '#1C2025'};
-    &:focus {
-        outline: 0;
-        border-color: #3399FF;
-    }
-`);
-
-const Button = styled(BaseButton)(({ theme }) => `
-    background-color: #ff4d4d;
-    color: white;
-    padding: 6px 8px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 150ms ease;
-    &:hover {
-        background-color: #ff3333;
-    }
-`);
-
-const Label = styled('label')`
-    font-size: 0.875rem;
-    margin-bottom: 4px;
-    display: block;
-`;
-
-const HelperText = styled('p')`
-    font-size: 0.75rem;
-    color: red;
-`;
