@@ -20,6 +20,12 @@ import {
 } from "@mui/icons-material";
 import NavBar from "../Pages/Tourist/components/TouristNavBar";
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import BookingPaymentPopUp from "../Pages/Tourist/components/BookingPaymentPopUp";
+import { jwtDecode } from "jwt-decode";
+import axios from "axios";
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+const stripePromise = loadStripe('pk_test_51QLoL4AkXvwFjwTIX8acMj27pC8YxdOhmoUzn0wbUhej1xUFgFlfgYtXRGmggbKUI6Yfpxz08i9shcsfszv6y9iP0007q608Ny'); // Publishable key
 
 
 export default function ActivityDetail() {
@@ -28,10 +34,39 @@ export default function ActivityDetail() {
   const navigate = useNavigate();
   const [localInterestedUsers, setLocalInterestedUsers] = useState([]);
   const token = localStorage.getItem("jwt");
+  const [user, setUser] = useState();
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const token = localStorage.getItem("jwt");
+        const id = jwtDecode(token).id;
+  
+        const response = await axios.get(
+          `http://localhost:4000/cariGo/users/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+          
+        console.log("API Response Data:", response.data); // Logs the fetched data
+        setUser(Object.assign({}, response.data));
+      } catch (err) {
+        console.error("Error fetching profile:", err);
+      }
+    };
+   
+    fetchUser();
+    }, []);
+
+  const [isPaymentPopupOpen, setIsPaymentPopupOpen] = useState(false);
 
   const handleClick = () => {
     if (token)
-      navigate(`/checkout/activity/${id}`); // Update the navigation path
+      setIsPaymentPopupOpen(true);
+      //navigate(`/checkout/activity/${id}`); // Update the navigation path
     else navigate(`/login`);
   };
 
@@ -111,6 +146,37 @@ export default function ActivityDetail() {
 
   const conversionRate = localStorage.getItem("conversionRate") || 1;
   const code = localStorage.getItem("currencyCode") || "EGP";
+
+  const handlePlaceOrder = async (paymentMethod,TotalPrice,NumberOfTickets) => {
+    // setLoading(true);
+    try {
+      const token = localStorage.getItem("jwt");
+      if (!token) {
+        throw new Error("No token found. Please log in.");
+      }
+      
+
+      const endpoint = `http://localhost:4000/cariGo/activity/BookActivity/${id}`;
+
+      const response = await axios.post(endpoint, {
+        PaymentMethod:paymentMethod,
+        TotalPrice:TotalPrice,
+        NumberOfTickets:NumberOfTickets
+      }, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.data) {
+        navigate("/tourist/MyBookedActivities");
+      }
+    } catch (error) {
+      console.error("Error during booking:", error);
+      // setError(error.response?.data?.error || 'Booking failed');
+    }
+  };
 
   return (
     <>
@@ -470,6 +536,20 @@ export default function ActivityDetail() {
                     >
                       Book Now
                     </Button>
+                    <Elements stripe={stripePromise}>
+                      {isPaymentPopupOpen && (
+                        <BookingPaymentPopUp
+                          open={isPaymentPopupOpen}
+                          onClose={() => setIsPaymentPopupOpen(false)}
+                          checkoutCart={handlePlaceOrder}
+                          amount={(activity.price * conversionRate).toFixed(2)}
+                          user={user}
+                          itineraryName={activity.title} 
+                          startDate={activity.start_date}
+                          endDate={activity.end_date}
+                        />
+                      )}
+                    </Elements>
                   </>
                 ) : (
                   <Box sx={{ textAlign: "center" }}>

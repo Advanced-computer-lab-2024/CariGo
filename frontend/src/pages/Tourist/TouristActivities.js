@@ -3,8 +3,10 @@ import ActivityList from "../../components/ActivityListUser.js";
 import { Box, TextField, Button, CircularProgress, Typography, IconButton, AppBar, Toolbar, Grid, Dialog, DialogTitle, DialogContent, DialogActions, FormControl, InputLabel, Select, MenuItem, Checkbox, ListItemText } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
-import NavBar from "./components/TouristNavBar.js";
-import GuestNavBar from "../../components/NavBarTourist";
+import TouristNavBar from "./components/TouristNavBar.js";
+import GuestNavBar from "./components/GuestNavBar";
+import GuestSideBar from "./components/GuestSideBar";
+import TouristSideBar from "./components/TouristSideBar";
 
 export default function TouristViewVintage() {
   const [loading, setLoading] = useState(false);
@@ -78,8 +80,23 @@ export default function TouristViewVintage() {
   };
 
   return (
-    <Box sx={{ backgroundColor: "#f9f9f9", minHeight: "100vh" }}>
-      {!tourist ? <GuestNavBar /> : <NavBar />}
+    <Box sx={{ display: "flex", backgroundColor: "#f9f9f9", minHeight: "100vh" }}>
+    {/* Sidebar */}
+    <Box>
+      {!tourist ? <GuestSideBar /> : <TouristSideBar />}
+    </Box>
+
+    {/* Main Content Area */}
+    <Box
+      sx={{
+        flexGrow: 1,
+        marginLeft: "80px", // Sidebar width
+        marginTop: "64px", // AppBar height
+        padding: "16px",
+      }}
+    >
+      {/* Top Navbar */}
+      {!tourist ? <GuestNavBar /> : <TouristNavBar />}
       
       {/* AppBar with Search Bar and Filter Button */}
       <Box sx={{ flexGrow: 1 }}>
@@ -172,5 +189,6 @@ export default function TouristViewVintage() {
         </DialogActions>
       </Dialog> */}
     </Box>
-  );
+     </Box>
+ );
 }

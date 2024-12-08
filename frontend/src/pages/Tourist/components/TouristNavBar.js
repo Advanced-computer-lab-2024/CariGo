@@ -38,6 +38,11 @@ import {
   Inventory as InventoryIcon,
   LocalOffer as LocalOfferIcon,
 } from '@mui/icons-material';
+// import { Menu, MenuItem } from '@mui/material';
+
+
+
+
 
 const pages = [
   "Suggested For You",
@@ -50,6 +55,16 @@ const pages = [
 const settings = ["My Profile", "Logout", "Change Password"];
 
 function TouristNB() {
+  const [anchorEl2, setAnchorEl2] = React.useState(null);
+  const handleMenuOpen2 = (event) => {
+    setAnchorEl2(event.currentTarget);
+  };
+  const handleMenuClose2 = () => {
+    setAnchorEl2(null);
+  };
+  const isMenuOpen = Boolean(anchorEl2);
+
+
   const theme = useTheme();
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
@@ -195,6 +210,9 @@ function TouristNB() {
   };
   const handleWishlist=()=>{
     navigate("/wishlist")
+  }
+  const handleBookmark=()=>{
+    navigate("/tourist/BookmarkedItineraries")
   }
 
   // const getIcon = (type) => {
@@ -389,6 +407,7 @@ CariGo
       transition: "all 0.3s ease",
     },
   }}
+  onClick={handleWishlist}
 >
   <FavoriteIcon sx={{ fontSize: "33px", color: "white" }} />
 </IconButton>
@@ -406,9 +425,28 @@ CariGo
       transition: "all 0.3s ease",
     },
   }}
+  // onClick={handleBookmark}
+  onClick={handleMenuOpen2}
 >
+
+
   <BookmarkIcon sx={{ fontSize: "33px", color: "white" }} />
 </IconButton>
+<Menu
+  anchorEl={anchorEl2}
+  open={isMenuOpen}
+  onClose={handleMenuClose2}
+  PaperProps={{
+    style: { padding: 0, marginTop: 10 },
+  }}
+>
+  <MenuItem onClick={() => { handleMenuClose2(); navigate("/tourist/BookmarkedItineraries")/* Add itineraries function here */ }}>
+    Itineraries
+  </MenuItem>
+  <MenuItem onClick={() => { handleMenuClose2(); navigate("/tourist/BookmarkedActivities")/* Add activities function here */ }}>
+    Activities
+  </MenuItem>
+</Menu>
 
 {/* Notification Icon */}
 <IconButton

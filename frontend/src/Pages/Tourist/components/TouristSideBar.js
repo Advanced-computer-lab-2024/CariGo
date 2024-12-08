@@ -13,7 +13,7 @@ import CurrencyConversion from "../../../components/CurrencyConversion";
 import { useNavigate } from "react-router-dom";
 import {Typography, ListItemButton, Divider, List} from "@mui/material";
 export default function Side() {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
   const [helpExpanded, setHelpExpanded] = useState(false);
   const [linksExpanded, setLinksExpanded] = useState(false);
   const [openCurrencyDialog, setOpenCurrencyDialog] = React.useState(false); // State for dialog
@@ -68,7 +68,7 @@ export default function Side() {
           borderTopRightRadius: "20px",
           borderBottomRightRadius: "20px",
           paddingBottom: '20px',
-          zIndex: 50 // Ensure sidebar is above other content
+          zIndex: 800 // Ensure sidebar is above other content
         }}
       >
         {/* Collapse Toggle */}
@@ -216,11 +216,6 @@ export default function Side() {
                   <ListItemButton href="/tourist/file-complaint" sx={{ padding: '5% 2%', gap: 1, color: '#ffffff',paddingLeft: '11%' }} collapsed={collapsed}>
                <    HiArrowSmRight size={22}/>
                <Typography sx={{ fontSize: '15px', color: 'ffffff'}}> File a Complaint</Typography>
-                  </ListItemButton>
-                
-               <ListItemButton onClick={handleDeleteAccount} sx={{ padding: '5% 2%', gap: 1, color: '#FF5C5C', paddingLeft: '11%' }} collapsed={collapsed}>
-                  <HiArrowSmRight size={22}/>
-               <Typography sx={{ fontSize: '17px' }}>   Delete Account</Typography>
                   </ListItemButton>
               </div>
             )}
