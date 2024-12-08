@@ -210,7 +210,7 @@ export default function Side() {
       </div>
     )}
   
-                 <ListItemButton gref="/change-password" sx={{ padding: '5% 2%', gap: 1, color: '#ffffff',paddingLeft: '11%' }} collapsed={collapsed}>
+                 <ListItemButton href="/change-password" sx={{ padding: '5% 2%', gap: 1, color: '#ffffff',paddingLeft: '11%' }} collapsed={collapsed}>
                 <    HiArrowSmRight size={22}/>
                 <Typography sx={{ fontSize: '15px', color: 'ffffff'}}> Change Password</Typography>
                   </ListItemButton>
