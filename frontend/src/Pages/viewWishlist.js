@@ -8,7 +8,10 @@ import {
   SortDescendingIcon,
 } from "@heroicons/react/solid";
 import { Layout } from "antd";
-import TouristNB from "./Tourist/components/TouristNavBar";
+import {Box} from '@mui/material';
+import TouristNavBar from "../Pages/Tourist/components/TouristNavBar";
+import TouristSideBar from "../Pages/Tourist/components/TouristSideBar";
+
 import { chaoticOrbit } from "ldrs";
 
 const { Header, Content } = Layout;
@@ -54,10 +57,12 @@ export default function WishlistPage() {
   };
 
   return (
-    <Layout style={{ backgroundColor: "#f6f6f6", minHeight: "100vh" }}>
-      <Header style={{ backgroundColor: "#004e89", padding: "0" }}>
-        <TouristNB />
-      </Header>
+   <Box sx={{ display: "flex", backgroundColor: "#f9f9f9", minHeight: "100vh" }}>
+    <Box> <TouristSideBar /> </Box>
+
+    <Box sx={{ flexGrow: 1, marginLeft: "80px", marginTop: "64px", padding: "16px",}}>
+      <TouristNavBar />
+
 
       <Content style={{ padding: "24px" }}>
         <div className="max-w-7xl mx-auto space-y-6">
@@ -82,7 +87,8 @@ export default function WishlistPage() {
           </div>
         </div>
       </Content>
-    </Layout>
+   </Box>
+</Box>
   );
 }
 
