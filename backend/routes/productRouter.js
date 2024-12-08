@@ -5,7 +5,7 @@ const multerController = require('../controllers/multerController');
 const router = express.Router();
 
 
-
+router.get('/getTitles/:id',productController.getTitlesForEachUser)
 router.get('/', productController.getProducts);
 router.get('/tourist-products', productController.getTouristProducts);
 router.get('/:id', productController.getProduct);

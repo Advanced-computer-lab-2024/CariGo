@@ -12,7 +12,7 @@ const notificationSchema = new mongoose.Schema({
   },
   type: {
     type: String,
-    enum: ['flagged_content', 'booking_opened', 'upcoming_event', 'out_of_stock'],
+    enum: ['flagged_content', 'booking_opened', 'upcoming_event', 'out_of_stock',"promo_code"],
     required: true
   },
   contentId: {
@@ -21,7 +21,7 @@ const notificationSchema = new mongoose.Schema({
   },
   contentModel: {
     type: String,
-    enum: ['Itinerary', 'Activity', 'Product'],
+    enum: ['Itinerary', 'Activity', 'Product',"PromoCode"],
     required: function() { return this.contentId != null; }
   },
   isRead: {

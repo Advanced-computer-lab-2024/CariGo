@@ -21,6 +21,12 @@ import AccessibleIcon from "@mui/icons-material/Accessible";
 import Divider from "@mui/material/Divider";
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import BookingPaymentPopUp from "./Tourist/components/BookingPaymentPopUp";
+import { jwtDecode } from "jwt-decode";
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+const stripePromise = loadStripe('pk_test_51QLoL4AkXvwFjwTIX8acMj27pC8YxdOhmoUzn0wbUhej1xUFgFlfgYtXRGmggbKUI6Yfpxz08i9shcsfszv6y9iP0007q608Ny'); // Publishable key
+
 const ItineraryDetails = () => {
   const { id } = useParams(); // Get the itinerary ID from the URL
   const [itinerary, setItinerary] = useState(null);
@@ -28,11 +34,46 @@ const ItineraryDetails = () => {
   const navigate = useNavigate();
   const [token,setToken] = useState(localStorage.getItem('jwt'));
   const [tourist,setTourist]= useState(false);
+  const [user, setUser] = useState();
 
+  useEffect(() => {
+  const fetchUser = async () => {
+    try {
+      const token = localStorage.getItem("jwt");
+      const id = jwtDecode(token).id;
+
+      const response = await axios.get(
+        `http://localhost:4000/cariGo/users/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+        
+      console.log("API Response Data:", response.data); // Logs the fetched data
+      setUser(Object.assign({}, response.data));
+    } catch (err) {
+      console.error("Error fetching profile:", err);
+    }
+  };
+ 
+  fetchUser();
+  }, []);
+  // useEffect(() => {
+  //   if (user) {
+  //     console.log("Updated user state:", user); // Logs the state after it updates
+  //   }
+  // }, [user]);
+
+  const [isPaymentPopupOpen, setIsPaymentPopupOpen] = useState(false);
 
   const handleClick = () => {
-    if (token)
-      navigate(`/checkout/itinerary/${id}`); // Update the navigation path
+    if (token){
+      setIsPaymentPopupOpen(true);
+      // navigate(`/checkout/itinerary/${id}`); // Update the navigation path
+    }
+      
     else navigate(`/login`);
   };
   
@@ -124,6 +165,38 @@ const ItineraryDetails = () => {
     }
   };
 
+  const handlePlaceOrder = async (paymentMethod,TotalPrice,NumberOfTickets) => {
+    // setLoading(true);
+    try {
+      const token = localStorage.getItem("jwt");
+      if (!token) {
+        throw new Error("No token found. Please log in.");
+      }
+      
+
+      const endpoint = `http://localhost:4000/cariGo/Event/BookItinerary/${id}`;
+
+      // const payload = 
+      console.log(paymentMethod,TotalPrice,NumberOfTickets)
+      const response = await axios.post(endpoint, {
+        PaymentMethod:paymentMethod,
+        TotalPrice:TotalPrice,
+        NumberOfTickets:NumberOfTickets
+      }, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.data) {
+        navigate("/tourist/MyBookings");
+      }
+    } catch (error) {
+      console.error("Error during booking:", error);
+      // setError(error.response?.data?.error || 'Booking failed');
+    }
+  };
   const conversionRate = localStorage.getItem("conversionRate") || 1;
   const code = localStorage.getItem("currencyCode") || "EGP";
 
@@ -533,6 +606,20 @@ const ItineraryDetails = () => {
                     >
                       Book Now
                     </Button>
+                    <Elements stripe={stripePromise}>
+                      {isPaymentPopupOpen && (
+                        <BookingPaymentPopUp
+                          open={isPaymentPopupOpen}
+                          onClose={() => setIsPaymentPopupOpen(false)}
+                          checkoutCart={handlePlaceOrder}
+                          amount={(price * conversionRate).toFixed(2)}
+                          user={user}
+                          itineraryName={title} 
+                          startDate={start_date}
+                          endDate={end_date}
+                        />
+                      )}
+                    </Elements>
                   </>
                 ) : (
                   <Box sx={{ textAlign: "center" }}>

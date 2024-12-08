@@ -156,7 +156,7 @@ function App() {
     <Route path="/Tourist/orders" element={<OrderListScreen />} />
     
     <Route path="Tourist/order_detail/:id" element={<OrderDetailScreen />} />
-    
+          
         <Route path="/" element={<HomePageGuest />} /> {/* Default route */}
         <Route path="/tourist/MyBookings" element={<MyBookings />} /> {/* Default route */}
         <Route path="/tourist/MyBookedActivities" element={<MyBookedActivities />} /> {/* Default route */}
@@ -171,8 +171,9 @@ function App() {
       />
       <Route path="tour_guide/itineraries" element={<UserViewItineraries />} />
       <Route path="tour_guide/inactive_itineraries" element={<InactiveItineraries />} />
+      
       <Route path="tour_guide/itineraries/:id" element={<ItineraryDetails />} />
-      <Route path="tour_guide/report" element={<Report />} />
+      <Route path="Tour-Guide/Report" element={<Report />} />
       <Route path="/Tourist/Products" element={<ViewProductsTourist />} />
       <Route path="/Tourist/Products/ViewProduct/:id" element={<ViewProductTourist />} />
       <Route path="/Tourist/cart" element={<CartComponent />} />
