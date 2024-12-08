@@ -12,13 +12,20 @@ import InsertLinkIcon from '@mui/icons-material/InsertLink';
 import CurrencyConversion from "../../../components/CurrencyConversion";
 import { useNavigate } from "react-router-dom";
 import {Typography, ListItemButton, Divider, List} from "@mui/material";
+import { useLocation } from "react-router-dom";
+import { LogoutIcon } from "@heroicons/react/solid";
+import { LogOutIcon } from "lucide-react";
 export default function Side() {
-  const [collapsed, setCollapsed] = useState(true);
+  
   const [helpExpanded, setHelpExpanded] = useState(false);
   const [linksExpanded, setLinksExpanded] = useState(false);
   const [openCurrencyDialog, setOpenCurrencyDialog] = React.useState(false); // State for dialog
   const [anchorElBookings, setAnchorElBookings] = React.useState(null);
   const navigate = useNavigate();
+  const location = useLocation();
+  const uncollapsedRoutes = ["/Tourist"];
+  const [collapsed, setCollapsed] = useState(!uncollapsedRoutes.includes(location.pathname));
+
 
     // Open and Close Dialog Functions
     const handleOpenCurrencyDialog = () => {
@@ -217,6 +224,14 @@ export default function Side() {
                <    HiArrowSmRight size={22}/>
                <Typography sx={{ fontSize: '15px', color: 'ffffff'}}> File a Complaint</Typography>
                   </ListItemButton>
+                  <ListItemButton href="/tourist/complaint-history" sx={{ padding: '5% 2%', gap: 1, color: '#ffffff',paddingLeft: '11%' }} collapsed={collapsed}>
+               <    HiArrowSmRight size={22}/>
+               <Typography sx={{ fontSize: '15px', color: 'ffffff'}}> My Complaints</Typography>
+                  </ListItemButton>
+                  <ListItemButton href="/login" sx={{ padding: '5% 2%', gap: 1, color: '#ffffff',paddingLeft: '11%' }} collapsed={collapsed}>
+               <    LogOutIcon size="22"/>
+               <Typography sx={{ fontSize: '15px', color: 'ffffff'}}> Logout</Typography>
+                  </ListItemButton>
               </div>
             )}
              <div
@@ -255,7 +270,7 @@ export default function Side() {
                 <div className="py-2">
                  <SidebarItem
             href="https://www.instagram.com/carigo_official/profilecard/?igsh=bWtleHkwa3pkZHhm"
-            icon={<FaInstagram style={{ fontSize: '2rem' }} />}  // Instagram icon
+            icon={<FaInstagram style={{ fontSize: '1.5rem' }} />}  // Instagram icon
             text="Instagram"
             collapsed={collapsed}
           />
@@ -263,7 +278,7 @@ export default function Side() {
           {/* Facebook Link */}
           <SidebarItem
             href="https://www.facebook.com/profile.php?id=61570089628999&mibextid=ZbWKwL"
-            icon={<FaFacebook style={{ fontSize: '2rem' }} />}  // Facebook icon
+            icon={<FaFacebook style={{ fontSize: '1.5rem' }} />}  // Facebook icon
             text="Facebook"
             collapsed={collapsed}
           />
