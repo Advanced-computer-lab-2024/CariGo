@@ -14,6 +14,7 @@ export default function ActivityList({ fetchedVintages }) {
                 id={vintage._id || "N/A"} // Safely handle missing _id
                 name={vintage.name || "No name provided"} // Handle missing name
                 description={vintage.description || "No description available"} // Handle missing description
+                rating ={vintage.rating || "4.5"}
                 pictures={vintage.pictures || []} // Handle missing pictures with an empty array
                 location={
                   vintage.location

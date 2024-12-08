@@ -3,16 +3,41 @@ import { useParams } from "react-router-dom";
 import { Box, Typography, Chip, Avatar } from "@mui/material";
 import PinDropIcon from "@mui/icons-material/PinDrop";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import StarIcon from "@mui/icons-material/Star";
 import ResponsiveAppBar from "./Tourist/components/TouristNavBar";
+import GuestNavBar from "../components/NavBarTourist";
+import UserAcList from "../components/UserAcList"; // Import the new MarkerList component
+import "../components/styles/CompanyInfo.css";
+import logoImage from "../assets/itinerary.png"; // Correct relative path
+import { useNavigate } from "react-router-dom";
+import Button from "@mui/material/Button";
+import axios from "axios";
+import { Paper, Grid } from "@mui/material";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import LanguageIcon from "@mui/icons-material/Language";
+import DirectionsBusIcon from "@mui/icons-material/DirectionsBus";
+import HotelIcon from "@mui/icons-material/Hotel";
+import AccessibleIcon from "@mui/icons-material/Accessible";
+import Divider from "@mui/material/Divider";
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import BookingPaymentPopUp from "./Tourist/components/BookingPaymentPopUp";
+import { jwtDecode } from "jwt-decode";
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+const stripePromise = loadStripe('pk_test_51QLoL4AkXvwFjwTIX8acMj27pC8YxdOhmoUzn0wbUhej1xUFgFlfgYtXRGmggbKUI6Yfpxz08i9shcsfszv6y9iP0007q608Ny'); // Publishable key
 
 const UserVintageDetails = () => {
   const { id } = useParams(); // Get the vintage ID from the URL
   const [vintage, setVintage] = useState(null);
+  const navigate = useNavigate();
+  const token = localStorage.getItem("jwt");
 
   useEffect(() => {
     const fetchVintageDetails = async () => {
       try {
         const token = localStorage.getItem("jwt");
+        const id = jwtDecode(token).id;
         // if (!token) {
         //   throw new Error("No token found. Please log in.");
         // }
@@ -46,6 +71,7 @@ const UserVintageDetails = () => {
   const {
     name = "No name provided",
     description = "No description available",
+    rating,
     pictures = [],
     location = {
       longitude: "Not specified",
@@ -65,84 +91,175 @@ const UserVintageDetails = () => {
   } = vintage;
   const conversionRate = localStorage.getItem("conversionRate")||1;
   const code = localStorage.getItem("currencyCode")||"EGP";
+
+  const styles = {
+    ratingContainer: {
+      display: "flex",
+      alignItems: "center",
+      gap: "4px",
+      marginBottom: "16px",
+    },
+    star: {
+      color: "#ff6b35",
+      fontSize: "20px",
+    },
+    ratingText: {
+      fontSize: "20px",
+      color: "#cc5b22",
+    },
+  }
+
   return (
-    <div>
-      <ResponsiveAppBar />
-      <Box sx={{ padding: "20px", maxWidth: "1200px", margin: "auto" }}>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            marginBottom: "20px",
-          }}
+    <>
+      {token? <ResponsiveAppBar />: <GuestNavBar/>}
+      <Button
+         onClick={() => navigate(`/Tourist-itineraries`)}
+          sx={{backgroundColor: "white", color: "#00355a", borderRadius: "8px", width: "80px",ml: "11%",mt:'2%',mb:'0%',fontSize:'18px'}}>
+          <ArrowBackIosIcon/>
+          Back
+        </Button>
+        <Box>
+        <Paper
+          elevation={3}
+          sx={{ padding: "30px", maxWidth: "1200px", margin: "20px auto" }}
         >
-          <Avatar sx={{ bgcolor: "#126782", width: 56, height: 56 }}>
-            {name.charAt(0)}
-          </Avatar>
-          <Typography variant="h4" sx={{ margin: "10px 0", fontWeight: "bold" }}>
-            {name || "No name provided"}
-          </Typography>
-          {tags?.map((tag, index) => (
-            <Chip
-              key={index}
-              label={tag}
-              sx={{ backgroundColor: "#126782", color: "white", margin: "5px" }}
-            />
-          ))}
-        </Box>
+          <Grid container spacing={4}>
+            <Grid item xs={12} md={8}>
+              <Box
+                sx={{display: "flex", flexDirection: "column",alignItems: "flex-start",marginBottom: "20px",}}>
+                {/* Title and Rating Container */}
+                <Box
+                  sx={{display: "flex",justifyContent: "space-between", alignItems: "center",width: "90%",color: "#00355a",}}>
+                  {/* Title */}
+                  <Box sx={{display: "flex", flexDirection: "column",}}>
+                  <Typography
+                    variant="h4"
+                    sx={{marginBottom: "10px",fontWeight: "bold",}}>
+                    {name || "Anonymous"}
+                  </Typography>
+                  {/* Rating */}
+                  <div style={styles.ratingContainer}>
+                    {"★★★★★".split("").map((star, index) => (
+                      <span
+                        key={index}
+                        style={{
+                          ...styles.star,
+                          opacity: index < Math.floor(rating) ? 1 : 0.5,
+                        }}
+                      >
+                        {star}
+                      </span>
+                    ))}
+                    <span style={styles.ratingText}>{rating}</span>
+                  </div>
+                  </Box>
+                </Box>
 
-        {pictures.length > 0 && (
-          <Box
-            component="img"
-            src={pictures[0]}
-            alt="Vintage Image"
-            sx={{
-              width: "100%",
-              maxHeight: "400px",
-              borderRadius: "10px",
-              objectFit: "cover",
-              marginBottom: "20px",
-            }}
-          />
-        )}
+                <Box
+                  sx={{display: "flex",flexWrap: "wrap",gap: "10px",marginBottom: "15px",}}
+                >
+                  {tags?.map((tag) => (
+                    <Chip key={tag._id}label={tag.title}
+                      sx={{ backgroundColor: "#00355a", color: "white" }}
+                    />
+                  ))}
+                </Box>
+              </Box>
 
-        <div className="vintage-info">
-          <Box sx={{ marginBottom: "20px" }}>
-            <Typography variant="body1" sx={{ fontSize: "18px", marginBottom: "10px" }}>
-              <strong>Description:</strong> {description}
-            </Typography>
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                marginBottom: "10px",
-              }}
-            >
-              <PinDropIcon sx={{ marginRight: "5px" }} />
-              <Typography variant="body1">
-                <strong>Location:</strong> {`${location.nation.city}, ${location.nation.country}`} (Lat: {location.latitude}, Long: {location.longitude})
+              {pictures.length > 0 && (
+              <Box
+                component="img"
+                src={pictures[0]}
+                alt="Vintage Image"
+                sx={{
+                  width: "100%",
+                  maxHeight: "400px",
+                  borderRadius: "10px",
+                  objectFit: "cover",
+                  marginBottom: "20px",
+                }}
+              />
+            )}
+
+            <Divider sx={{ margin: "20px 0" }} />
+        
+              <Typography
+                variant="h5"
+                sx={{ marginBottom: "15px", color: "#00355a" }}
+              >
+                Itinerary Details
               </Typography>
-            </Box>
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                marginBottom: "10px",
-              }}
-            >
-              <AttachMoneyIcon sx={{ marginRight: "5px" }} />
-              <Typography variant="body1">
-              Ticket Prices in {`${code}`}:<br/> Foreigner: {(ticket_price.foriegner*conversionRate).toFixed(2)}<br/> Native: {(ticket_price.native*conversionRate).toFixed(2)}<br/> Student: {(ticket_price.student*conversionRate).toFixed(2)}
-              </Typography>
-            </Box>
-            <Typography variant="body1" sx={{ fontSize: "18px", marginBottom: "10px" }}>
-              <strong>Opening Hours:</strong> {opening_hours.opening} - {opening_hours.closing}
+            {/* start and end date */}
+              <Grid container spacing={2}>
+                {/* <Grid item xs={12} sm={6}>
+                  <Box sx={{ display: "flex",margin: "2% 0", }}>
+                    <CalendarMonthIcon sx={{color:'#00355a', fontSize:'28px',}}/>
+                    <Box sx={{color:'#00355a', marginLeft:'10px',display:'flex', flexDirection:'column', gap:'5px'}}>
+                      {/* <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                        Start Date:
+                      </Typography> 
+                      <Typography variant="body2" sx={{fontSize:'18px'}}>
+                        {formatDateTime(start_date)}
+                      </Typography>
+                      <Box sx={{display:'flex', gap:'5px', color:'#00355a'}}>
+                        <AccessTimeIcon sx={{fontSize: "22px",}}/>
+                        <Typography sx={{ }}>
+                            {formatDateHour(start_date)}
+                        </Typography>
+                        </Box>
+                    </Box>
+                  </Box>
+                </Grid> */}
+
+                {/* opening hours */}
+                <Typography sx={{fontWeight:'bold', color:'#ff6b35'}}>Opening Hours:</Typography> 
+                <Typography variant="body2" sx={{ fontSize: "18px", marginBottom: "10px" , color:'#00355a'}}>
+              
+              {opening_hours.opening} - {opening_hours.closing}
             </Typography>
-          </Box>
-        </div>
+                
+                <Grid item xs={12}>
+                  <Box sx={{ display: "flex", marginBottom: "10px", }}>
+                    <PinDropIcon
+                      sx={{ fontSize:'30px', color: "#00355a" }}
+                    />
+                    <Box sx={{color:'#00355a', marginLeft:'10px',display:'flex', flexDirection:'column', gap:'5px'}}>
+                      <Typography variant="body1" sx={{ fontWeight: "bold", color:'#ff6b35' }}>
+                      Location
+                      </Typography>
+                      <Typography variant="body2">
+                        {/* {locations?.join(", ") || "Not specified"} */}
+                        {`${location.nation.city}, ${location.nation.country}`} (Lat: {location.latitude}, Long: {location.longitude})
+                      </Typography>
+                    </Box>
+                  </Box>
+                </Grid>
+                {/* <Grid item xs={12}>
+                  <Box sx={{display: "flex",marginBottom: "10px",}}>
+                    <AttachMoneyIcon
+                      sx={{ fontSize:'30px', color: "#00355a" }}
+                    />
+                    <Box sx={{color:'#00355a', marginLeft:'10px',display:'flex', flexDirection:'column', gap:'5px'}}>
+                      <Typography variant="body1" sx={{ fontWeight: "bold", color:'#ff6b35' }}>
+                        Price
+                      </Typography>
+                      <Typography variant="body2">
+                        {price
+                          ? `${(price * conversionRate).toFixed(2)} ${code}`
+                          : "Price not specified"}
+                      </Typography>
+                    </Box>
+                  </Box>
+                </Grid> */}
+              </Grid>
+
+              <Divider sx={{ margin: "20px 0" }} />
+
+            </Grid>
+          </Grid>
+        </Paper>
       </Box>
-    </div>
+    </>
   );
 };
 

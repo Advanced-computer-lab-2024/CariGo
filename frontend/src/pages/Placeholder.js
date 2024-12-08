@@ -1,305 +1,149 @@
-import React, { useState } from "react";
-import { FormControl } from '@mui/base/FormControl';
-import { styled } from '@mui/material/styles';
-import { Box, Dialog, DialogTitle, DialogContent, DialogActions, Button as MuiButton } from '@mui/material';
-import { Button as BaseButton } from '@mui/base/Button';
-import SelectTags from "../components/SelectTags";
-import SelectCategory from "../components/SelectCategory";
-import { useNavigate } from 'react-router-dom';
-import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import dayjs from 'dayjs';
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { Box, Typography, Chip, Avatar } from "@mui/material";
+import PinDropIcon from "@mui/icons-material/PinDrop";
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import ResponsiveAppBar from "./Tourist/components/TouristNavBar";
 
-export default function CreateActivityForm() {
-  const navigate = useNavigate();
+const UserVintageDetails = () => {
+  const { id } = useParams(); // Get the vintage ID from the URL
+  const [vintage, setVintage] = useState(null);
 
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
-  const [tag, setTags] = useState('');
-  const [category, setCategory] = useState('');
-  const [lon, setLon] = useState('');
-  const [lan, setLan] = useState('');
-  const [price, setPrice] = useState(0);
-//  const [maxPrice, setMaxPrice] = useState(0);
-  const [discount, setDiscount] = useState(0);
-  const [errorMessages, setErrorMessages] = useState({});
-  const [openDialog, setOpenDialog] = useState(false); // State to manage dialog visibility
+  useEffect(() => {
+    const fetchVintageDetails = async () => {
+      try {
+        const token = localStorage.getItem("jwt");
+        // if (!token) {
+        //   throw new Error("No token found. Please log in.");
+        // }
 
-  const validateFields = () => {
-    const errors = {};
-    if (!title) errors.title = "Title is required.";
-    if (!description) errors.description = "Description is required.";
-    if (!startDate) errors.startDate = "Start date is required.";
-    if (!endDate) errors.endDate = "End date is required.";
-    if (!lon) errors.lon = "Longitude is required.";
-    if (!lan) errors.lan = "Latitude is required.";
-    if (!tag) errors.tag = "Tag is required.";
-    if (!category) errors.category = "Category is required.";
-    if (price < 0) errors.price = "price cannot be negative.";
-//    if (maxPrice < 0) errors.maxPrice = "Maximum price cannot be negative.";
-    if (discount < 0) errors.discount = "Discount cannot be negative.";
-    
-    return errors;
-  };
+        const response = await fetch(`/cariGo/Event/readSingleVintage/${id}`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
 
-  const handleCreate = async (e) => {
-    e.preventDefault();
-    
-    const errors = validateFields();
-    if (Object.keys(errors).length > 0) {
-      setErrorMessages(errors);
-      return;
-    } else {
-      setErrorMessages({});
-    }
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
-    const activity = {
-      title,
-      description,
-      start_date: startDate.format('YYYY-MM-DD'),
-      end_date: endDate.format('YYYY-MM-DD'),
-      tag,
-      lon,
-      lan,
-      price: parseFloat(price),
-//      maxPrice: parseFloat(maxPrice),
-      discount: parseFloat(discount),
-      category,
+        const data = await response.json();
+        setVintage(data);
+      } catch (error) {
+        console.error("Error fetching vintage details:", error);
+      }
     };
 
-    const token = localStorage.getItem('jwt');
+    fetchVintageDetails();
+  }, [id]);
 
-    if (!token) {
-      setErrorMessages({ general: "No token found. Please log in." });
-      return;
-    }
+  if (!vintage) {
+    return <Typography>Loading...</Typography>;
+  }
 
-    try {
-      const response = await fetch("http://localhost:4000/Carigo/Activity/createActivity", {
-        method: 'POST',
-        body: JSON.stringify(activity),
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      });
-
-      const json = await response.json();
-
-      if (!response.ok) {
-        setErrorMessages({ general: json.error || "An error occurred while creating the activity." });
-        return;
-      }
-
-      // Reset fields
-      setTitle('');
-      setDescription('');
-      setStartDate(null);
-      setEndDate(null);
-      setTags('');
-      setLon('');
-      setLan('');
-      setPrice(0);
-//      setMaxPrice(0);
-      setDiscount(0);
-      setErrorMessages({});
-      
-      // Open the success dialog
-      setOpenDialog(true);
-      
-    } catch (err) {
-      setErrorMessages({ general: "Failed to create activity. Please try again." });
-      console.error(err);
-    }
-  };
-
+  const {
+    name = "No name provided",
+    description = "No description available",
+    pictures = [],
+    location = {
+      longitude: "Not specified",
+      latitude: "Not specified",
+      nation: { country: "Not specified", city: "Not specified" },
+    },
+    ticket_price = {
+      foriegner: "Not specified",
+      native: "Not specified",
+      student: "Not specified",
+    },
+    tags = [],
+    opening_hours = {
+      opening: "Not specified",
+      closing: "Not specified",
+    },
+  } = vintage;
+  const conversionRate = localStorage.getItem("conversionRate")||1;
+  const code = localStorage.getItem("currencyCode")||"EGP";
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        width: '560px',
-        padding: '10px',
-        color: '#ff4d4d',
-        borderRadius: '15px',
-        boxShadow: '0px 1px 3px rgba(0, 0, 0, 0.1)',
-        gap: '5px',
-        margin: '20px',
-        border: '2px solid #126782',
-        paddingLeft: '30px',
-      }}>
-      <Box sx={{ marginLeft: '50px' }}>
-        <h3 style={{ color: '#ff4d4d' }}>CREATE A NEW ACTIVITY</h3>
-        <Box sx={{ width: '100%', padding: '5px', paddingBottom: '20px' }}>
-          <FormControl required sx={{ marginTop: '20px' }}>
-            <Label>TITLE</Label>
-            <StyledInput
-              placeholder="Write your title here"
-              onChange={(e) => setTitle(e.target.value)}
-              value={title}
+    <div>
+      <ResponsiveAppBar />
+      <Box sx={{ padding: "20px", maxWidth: "1200px", margin: "auto" }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            marginBottom: "20px",
+          }}
+        >
+          <Avatar sx={{ bgcolor: "#126782", width: 56, height: 56 }}>
+            {name.charAt(0)}
+          </Avatar>
+          <Typography variant="h4" sx={{ margin: "10px 0", fontWeight: "bold" }}>
+            {name || "No name provided"}
+          </Typography>
+          {tags?.map((tag, index) => (
+            <Chip
+              key={index}
+              label={tag}
+              sx={{ backgroundColor: "#126782", color: "white", margin: "5px" }}
             />
-            {errorMessages.title && <HelperText>{errorMessages.title}</HelperText>}
-          </FormControl>
-
-          <FormControl required>
-            <Label>DESCRIPTION</Label>
-            <StyledInput
-              placeholder="Brief description of your activity"
-              onChange={(e) => setDescription(e.target.value)}
-              value={description}
-            />
-            {errorMessages.description && <HelperText>{errorMessages.description}</HelperText>}
-          </FormControl>
-
-          <FormControl required>
-            <Label>START DATE</Label>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
-                value={startDate}
-                onChange={(newValue) => setStartDate(newValue)}
-                renderInput={(params) => <StyledInput {...params} />}
-              />
-            </LocalizationProvider>
-            {errorMessages.startDate && <HelperText>{errorMessages.startDate}</HelperText>}
-          </FormControl>
-
-          <FormControl required>
-            <Label>END DATE</Label>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
-                value={endDate}
-                onChange={(newValue) => setEndDate(newValue)}
-                renderInput={(params) => <StyledInput {...params} />}
-              />
-            </LocalizationProvider>
-            {errorMessages.endDate && <HelperText>{errorMessages.endDate}</HelperText>}
-          </FormControl>
-
-          <FormControl required>
-            <Label>LON</Label>
-            <StyledInput
-              placeholder="Activity longitude"
-              onChange={(e) => setLon(e.target.value)}
-              value={lon}
-            />
-            {errorMessages.lon && <HelperText>{errorMessages.lon}</HelperText>}
-          </FormControl>
-          <FormControl required>
-            <Label>LAN</Label>
-            <StyledInput
-              placeholder="Activity latitude"
-              onChange={(e) => setLan(e.target.value)}
-              value={lan}
-            />
-            {errorMessages.lan && <HelperText>{errorMessages.lan}</HelperText>}
-          </FormControl>
-
-          <FormControl required>
-            <Label>Tags</Label>
-            <SelectTags tags={tag} setTags={setTags} />
-            {errorMessages.tag && <HelperText>{errorMessages.tag}</HelperText>}
-          </FormControl>
-
-          <FormControl required>
-            <Label>Category</Label>
-            <SelectCategory tags={category} setTags={setCategory} />
-            {errorMessages.category && <HelperText>{errorMessages.category}</HelperText>}
-          </FormControl>
-
-          <FormControl required>
-            <Label>Price</Label>
-            <StyledInput
-              placeholder="Enter activity price"
-              type="number"
-              onChange={(e) => setPrice(e.target.value)}
-              value={price}
-            />
-            {errorMessages.price && <HelperText>{errorMessages.price}</HelperText>}
-          </FormControl>
-
-          {/* <FormControl required>
-            <Label>Maximum Price</Label>
-            <StyledInput
-              placeholder="Enter maximum activity price"
-              type="number"
-              onChange={(e) => setMaxPrice(e.target.value)}
-              value={maxPrice}
-            />
-            {errorMessages.maxPrice && <HelperText>{errorMessages.maxPrice}</HelperText>}
-          </FormControl> */}
-
-          <FormControl>
-            <Label>DISCOUNT</Label>
-            <StyledInput
-              placeholder="Enter any discounts"
-              type="number"
-              onChange={(e) => setDiscount(e.target.value)}
-              value={discount}
-            />
-            {errorMessages.discount && <HelperText>{errorMessages.discount}</HelperText>}
-          </FormControl>
+          ))}
         </Box>
-        {errorMessages.general && <HelperText>{errorMessages.general}</HelperText>}
-        <Button onClick={handleCreate}>CREATE</Button>
+
+        {pictures.length > 0 && (
+          <Box
+            component="img"
+            src={pictures[0]}
+            alt="Vintage Image"
+            sx={{
+              width: "100%",
+              maxHeight: "400px",
+              borderRadius: "10px",
+              objectFit: "cover",
+              marginBottom: "20px",
+            }}
+          />
+        )}
+
+        <div className="vintage-info">
+          <Box sx={{ marginBottom: "20px" }}>
+            <Typography variant="body1" sx={{ fontSize: "18px", marginBottom: "10px" }}>
+              <strong>Description:</strong> {description}
+            </Typography>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                marginBottom: "10px",
+              }}
+            >
+              <PinDropIcon sx={{ marginRight: "5px" }} />
+              <Typography variant="body1">
+                <strong>Location:</strong> {`${location.nation.city}, ${location.nation.country}`} (Lat: {location.latitude}, Long: {location.longitude})
+              </Typography>
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                marginBottom: "10px",
+              }}
+            >
+              <AttachMoneyIcon sx={{ marginRight: "5px" }} />
+              <Typography variant="body1">
+              Ticket Prices in {`${code}`}:<br/> Foreigner: {(ticket_price.foriegner*conversionRate).toFixed(2)}<br/> Native: {(ticket_price.native*conversionRate).toFixed(2)}<br/> Student: {(ticket_price.student*conversionRate).toFixed(2)}
+              </Typography>
+            </Box>
+            <Typography variant="body1" sx={{ fontSize: "18px", marginBottom: "10px" }}>
+              <strong>Opening Hours:</strong> {opening_hours.opening} - {opening_hours.closing}
+            </Typography>
+          </Box>
+        </div>
       </Box>
-
-      {/* Success Dialog */}
-      <Dialog
-        open={openDialog}
-        onClose={() => setOpenDialog(false)}
-      >
-        <DialogTitle>Activity Created Successfully</DialogTitle>
-        <DialogContent>
-          Your activity has been successfully created!
-        </DialogContent>
-        <DialogActions>
-          <MuiButton onClick={() => {
-            setOpenDialog(false);
-            navigate('/advertiser'); // Navigate to the advertiser page after closing the dialog
-          }} color="primary">
-            OK
-          </MuiButton>
-        </DialogActions>
-      </Dialog>
-    </Box>
+    </div>
   );
-}
+};
 
-// Styled components
-const StyledInput = styled('input')(({ theme }) => `
-    width: 400px;
-    padding: 8px 12px;
-    border-radius: 8px;
-    border: 1px solid ${theme.palette.mode === 'dark' ? '#6B7A90' : '#B0B8C4'};
-    background: ${theme.palette.mode === 'dark' ? '#303740' : '#fff'};
-    color: ${theme.palette.mode === 'dark' ? '#C7D0DD' : '#1C2025'};
-    &:focus {
-        outline: 0;
-        border-color: #3399FF;
-    }
-`);
-
-const Button = styled(BaseButton)(({ theme }) => `
-    background-color: #ff4d4d;
-    color: white;
-    padding: 6px 8px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 150ms ease;
-    &:hover {
-        background-color: #ff3333;
-    }
-`);
-
-const Label = styled('label')`
-    font-size: 0.875rem;
-    margin-bottom: 4px;
-    display: block;
-`;
-
-const HelperText = styled('p')`
-    font-size: 0.75rem;
-    color: red;
-`;
+export default UserVintageDetails;
