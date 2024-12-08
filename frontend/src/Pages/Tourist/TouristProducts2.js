@@ -7,9 +7,11 @@ import {
   SortDescendingIcon,
 } from "@heroicons/react/solid";
 import { Layout } from "antd";
-import TouristNB from "./components/TouristNavBar";
-import { chaoticOrbit } from "ldrs";
+import TouristNavBar from './components/TouristNavBar.js';
+import TouristSideBar from './components/TouristSideBar.js';
+import {Box} from '@mui/material';
 
+import { chaoticOrbit } from "ldrs";
 const { Header, Content } = Layout;
 
 const ProductGrid = () => {
@@ -72,10 +74,23 @@ const ProductGrid = () => {
   chaoticOrbit.register();
 
   return (
-    <Layout style={{ backgroundColor: "#f6f6f6", minHeight: "100vh" }}>
-      <Header style={{ backgroundColor: "#004e89", padding: "0" }}>
-        <TouristNB />
-      </Header>
+    <Box sx={{ display: "flex", backgroundColor: "#f9f9f9", minHeight: "100vh" }}>
+    {/* Sidebar */}
+    <Box>
+      <TouristSideBar />
+    </Box>
+
+    {/* Main Content Area */}
+    <Box
+      sx={{
+        flexGrow: 1,
+        marginLeft: "80px", // Sidebar width
+        marginTop: "64px", // AppBar height
+        padding: "16px",
+      }}
+    >
+      {/* Top Navbar */}
+      <TouristNavBar />
 
       <Content style={{ padding: "24px" }}>
         <div className="max-w-7xl mx-auto space-y-6">
@@ -133,7 +148,7 @@ const ProductGrid = () => {
           )}
         </div>
       </Content>
-    </Layout>
+   </Box></Box>
   );
 };
 
