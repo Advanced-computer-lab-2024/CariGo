@@ -34,7 +34,8 @@ import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
 import ProfileHeader from "../../components/TouristHeader";
 import TouristInfo from "../../components/TouristInfo";
 import TouristInfoEdit from "../../components/TouristInfoEdit";
-import TouristNB from "./components/TouristNavBar";
+import TouristNavBar from "./components/TouristNavBar";
+import TouristSideBar from "./components/TouristSideBar";
 import PassModal from "./components/PassModal";
 
 // Create a custom theme with the new color scheme
@@ -227,9 +228,24 @@ const TouristProfile = ({ userId }) => {
   const code = localStorage.getItem("currencyCode") || "EGP";
 
   return (
-    <ThemeProvider theme={theme}>
-      <Box sx={{ backgroundColor: "background.default", minHeight: "100vh" }}>
-        <TouristNB />
+   <Box sx={{ display: "flex", backgroundColor: "#f9f9f9", minHeight: "100vh" }}>
+    {/* Sidebar */}
+    <Box>
+      <TouristSideBar />
+    </Box>
+
+    {/* Main Content Area */}
+    <Box
+      sx={{
+        flexGrow: 1,
+        marginLeft: "80px", // Sidebar width
+        marginTop: "50px", // AppBar height
+        padding: "16px",
+      }}
+    >
+      {/* Top Navbar */}
+      <TouristNavBar />
+      <ThemeProvider theme={theme}>
         <Container maxWidth="md">
           <Paper elevation={3} sx={{ mt: 4, mb: 4, overflow: "hidden", backgroundColor: "background.paper", position: "relative" }}>
             <ProfileHeader
@@ -412,8 +428,9 @@ const TouristProfile = ({ userId }) => {
             </DialogActions>
           </Dialog>
         </Container>
-      </Box>
     </ThemeProvider>
+      </Box>
+      </Box>
   );
 };
 
