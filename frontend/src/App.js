@@ -54,7 +54,7 @@ import { jwtDecode } from 'jwt-decode';
 import CreateActivityForm from "./Pages/CreateActivityForm.js";
 import TouristProfile from "./Pages/Tourist/TouristProfile.js";
 import TouristGuestHome from "./Pages/HomePageTourist/App/page.jsx";
-import ViewProductsTourist from "./Pages/Tourist/TouristProducts.js";
+import ViewProductsTourist from "./Pages/Tourist/TouristProducts2.js";
 import GuestHome from "./Pages/Guest/GuestHome.js";
 import TouristActivities from './Pages/Tourist/TouristActivities.js';
 import GuestActivities from './Pages/Guest/GuestActivities.js';
