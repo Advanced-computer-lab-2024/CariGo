@@ -76,7 +76,7 @@ const ActivityPostAdvList = () => {
             category={activity.Category}
             rating={activity.ratingsAverage}
             discount={activity.discount}
-            isOpened={activity.isOpened ? "open" : "closed"}
+            isOpened={activity.isOpened}
             title={activity.title}
             tag={activity.tag}
             description={activity.description}
