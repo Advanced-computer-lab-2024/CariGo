@@ -450,9 +450,10 @@ export default function SalesReportMUI() {
   PaperProps={{
     sx: {
       width: 400, // Adjust the width
-      background: "linear-gradient(to bottom, #f8f9fa, #ffffff)",
-      boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.2)",
-    },
+      background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(240, 248, 255, 0.1), rgba(224, 255, 255, 0.1))', // Softer gradient with transparency
+      backdropFilter: "blur(15px)", // Adds a blur effect to the background
+      boxShadow: '0 12px 24px rgba(0, 0, 0, 0.15), 0 8px 16px rgba(0, 0, 0, 0.1)', // Subtle layered shadows
+      },
   }}
 >
   <Box
@@ -490,16 +491,37 @@ export default function SalesReportMUI() {
     gap: 2,
   }}
 >
-                    <FormControl fullWidth sx={{ mb: 2 }}>
-  <InputLabel id="product-select-label">Select Product</InputLabel>
+  
+<FormControl fullWidth>
+        <InputLabel
+          id="product-label"
+          sx={{
+            fontWeight: "bold", // Ensure font weight is bold
+            typography: "body1", // Use body1 typography
+            color: "black", // Optionally ensure the color is black
+          }}
+        >
+          Product
+        </InputLabel>
+        <Select
+          labelId="product-label"
+          value={selectedProduct}
+          onChange={(e) => setSelectedProduct(e.target.value)}
  
-                    <Select
-  value={selectedProduct}
-  onChange={(e) => setSelectedProduct(e.target.value)}
- sx={{
-                "& .MuiSelect-icon": { color: "gray" }, // Custom color for the dropdown arrow
-              }}
-            >
+          sx={{
+            borderRadius: '20px', // Round the dropdown itself
+            '& .MuiSelect-select': {
+              borderRadius: '20px', // Round the inside field
+          },
+        }}
+        MenuProps={{
+          PaperProps: {
+            sx: {
+              borderRadius: '20px', // Round the dropdown menu
+            },
+          },
+        }}
+      >
   {productOptions.map((product) => (
     <MenuItem key={product.id} value={product.id}>
       {product.name}
@@ -507,6 +529,8 @@ export default function SalesReportMUI() {
   ))}
 </Select>
 </FormControl>
+
+
 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <ClearIcon
               sx={{ color: "blue", cursor: "pointer" }}
@@ -533,8 +557,10 @@ export default function SalesReportMUI() {
           onChange={handleAccordionChange("datesAccordion")}
           sx={{
             width: "100%", // Ensure the accordion takes up the entire width
+            background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(240, 248, 255, 0.1), rgba(224, 255, 255, 0.1))', // Softer gradient with transparency
             boxShadow: "none", // Remove default box shadow
-          }}
+            borderRadius: "16px",
+            }}
         >
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
@@ -543,13 +569,21 @@ export default function SalesReportMUI() {
             sx={{
               padding: "0 16px", // Adjust padding
               borderTop: "1px solid #ddd", // Divider line at the top of the accordion
-            }}
+              borderRadius: "20px", // Rounded corners for the accordion summary
+              '&:hover': {
+                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+              },
+             }}
           >
             <Typography variant="body1" sx={{ fontWeight: "bold" }}>
               Dates
             </Typography>
           </AccordionSummary>
-          <AccordionDetails sx={{ padding: "8px 16px" }}>
+
+          <AccordionDetails sx={{
+           borderRadius: "16px",
+          overflow: "hidden", 
+        }}>
             {/* Start Date Filter */}
             <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
               <Typography variant="body1">Start Date</Typography>
@@ -557,6 +591,25 @@ export default function SalesReportMUI() {
                 <DateCalendar
                   value={startDate}
                   onChange={(newValue) => setStartDate(newValue)}
+                  PopperProps={{
+                    sx: {
+                      "& .MuiPaper-root": {
+                        backdropFilter: "blur(15px)", // Frosted-glass effect
+                        borderRadius: "20px",
+                        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)", // Optional shadow
+                      },
+                    },
+                  }}
+                  sx={{
+                    "& .MuiPickersCalendarHeader-root": {
+                      backdropFilter: "blur(10px)", // Applying the blur effect
+                      borderRadius: "20px", // Ensure header also has rounded corners
+                    },
+                    "& .MuiDayPicker-root": {
+                      borderRadius: "20px", // Ensure the day picker itself is rounded
+                    },
+                    marginLeft: "-11px",
+                  }}
                 />
               </LocalizationProvider>
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
@@ -584,8 +637,28 @@ export default function SalesReportMUI() {
                 <DateCalendar
                   value={endDate}
                   onChange={(newValue) => setEndDate(newValue)}
+                  PopperProps={{
+                    sx: {
+                      "& .MuiPaper-root": {
+                        backdropFilter: "blur(15px)", // Frosted-glass effect
+                        borderRadius: "20px",
+                        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)", // Optional shadow
+                      },
+                    },
+                  }}
+                  sx={{
+                    "& .MuiPickersCalendarHeader-root": {
+                      backdropFilter: "blur(10px)", // Applying the blur effect
+                      borderRadius: "20px", // Ensure header also has rounded corners
+                    },
+                    "& .MuiDayPicker-root": {
+                      borderRadius: "20px", // Ensure the day picker itself is rounded
+                    },
+                    marginLeft: "-11px",
+                  }}
                 />
               </LocalizationProvider>
+              
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
               <ClearIcon
               sx={{ color: "blue", cursor: "pointer" }}
@@ -611,14 +684,21 @@ export default function SalesReportMUI() {
 
                   {/* Apply Filters Button */}
                   <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={filterDataByDate}
-                  >
-                    Apply Filters
-                  </Button>
-                </Box>
-              </Drawer>
+      variant="contained"
+      color="primary"
+      onClick={() => {
+        filterDataByDate();
+        setDrawerOpen(false);
+      }}
+      sx={{
+        borderRadius: '20px',
+        padding: '10px 20px',
+      }}
+    >
+      Apply Filters
+    </Button>
+  </Box>
+</Drawer>
 
               <Tabs value={tabValue} onChange={handleTabChange} sx={{ mb: 3 }}>
                 <Tab label="Overview" />
