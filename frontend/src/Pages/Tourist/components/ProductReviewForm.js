@@ -23,9 +23,9 @@ const StyledRating = styled(Rating)({
 });
 
 
-const ProductReviewForm = ({ productId, open, onClose }) => {
+const ProductReviewForm = ({ id, open, onClose }) => {
   const [reviewData, setReviewData] = useState({
-    product: productId,
+    product: id,
     review: '',
     rating: 0,
     user: localStorage.getItem('id')
