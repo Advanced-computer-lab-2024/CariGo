@@ -5,7 +5,7 @@ import Testimonials from "../components/testimonials";
 import Footer from "../components/footer";
 import PageIllustration from "../components/page-illustration";
 import Cta from "../components/cta";
-import NavBar from "../../../components/NavBarTourist";
+import NavBar from "../../Tourist/components/GuestNavBar";
 
 export default function Home() {
   return (

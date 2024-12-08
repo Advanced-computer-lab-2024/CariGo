@@ -14,12 +14,11 @@ const UserVintageDetails = () => {
   const token = localStorage.getItem('jwt');
   const [tourist,setTourist]= useState(false);
 
-  
-  if(token){
-    setTourist(true);
-  }
 
   useEffect(() => {
+
+        setTourist(!!token);
+
     const fetchVintageDetails = async () => {
       try {
         const token = localStorage.getItem("jwt");
@@ -47,7 +46,7 @@ const UserVintageDetails = () => {
     };
 
     fetchVintageDetails();
-  }, [id]);
+  }, [id, token]);
 
   if (!vintage) {
     return <Typography>Loading...</Typography>;
