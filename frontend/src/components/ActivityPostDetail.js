@@ -36,6 +36,7 @@ export default function ActivityDetail() {
   const [activity, setActivities] = useState({});
   const navigate = useNavigate();
   const [localInterestedUsers, setLocalInterestedUsers] = useState([]);
+  const [tourist,setTourist]= useState(false);
   const token = localStorage.getItem("jwt");
   const [tourist,setTourist]= useState(false);
 
