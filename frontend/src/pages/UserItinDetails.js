@@ -102,7 +102,7 @@ const ItineraryDetails = () => {
         if(data.interestedUsers) {
           setLocalInterestedUsers(data.interestedUsers);
         }
-        if (!token) setTourist(false);
+        if (token) setTourist(true);
       } catch (error) {
         console.error("Error fetching itinerary details:", error);
       }
