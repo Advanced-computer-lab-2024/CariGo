@@ -52,9 +52,10 @@ import {
   Close as CloseIcon,
   CheckCircle as CheckCircleIcon,
 } from '@mui/icons-material';
-
+import TouristSideBar from "./Tourist/components/TouristSideBar";
+import productImage2 from "../assets/product.png"
 const stripePromise = loadStripe('pk_test_51QLoL4AkXvwFjwTIX8acMj27pC8YxdOhmoUzn0wbUhej1xUFgFlfgYtXRGmggbKUI6Yfpxz08i9shcsfszv6y9iP0007q608Ny'); // Publishable key
-
+const folderPics = `http://localhost:4000/public/img/products/`;
 const API_BASE_URL = "http://localhost:4000/cariGo";
 
 const CartComponent = () => {
@@ -375,9 +376,10 @@ const CartComponent = () => {
   return (
     <Box sx={{ backgroundColor: "#f6f6f6", minHeight: "100vh" }}>
       <Navbar />
-      <Container maxWidth="lg" sx={{ py: 4 }}>
+      <TouristSideBar/>
+      <Container maxWidth="lg" sx={{ py: 4, marginTop: 5 }}>
         <Typography variant="h4" sx={styles.pageTitle}>
-          Shopping Cart
+          Shopping Cart <ShoppingCartIcon fontSize="large" />
         </Typography>
 
         {/* Main Content Grid */}
@@ -403,7 +405,7 @@ const CartComponent = () => {
                       <Grid item xs={3}>
                         <Box
                           component="img"
-                          src="/placeholder.svg"
+                          src={item.productId.mainImage ? folderPics + item.productId.mainImage : productImage2}
                           alt={item.productId.name}
                           sx={styles.productImage}
                         />
