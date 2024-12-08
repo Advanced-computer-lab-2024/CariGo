@@ -221,7 +221,7 @@ const getActivitiesByIds = async (req, res) => {
     const activityIds = ids.split(',');
 
     // Fetch activities based on the provided IDs
-    const activities = await Activity.find({ '_id': { $in: activityIds } });
+    const activities = await Activity.find({ '_id': { $in: activityIds } }).populate('tag').populate('author');
 
     if (!activities || activities.length === 0) {
       return res.status(404).json({ message: "Activities not found" });
