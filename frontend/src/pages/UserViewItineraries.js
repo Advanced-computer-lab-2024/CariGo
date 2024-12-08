@@ -27,7 +27,7 @@ const navigate = useNavigate();
     </Button>
     
       {/* <CreateItineraryForm/> */}
-      <Box
+      {/* <Box
         sx={{
           width: "1150px",
           overflow: "hidden",
@@ -49,11 +49,11 @@ const navigate = useNavigate();
             "&::-webkit-scrollbar": { display: "none" },
           }}
         >
-          {" "}
+          {" "} */}
           {/* Enable vertical scrolling only */}
           <ItineraryList />
-        </Box>
-      </Box>
+        {/* </Box>
+      </Box> */}
       
     </div>
   );
