@@ -3,9 +3,6 @@ import { useParams } from "react-router-dom";
 import { Box, Typography, Chip, Avatar } from "@mui/material";
 import PinDropIcon from "@mui/icons-material/PinDrop";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-<<<<<<< HEAD
-import ResponsiveAppBar from "./Tourist/components/TouristNavBar";
-=======
 import StarIcon from "@mui/icons-material/Star";
 import TouristNavBar from "./Tourist/components/TouristNavBar.js";
 import GuestNavBar from "./Tourist/components/GuestNavBar";
@@ -31,88 +28,202 @@ import { jwtDecode } from "jwt-decode";
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 const stripePromise = loadStripe('pk_test_51QLoL4AkXvwFjwTIX8acMj27pC8YxdOhmoUzn0wbUhej1xUFgFlfgYtXRGmggbKUI6Yfpxz08i9shcsfszv6y9iP0007q608Ny'); // Publishable key
->>>>>>> main
 
-const UserVintageDetails = () => {
-  const { id } = useParams(); // Get the vintage ID from the URL
-  const [vintage, setVintage] = useState(null);
+const ItineraryDetails = () => {
+  const { id } = useParams(); // Get the itinerary ID from the URL
+  const [itinerary, setItinerary] = useState(null);
+  const [localInterestedUsers, setLocalInterestedUsers] = useState([]);
+  const navigate = useNavigate();
+  const [token,setToken] = useState(localStorage.getItem('jwt'));
+  const [tourist,setTourist]= useState(false);
+  const [user, setUser] = useState();
 
   useEffect(() => {
-    const fetchVintageDetails = async () => {
-      try {
-        const token = localStorage.getItem("jwt");
-        // if (!token) {
-        //   throw new Error("No token found. Please log in.");
-        // }
+  const fetchUser = async () => {
+    try {
+      const token = localStorage.getItem("jwt");
+      const id = jwtDecode(token).id;
 
-        const response = await fetch(`/cariGo/Event/readSingleVintage/${id}`, {
-          method: "GET",
+      const response = await axios.get(
+        `http://localhost:4000/cariGo/users/${id}`,
+        {
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
           },
-        });
+        }
+      );
+        
+      console.log("API Response Data:", response.data); // Logs the fetched data
+      setUser(Object.assign({}, response.data));
+    } catch (err) {
+      console.error("Error fetching profile:", err);
+    }
+  };
+ 
+  fetchUser();
+  }, []);
+  // useEffect(() => {
+  //   if (user) {
+  //     console.log("Updated user state:", user); // Logs the state after it updates
+  //   }
+  // }, [user]);
+
+  const [isPaymentPopupOpen, setIsPaymentPopupOpen] = useState(false);
+
+  const handleClick = () => {
+    if (token){
+      setIsPaymentPopupOpen(true);
+      // navigate(`/checkout/itinerary/${id}`); // Update the navigation path
+    }
+      
+    else navigate(`/login`);
+  };
+  
+  useEffect(() => {
+    const fetchItineraryDetails = async () => {
+      try {
+        const response = await fetch(
+          `/cariGo/Event/readSingleItinerary/${id}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
         const data = await response.json();
-<<<<<<< HEAD
-        setVintage(data);
-=======
         setItinerary(data);
         if(data.interestedUsers) {
           setLocalInterestedUsers(data.interestedUsers);
         }
         if (token) setTourist(true);
->>>>>>> main
       } catch (error) {
-        console.error("Error fetching vintage details:", error);
+        console.error("Error fetching itinerary details:", error);
       }
     };
+    fetchItineraryDetails();
+  }, [id]); // Include `id` in dependencies
 
-    fetchVintageDetails();
-  }, [id]);
-
-  if (!vintage) {
+  if (!itinerary) {
     return <Typography>Loading...</Typography>;
   }
 
-  const {
-    name = "No name provided",
-    description = "No description available",
-    pictures = [],
-    location = {
-      longitude: "Not specified",
-      latitude: "Not specified",
-      nation: { country: "Not specified", city: "Not specified" },
+  const {start_date,end_date,locations,price,tags,activities,transportation,accommodation,
+    ratingsAverage,language,pick_up,drop_off,accessibility,title,isOpened,author,
+  } = itinerary;
+
+   // Function to format the date and time
+   const formatDateTime = (dateString) => {
+    const options = {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      //hour: '2-digit',
+      //minute: '2-digit',
+      //hour12: true,
+    };
+    return new Date(dateString).toLocaleString(undefined, options);
+  };
+
+  const formatDateHour = (dateString) => {
+    const options = {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true, // Use 12-hour format with AM/PM
+    };
+    return new Date(dateString).toLocaleString(undefined, options);
+  };
+
+
+  // Format activities to include start and end dates in the correct format
+  const formattedActivities = activities.map((activity) => ({
+    name: activity.name,
+    description: activity.description,
+    startDate: formatDateTime(activity.start_date),
+    endDate: formatDateTime(activity.end_date),
+  }));
+
+  const handleInterestedUser = async (users) => {
+    try {
+      const response = await fetch(`/cariGo/Event/updateItinerary/${id}`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          interestedUsers: users,
+        }),
+      });
+      if (!token) setTourist(false);
+    } catch (error) {
+      console.error("Error", error);
+    }
+  };
+
+  const handlePlaceOrder = async (paymentMethod,TotalPrice,NumberOfTickets) => {
+    // setLoading(true);
+    try {
+      const token = localStorage.getItem("jwt");
+      if (!token) {
+        throw new Error("No token found. Please log in.");
+      }
+      
+
+      const endpoint = `http://localhost:4000/cariGo/Event/BookItinerary/${id}`;
+
+      // const payload = 
+      console.log(paymentMethod,TotalPrice,NumberOfTickets)
+      const response = await axios.post(endpoint, {
+        PaymentMethod:paymentMethod,
+        TotalPrice:TotalPrice,
+        NumberOfTickets:NumberOfTickets
+      }, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.data) {
+        navigate("/tourist/MyBookings");
+      }
+    } catch (error) {
+      console.error("Error during booking:", error);
+      // setError(error.response?.data?.error || 'Booking failed');
+    }
+  };
+  const conversionRate = localStorage.getItem("conversionRate") || 1;
+  const code = localStorage.getItem("currencyCode") || "EGP";
+
+  const styles = {
+    ratingContainer: {
+      display: "flex",
+      alignItems: "center",
+      gap: "4px",
+      marginBottom: "16px",
     },
-    ticket_price = {
-      foriegner: "Not specified",
-      native: "Not specified",
-      student: "Not specified",
+    star: {
+      color: "#ff6b35",
+      fontSize: "20px",
     },
-    tags = [],
-    opening_hours = {
-      opening: "Not specified",
-      closing: "Not specified",
+    ratingText: {
+      fontSize: "20px",
+      color: "#cc5b22",
     },
-  } = vintage;
-  const conversionRate = localStorage.getItem("conversionRate")||1;
-  const code = localStorage.getItem("currencyCode")||"EGP";
+    author: {
+      fontSize: "16px",
+      color: "#cc5b22",
+      marginBottom: "8px",
+    },
+  }
   return (
-<<<<<<< HEAD
-    <div>
-      <ResponsiveAppBar />
-      <Box sx={{ padding: "20px", maxWidth: "1200px", margin: "auto" }}>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            marginBottom: "20px",
-=======
     <Box sx={{ display: "flex", backgroundColor: "#f9f9f9", minHeight: "100vh" }}>
     {/* Sidebar */}
     <Box>
@@ -139,77 +250,193 @@ const UserVintageDetails = () => {
             width: "80px",
             ml: "1%",mt:'2%',mb:'0%',
             fontSize:'18px'
->>>>>>> main
           }}
         >
-          <Avatar sx={{ bgcolor: "#126782", width: 56, height: 56 }}>
-            {name.charAt(0)}
-          </Avatar>
-          <Typography variant="h4" sx={{ margin: "10px 0", fontWeight: "bold" }}>
-            {name || "No name provided"}
-          </Typography>
-          {tags?.map((tag, index) => (
-            <Chip
-              key={index}
-              label={tag}
-              sx={{ backgroundColor: "#126782", color: "white", margin: "5px" }}
-            />
-          ))}
-        </Box>
+          <ArrowBackIosIcon/>
+          Back
+        </Button>
+      <Box>
+        <Paper
+          elevation={3}
+          sx={{ padding: "30px", maxWidth: "1200px", margin: "20px auto" }}
+        >
+          <Grid container spacing={4}>
+            <Grid item xs={12} md={8}>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-start",
+                  marginBottom: "20px",
+                }}
+              >
+                {/* Title and Rating Container */}
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between", // Push content to edges
+                    alignItems: "center",
+                    width: "90%", // Ensure it spans full width
+                    color: "#00355a",
+                  }}
+                >
+                  {/* Title */}
+                  <Box sx={{display: "flex", flexDirection: "column",}}>
+                  <Typography
+                    variant="h4"
+                    sx={{
+                      marginBottom: "10px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {title || "Anonymous"}
+                  </Typography>
+                  <p style={styles.author}>by {author?.username ? author?.username :"Big Bang"}</p>
+                  {/* Rating */}
+                  <div style={styles.ratingContainer}>
+                    {"★★★★★".split("").map((star, index) => (
+                      <span
+                        key={index}
+                        style={{
+                          ...styles.star,
+                          opacity: index < Math.floor(ratingsAverage) ? 1 : 0.5,
+                        }}
+                      >
+                        {star}
+                      </span>
+                    ))}
+                    <span style={styles.ratingText}>{ratingsAverage}</span>
+                  </div>
+                  </Box>
+                </Box>
 
-        {pictures.length > 0 && (
-          <Box
-            component="img"
-            src={pictures[0]}
-            alt="Vintage Image"
-            sx={{
-              width: "100%",
-              maxHeight: "400px",
-              borderRadius: "10px",
-              objectFit: "cover",
-              marginBottom: "20px",
-            }}
-          />
-        )}
+                <Box
+                  sx={{display: "flex",flexWrap: "wrap",gap: "10px",marginBottom: "15px",}}
+                >
+                  {tags?.map((tag) => (
+                    <Chip key={tag._id}label={tag.title}
+                      sx={{ backgroundColor: "#00355a", color: "white" }}
+                    />
+                  ))}
+                </Box>
+              </Box>
 
-        <div className="vintage-info">
-          <Box sx={{ marginBottom: "20px" }}>
-            <Typography variant="body1" sx={{ fontSize: "18px", marginBottom: "10px" }}>
-              <strong>Description:</strong> {description}
-            </Typography>
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                marginBottom: "10px",
-              }}
-            >
-              <PinDropIcon sx={{ marginRight: "5px" }} />
-              <Typography variant="body1">
-                <strong>Location:</strong> {`${location.nation.city}, ${location.nation.country}`} (Lat: {location.latitude}, Long: {location.longitude})
+              <Box
+                component="img"
+                src={logoImage || ""}
+                alt="Itinerary Image"
+                sx={{
+                  width: "100%",
+                  maxHeight: "400px",
+                  borderRadius: "10px",
+                  objectFit: "cover",
+                  marginBottom: "20px",
+                }}
+              />
+
+              <Divider sx={{ margin: "20px 0" }} />
+
+              <Typography
+                variant="h5"
+                sx={{ marginBottom: "15px", color: "#00355a" }}
+              >
+                Itinerary Details
               </Typography>
-            </Box>
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                marginBottom: "10px",
-              }}
-            >
-              <AttachMoneyIcon sx={{ marginRight: "5px" }} />
-              <Typography variant="body1">
-              Ticket Prices in {`${code}`}:<br/> Foreigner: {(ticket_price.foriegner*conversionRate).toFixed(2)}<br/> Native: {(ticket_price.native*conversionRate).toFixed(2)}<br/> Student: {(ticket_price.student*conversionRate).toFixed(2)}
+            {/* start and end date */}
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={6}>
+                  <Box sx={{ display: "flex",margin: "2% 0", }}>
+                    <CalendarMonthIcon sx={{color:'#00355a', fontSize:'28px',}}/>
+                    <Box sx={{color:'#00355a', marginLeft:'10px',display:'flex', flexDirection:'column', gap:'5px'}}>
+                      {/* <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                        Start Date:
+                      </Typography> */}
+                      <Typography variant="body2" sx={{fontSize:'18px'}}>
+                        {formatDateTime(start_date)}
+                      </Typography>
+                      <Box sx={{display:'flex', gap:'5px', color:'#00355a'}}>
+                        <AccessTimeIcon sx={{fontSize: "22px",}}/>
+                        <Typography sx={{ }}>
+                            {formatDateHour(start_date)}
+                        </Typography>
+                        </Box>
+                    </Box>
+                  </Box>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Box sx={{ display: "flex",margin: "2% 0", }}>
+                    <CalendarMonthIcon sx={{color:'#00355a', fontSize:'28px',}}/>
+                    <Box sx={{color:'#00355a', marginLeft:'10px',display:'flex', flexDirection:'column', gap:'5px'}}>
+                      {/* <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                        Start Date:
+                      </Typography> */}
+                      <Typography variant="body2" sx={{fontSize:'18px'}}>
+                        {formatDateTime(end_date)}
+                      </Typography>
+                      <Box sx={{display:'flex', gap:'5px', color:'#00355a'}}>
+                        <AccessTimeIcon sx={{fontSize: "22px",}}/>
+                        <Typography sx={{ }}>
+                            {formatDateHour(end_date)}
+                        </Typography>
+                        </Box>
+                    </Box>
+                  </Box>
+                </Grid>
+                {/* end of start and end date */}
+                <Grid item xs={12}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      //alignItems: "center",
+                      marginBottom: "10px",
+                    }}
+                  >
+                    <PinDropIcon
+                      sx={{ fontSize:'30px', color: "#00355a" }}
+                    />
+                    <Box sx={{color:'#00355a', marginLeft:'10px',display:'flex', flexDirection:'column', gap:'5px'}}>
+                      <Typography variant="body1" sx={{ fontWeight: "bold", color:'#ff6b35' }}>
+                      Location {locations.length > 1 ? 's' : ''}
+                      </Typography>
+                      <Typography variant="body2">
+                        {locations?.join(", ") || "Not specified"}
+                      </Typography>
+                    </Box>
+                  </Box>
+                </Grid>
+                <Grid item xs={12}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      //alignItems: "center",
+                      marginBottom: "10px",
+                    }}
+                  >
+                    <AttachMoneyIcon
+                      sx={{ fontSize:'30px', color: "#00355a" }}
+                    />
+                    <Box sx={{color:'#00355a', marginLeft:'10px',display:'flex', flexDirection:'column', gap:'5px'}}>
+                      <Typography variant="body1" sx={{ fontWeight: "bold", color:'#ff6b35' }}>
+                        Price
+                      </Typography>
+                      <Typography variant="body2">
+                        {price
+                          ? `${(price * conversionRate).toFixed(2)} ${code}`
+                          : "Price not specified"}
+                      </Typography>
+                    </Box>
+                  </Box>
+                </Grid>
+              </Grid>
+
+              <Divider sx={{ margin: "20px 0" }} />
+
+              <Typography
+                variant="h5"
+                sx={{ marginBottom: "15px", color: "#00355a" }}
+              >
+                Additional Information
               </Typography>
-<<<<<<< HEAD
-            </Box>
-            <Typography variant="body1" sx={{ fontSize: "18px", marginBottom: "10px" }}>
-              <strong>Opening Hours:</strong> {opening_hours.opening} - {opening_hours.closing}
-            </Typography>
-          </Box>
-        </div>
-      </Box>
-    </div>
-=======
 
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={6}>
@@ -463,8 +690,7 @@ const UserVintageDetails = () => {
           </Grid>
         </Paper>
         </Box></Box> </Box>
->>>>>>> main
   );
 };
 
-export default UserVintageDetails;
+export default ItineraryDetails;
