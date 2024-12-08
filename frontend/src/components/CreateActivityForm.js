@@ -143,7 +143,7 @@ export default function CreateActivityForm() {
           </FormControl>
 
           <FormControl required>
-            <Label>DESCRIPTION</Label>
+            <Label>3k</Label>
             <StyledInput
               placeholder="Brief description of your activity"
               onChange={(e) => setDescription(e.target.value)}

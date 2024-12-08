@@ -1,24 +1,20 @@
 import * as React from 'react';
-import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
-import CardMedia from '@mui/material/CardMedia';
-import CardContent from '@mui/material/CardContent';
-import CardActions from '@mui/material/CardActions';
-import Avatar from '@mui/material/Avatar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import { red } from '@mui/material/colors';
-import FavoriteIcon from '@mui/icons-material/Favorite';
+import { 
+  Card, 
+  CardMedia, 
+  CardContent, 
+  Typography, 
+  IconButton, 
+  Box, 
+  Chip, 
+  Button 
+} from '@mui/material';
 import ShareIcon from '@mui/icons-material/Share';
-import DeleteIcon from '@mui/icons-material/Delete';
-import { Box, Chip, Snackbar } from '@mui/material';
-import PinDropIcon from '@mui/icons-material/PinDrop';
-import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-export default function TouristVintagePost({
+export default function VintageTouristCard({
   author = "Anonymous",
   id,
   name = "No name provided",
@@ -34,11 +30,13 @@ export default function TouristVintagePost({
   opening_hours = {
     opening: "Not specified",
     closing: "Not specified"
-  }
+  },
+  rating = 4.5
 }) {
   const navigate = useNavigate();
   const [snackbarOpen, setSnackbarOpen] = React.useState(false);
   const [snackbarMessage, setSnackbarMessage] = React.useState('');
+  const [isBookmarked, setIsBookmarked] = React.useState(false);
 
   const handleDelete = async (event) => {
     event.stopPropagation();
@@ -60,15 +58,15 @@ export default function TouristVintagePost({
         setSnackbarOpen(true);
         navigate('/myVintages');
       } catch (error) {
-        console.error('Failed to delete vintage:', error.response ? error.response.data : error.message);
-        setSnackbarMessage(`An error occurred while deleting the vintage. Details: ${error.message}`);
+        console.error('Failed to delete vintage:', error);
+        setSnackbarMessage('Failed to delete. Please try again.');
         setSnackbarOpen(true);
       }
     }
   };
 
   const handleShare = async (event) => {
-    event.stopPropagation();
+    // event.stopPropagation();
     try {
       const token = localStorage.getItem('jwt');
       if (!token) {
@@ -95,172 +93,103 @@ export default function TouristVintagePost({
       }
     } catch (error) {
       console.error('Error sharing vintage:', error);
-      if (error.response && error.response.status === 401) {
-        setSnackbarMessage('You need to be logged in to share this vintage. Please log in and try again.');
-      } else {
-        setSnackbarMessage('Failed to share vintage. Please try again later.');
-      }
+      setSnackbarMessage('Failed to share. Please try again.');
       setSnackbarOpen(true);
     }
   };
 
-  const handleSnackbarClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setSnackbarOpen(false);
+  const handleBookmark = () => {
+    setIsBookmarked(!isBookmarked);
+    setSnackbarMessage(isBookmarked ? 'Removed from bookmarks' : 'Added to bookmarks');
+    setSnackbarOpen(true);
   };
-  const conversionRate = localStorage.getItem("conversionRate")||1;
-  const code = localStorage.getItem("currencyCode")||"EGP";
+
+  const handleViewDetails = () => {
+    navigate(`/vintageDetails/${id}`);
+  };
+
+  const conversionRate = localStorage.getItem("conversionRate") || 1;
+  const code = localStorage.getItem("currencyCode") || "EGP";
+
   return (
-    <Card
-      sx={{
-        width: '100%',
-        //maxWidth: '900px',
-        height: '80%',
-        maxHeight:'100%',
-        color: '#126782',
-        fontSize: '18px',
-        display: 'flex',
-        flexDirection: 'column',
-        borderRadius: '10px',
-        position: 'relative',
-        margin: '20px',
-        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-        transition: 'transform 0.3s ease',
-        '&:hover': {
-          transform: 'scale(1.02)',
-          cursor: 'pointer',
-        },
-      }}
-      onClick={() => navigate(`/viewingAllvintage/${id}`)}
-    >
-      <Box sx={{ display: 'flex', flexDirection: 'row', flexGrow: 1 }}>
-        <Box sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
-          <CardMedia
-            component="img"
-            image={pictures[0] || '/ca353eb3-2c2e-4c9a-bcea-615f80995fd2.jpeg'}
-            //image={'/ca353eb3-2c2e-4c9a-bcea-615f80995fd2.jpeg'}
-            alt={name}
-            sx={{
-              width: '90%', // Adjusts to parent container's width
-              maxWidth: '90%', // Maximum width for responsiveness
-              height:'70%',
-              maxHeight:'70%',
-              aspectRatio: '16/9', // Forces all images to have the same aspect ratio
-              borderRadius: '10px',
-              margin: '5px',
-              borderRadius: '10px',
-              boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-            }}
-          />
-          <CardContent sx={{ flexGrow: 1 , width:'95%', overflow:'overflow', marginTop:'3%'}}>
-            <Typography variant="body2" sx={{ color: 'text.secondary', marginTop: '-10px', fontSize: '16px', }}>
-              {description}
-            </Typography>
-          </CardContent>
-          </Box>
-
-        <Box sx={{ display: 'flex', flexDirection: 'column', width: '60%', padding: '10px' }}>
-          <CardHeader
-            avatar={<Avatar sx={{ bgcolor: red[500] }}>{author?.charAt(0)}</Avatar>}
-            title={
-              <Typography variant="h5" sx={{ fontWeight: 'bold', fontSize: '24px' }}>
-                {name}
-              </Typography>
-            }
-          />
-
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginLeft: '15px' }}>
-            {tags?.map((tag, index) => (
-              <Chip key={index} label={tag} sx={{ backgroundColor: '#126782', color: 'white' }} />
-            ))}
-          </Box>
-
-          <Box sx={{ display: 'flex', flexDirection: 'column', marginLeft: '5%', marginTop: '3%' , gap:'5px'}}>
-            <Box sx={{ display: 'flex', marginTop: '5px' , marginTop: '2%', gap:'5px'}}>
-              <AccessTimeIcon sx={{fill:'#ff4d4d'}}/>
-              <Typography sx={{ fontSize: '16px', }}>
-               {opening_hours.opening} - {opening_hours.closing}
-              </Typography>
-            </Box>
-            {location && location.nation ? (
-              <Box sx={{ display: 'flex', marginTop: '5px' }}>
-                <PinDropIcon 
-                //sx={{fill:'#ff4d4d', fontSize}}
-                />
-                <Typography sx={{ marginLeft: '5px' }}>
-                 {location.nation.city}, {location.nation.country}<br/> (Lat: {location.latitude}, Long: {location.longitude})
-                </Typography>
-              </Box>
-            ) : (
-              <Typography sx={{ marginLeft: '5px', marginTop: '5px' }}>
-                Location: Not specified
-              </Typography>
-            )}
-
-            <Box sx={{ display: 'flex', marginTop: '5px' }}>
-              <AttachMoneyIcon />
-              <Typography sx={{ marginLeft: '5px', color: '#126782', fontWeight:'bold' }}>
-                Ticket Prices in {`${code}`} 
-              </Typography>
-              </Box>
-            {/* prices box */}
-            <Box sx={{marginLeft:'8%',width:'35%'}}>
-              <Box sx={{display:'flex' ,justifyContent:'space-between'}}>
-                <Typography sx={{marginLeft:'10%'}}>
-                  Foreigner 
-                </Typography>
-                <Typography sx={{color:'#ff4d4d', }}>
-                  {(ticket_price.foriegner*conversionRate).toFixed(2)}
-                </Typography>
-              </Box>
-              <Box sx={{display:'flex',justifyContent:'space-between'}}>
-                <Typography sx={{marginLeft:'10%'}}>
-                  Native 
-                </Typography>
-                <Typography sx={{color:'#ff4d4d', }}>
-                  {(ticket_price.native*conversionRate).toFixed(2)}
-                </Typography>
-              </Box>
-              <Box sx={{display:'flex' ,justifyContent:'space-between'}}>
-                <Typography sx={{marginLeft:'10%'}}>
-                  Student 
-                </Typography>
-                <Typography sx={{color:'#ff4d4d', }}>
-                  {(ticket_price.student*conversionRate).toFixed(2)} 
-                </Typography>
-              </Box>
-            </Box>
-              
-            
-          </Box>
-        </Box>
+    <Card sx={{ 
+      maxWidth: 345, 
+      borderRadius: 2, 
+      boxShadow: 3,
+      bgcolor: 'background.paper',
+      height: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'space-between'
+    }}>
+      <Box sx={{ position: 'relative' }}>
+        <CardMedia
+          component="img"
+          height="140"
+          image={"./Rome.jpg"}
+          alt={name}
+        />
+        <IconButton
+          sx={{
+            position: 'absolute',
+            top: 8,
+            right: 8,
+            bgcolor: 'background.paper',
+            '&:hover': { bgcolor: 'background.paper' },
+          }}
+          aria-label="share"
+           // Link the ShareIcon with the share function
+        >
+          <ShareIcon sx={{ color: '#ff6b35' }} onClick={handleShare} />
+        </IconButton>
       </Box>
-
-      <CardActions disableSpacing>
-        <Box sx={{ position: 'absolute', bottom: '2px', left: '2px' }}>
-          <IconButton aria-label="add to favorites">
-            <FavoriteIcon />
-          </IconButton>
-          <IconButton aria-label="share" onClick={handleShare}>
-            <ShareIcon />
-          </IconButton>
-          <IconButton aria-label="delete" onClick={handleDelete} sx={{ color: 'red' }}>
-            <DeleteIcon />
-          </IconButton>
+      <CardContent>
+        <Typography gutterBottom variant="h5" component="div" sx={{ color: '#004e89', fontWeight: 'bold' }}>
+          {name}
+        </Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+          {description}
+        </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+          <AccessTimeIcon sx={{ color: '#1a659e', mr: 1 }} />
+          <Typography variant="body2" color="text.secondary">
+            {opening_hours.opening} - {opening_hours.closing}
+          </Typography>
         </Box>
-      </CardActions>
-      <Snackbar
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'center',
-        }}
-        open={snackbarOpen}
-        autoHideDuration={6000}
-        onClose={handleSnackbarClose}
-        message={snackbarMessage}
-      />
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+          {tags.map((tag) => (
+            <Chip
+              key={tag}
+              label={tag}
+              size="small"
+              sx={{
+                bgcolor: '#f7c59f',
+                color: '#004e89',
+                '&:hover': { bgcolor: '#f7e1c6' },
+              }}
+            />
+          ))}
+        </Box>
+      </CardContent>
+      <Box sx={{ p: 2 }}>
+        <button
+          style={{
+            width: "100%",
+            backgroundColor: "#ff6b35", // Bright Orange
+            color: "#ffffff", // White for contrast
+            border: "none",
+            borderRadius: "4px",
+            padding: "8px 16px",
+            fontSize: "16px",
+            fontWeight: "bold",
+            cursor: "pointer",
+            transition: "background-color 0.3s",
+          }}
+          onClick={() => navigate(`/viewingAllvintage/${id}`)}
+        >
+          More Details
+        </button>
+      </Box>
     </Card>
   );
 }

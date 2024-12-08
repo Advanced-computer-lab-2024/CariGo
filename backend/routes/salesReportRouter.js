@@ -9,8 +9,9 @@ const router = express.Router();
 
 
 
-router.get('/',[authController.protect ,authController.restrictTo("Advertiser","Tour_Guide")], salesReportController.generateSalesReport);
+router.get('/',[authController.protect ,authController.restrictTo("Advertiser","Tour_Guide","Seller")], salesReportController.generateSalesReport);
 router.get('/I',[authController.protect ,authController.restrictTo("Tour_Guide")], salesReportController.generateSalesReportForItinerary);
+router.get('/S',[authController.protect ,authController.restrictTo("Seller")], salesReportController.generateSalesReportForSeller);
 
 
 

@@ -19,6 +19,8 @@ import {
   Star,
 } from "@mui/icons-material";
 import NavBar from "../Pages/Tourist/components/TouristNavBar";
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+
 
 export default function ActivityDetail() {
   const { id } = useParams();
@@ -127,6 +129,7 @@ export default function ActivityDetail() {
             fontSize: "18px",
           }}
         >
+          <ArrowBackIosIcon/>
           Back
         </Button>
         <Paper

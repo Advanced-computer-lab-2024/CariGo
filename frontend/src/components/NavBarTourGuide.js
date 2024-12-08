@@ -52,7 +52,7 @@ function ResponsiveAppBar() {
   };
   const loadReport = () => {
     handleCloseNavMenu();
-    navigate("/tour_guide/report");
+    navigate("/Tour-Guide/Report");
   };
   const handleDeleteAccount = async () => {
     const token = localStorage.getItem('jwt');

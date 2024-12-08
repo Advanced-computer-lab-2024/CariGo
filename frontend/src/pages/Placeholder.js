@@ -1,295 +1,305 @@
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { Box, Typography, Chip, Avatar } from "@mui/material";
-import PinDropIcon from "@mui/icons-material/PinDrop";
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-import StarIcon from "@mui/icons-material/Star";
-import ResponsiveAppBar from "./Tourist/components/TouristNavBar";
-import UserAcList from "../components/UserAcList"; // Import the new MarkerList component
-import "../components/styles/CompanyInfo.css";
-import logoImage from "../assets/itinerary.png"; // Correct relative path
-import { useNavigate } from "react-router-dom";
-import Button from "@mui/material/Button";
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import axios from "axios";
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import React, { useState } from "react";
+import { FormControl } from '@mui/base/FormControl';
+import { styled } from '@mui/material/styles';
+import { Box, Dialog, DialogTitle, DialogContent, DialogActions, Button as MuiButton } from '@mui/material';
+import { Button as BaseButton } from '@mui/base/Button';
+import SelectTags from "../components/SelectTags";
+import SelectCategory from "../components/SelectCategory";
+import { useNavigate } from 'react-router-dom';
+import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
 
-const ItineraryDetails = () => {
-  const { id } = useParams(); // Get the itinerary ID from the URL
-  const [itinerary, setItinerary] = useState(null);
+export default function CreateActivityForm() {
   const navigate = useNavigate();
 
-  const handleClick = () => {
-    if (token)
-      navigate(`/checkout/itinerary/${id}`); // Update the navigation path
-    else navigate(`/login`);
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [tag, setTags] = useState('');
+  const [category, setCategory] = useState('');
+  const [lon, setLon] = useState('');
+  const [lan, setLan] = useState('');
+  const [price, setPrice] = useState(0);
+//  const [maxPrice, setMaxPrice] = useState(0);
+  const [discount, setDiscount] = useState(0);
+  const [errorMessages, setErrorMessages] = useState({});
+  const [openDialog, setOpenDialog] = useState(false); // State to manage dialog visibility
+
+  const validateFields = () => {
+    const errors = {};
+    if (!title) errors.title = "Title is required.";
+    if (!description) errors.description = "Description is required.";
+    if (!startDate) errors.startDate = "Start date is required.";
+    if (!endDate) errors.endDate = "End date is required.";
+    if (!lon) errors.lon = "Longitude is required.";
+    if (!lan) errors.lan = "Latitude is required.";
+    if (!tag) errors.tag = "Tag is required.";
+    if (!category) errors.category = "Category is required.";
+    if (price < 0) errors.price = "price cannot be negative.";
+//    if (maxPrice < 0) errors.maxPrice = "Maximum price cannot be negative.";
+    if (discount < 0) errors.discount = "Discount cannot be negative.";
+    
+    return errors;
   };
 
-  useEffect(() => {
-    const fetchItineraryDetails = async () => {
-      try {
-        const token = localStorage.getItem("jwt");
-        const response = await fetch(
-          `/cariGo/Event/readSingleItinerary/${id}`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
+  const handleCreate = async (e) => {
+    e.preventDefault();
+    
+    const errors = validateFields();
+    if (Object.keys(errors).length > 0) {
+      setErrorMessages(errors);
+      return;
+    } else {
+      setErrorMessages({});
+    }
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
+    const activity = {
+      title,
+      description,
+      start_date: startDate.format('YYYY-MM-DD'),
+      end_date: endDate.format('YYYY-MM-DD'),
+      tag,
+      lon,
+      lan,
+      price: parseFloat(price),
+//      maxPrice: parseFloat(maxPrice),
+      discount: parseFloat(discount),
+      category,
+    };
 
-        const data = await response.json();
-        setItinerary(data);
-      } catch (error) {
-        console.error("Error fetching itinerary details:", error);
+    const token = localStorage.getItem('jwt');
+
+    if (!token) {
+      setErrorMessages({ general: "No token found. Please log in." });
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:4000/Carigo/Activity/createActivity", {
+        method: 'POST',
+        body: JSON.stringify(activity),
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      const json = await response.json();
+
+      if (!response.ok) {
+        setErrorMessages({ general: json.error || "An error occurred while creating the activity." });
+        return;
       }
-    };
-    fetchItineraryDetails();
-  }, [id]); // Include `id` in dependencies
 
-  if (!itinerary) {
-    return <Typography>Loading...</Typography>;
-  }
-
-  const {
-    start_date,
-    end_date,
-    locations,
-    price,
-    tags,
-    activities,
-    transportation,
-    accommodation,
-    ratingsAverage,
-    language,
-    pick_up,
-    drop_off,
-    accessibility,
-    title,
-  } = itinerary;
-
-  // Function to format the date and time
-  const formatDateTime = (dateString) => {
-    const options = {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      //hour: '2-digit',
-      //minute: '2-digit',
-      //hour12: true,
-    };
-    return new Date(dateString).toLocaleString(undefined, options);
+      // Reset fields
+      setTitle('');
+      setDescription('');
+      setStartDate(null);
+      setEndDate(null);
+      setTags('');
+      setLon('');
+      setLan('');
+      setPrice(0);
+//      setMaxPrice(0);
+      setDiscount(0);
+      setErrorMessages({});
+      
+      // Open the success dialog
+      setOpenDialog(true);
+      
+    } catch (err) {
+      setErrorMessages({ general: "Failed to create activity. Please try again." });
+      console.error(err);
+    }
   };
 
-  const formatDateHour = (dateString) => {
-    const options = {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true, // Use 12-hour format with AM/PM
-    };
-    return new Date(dateString).toLocaleString(undefined, options);
-  };
-
-  // Format activities to include start and end dates in the correct format
-  const formattedActivities = activities.map((activity) => ({
-    name: activity.name,
-    description: activity.description,
-    startDate: formatDateTime(activity.start_date),
-    endDate: formatDateTime(activity.end_date),
-  }));
-  const conversionRate = localStorage.getItem("conversionRate") || 1;
-  const code = localStorage.getItem("currencyCode") || "EGP";
-  const token = localStorage.getItem("jwt");
   return (
-    <Box>
-      <ResponsiveAppBar />
-      <Button
-          onClick={() => navigate(`/tourist-itineraries`)}
-          sx={{
-            backgroundColor: "#126782",
-            color: "white",
-            borderRadius: "8px",
-            width: "100px",
-            marginTop:'3%',
-            marginLeft:'15%',
-            fontSize:'16px',
-            paddingLeft:'0px',
-          }}
-        >
-          <ArrowBackIosIcon ></ArrowBackIosIcon>
-          Back
-        </Button>
-    <Box sx={{width: "70%", margin:'5%',marginLeft: "15%",marginBottom:'20px', marginTop:'2%'}}>
-        <Box
-          component="img"
-          src={logoImage || ""}
-          alt="Itinerary Image"
-          sx={{
-            width:"100%",
-            maxHeight: "400px",
-            borderRadius: "10px",
-            objectFit: "cover",
-            marginBottom: "20px",
-          }}
-        />
-        <Box className="company-info" sx={{marginTop:'-2%',}}>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              gap:'10px' ,
-              marginBottom: "20px",
-              padding: "20px",
-              width:'90%'
-            }}
-            >
-            
-            <Box sx={{ position: 'relative', width: '100%', display: 'flex', justifyContent: 'space-between' }}>
-            <Box sx={{ display: 'flex', gap: '10px', color: '#126782' }}>
-              <Avatar sx={{ bgcolor: "#ff4d4d", width: 42, height: 42 }}>
-                {title?.charAt(0) || "A"} 
-              </Avatar>
-              <Typography variant="h4" sx={{ fontWeight: "bold" }}>
-                {title || "Anonymous"}
-              </Typography>
-            </Box>
-            <Box sx={{ display: "flex", color: "#126782"  }}>
-              <StarIcon sx={{ color: "#FFD700", marginRight: "5px", fontSize: '40px' }} />
-              <Typography sx={{ fontSize: "30px", fontWeight: 'bold', lineHeight: '1.2' }}>
-                {ratingsAverage || "No rating"}
-              </Typography>
-            </Box>
-          </Box>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        width: '560px',
+        padding: '10px',
+        color: '#ff4d4d',
+        borderRadius: '15px',
+        boxShadow: '0px 1px 3px rgba(0, 0, 0, 0.1)',
+        gap: '5px',
+        margin: '20px',
+        border: '2px solid #126782',
+        paddingLeft: '30px',
+      }}>
+      <Box sx={{ marginLeft: '50px' }}>
+        <h3 style={{ color: '#ff4d4d' }}>CREATE A NEW ACTIVITY</h3>
+        <Box sx={{ width: '100%', padding: '5px', paddingBottom: '20px' }}>
+          <FormControl required sx={{ marginTop: '20px' }}>
+            <Label>TITLE</Label>
+            <StyledInput
+              placeholder="Write your title here"
+              onChange={(e) => setTitle(e.target.value)}
+              value={title}
+            />
+            {errorMessages.title && <HelperText>{errorMessages.title}</HelperText>}
+          </FormControl>
 
-            <Box sx={{ display: "flex", gap: "0px" ,}}>
-              {tags?.map((tag) => (
-                <Chip
-                  key={tag._id}
-                  label={tag.title}
-                  sx={{ backgroundColor: "#126782", color: "white", margin: "5px",fontSize:'15px',padding: "3px" }}
-                />
-              ))}
-              </Box>
-            </Box>
-            {/* big box for dates*/}
-            <Box sx={{ marginBottom: "20px",display:'flex',flexDirection:"column" ,gap:'15px' , color:"#126782", marginLeft:'3%'}}>
-              <Box sx={{display:'flex', gap:'40px'}}>
-                <Box sx={{display:'flex', flexDirection:'column',}}>
-                  <Box sx={{display:"flex", gap:'5px'}}>
-                    <CalendarMonthIcon sx={{color:'#ff4d4d', fontSize:'30px', marginTop:'5px'}}/>
-                    <Typography variant="body1" sx={{ fontSize: "20px", }} >
-                      {formatDateTime(start_date)}
-                    </Typography>
-                  </Box>
-                <Box sx={{display:'flex', gap:'5px',marginLeft:'35px', color:'#ff4d4d'}}>
-                  <AccessTimeIcon sx={{fontSize: "26px",}}/>
-                  <Typography sx={{fontSize: "18px",lineHeight: "1.1" }}>
-                    {formatDateHour(start_date)}
-                  </Typography>
-                </Box>
-              </Box>
-              <Typography sx={{fontSize:'20px', }}>to</Typography>
-              <Box sx={{display:'flex', flexDirection:'column',}}>
-                <Box sx={{display:"flex", gap:'5px'}}>
-                  <CalendarMonthIcon sx={{color:'#ff4d4d', fontSize:'30px',marginTop:'5px'}}/>
-                  <Typography variant="body1" sx={{ fontSize: "20px", }} >
-                    {formatDateTime(end_date)}
-                  </Typography>
-                </Box>
-                <Box sx={{display:'flex', gap:'5px',marginLeft:'35px', color:'#ff4d4d'}}>
-                  <AccessTimeIcon sx={{fontSize: "26px",}}/>
-                  <Typography sx={{fontSize: "18px",lineHeight: "1.1" }}>
-                    {formatDateHour(end_date)}
-                    </Typography>
-                </Box>
-              </Box>
-            </Box>
+          <FormControl required>
+            <Label>DESCRIPTION</Label>
+            <StyledInput
+              placeholder="Brief description of your activity"
+              onChange={(e) => setDescription(e.target.value)}
+              value={description}
+            />
+            {errorMessages.description && <HelperText>{errorMessages.description}</HelperText>}
+          </FormControl>
 
-            <Box
-              sx={{display: "flex", marginBottom: "5px",}}>
-              <PinDropIcon sx={{ marginRight: "5px",fill:'#ff4d4d' ,fontSize:'30px'}} />
-              <Typography sx={{fontSize:'20px', fontWeight:'550', lineHeight:'1.1',}}>
-                {" "}
-                {locations?.join(", ") || "Not specified"}
-              </Typography>
-            </Box>
+          <FormControl required>
+            <Label>START DATE</Label>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                value={startDate}
+                onChange={(newValue) => setStartDate(newValue)}
+                renderInput={(params) => <StyledInput {...params} />}
+              />
+            </LocalizationProvider>
+            {errorMessages.startDate && <HelperText>{errorMessages.startDate}</HelperText>}
+          </FormControl>
 
-            <Typography variant="body1" sx={{ fontSize: "18px" }}>
-              <strong>Language of Tour Guide</strong>{" "}
-              {language || "No language info"}
-            </Typography>
-            <Typography variant="body1" sx={{ fontSize: "18px" }}>
-              <strong>Transportation:</strong>{" "}
-              {transportation || "No transportation info"}
-            </Typography>
-            <Typography variant="body1" sx={{ fontSize: "18px" }}>
-              <strong>Pick-up:</strong> {pick_up || "No transportation info"}
-            </Typography>
-            <Typography variant="body1" sx={{ fontSize: "18px" }}>
-              <strong>Drop-off:</strong> {drop_off || "No transportation info"}
-            </Typography>
-            <Typography variant="body1" sx={{ fontSize: "18px" }}>
-              <strong>Accommodation:</strong>{" "}
-              {accommodation || "No accommodation info"}
-            </Typography>
-            <Typography variant="body1" sx={{ fontSize: "18px" }}>
-              <strong>Accessibility:</strong>{" "}
-              {accessibility || "No accessibility info"}
-            </Typography>
+          <FormControl required>
+            <Label>END DATE</Label>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                value={endDate}
+                onChange={(newValue) => setEndDate(newValue)}
+                renderInput={(params) => <StyledInput {...params} />}
+              />
+            </LocalizationProvider>
+            {errorMessages.endDate && <HelperText>{errorMessages.endDate}</HelperText>}
+          </FormControl>
 
-            {/* Using MarkerList to display activities */}
-            <Typography variant="body1" sx={{ fontSize: "18px" }}>
-              <strong>Activities:</strong>
-            </Typography>
-            <UserAcList activities={formattedActivities} />
-            <Box 
-              sx={{ 
-                display: "flex", 
-                justifyContent: "space-between", 
-               
-                marginBottom: "20px", 
-                width: "180%" 
-              }}
-            >
-              <Box sx={{ display: "flex", alignItems: "center" }}>
-                <AttachMoneyIcon sx={{ marginRight: "5px", fill: '#ff4d4d', fontSize: '30px' }} />
-                <Typography sx={{ fontSize: '20px', fontWeight: '550', lineHeight: '1.1' }}>
-                  {price
-                    ? `${(price * conversionRate).toFixed(2)} ${code}`
-                    : "Price not specified"}
-                </Typography>
-              </Box>
-              <Button 
-                variant="contained" 
-                onClick={handleClick} 
-                sx={{ backgroundColor: "#ff4d4d", padding:'10px 15px', fontSize: "16px",marginTop:'10px' }}
-              >
-                Book Now
-              </Button>
-            </Box>
+          <FormControl required>
+            <Label>LON</Label>
+            <StyledInput
+              placeholder="Activity longitude"
+              onChange={(e) => setLon(e.target.value)}
+              value={lon}
+            />
+            {errorMessages.lon && <HelperText>{errorMessages.lon}</HelperText>}
+          </FormControl>
+          <FormControl required>
+            <Label>LAN</Label>
+            <StyledInput
+              placeholder="Activity latitude"
+              onChange={(e) => setLan(e.target.value)}
+              value={lan}
+            />
+            {errorMessages.lan && <HelperText>{errorMessages.lan}</HelperText>}
+          </FormControl>
 
-            {/* <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", color: "#126782" , width: "180%"}}> */}
-              {/* <Box sx={{display: "flex",alignItems: "center",}}>
-                <StarIcon sx={{ color: "#FFD700", marginRight: "5px" }} />
-                <Typography  sx={{ fontSize: "18px" }}>
-                  {ratingsAverage || "No rating"}
-                </Typography>
-              </Box> */}
-             
-            {/* </Box> */}
-          </Box>
-          {/* end of info box0 */}
+          <FormControl required>
+            <Label>Tags</Label>
+            <SelectTags tags={tag} setTags={setTags} />
+            {errorMessages.tag && <HelperText>{errorMessages.tag}</HelperText>}
+          </FormControl>
+
+          <FormControl required>
+            <Label>Category</Label>
+            <SelectCategory tags={category} setTags={setCategory} />
+            {errorMessages.category && <HelperText>{errorMessages.category}</HelperText>}
+          </FormControl>
+
+          <FormControl required>
+            <Label>Price</Label>
+            <StyledInput
+              placeholder="Enter activity price"
+              type="number"
+              onChange={(e) => setPrice(e.target.value)}
+              value={price}
+            />
+            {errorMessages.price && <HelperText>{errorMessages.price}</HelperText>}
+          </FormControl>
+
+          {/* <FormControl required>
+            <Label>Maximum Price</Label>
+            <StyledInput
+              placeholder="Enter maximum activity price"
+              type="number"
+              onChange={(e) => setMaxPrice(e.target.value)}
+              value={maxPrice}
+            />
+            {errorMessages.maxPrice && <HelperText>{errorMessages.maxPrice}</HelperText>}
+          </FormControl> */}
+
+          <FormControl>
+            <Label>DISCOUNT</Label>
+            <StyledInput
+              placeholder="Enter any discounts"
+              type="number"
+              onChange={(e) => setDiscount(e.target.value)}
+              value={discount}
+            />
+            {errorMessages.discount && <HelperText>{errorMessages.discount}</HelperText>}
+          </FormControl>
+        </Box>
+        {errorMessages.general && <HelperText>{errorMessages.general}</HelperText>}
+        <Button onClick={handleCreate}>CREATE</Button>
       </Box>
-    </Box>
+
+      {/* Success Dialog */}
+      <Dialog
+        open={openDialog}
+        onClose={() => setOpenDialog(false)}
+      >
+        <DialogTitle>Activity Created Successfully</DialogTitle>
+        <DialogContent>
+          Your activity has been successfully created!
+        </DialogContent>
+        <DialogActions>
+          <MuiButton onClick={() => {
+            setOpenDialog(false);
+            navigate('/advertiser'); // Navigate to the advertiser page after closing the dialog
+          }} color="primary">
+            OK
+          </MuiButton>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
-};
+}
 
-export default ItineraryDetails;
+// Styled components
+const StyledInput = styled('input')(({ theme }) => `
+    width: 400px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid ${theme.palette.mode === 'dark' ? '#6B7A90' : '#B0B8C4'};
+    background: ${theme.palette.mode === 'dark' ? '#303740' : '#fff'};
+    color: ${theme.palette.mode === 'dark' ? '#C7D0DD' : '#1C2025'};
+    &:focus {
+        outline: 0;
+        border-color: #3399FF;
+    }
+`);
+
+const Button = styled(BaseButton)(({ theme }) => `
+    background-color: #ff4d4d;
+    color: white;
+    padding: 6px 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 150ms ease;
+    &:hover {
+        background-color: #ff3333;
+    }
+`);
+
+const Label = styled('label')`
+    font-size: 0.875rem;
+    margin-bottom: 4px;
+    display: block;
+`;
+
+const HelperText = styled('p')`
+    font-size: 0.75rem;
+    color: red;
+`;

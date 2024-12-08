@@ -12,6 +12,8 @@ const sendEmail = async (email,subject,message) => {
     // });
 
 
+    // console.log('Email:', email); // Debugging line
+
     const transporter = nodemailer.createTransport({
 
         service: 'Gmail',
@@ -24,9 +26,9 @@ const sendEmail = async (email,subject,message) => {
     // 2) Define the email options
     const mailOptions = {
         from: '"CariGo 🦌" <noreply@cariGo.com>',
-        to: email,
-        subject: subject,
-        text: message
+        to: email.email,
+        subject: email.subject,
+        text: email.message
     };
 
     // 3) Actually send the email

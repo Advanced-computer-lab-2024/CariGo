@@ -22,6 +22,11 @@ const purchaseSchema = new schema(
   },
   { timestamps: true }
 );
-
+purchaseSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: "ProductId",
+  });
+  next();
+});
 const purchase = mongoose.model("Purchase", purchaseSchema);
 module.exports = purchase;
