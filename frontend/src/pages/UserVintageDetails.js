@@ -2,11 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Box, Typography, Chip, Avatar } from "@mui/material";
 import PinDropIcon from "@mui/icons-material/PinDrop";
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-import StarIcon from "@mui/icons-material/Star";
 import ResponsiveAppBar from "./Tourist/components/TouristNavBar";
 import GuestNavBar from "../components/NavBarTourist";
-import UserAcList from "../components/UserAcList"; // Import the new MarkerList component
 import "../components/styles/CompanyInfo.css";
 import logoImage from "../assets/itinerary.png"; // Correct relative path
 import { useNavigate } from "react-router-dom";
@@ -19,7 +16,6 @@ import DirectionsBusIcon from "@mui/icons-material/DirectionsBus";
 import HotelIcon from "@mui/icons-material/Hotel";
 import AccessibleIcon from "@mui/icons-material/Accessible";
 import Divider from "@mui/material/Divider";
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import BookingPaymentPopUp from "./Tourist/components/BookingPaymentPopUp";
 import { jwtDecode } from "jwt-decode";
