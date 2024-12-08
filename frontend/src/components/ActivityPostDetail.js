@@ -18,10 +18,10 @@ import {
   LocationOn,
   Star,
 } from "@mui/icons-material";
-import TouristNavBar from "../Pages/Tourist/components/TouristNavBar.js";
-import GuestNavBar from "../Pages/Tourist/components/GuestNavBar";
-import GuestSideBar from "../Pages/Tourist/components/GuestSideBar";
+import TouristNavBar from "../Pages/Tourist/components/TouristNavBar";
 import TouristSideBar from "../Pages/Tourist/components/TouristSideBar";
+import GuestSideBar from "../Pages/Tourist/components/GuestSideBar";
+import GuestNavBar from "../Pages/Tourist/components/GuestNavBar";
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import BookingPaymentPopUp from "../Pages/Tourist/components/BookingPaymentPopUp";
 import { jwtDecode } from "jwt-decode";
@@ -36,13 +36,37 @@ export default function ActivityDetail() {
   const [activity, setActivities] = useState({});
   const navigate = useNavigate();
   const [localInterestedUsers, setLocalInterestedUsers] = useState([]);
-  const [tourist,setTourist]= useState(false);
   const token = localStorage.getItem("jwt");
-  const [tourist,setTourist]= useState(false);
+  const [user, setUser] = useState();
+const [tourist,setTourist]=useState(false);
 
-  if(token){
-    setTourist(true);
-  }
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const token = localStorage.getItem("jwt");
+        const id = jwtDecode(token).id;
+  
+        const response = await axios.get(
+          `http://localhost:4000/cariGo/users/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+          
+        console.log("API Response Data:", response.data); // Logs the fetched data
+        setUser(Object.assign({}, response.data));
+      } catch (err) {
+        console.error("Error fetching profile:", err);
+      }
+    };
+   
+    fetchUser();
+    }, []);
+
+  const [isPaymentPopupOpen, setIsPaymentPopupOpen] = useState(false);
+
   const handleClick = () => {
     if (token)
       setIsPaymentPopupOpen(true);
@@ -158,24 +182,17 @@ export default function ActivityDetail() {
     }
   };
 
+  if(!token){
+setTourist(true);
+  }
   return (
     <Box sx={{ display: "flex", backgroundColor: "#f9f9f9", minHeight: "100vh" }}>
-    {/* Sidebar */}
-    <Box>
-      {!tourist ? <GuestSideBar /> : <TouristSideBar />}
+    <Box>       {!tourist ? <GuestSideBar /> : <TouristSideBar />}
     </Box>
 
-    {/* Main Content Area */}
-    <Box
-      sx={{
-        flexGrow: 1,
-        marginLeft: "80px", // Sidebar width
-        marginTop: "64px", // AppBar height
-        padding: "16px",
-      }}
-    >
-      {/* Top Navbar */}
-      {!tourist ? <GuestNavBar /> : <TouristNavBar />}
+    <Box sx={{ flexGrow: 1, marginLeft: "80px", marginTop: "64px", padding: "16px",}}>
+    {!tourist ? <GuestNavBar /> : <TouristNavBar />}
+
 
       <Box>
         <Button
@@ -185,7 +202,7 @@ export default function ActivityDetail() {
             color: "#126782",
             borderRadius: "8px",
             width: "80px",
-            ml: "11%",
+            ml: "1%",
             mt: "2%",
             mb: "0%",
             fontSize: "18px",
@@ -489,7 +506,7 @@ export default function ActivityDetail() {
                 sx={{
                   padding: "20px",
                   position: "sticky",
-                  top: "20px",
+                  top: "70px",
                   backgroundColor: activity.isOpened ? "#ffffff" : "#f0f4f8",
                   border: activity.isOpened ? "none" : "2px dashed #126782",
                   transition: "all 0.3s ease-in-out",
@@ -548,7 +565,7 @@ export default function ActivityDetail() {
                     </Elements>
                   </>
                 ) : (
-                  <Box sx={{ textAlign: "center", top:"80px" }}>
+                  <Box sx={{ textAlign: "center" }}>
                     <Typography
                       variant="h6"
                       sx={{ marginBottom: "15px", color: "#126782" }}
@@ -608,5 +625,6 @@ export default function ActivityDetail() {
           </Grid>
         </Paper>
       </Box>
-</Box></Box>  );
+  </Box></Box>
+  );
 }
