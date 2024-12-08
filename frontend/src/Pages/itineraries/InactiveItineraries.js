@@ -23,7 +23,7 @@ const InactiveItirenaries = () => {
         Create new Itinerary
       </Button>
       {/* <CreateItineraryForm/> */}
-      <Box
+      {/* <Box
         sx={{
           width: "1150px",
           overflow: "hidden",
@@ -45,11 +45,11 @@ const InactiveItirenaries = () => {
             "&::-webkit-scrollbar": { display: "none" },
           }}
         >
-          {" "}
+          {" "} */}
           {/* Enable vertical scrolling only */}
           <InactiveList />
-        </Box>
-      </Box>
+        {/* </Box>
+      </Box> */}
     </div>
   );
 };
