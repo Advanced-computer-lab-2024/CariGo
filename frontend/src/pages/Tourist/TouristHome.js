@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import ResponsiveAppBar from "./components/TouristNavBar";
-import { Grid, Typography, Box, CircularProgress } from "@mui/material";
+import { Grid, Typography, Box, CircularProgress, Toolbar } from "@mui/material";
 import UserItineraryList from "../../components/UserItineraryList";
 import ActivityList from "../../components/ActivityListUser";
+import TouristNavBar from "./components/TouristNavBar";
+import TouristSideBar from "./components/TouristSideBar";
 
 const TouristHome = () => {
   const [itineraries, setItineraries] = useState([]);
@@ -69,11 +71,38 @@ const TouristHome = () => {
   const handleViewChange = (newView) => setView(newView);
 
   return (
-    <div style={{ backgroundColor: "#f5f5f5", minHeight: "100vh" }}>
-      <ResponsiveAppBar />
-      <h3 className="text-3xl font-bold text-[#004e89] mb-4 text-center">
-        Welcome to CariGo 🦌🦌!!
-      </h3>
+    <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
+      {/* Top Bar */}
+      <div style={{ position: "sticky", top: 0, zIndex: 10, background: "#fff" }}>
+        <TouristNavBar />
+      </div>
+
+      <div style={{ display: "flex", flex: 1 }}>
+        {/* Sidebar */}
+        <div
+          style={{
+            width: "250px",
+            height: "100%",
+            position: "sticky",
+            top: 0,
+            backgroundColor: "#f4f4f4",
+          }}
+        >
+          <TouristSideBar />
+        </div>
+
+        {/* Main Content */}
+        <div
+          style={{
+            flex: 1,
+            padding: "20px",
+            overflowY: "auto",
+            backgroundColor: "#f5f5f5",
+          }}
+        >
+        <h3 className="text-3xl font-bold text-[#004e89] mb-4 text-center">
+          Welcome to CariGo 🦌🦌!!
+        </h3>
 
       <div className="flex justify-center gap-4 mb-6">
         {["itineraries", "activities"].map((item) => (
@@ -125,7 +154,9 @@ const TouristHome = () => {
           />
         </Box>
       )}
-    </div>
+      </div>
+      </div>
+      </div>
   );
 };
 

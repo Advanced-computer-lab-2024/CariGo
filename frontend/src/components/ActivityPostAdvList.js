@@ -87,8 +87,7 @@ export default function ActivityPostAdvList({advertiserPosts}){
     return (
         <Grid container spacing={2} sx={{display: 'flex',
             flexDirection: 'column', width: '100vw'}}>
-            {activities.map((activity,index) => 
-                
+            {activities.map((activity,index) =>   
             (
                 <Grid size ={4} key={index}>
                     <ActivityPostAdvertiser
@@ -110,7 +109,6 @@ export default function ActivityPostAdvList({advertiserPosts}){
                     />
                 </Grid>
             ))}
-        </Grid>
-        
+        </Grid>  
     );
 };

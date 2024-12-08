@@ -256,7 +256,7 @@ const readItinerariesByIds = async (req, res) => {
     const itineraryIds = ids.split(","); // Split the ids into an array
     // Fetch the itineraries from the database based on these IDs
     const itineraries = await Itinerary.find({ _id: { $in: itineraryIds } })
-    .populate('author');
+    .populate('author').populate('tags');
     
 
     res.status(200).json(itineraries);

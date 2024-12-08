@@ -363,7 +363,7 @@ export default function UserItineraryPost({
   return (
     <div style={styles.card}>
       <div style={styles.imageContainer}>
-        <img src={"./itirenary.png"} alt={title} style={styles.image} />
+        <img src={img} alt={title} style={styles.image} />
         <div style={styles.iconContainer}>
           <button style={styles.iconButton} onClick={handleShare}>
             <svg
