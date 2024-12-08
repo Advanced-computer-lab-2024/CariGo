@@ -3,7 +3,8 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Button, TextField,Paper} from '@mui/material';
-import TouristNB from './components/TouristNavBar';
+import TouristNavBar from "./components/TouristNavBar.js";
+import TouristSideBar from "./components/TouristSideBar";
 import { styled } from '@mui/material';
 import { Edit } from "@mui/icons-material";
 import {
@@ -98,13 +99,23 @@ const FormContainer = styled(Paper)(({ theme }) => ({
     };
     
     return (
-        <Layout style={{ height: '100vh' }}>
-      
-        
-            <Layout>
-            <Header style={{ background: '#001529', padding: 0 }}>
-                <TouristNB/>{/* Top bar added here */}
-              </Header>
+      <Box sx={{ display: "flex", backgroundColor: "#f9f9f9", minHeight: "100vh" }}>
+      {/* Sidebar */}
+      <Box>
+        <TouristSideBar />
+      </Box>
+  
+      {/* Main Content Area */}
+      <Box
+        sx={{
+          flexGrow: 1,
+          marginLeft: "80px", // Sidebar width
+          marginTop: "64px", // AppBar height
+          padding: "16px",
+        }}
+      >
+        {/* Top Navbar */}
+        <TouristNavBar />
               <ToastContainer />
               <Content style={{ padding: '20px', overflowY: 'auto' }}>
       <FormContainer>
@@ -174,8 +185,7 @@ const FormContainer = styled(Paper)(({ theme }) => ({
         {/* <ToastContainer position="top-right" autoClose={1000} hideProgressBar={false} closeOnClick draggable pauseOnHover /> */}
       </FormContainer>
       </Content>
-    </Layout>
-    </Layout>
+   </Box></Box>
     );
   }
   

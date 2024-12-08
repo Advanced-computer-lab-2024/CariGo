@@ -13,7 +13,7 @@ import CurrencyConversion from "../../../components/CurrencyConversion";
 import { useNavigate } from "react-router-dom";
 import {Typography, ListItemButton, Divider, List} from "@mui/material";
 export default function Side() {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
   const [helpExpanded, setHelpExpanded] = useState(false);
   const [linksExpanded, setLinksExpanded] = useState(false);
   const [openCurrencyDialog, setOpenCurrencyDialog] = React.useState(false); // State for dialog
@@ -68,7 +68,7 @@ export default function Side() {
           borderTopRightRadius: "20px",
           borderBottomRightRadius: "20px",
           paddingBottom: '20px',
-          zIndex: 50 // Ensure sidebar is above other content
+          zIndex: 800 // Ensure sidebar is above other content
         }}
       >
         {/* Collapse Toggle */}
@@ -107,18 +107,7 @@ export default function Side() {
               text="Historical Places"
               collapsed={collapsed}
             />
-            <SidebarItem
-              href="/Tourist/Products"
-              icon={<ProductionQuantityLimitsOutlinedIcon />}
-              text="Products"
-              collapsed={collapsed}
-            />
-            <SidebarItem
-              href="/book-services"
-              icon={<LuggageSharpIcon />}
-              text="Book Services"
-              collapsed={collapsed}
-            />
+            
           </div>
 
           {/* Divider */}
@@ -155,58 +144,9 @@ export default function Side() {
         transition: "all 0.3s ease",
       }}
               >
-      <ListItemButton onClick={() => setAnchorElBookings((prev) => !prev)} sx={{ padding: '5% 2%', gap: 1, color: '#ffffff', paddingLeft: '11%' }}>
-      <HiArrowSmRight size={22}  style={{
-            transform: anchorElBookings ? 'rotate(90deg)' : 'rotate(0deg)', // Rotate based on state
-            transition: 'transform 0.3s ease', // Smooth transition for rotation
-          }}/>
-      <Typography sx={{ fontSize: '15px', color: 'ffffff' }}>My Bookings</Typography>
-    </ListItemButton>
 
-    {anchorElBookings && (
-      <div>
-        <List sx={{ paddingLeft: 4, mt: '10px' }}>
-          <a href="/tourist/MyBookedActivities">
-            <ListItemButton sx={{ padding: '5% 2%', color: '#ffffff', justifyContent: 'flex-start' }}>
-              <Typography sx={{ fontSize: '16px' }}>Booked Activities</Typography>
-            </ListItemButton>
-          </a>
-          <Divider sx={{ backgroundColor: 'lightgray' }} />
-          
-          <a href="/tourist/MyBookings">
-            <ListItemButton sx={{ padding: '5% 2%', color: '#ffffff', justifyContent: 'flex-start' }}>
-              <Typography sx={{ fontSize: '16px' }}>Booked Itineraries</Typography>
-            </ListItemButton>
-          </a>
-          <Divider sx={{ backgroundColor: 'lightgray' }} />
-
-          <a href="/tourist/MyBookedHotels">
-            <ListItemButton sx={{ padding: '5% 2%', color: '#ffffff', justifyContent: 'flex-start' }}>
-              <Typography sx={{ fontSize: '16px' }}>Booked Hotels</Typography>
-            </ListItemButton>
-          </a>
-          <Divider sx={{ backgroundColor: 'lightgray' }} />
-
-          <a href="/tourist/MyBookedFlights">
-            <ListItemButton sx={{ padding: '5% 2%', color: '#ffffff', justifyContent: 'flex-start' }}>
-              <Typography sx={{ fontSize: '16px' }}>Booked Flights</Typography>
-            </ListItemButton>
-          </a>
-          <Divider sx={{ backgroundColor: 'lightgray' }} />
-
-          <a href="/tourist/MyBookedTransportation">
-            <ListItemButton sx={{ padding: '5% 2%', color: '#ffffff', justifyContent: 'flex-start' }}>
-              <Typography sx={{ fontSize: '16px' }}>Booked Transportation</Typography>
-            </ListItemButton>
-          </a>
-        </List>
-      </div>
-    )}
-  
-                 <ListItemButton gref="/change-password" sx={{ padding: '5% 2%', gap: 1, color: '#ffffff',paddingLeft: '11%' }} collapsed={collapsed}>
-                <    HiArrowSmRight size={22}/>
-                <Typography sx={{ fontSize: '15px', color: 'ffffff'}}> Change Password</Typography>
-                  </ListItemButton>
+    
+                
                   
                   <ListItemButton onClick={handleOpenCurrencyDialog} sx={{ padding: '5% 2%', gap: 1, color: '#ffffff',paddingLeft: '11%' }} collapsed={collapsed}>
                <    HiArrowSmRight size={22}/>
@@ -218,10 +158,7 @@ export default function Side() {
                <Typography sx={{ fontSize: '15px', color: 'ffffff'}}> File a Complaint</Typography>
                   </ListItemButton>
                 
-               <ListItemButton onClick={handleDeleteAccount} sx={{ padding: '5% 2%', gap: 1, color: '#FF5C5C', paddingLeft: '11%' }} collapsed={collapsed}>
-                  <HiArrowSmRight size={22}/>
-               <Typography sx={{ fontSize: '17px' }}>   Delete Account</Typography>
-                  </ListItemButton>
+               
               </div>
             )}
              <div
