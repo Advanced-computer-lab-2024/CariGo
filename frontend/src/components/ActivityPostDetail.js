@@ -18,7 +18,10 @@ import {
   LocationOn,
   Star,
 } from "@mui/icons-material";
-import NavBar from "../Pages/Tourist/components/TouristNavBar";
+import TouristNavBar from "../Pages/Tourist/components/TouristNavBar.js";
+import GuestNavBar from "../Pages/Tourist/components/GuestNavBar";
+import GuestSideBar from "../Pages/Tourist/components/GuestSideBar";
+import TouristSideBar from "../Pages/Tourist/components/TouristSideBar";
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import BookingPaymentPopUp from "../Pages/Tourist/components/BookingPaymentPopUp";
 import { jwtDecode } from "jwt-decode";
@@ -34,35 +37,11 @@ export default function ActivityDetail() {
   const navigate = useNavigate();
   const [localInterestedUsers, setLocalInterestedUsers] = useState([]);
   const token = localStorage.getItem("jwt");
-  const [user, setUser] = useState();
+  const [tourist,setTourist]= useState(false);
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const token = localStorage.getItem("jwt");
-        const id = jwtDecode(token).id;
-  
-        const response = await axios.get(
-          `http://localhost:4000/cariGo/users/${id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-          
-        console.log("API Response Data:", response.data); // Logs the fetched data
-        setUser(Object.assign({}, response.data));
-      } catch (err) {
-        console.error("Error fetching profile:", err);
-      }
-    };
-   
-    fetchUser();
-    }, []);
-
-  const [isPaymentPopupOpen, setIsPaymentPopupOpen] = useState(false);
-
+  if(token){
+    setTourist(true);
+  }
   const handleClick = () => {
     if (token)
       setIsPaymentPopupOpen(true);
@@ -179,8 +158,24 @@ export default function ActivityDetail() {
   };
 
   return (
-    <>
-      <NavBar />
+    <Box sx={{ display: "flex", backgroundColor: "#f9f9f9", minHeight: "100vh" }}>
+    {/* Sidebar */}
+    <Box>
+      {!tourist ? <GuestSideBar /> : <TouristSideBar />}
+    </Box>
+
+    {/* Main Content Area */}
+    <Box
+      sx={{
+        flexGrow: 1,
+        marginLeft: "80px", // Sidebar width
+        marginTop: "64px", // AppBar height
+        padding: "16px",
+      }}
+    >
+      {/* Top Navbar */}
+      {!tourist ? <GuestNavBar /> : <TouristNavBar />}
+
       <Box>
         <Button
           onClick={() => navigate(`/activities`)}
@@ -552,7 +547,7 @@ export default function ActivityDetail() {
                     </Elements>
                   </>
                 ) : (
-                  <Box sx={{ textAlign: "center" }}>
+                  <Box sx={{ textAlign: "center", top:"80px" }}>
                     <Typography
                       variant="h6"
                       sx={{ marginBottom: "15px", color: "#126782" }}
@@ -612,6 +607,5 @@ export default function ActivityDetail() {
           </Grid>
         </Paper>
       </Box>
-    </>
-  );
+</Box></Box>  );
 }
