@@ -7,8 +7,10 @@ import {
   Button,
   TextField,
   Modal,
+  FormControl,
+  InputLabel,
 } from "@mui/material";
-
+import { Add as AddIcon, LocationOn as LocationOnIcon } from '@mui/icons-material';
 const AddressManager = ({ addresses, onAddressSelect, onAddNewAddress }) => {
   const [selectedAddress, setSelectedAddress] = useState("");
   const [isAddingNew, setIsAddingNew] = useState(false);
@@ -25,7 +27,7 @@ const AddressManager = ({ addresses, onAddressSelect, onAddNewAddress }) => {
       setSelectedAddress(0);
       onAddressSelect(addresses[0]);
     }
-  }, [addresses]);
+  }, [addresses, onAddressSelect]);
 
   const handleAddressChange = (event) => {
     const index = event.target.value;
@@ -55,28 +57,34 @@ const AddressManager = ({ addresses, onAddressSelect, onAddNewAddress }) => {
 
   return (
     <Box sx={styles.container}>
-      <Typography variant="h6" sx={styles.title}>
-        Shipping Address
-      </Typography>
-      <Select
-        value={selectedAddress}
-        onChange={handleAddressChange}
-        displayEmpty
-        fullWidth
-        sx={styles.select}
-      >
-        <MenuItem value="" disabled>
+      <Box sx={styles.addressSelection}>
+        <FormControl sx={{ flex: 1 }} variant="outlined">
+          <InputLabel sx={styles.inputLabel}>Delivery Address</InputLabel>
+          <Select
+            value={selectedAddress}
+            onChange={handleAddressChange}
+            label="Delivery Address"
+            sx={styles.select}
+          >
+            <MenuItem value="" disabled>
           Select an address
         </MenuItem>
-        {addresses.map((address, index) => (
-          <MenuItem key={index} value={index}>
-            {`${address.street}, ${address.city}, ${address.state} ${address.postalCode}, ${address.country}`}
-          </MenuItem>
-        ))}
-      </Select>
-      <Button onClick={handleAddNewClick} sx={styles.addButton}>
-        Add New Address
-      </Button>
+            {addresses.map((address, index) => (
+              <MenuItem key={index} value={address}>
+                <LocationOnIcon sx={styles.locationIcon} />
+                {`${address.street}, ${address.city}, ${address.state} ${address.postalCode}, ${address.country}`}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <Button
+          variant="contained"
+          onClick={handleAddNewClick}
+          sx={styles.addButton}
+        >
+          <AddIcon /> New Address
+        </Button>
+      </Box>
 
       <Modal open={isAddingNew} onClose={() => setIsAddingNew(false)}>
         <Box sx={styles.modal}>
@@ -89,6 +97,7 @@ const AddressManager = ({ addresses, onAddressSelect, onAddNewAddress }) => {
             onChange={handleNewAddressChange("street")}
             fullWidth
             margin="normal"
+            sx={styles.textField}
           />
           <TextField
             label="City"
@@ -96,6 +105,7 @@ const AddressManager = ({ addresses, onAddressSelect, onAddNewAddress }) => {
             onChange={handleNewAddressChange("city")}
             fullWidth
             margin="normal"
+            sx={styles.textField}
           />
           <TextField
             label="State"
@@ -103,6 +113,7 @@ const AddressManager = ({ addresses, onAddressSelect, onAddNewAddress }) => {
             onChange={handleNewAddressChange("state")}
             fullWidth
             margin="normal"
+            sx={styles.textField}
           />
           <TextField
             label="Postal Code"
@@ -110,6 +121,7 @@ const AddressManager = ({ addresses, onAddressSelect, onAddNewAddress }) => {
             onChange={handleNewAddressChange("postalCode")}
             fullWidth
             margin="normal"
+            sx={styles.textField}
           />
           <TextField
             label="Country"
@@ -117,6 +129,7 @@ const AddressManager = ({ addresses, onAddressSelect, onAddNewAddress }) => {
             onChange={handleNewAddressChange("country")}
             fullWidth
             margin="normal"
+            sx={styles.textField}
           />
           <Button onClick={handleAddNewAddress} sx={styles.addButton}>
             Add Address
@@ -129,35 +142,75 @@ const AddressManager = ({ addresses, onAddressSelect, onAddNewAddress }) => {
 
 const styles = {
   container: {
-    marginBottom: 3,
+    width: '100%',
   },
-  title: {
-    marginBottom: 2,
+  addressSelection: {
+    display: 'flex',
+    gap: 2,
+    alignItems: 'center',
+  },
+  inputLabel: {
+    color: '#1a659e',
   },
   select: {
-    marginBottom: 2,
+    color: '#004e89',
+    backgroundColor: 'white',
+    '& .MuiOutlinedInput-notchedOutline': {
+      borderColor: '#1a659e',
+    },
+    '&:hover .MuiOutlinedInput-notchedOutline': {
+      borderColor: '#004e89',
+    },
+    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+      borderColor: '#ff6b36',
+    },
+    '& .MuiSvgIcon-root': {
+      color: '#1a659e',
+    },
+  },
+  locationIcon: {
+    color: '#ff6b36',
+    marginRight: 1,
   },
   addButton: {
-    marginTop: 2,
-    backgroundColor: "#FF683C",
-    color: "white",
-    "&:hover": {
-      backgroundColor: "#e55a2f",
+    backgroundColor: '#ff6b36',
+    color: 'white',
+    '&:hover': {
+      backgroundColor: '#e55a2f',
     },
   },
   modal: {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
     width: 400,
-    bgcolor: "background.paper",
+    bgcolor: '#f7e1c6',
     boxShadow: 24,
     p: 4,
     borderRadius: 2,
   },
   modalTitle: {
+    color: '#004e89',
     marginBottom: 2,
+  },
+  textField: {
+    '& .MuiOutlinedInput-root': {
+      color: '#004e89',
+      backgroundColor: 'white',
+      '& fieldset': {
+        borderColor: '#1a659e',
+      },
+      '&:hover fieldset': {
+        borderColor: '#004e89',
+      },
+      '&.Mui-focused fieldset': {
+        borderColor: '#ff6b36',
+      },
+    },
+    '& .MuiInputLabel-root': {
+      color: '#1a659e',
+    },
   },
 };
 

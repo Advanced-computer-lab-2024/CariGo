@@ -23,6 +23,18 @@ import { UserOutlined, BellOutlined, MessageOutlined, CheckCircleOutlined, Warni
 import BookmarkBorderOutlinedIcon from '@mui/icons-material/BookmarkBorderOutlined';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 
+import { ListItemIcon } from '@mui/material';
+
+import { useTheme } from '@mui/material/styles';
+import {
+  Flag as FlagIcon,
+  EventAvailable as EventAvailableIcon,
+  Event as EventIcon,
+  Inventory as InventoryIcon,
+  LocalOffer as LocalOfferIcon,
+  Notifications as NotificationsIcon
+} from '@mui/icons-material';
+
 const pages = [
   "Suggested For You",
   "Activities",
@@ -34,6 +46,7 @@ const pages = [
 const settings = ["My Profile", "Logout", "Change Password"];
 
 function TouristNB() {
+  const theme = useTheme();
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const [anchorElBookings, setAnchorElBookings] = React.useState(null);
@@ -41,15 +54,46 @@ function TouristNB() {
   const [anchorElComplaints, setAnchorElComplaints] = React.useState(null); // Complaints menu state
   const [anchorElNotifications, setAnchorElNotifications] = useState(null); // Notification menu anchor
   const [notifications, setNotifications] = useState([]);
+  const [unReadNotifications, setUnReadNotifications] = useState([]);
+  const [sortedNotifications, setSortedNotifications] = useState([]);
 
   useEffect(() => {
+    const fetchUnReadNotifications = async () => {
+      try {
+        const token = localStorage.getItem('jwt');
+        const response = await axios.get('http://localhost:4000/cariGo/notifications/unread', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setUnReadNotifications(response.data.data.notifications); // Update state
+        return response.data.data.notifications; // Return unread notifications
+      } catch (error) {
+        console.error('Error fetching unread notifications:', error);
+      }
+    }
     const fetchNotifications = async () => {
       try {
         const token = localStorage.getItem('jwt');
+        const unReadNotifications = await fetchUnReadNotifications();
         const response = await axios.get('http://localhost:4000/cariGo/notifications/', {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setNotifications(response.data.data.notifications);
+
+        // Fetch all notifications
+        const allNotifications = response.data.data.notifications;
+
+        // Filter to get only the read notifications
+        const readNotifications = allNotifications.filter(
+          (notification) =>
+            !unReadNotifications.some((unread) => unread._id === notification._id) // Adjust "id" to your unique key
+        );
+
+        setNotifications(readNotifications);
+
+        // Combine unread and read notifications (unread first)
+        const sortedArray = [...unReadNotifications, ...readNotifications];
+
+        // Set the sorted notifications
+        setSortedNotifications(sortedArray);
       } catch (error) {
         console.error('Error fetching notifications:', error);
       }
@@ -66,10 +110,43 @@ function TouristNB() {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      // Update state to remove the marked notification
-      setNotifications((prev) => prev.filter((notification) => notification._id !== id));
+      // Update state to remove the marked notification from unread notifications
+      setUnReadNotifications((prev) => prev.filter((notification) => notification._id !== id));
+
+      // Move the notification to the readNotifications list (you can find it in the sortedNotifications)
+      const updatedSortedNotifications = sortedNotifications.map((notification) =>
+        notification._id === id
+          ? { ...notification, isRead: true } // Mark as read by setting `isRead` to true
+          : notification
+      );
+
+      setSortedNotifications(updatedSortedNotifications);
+
+      // Optionally, if you want to update only `readNotifications` (in case you separate them out)
+      const updatedReadNotifications = updatedSortedNotifications.filter(
+        (notification) => notification.isRead
+      );
+
+      setNotifications(updatedReadNotifications);
     } catch (error) {
       console.error('Error marking notification as read:', error);
+    }
+  };
+
+  const getIcon = (type) => {
+    switch (type) {
+      case 'flagged_content':
+        return <FlagIcon style={{ color: 'red' }} />;
+      case 'booking_opened':
+        return <EventAvailableIcon style={{ color: 'green' }} />;
+      case 'upcoming_event':
+        return <EventIcon style={{ color: 'blue' }} />;
+      case 'out_of_stock':
+        return <InventoryIcon style={{ color: 'orange' }} />;
+      case 'promo_code':
+        return <LocalOfferIcon style={{ color: 'ff683c' }} />;
+      default:
+        return <NotificationsIcon style={{ color: 'gray' }} />;
     }
   };
 
@@ -105,14 +182,14 @@ function TouristNB() {
     navigate("/wishlist")
   }
 
-  const getIcon = (type) => {
-    switch (type) {
-      case 'success': return <CheckCircleOutlined style={{ color: 'green' }} />;
-      case 'warning': return <WarningOutlined style={{ color: 'orange' }} />;
-      case 'info': return <MessageOutlined style={{ color: 'blue' }} />;
-      default: return <BellOutlined />;
-    }
-  };
+  // const getIcon = (type) => {
+  //   switch (type) {
+  //     case 'success': return <CheckCircleOutlined style={{ color: 'green' }} />;
+  //     case 'warning': return <WarningOutlined style={{ color: 'orange' }} />;
+  //     case 'info': return <MessageOutlined style={{ color: 'blue' }} />;
+  //     default: return <BellOutlined />;
+  //   }
+  // };
 
   // Navigation functions
   const loadSuggestedForYou = () => {
@@ -425,20 +502,18 @@ function TouristNB() {
             color="inherit"
           >
             <Badge
-              badgeContent={notifications.length}
+              badgeContent={unReadNotifications.length}
               color="error"
               sx={{
                 '& .MuiBadge-badge': {
-                  right: 1.5,
-                  top: 10,
-                  fontSize: '0.75rem',
-                  minWidth: '16px',
-                  height: '16px',
-                  borderRadius: '50%',
+                  right: -3,
+            top: 3,
+            border: `2px solid ${theme.palette.background.paper}`,
+            padding: '0 4px',
                 },
               }}
             >
-              <BellOutlined style={{ fontSize: '33px', color: 'white', marginRight: '1px' }} />
+              <BellOutlined style={{ fontSize: '28px', color: 'white' }} />
             </Badge>
           </IconButton>
         </Box>
@@ -452,56 +527,79 @@ function TouristNB() {
   transformOrigin={{ vertical: 'top', horizontal: 'right' }}
   open={Boolean(anchorElNotifications)}
   onClose={handleCloseNotifications}
-  sx={{
-    mt: 1,
-    boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)', // Soft shadow
-    borderRadius: '8px', // Rounded corners
-    overflow: 'hidden',
-    minWidth: '300px', // Ensure a consistent width
+  PaperProps={{
+    elevation: 0,
+    sx: {
+      overflow: 'visible',
+      filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+      mt: 1.5,
+      '& .MuiAvatar-root': {
+        width: 32,
+        height: 32,
+        ml: -0.5,
+        mr: 1,
+      },
+      '&:before': {
+        content: '""',
+        display: 'block',
+        position: 'absolute',
+        top: 0,
+        right: 14,
+        width: 10,
+        height: 10,
+        bgcolor: 'background.paper',
+        transform: 'translateY(-50%) rotate(45deg)',
+        zIndex: 0,
+      },
+    },
   }}
 >
-  {notifications.length > 0 ? (
-    notifications.map((notification) => (
+  {sortedNotifications.length > 0 ? (
+    sortedNotifications.map((notification) => (
       <MenuItem
         key={notification._id}
         sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          py: 1, // Padding for better spacing
-          gap: 2, // Space between the icon and message
-          borderBottom: '1px solid #e0e0e0', // Divider between notifications
-        }}
+          py: 1,
+                px: 2,
+                borderBottom: '1px solid #e0e0e0',
+                backgroundColor: notification.isRead ? 'white' : '#f0f8ff',
+                '&:hover': {
+                  backgroundColor: notification.isRead ? '#f5f5f5' : '#e6f3ff',
+                },
+              }}
       >
-        <Box sx={{ display: 'flex', alignItems: 'center', flex: 1 }}>
-          {getIcon(notification.type)}
-          <Box sx={{ ml: 1 }}>
-            <Typography variant="body1">
-              {notification.message}
-            </Typography>
-            <Typography
-              variant="caption"
-              sx={{ color: 'gray', fontSize: '0.75rem' }}
-            >
-              {/* {new Date(notification.date).toLocaleTimeString()} Time */}
-            </Typography>
-          </Box>
-        </Box>
-        <Button
+        <ListItemIcon>
+                {getIcon(notification.type)}
+              </ListItemIcon>
+              <ListItemText
+                primary={notification.message}
+                secondary={new Date(notification.createdAt).toLocaleString()}
+                primaryTypographyProps={{
+                  variant: 'body2',
+                  fontWeight: notification.isRead ? 'normal' : 'bold',
+                }}
+                secondaryTypographyProps={{
+                  variant: 'caption',
+                }}
+              />
+        {!notification.isRead &&(
+          <Button
           size="small"
-          variant="text"
-          sx={{
-            color: notifications.length > 0 ? '#2196F3' : 'gray',
-            textTransform: 'none',
-            fontSize: '0.75rem',
-            ':hover': {
-              color: 'black',
-            },
-          }}
+                  variant="outlined"
+                  sx={{
+                    ml: 2,
+                    minWidth: 'auto',
+                    color: 'primary.main',
+                    borderColor: 'primary.main',
+                    '&:hover': {
+                      backgroundColor: 'primary.light',
+                    },
+                  }}
           onClick={() => markAsRead(notification._id)}
         >
           Mark as Read
         </Button>
+        )}
       </MenuItem>
     ))
   ) : (
