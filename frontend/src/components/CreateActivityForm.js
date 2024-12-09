@@ -18,7 +18,7 @@ import dayjs from 'dayjs';
 import SelectTags from "./SelectTags";
 import SelectCategory from "./SelectCategory";
 
-export default function CreateActivityForm() {
+export default function CreateActivityForm({ onActivityCreated }) {
   const navigate = useNavigate();
 
   const [title, setTitle] = useState('');
@@ -109,7 +109,11 @@ export default function CreateActivityForm() {
       setDiscount(0);
       setErrorMessages({});
       console.log("Activity created");
-      navigate('/activities');
+      
+      // Navigate to the Activity List tab
+      if (onActivityCreated) {
+        onActivityCreated();
+      }
     } catch (err) {
       setErrorMessages({ general: "Failed to create activity. Please try again." });
       console.error(err);
@@ -238,28 +242,12 @@ export default function CreateActivityForm() {
             },
           }}
         />
-        <FormControl fullWidth margin="normal"
-        sx={{
-          '& .MuiInputLabel-root': {
-            color: '#ff6b35', // Label color
-          },
-          '& .MuiInputLabel-root.Mui-focused': {
-            color: '#ff6b35', // Label color when focused
-          },
-        }}
-        >
-          <InputLabel >Tags</InputLabel>
+        <FormControl fullWidth margin="normal">
+          <InputLabel>Tags</InputLabel>
           <SelectTags tags={tag} setTags={setTags} />
           {errorMessages.tag && <Typography color="error">{errorMessages.tag}</Typography>}
         </FormControl>
-        <FormControl fullWidth margin="normal" sx={{
-          '& .MuiInputLabel-root': {
-            color: '#ff6b35', // Label color
-          },
-          '& .MuiInputLabel-root.Mui-focused': {
-            color: '#ff6b35', // Label color when focused
-          },
-        }}>
+        <FormControl fullWidth margin="normal">
           <InputLabel>Category</InputLabel>
           <SelectCategory tags={category} setTags={setCategory} />
           {errorMessages.category && <Typography color="error">{errorMessages.category}</Typography>}

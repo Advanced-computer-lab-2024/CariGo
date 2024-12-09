@@ -33,7 +33,11 @@ export default function CenteredTabs() {
 
   const handleMenuItemClick = (type) => {
     setCreateFormType(type);
-    setValue(0); // Switch to the first tab
+    if (type === 'activity') {
+      setValue(1); // Switch to the Activity Post tab
+    } else {
+      setValue(0); // Switch to the first tab for transportation
+    }
     handleMenuClose();
   };
 
@@ -83,9 +87,19 @@ export default function CenteredTabs() {
       </Menu>
 
       <Box sx={{ padding: 3 }}>
-        {value === 0 && createFormType === 'activity' && <CreateActivityForm />}
         {value === 0 && createFormType === 'transportation' && <CreateTransportationForm />}
-        {value === 1 && <ActivityPostAdvList />}
+        {value === 1 && (
+          <>
+            {createFormType === 'activity' ? (
+              <CreateActivityForm onActivityCreated={() => {
+                setCreateFormType(null);
+                setValue(1);
+              }} />
+            ) : (
+              <ActivityPostAdvList />
+            )}
+          </>
+        )}
         {value === 2 && <TransportListAdvertiser />}
         {value === 3 && <Repo />}
       </Box>

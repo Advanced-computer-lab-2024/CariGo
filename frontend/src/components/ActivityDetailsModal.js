@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Modal, Box, Typography, Button, IconButton, Grid, Paper } from '@mui/material';
 import { Close as CloseIcon, Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
+import EditModal from './EditActivityModal';
+
 
 const StyledModal = styled(Modal)(({ theme }) => ({
   display: 'flex',
@@ -22,29 +24,14 @@ const ModalContent = styled(Paper)(({ theme }) => ({
   overflowY: 'auto',
 }));
 
-const DetailsModal = ({ open, onClose, activity }) => {
+
+const DetailsModal =  ({ open, onClose, activity, onUpdate }) => {
   const navigate = useNavigate();
-  const { 
-    id, 
-    author, 
-    img, 
-    start_date, 
-    end_date, 
-    location, 
-    duration, 
-    price, 
-    category, 
-    rating, 
-    discount, 
-    isOpened, 
-    title, 
-    tag, 
-    description 
-  } = activity;
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+ 
 
   const handleEdit = () => {
-    navigate(`/activities/update/${id}`);
-    onClose();
+    setIsEditModalOpen(true);
   };
 
   const handleDelete = async () => {
@@ -71,7 +58,51 @@ const DetailsModal = ({ open, onClose, activity }) => {
     }
   };
 
+  const handleUpdate = async (updatedActivity) => {
+    try {
+      const token = localStorage.getItem('jwt');
+      const response = await fetch(`http://localhost:4000/cariGO/Activity/updateActivity/${activity.id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(updatedActivity),
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const updatedData = await response.json();
+      onUpdate(updatedData);
+    } catch (error) {
+      console.error("Error updating activity:", error);
+    }
+  };
+
+  if (!activity) return null;
+
+  const { 
+    id, 
+    author, 
+    img, 
+    start_date, 
+    end_date, 
+    location, 
+    duration, 
+    price, 
+    category, 
+    rating, 
+    discount, 
+    isOpened, 
+    title, 
+    tag, 
+    description 
+  } = activity;
+
   return (
+    <>
     <StyledModal open={open} onClose={onClose}>
       <ModalContent elevation={3}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
@@ -185,6 +216,14 @@ const DetailsModal = ({ open, onClose, activity }) => {
         </Box>
       </ModalContent>
     </StyledModal>
+    <EditModal 
+        open={isEditModalOpen} 
+        onClose={() => setIsEditModalOpen(false)} 
+        activity={activity}
+        onUpdate={handleUpdate}
+      />
+      </>
+    
   );
 };
 
