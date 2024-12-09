@@ -22,7 +22,8 @@ import DetailMenu from "./components/user/DetailMenu";
 import RateReviewIcon from "@mui/icons-material/RateReview";
 import IconButton from "@mui/material/IconButton";
 import ProductReviewForm from "../components/ProductReviewForm";
-
+import productImage from "../../../assets/product.png";
+import TouristSideBar from "../components/TouristSideBar";
 const OrderDetailScreenWrapper = styled.main`
   .btn-and-title-wrapper {
     margin-bottom: 24px;
@@ -493,11 +494,13 @@ const OrderDetailScreen = () => {
   return (
     <OrderDetailScreenWrapper className="page-py-spacing">
       <TouristNB />
-      <Container style={{ marginLeft: "-10px" }}>
+      <TouristSideBar />
+      <Container style={{marginTop:"75px",marginLeft:"50px"}}>
         {/* <Breadcrumb items={breadcrumbItems} /> */}
         <UserDashboardWrapper>
-          <DetailMenu />
-          <UserContent style={{ marginLeft: "90px" }}>
+          <DetailMenu type="order"/>
+          <UserContent style={{marginLeft:"90px"}}>
+          
             <div className="flex items-center justify-start btn-and-title-wrapper">
               <Link
                 to="/order"
@@ -800,7 +803,7 @@ const OrderDetailScreen = () => {
                           }}
                         >
                           <img
-                            src={folderPics + "" + item.productId.mainImage}
+                            src={item.productId.mainImage? folderPics + "" + item.productId.mainImage: productImage}
                             alt={item.name}
                             style={{
                               width: "100%",
@@ -876,12 +879,12 @@ const OrderDetailScreen = () => {
                       </div>
 
                       {/* Review Icon */}
-                      <IconButton
+                      {order.state==="delivered"&&<IconButton
                         onClick={() => handleReviewClick(item.productId._id)}
                         sx={{ color: "#ff4d4d" }}
                       >
                         <RateReviewIcon />
-                      </IconButton>
+                      </IconButton>}
                     </OrderDetailListWrapper>
                   );
                 })}

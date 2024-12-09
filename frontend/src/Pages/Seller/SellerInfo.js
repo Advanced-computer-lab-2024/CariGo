@@ -1,18 +1,38 @@
 import React from 'react';
-import '../../components/styles/CompanyInfo.css'; // Assuming you have some styles for the component
+import { Box, Typography, Grid, Paper } from '@mui/material';
+import EmailIcon from '@mui/icons-material/Email';
+import PhoneIcon from '@mui/icons-material/Phone';
+import DescriptionIcon from '@mui/icons-material/Description';
 
-const SellerInfo = ({ userName, email, description,/*previousWork,*/mobileNumber }) => {
+const SellerInfo = ({ userName, email, description, mobileNumber }) => {
   return (
-    <div className="company-info">
-      <h2>{userName}</h2>
-      <p><strong>Email:</strong> {email}</p>
-      {/* <p><strong>Role:</strong> {role}</p> */}
-      <p><strong>Dsecription:</strong> {description}</p>
-      {/* <p><strong>Previous work:</strong> {previousWork}</p> */}
-      <p><strong>Mobile Number:</strong> {mobileNumber}</p>
-      {/* <p><strong>Description:</strong> {description}</p> */}
-    </div>
+    <Paper elevation={3} sx={{ p: 3, mt: 3, backgroundColor: 'background.paper' }}>
+      <Grid container spacing={3}>
+        <Grid item xs={12}>
+          <Typography variant="h5" component="h2" gutterBottom color="primary.main">
+            {userName}
+          </Typography>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <Box display="flex" alignItems="center" mb={2}>
+            <EmailIcon color="primary" sx={{ mr: 1 }} />
+            <Typography variant="body1">{email}</Typography>
+          </Box>
+          <Box display="flex" alignItems="center" mb={2}>
+            <PhoneIcon color="primary" sx={{ mr: 1 }} />
+            <Typography variant="body1">{mobileNumber}</Typography>
+          </Box>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <Box display="flex" alignItems="flex-start">
+            <DescriptionIcon color="primary" sx={{ mr: 1, mt: 0.5 }} />
+            <Typography variant="body1">{description}</Typography>
+          </Box>
+        </Grid>
+      </Grid>
+    </Paper>
   );
 };
 
 export default SellerInfo;
+

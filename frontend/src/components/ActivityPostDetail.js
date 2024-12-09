@@ -36,14 +36,15 @@ export default function ActivityDetail() {
   const [activity, setActivities] = useState({});
   const navigate = useNavigate();
   const [localInterestedUsers, setLocalInterestedUsers] = useState([]);
-  const token = localStorage.getItem("jwt");
+  const [token, setToken] = useState(localStorage.getItem("jwt"));
   const [user, setUser] = useState();
-const [tourist,setTourist]=useState(false);
+
+  const [tourist,setTourist]=useState(false);
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const token = localStorage.getItem("jwt");
+        // const token = localStorage.getItem("jwt");
         const id = jwtDecode(token).id;
   
         const response = await axios.get(
@@ -154,7 +155,7 @@ const [tourist,setTourist]=useState(false);
   const handlePlaceOrder = async (paymentMethod,TotalPrice,NumberOfTickets) => {
     // setLoading(true);
     try {
-      const token = localStorage.getItem("jwt");
+      // const token = localStorage.getItem("jwt");
       if (!token) {
         throw new Error("No token found. Please log in.");
       }
@@ -174,7 +175,7 @@ const [tourist,setTourist]=useState(false);
       });
 
       if (response.data) {
-        navigate("/tourist/MyBookedActivities");
+        navigate("/Tourist/book/activity");
       }
     } catch (error) {
       console.error("Error during booking:", error);
@@ -187,11 +188,12 @@ setTourist(true);
   }
   return (
     <Box sx={{ display: "flex", backgroundColor: "#f9f9f9", minHeight: "100vh" }}>
-    <Box>       {!tourist ? <GuestSideBar /> : <TouristSideBar />}
+
+    <Box>       {!token ? <GuestSideBar /> : <TouristSideBar />}
     </Box>
 
     <Box sx={{ flexGrow: 1, marginLeft: "80px", marginTop: "64px", padding: "16px",}}>
-    {!tourist ? <GuestNavBar /> : <TouristNavBar />}
+    {!token ? <GuestNavBar /> : <TouristNavBar />}
 
 
       <Box>

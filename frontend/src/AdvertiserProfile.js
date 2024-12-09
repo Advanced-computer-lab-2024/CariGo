@@ -168,7 +168,11 @@ const AdvertiserProfile = ({ userId }) => {
   if (error) return <div>Error: {error}</div>;
   if (!profile) return <div>No profile found.</div>;
 
-  const logoImage = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSBhwsrrfe4bL5uWFhxt354uZ1sGmytaWzedA&s";
+ 
+  const logoImage = profile.photo
+  ? `http://localhost:4000/public/img/users/${profile.photo}`
+  : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSBhwsrrfe4bL5uWFhxt354uZ1sGmytaWzedA&s"
+
   return (
     <ThemeProvider theme={theme}>
       <Box sx={{ backgroundColor: "background.default", minHeight: "100vh" }}>
