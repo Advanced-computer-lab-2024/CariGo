@@ -92,11 +92,11 @@ import ActivityPostDetail from "./components/ActivityPostDetail.js";
 import CreatePromoCode from './Pages/createPromoCode';
 import Demo from "../src/Pages/HowToUse/demo.jsx";
 // import HotelBooking from "./Pages/Tourist/HotelBooking.js";
-
+import Sign from "./components/L&S/signUp/App.js";
 import BookingPage from "./Pages/Tourist/Booking.js";
 import BookingServices from "./Pages/Tourist/Booking.js";
 import TransportationSearch from "./Pages/TransportationSearch.js" ;
-
+import LS from "./components/L&S/signUp/App.js";
 import AdminViewActivity from "./Pages/activities/AdminViewActivity.js";
 import Report from "./components/Report/dashboard/Dashboard.js";
 import Pass from "./Pages/changePassword.js";
@@ -165,6 +165,7 @@ function App() {
     <Route path="Tourist/order_detail/:id" element={<OrderDetailScreen />} />
           
         <Route path="/" element={<HomePageGuest />} /> {/* Default route */}
+        <Route path="/signIn-Up" element={<Sign />} /> 
         <Route path="/tourist/MyBookings" element={<MyBookings />} /> {/* Default route */}
         <Route path="/tourist/MyBookedActivities" element={<MyBookedActivities />} /> {/* Default route */}
         <Route path="/tourist/MyBookedTransportation" element={<MyBookedTransportation />} /> 

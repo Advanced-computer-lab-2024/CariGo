@@ -1,8 +1,10 @@
+import "../../../components/L&S/signUp/styles.css"
 import * as React from 'react';
 import { useState } from 'react';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import MuiCard from '@mui/material/Card';
+//import styles from "../../../components/L&S/signUp/styles.css"
 import CardActionArea from '@mui/material/CardActionArea';
 import CardContent from '@mui/material/CardContent';
 import Checkbox from '@mui/material/Checkbox';
@@ -24,6 +26,7 @@ import WarningRoundedIcon from '@mui/icons-material/WarningRounded';
 import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 import Grid from '@mui/material/Grid2';
+import TermsAndConditions from './Review';
 const Card = styled(MuiCard)(({ theme }) => ({
   border: '1px solid',
   borderColor: (theme.vars || theme).palette.divider,
@@ -120,6 +123,9 @@ export default function UserInformation({ onFormSubmit,step,role,data,onImageSub
       [name]: value,
     });
   };
+  const [tags, setTags] = React.useState([]);
+  const [selectedTags, setSelectedTags] = React.useState([]);
+  const [tagName, setTagName] = React.useState([]);
   
 const handleData = (data) =>{
     console.log("DATA"+ data.username);
@@ -133,7 +139,30 @@ const handleData = (data) =>{
     });
 
 }
+const handlePrefs = async (event) => {
+  event.preventDefault();
+  console.log("baki "+selectedTags)
+  //onPreferencesSubmit(selectedTags)
+};
+  
+  const [selectedOptions, setSelectedOptions] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
+  //const [selectedOptions, setSelectedOptions] = useState([]);
 
+  const toggleDropdown = () => setIsOpen(!isOpen);
+
+  const handleOptionClick = (option) => {
+    setSelectedOptions((prev) =>
+      prev.includes(option)
+        ? prev.filter((item) => item !== option)
+        : [...prev, option]
+    );
+  };
+  const options = ["Option 1", "Option 2", "Option 3", "Option 4", "Option 5"];
+  const handleRemoveTag = (option) => {
+    setSelectedOptions((prev) => prev.filter((item) => item !== option));
+    console.log(selectedOptions)
+  };
   const handleSubmitSignUp = async (event) => {
     event.preventDefault();
       console.log("inside handle");
@@ -237,10 +266,10 @@ const handleData = (data) =>{
   };
   return (
        
-          <PaymentContainer>
-          <form onSubmit={handleSubmitSignUp}> {/* Wrap in form */}
-        <Grid container spacing={3}>
-          <FormGrid size={{ xs: 12, md: 12 }} style={{ marginLeft: "210px", marginTop: "-5px" }}>
+          
+          <form onSubmit={handleSubmitSignUp} style={{marginTop:"-50px"}}> {/* Wrap in form */}
+        <Grid spacing={3}>
+          <FormGrid size={{ xs: 12, md: 12 }} style={{ marginLeft: "-300px", marginTop: "-5px" }}>
             <label htmlFor="file-upload" className="custom-file-upload">
               <img src={postImage.myFile || (image && image.myFile) || avatar} alt="Uploaded avatar" style={{borderRadius:"50%"}} />
             </label>
@@ -253,7 +282,7 @@ const handleData = (data) =>{
               onChange={handleFileUpload}
             />
           </FormGrid>
-          <FormGrid size={{ xs: 12, md: 6 }} style={{marginLeft:"150px",marginTop:"-20px"}}>
+          <FormGrid size={{ xs: 12, md: 6 }} style={{marginLeft:"-350px",marginTop:"20px",width:"200px"}}>
             <FormLabel htmlFor="name">Username</FormLabel>
             <OutlinedInput
               id="name"
@@ -266,7 +295,7 @@ const handleData = (data) =>{
               size="small"
             />
           </FormGrid>
-          <FormGrid size={{ xs: 12, md: 6 }} style={{marginLeft:"30px"}}>
+          <FormGrid size={{ xs: 12, md: 6 }} style={{marginLeft:"-350px",marginTop:"20px",width:"200px"}}>
             <FormLabel htmlFor="password">Password</FormLabel>
             <OutlinedInput
               id="password"
@@ -280,7 +309,7 @@ const handleData = (data) =>{
             />
             
           </FormGrid>
-          <FormGrid size={{ xs: 12, md:8 }} style={{marginLeft:"20px"}}>
+          <FormGrid size={{ xs: 12, md:8 }} style={{marginLeft:"-350px",marginTop:"20px",width:"200px"}}>
           <FormLabel htmlFor="passwordConfirm"> Confirm Password</FormLabel>
             <OutlinedInput
               id="passwordConfirm"
@@ -293,8 +322,8 @@ const handleData = (data) =>{
               required
               size="small"
             />
-            <FormGrid style={{marginRight:"30px"}}>
-            <FormLabel htmlFor="email" style={{marginTop:"10px"}}>Email</FormLabel>
+            <FormGrid style={{marginLeft:"-5px",marginTop:"10px",width:"200px"}}>
+            <FormLabel htmlFor="email" style={{marginTop:"10px",marginLeft:"-60px"}}>Email</FormLabel>
             <OutlinedInput
               id="email"
               name="email"
@@ -308,9 +337,8 @@ const handleData = (data) =>{
               value={formData.email}
             />
             </FormGrid>
-          </FormGrid>
-          <FormGrid size={{ xs: 12 }} style={{marginTop:"-80px"}} >
-            {(role==="Tourist" || role==="Tour_Guide") &&( <><FormLabel htmlFor="mobile">Mobile Number</FormLabel>
+            <FormGrid style={{marginLeft:"-5px",marginTop:"10px",width:"200px"}}>
+            {(role==="Tourist" || role==="Tour_Guide") &&<><FormLabel htmlFor="mobile" style={{marginTop:"10px",marginLeft:"-80px"}}>Mobile Number</FormLabel>
             <OutlinedInput
               id="mobile"
               name="mobile_number"
@@ -319,7 +347,73 @@ const handleData = (data) =>{
               size="small"
               onChange={handleChange}
              value={formData.mobile_number}
+            /></>}
+            </FormGrid>
+            <FormGrid style={{marginLeft:"-5px",marginTop:"10px",width:"200px"}}>
+            {(role==="Tourist") &&<><FormLabel htmlFor="country" style={{marginTop:"10px",marginLeft:"-100px"}}>Country</FormLabel>
+            <OutlinedInput
+              id="country"
+              name="nationality"
+              placeholder="eg. Egypt"
+              required
+              size="small"
+              onChange={handleChange}
+              value={formData.nationality}
+            /></>}
+            </FormGrid>
+            <FormGrid style={{marginLeft:"-5px",marginTop:"10px",width:"200px"}}>
+            {(role==="Tourist") &&<><FormLabel htmlFor="DOB" style={{marginTop:"10px",marginLeft:"-90px"}}>Date of Birth</FormLabel>
+            <OutlinedInput
+              id="DOB"
+              name="DOB"
+              type="date"
+              required
+              size="small"
+              onChange={handleChange}
+              value={formData.DOB}
+            /></>}
+            </FormGrid>
+            <FormGrid style={{marginLeft:"-5px",marginTop:"10px",width:"200px"}}>
+            {(role==="Tourist") &&<><FormLabel htmlFor="job" style={{marginTop:"10px",marginLeft:"-160px"}}>Job</FormLabel>
+            <OutlinedInput
+              id="job"
+              name="job"
+              placeholder="eg. Engineer"
+              required
+              size="small"
+              onChange={handleChange}
+              value={formData.job}
+            /></>}
+            </FormGrid>
+            <FormGrid style={{marginLeft:"-5px",marginTop:"10px",width:"200px"}}>
+            {(role==="Seller") &&(<><FormLabel htmlFor="sellerName" style={{marginTop:"10px",marginLeft:"-60px"}}>Seller Name</FormLabel>
+            <OutlinedInput
+                  id="sellerName"
+                  name="sellerName"
+                  type="text"
+                  placeholder='edita'
+                  required
+                  size="small"
+                  onChange={handleChange}
+                  value={formData.sellerName}
+                /></>)}
+            </FormGrid>
+            <FormGrid style={{marginLeft:"-5px",marginTop:"10px",width:"200px",marginBottom:"30px"}}>
+            {(role==="Seller") &&(<><FormLabel htmlFor="description" style={{marginTop:"10px",marginLeft:"-60px"}}>Description</FormLabel>
+              <textarea 
+                id='description'
+                name="description" // Match with formData key
+                placeholder="Type your long text here..."
+                
+                onChange={handleChange}
+                value={formData.description} // Bind the value
+                rows={4} // Set number of visible text rows
+                style={{ width: '100%' }} // Make it full width
             /></>)}
+            </FormGrid>
+          </FormGrid>
+          <FormGrid size={{ xs: 12 }} style={{marginLeft:"-10px",marginTop:"-450px",width:"200px"}} >
+            
             {role==="Advertiser" &&( <><FormLabel htmlFor="hotline">Hotline</FormLabel>
             <OutlinedInput
               id="hotline"
@@ -331,17 +425,8 @@ const handleData = (data) =>{
              value={formData.hotline}
             /></>)}
           </FormGrid>
-           <FormGrid size={{ xs: 6 }} style={{marginLeft:"20px"}}>
-           { role==="Tourist" &&<> <FormLabel htmlFor="DOB">Date of Birth</FormLabel>
-            <OutlinedInput
-              id="DOB"
-              name="DOB"
-              type="date"
-              required
-              size="small"
-              onChange={handleChange}
-              value={formData.DOB}
-            /></>}
+           <FormGrid size={{ xs: 6 }} style={{marginLeft:"250px",width:"200px",marginTop:"260px"}}>
+           
             {
                 role==="Advertiser" &&<> <FormLabel htmlFor="website_link">Website Link*</FormLabel>
                 <OutlinedInput
@@ -355,33 +440,12 @@ const handleData = (data) =>{
                   value={formData.website_link}
                 /></>
             }
-            {
-                role==="Seller" &&<> <FormLabel htmlFor="sellerName">Seller Name</FormLabel>
-                <OutlinedInput
-                  id="sellerName"
-                  name="sellerName"
-                  type="text"
-                  placeholder='edita'
-                  required
-                  size="small"
-                  onChange={handleChange}
-                  value={formData.sellerName}
-                /></>
-            }
+      
           </FormGrid>
-          <FormGrid size={{ xs: 6 }} style={{marginLeft:"10px",marginTop:"-90px"}}>
-          {role==="Tourist" &&<><FormLabel htmlFor="country">Country</FormLabel>
-            <OutlinedInput
-              id="country"
-              name="nationality"
-              placeholder="eg. Egypt"
-              required
-              size="small"
-              onChange={handleChange}
-              value={formData.nationality}
-            /></>}
+          <FormGrid size={{ xs: 6 }} style={{marginLeft:"-10px",marginTop:"20px",width:"200px"}}>
+          
             {role==="Advertiser" &&<><FormLabel htmlFor="about">About</FormLabel>
-                <textarea
+         +       <textarea
                 id='about'
                 name="about" // Match with formData key
                 placeholder="Type your long text here..."
@@ -392,42 +456,57 @@ const handleData = (data) =>{
             /></>}
             
           </FormGrid>
-          <FormGrid size={{ xs: 6 }} style={{marginLeft:"-30px"}}>  
-            {role==="Tourist" && <><FormLabel htmlFor="job">Job</FormLabel>
-            <OutlinedInput
-              id="job"
-              name="job"
-              placeholder="eg. Engineer"
-              required
-              size="small"
-              onChange={handleChange}
-              value={formData.job}
-            /></>}
-             {role==="Seller" &&<><FormLabel htmlFor="description">Description</FormLabel>
-                <textarea 
-                id='description'
-                name="description" // Match with formData key
-                placeholder="Type your long text here..."
-                
-                onChange={handleChange}
-                value={formData.description} // Bind the value
-                rows={4} // Set number of visible text rows
-                style={{ width: '100%' }} // Make it full width
-            /></>}
+          {/* <div className="multi-select-container" style={{marginTop:"-600px",marginLeft:"400px",width:"150px"}}>
+      <div className="multi-select-dropdown" onClick={toggleDropdown}style={{marginTop:"400px",marginLeft:"-800px",width:"300px"}}>
+        <div className="tags-container">
+          {selectedOptions.map((option, index) => (
+            <div className="tag" key={index}>
+              {option}
+              <span className="remove-tag" onClick={() => handleRemoveTag(option)}>
+                ×
+              </span>
+            </div>
+          ))}
+        </div>
+        +
+        <div className="placeholder">
+          {selectedOptions.length === 0 ? "Select options..." : ""}
+        </div>
+        <div className="arrow">{isOpen ? "▲" : "▼"}</div>
+      </div>
+      {isOpen && (
+        <ul className="dropdown-options" style={{marginTop:"50px",marginLeft:"-350px",width:"200px",marginBottom:"30px"}}>
+          {tags.map((option, index) => (
+            <li
+              key={index}
+              className={`dropdown-item ${
+                selectedOptions.includes(option.title) ? "selected" : ""
+              }`}
+              onClick={() => handleOptionClick(option.title)}
+            >
+              {option.title}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+    <div></div> */}
+          <FormGrid size={{ xs: 6 }} style={{marginLeft:"-10px",marginTop:"-600px",marginBottom:"60px",height:"300px"}}>
+          <TermsAndConditions/>
           </FormGrid>
-          
-          
+         
           {/* Submit button */}
-          <FormGrid size={{ xs: 12 }} style={{marginTop:"-10px",marginLeft:"420px"}}>
-            <Button variant="contained" type="submit" fullWidth
+          {/* <FormGrid size={{ xs: 12 }} style={{marginTop:"-10px",marginLeft:"320px"}}>
+            <Button variant="contained" type="submit" fullWidth style={{width:"100px"}}
             endIcon={<ChevronRightRoundedIcon />}
             >
               NEXT
             </Button>
-          </FormGrid>
+
+          </FormGrid> */}
         </Grid>
       </form>
-          </PaymentContainer>
+         
           
       
    

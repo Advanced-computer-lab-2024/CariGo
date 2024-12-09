@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { useState } from "react";
 const OrderItemList = ({ orders,cancelledOnly,completed,active,type}) => {
   const [filteredOrders,setOrders]= useState(orders)
-   console.log(orders)
+   
    let filtered;
    if(type==='activity' || type==='itenerary' || type=="hotel"||type=="flight"|| type=="transportation"){
     filtered=orders;

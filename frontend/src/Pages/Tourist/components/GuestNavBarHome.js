@@ -524,7 +524,7 @@ function TouristNB() {
               {/* User Settings */}
 
               <a
-                href="/login"
+                href="/SignIn-Up"
                 style={{
                   color: "#fff",
                   fontSize: "17px",

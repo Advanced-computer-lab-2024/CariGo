@@ -18,7 +18,7 @@ export default function UploadDocumentsPage({onDocsSubmit}) {
     certificates: [],
     taxationRegistryCard: null,
   });
-const userRole=localStorage.getItem("role");
+const userRole=localStorage.getItem('role');
 console.log(userRole);
 // const userRole = "Tour_Guide"; // Set this dynamically as needed
 //   const [selectedFiles, setSelectedFiles] = useState({

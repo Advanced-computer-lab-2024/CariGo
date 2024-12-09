@@ -83,7 +83,7 @@ const Footer = () => {
   const navigate = useNavigate();
 
   const navigateToSignUp = () => {
-    navigate("/login");
+    navigate("/SignUp-In");
   };
 
   const navigateToItirenaries = () => {
@@ -136,7 +136,7 @@ const Footer = () => {
           </Link>
         </li>
         <li style={menuItemStyle}>
-          <Link to="/login" style={menuLinkStyle}>
+          <Link to="/SignIn-Up" style={menuLinkStyle}>
             SignUp
           </Link>
         </li>
