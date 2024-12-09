@@ -163,13 +163,30 @@ export default function CreateTransportationForm() {
           margin="normal"
           error={!!errorMessages.driverNumber}
           helperText={errorMessages.driverNumber}
+          sx={{
+            '& .MuiInputLabel-root': {
+              color: '#ff6b35', // Label color
+            },
+            '& .MuiInputLabel-root.Mui-focused': {
+              color: '#ff6b35', // Label color when focused
+            },
+          }}
         />
-        <FormControl fullWidth margin="normal">
-          <InputLabel>Car Type</InputLabel>
+        <FormControl fullWidth margin="normal"
+         sx={{
+          '& .MuiInputLabel-root': {
+            color: '#ff6b35', // Label color
+          },
+          '& .MuiInputLabel-root.Mui-focused': {
+            color: '#ff6b35', // Label color when focused
+          },
+        }}>
+          <InputLabel >Car Type</InputLabel>
           <Select
             name="carType"
             value={formData.carType}
             onChange={handleChange}
+           
           >
             <MenuItem value="car">Car</MenuItem>
             <MenuItem value="bus">Bus</MenuItem>
@@ -184,6 +201,14 @@ export default function CreateTransportationForm() {
           margin="normal"
           error={!!errorMessages.plateNumber}
           helperText={errorMessages.plateNumber}
+          sx={{
+            '& .MuiInputLabel-root': {
+              color: '#ff6b35', // Label color
+            },
+            '& .MuiInputLabel-root.Mui-focused': {
+              color: '#ff6b35', // Label color when focused
+            },
+          }}
         />
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker
@@ -191,6 +216,14 @@ export default function CreateTransportationForm() {
             value={formData.date}
             onChange={(newValue) => setFormData(prev => ({ ...prev, date: newValue }))}
             renderInput={(params) => <TextField {...params} fullWidth margin="normal" />}
+            sx={{
+              '& .MuiInputLabel-root': {
+                color: '#ff6b35', // Label color
+              },
+              '& .MuiInputLabel-root.Mui-focused': {
+                color: '#ff6b35', // Label color when focused
+              },
+            }}
           />
         </LocalizationProvider>
         <Box sx={{ display: 'flex', gap: 2, my: 2 }}>
@@ -201,6 +234,14 @@ export default function CreateTransportationForm() {
             value={formData.departureHour}
             onChange={handleChange}
             InputProps={{ inputProps: { min: 1, max: 12 } }}
+            sx={{
+              '& .MuiInputLabel-root': {
+                color: '#ff6b35', // Label color
+              },
+              '& .MuiInputLabel-root.Mui-focused': {
+                color: '#ff6b35', // Label color when focused
+              },
+            }}
           />
           <TextField
             label="Departure Minutes"
@@ -209,11 +250,27 @@ export default function CreateTransportationForm() {
             value={formData.departureMinutes}
             onChange={handleChange}
             InputProps={{ inputProps: { min: 0, max: 59 } }}
+            sx={{
+              '& .MuiInputLabel-root': {
+                color: '#ff6b35', // Label color
+              },
+              '& .MuiInputLabel-root.Mui-focused': {
+                color: '#ff6b35', // Label color when focused
+              },
+            }}
           />
           <Select
             name="departureDayTime"
             value={formData.departureDayTime}
             onChange={handleChange}
+            sx={{
+              '& .MuiInputLabel-root': {
+                color: '#ff6b35', // Label color
+              },
+              '& .MuiInputLabel-root.Mui-focused': {
+                color: '#ff6b35', // Label color when focused
+              },
+            }}
           >
             <MenuItem value="am">AM</MenuItem>
             <MenuItem value="pm">PM</MenuItem>
@@ -227,6 +284,14 @@ export default function CreateTransportationForm() {
             value={formData.arrivalHour}
             onChange={handleChange}
             InputProps={{ inputProps: { min: 1, max: 12 } }}
+            sx={{
+              '& .MuiInputLabel-root': {
+                color: '#ff6b35', // Label color
+              },
+              '& .MuiInputLabel-root.Mui-focused': {
+                color: '#ff6b35', // Label color when focused
+              },
+            }}
           />
           <TextField
             label="Arrival Minutes"
@@ -235,11 +300,27 @@ export default function CreateTransportationForm() {
             value={formData.arrivalMinutes}
             onChange={handleChange}
             InputProps={{ inputProps: { min: 0, max: 59 } }}
+            sx={{
+              '& .MuiInputLabel-root': {
+                color: '#ff6b35', // Label color
+              },
+              '& .MuiInputLabel-root.Mui-focused': {
+                color: '#ff6b35', // Label color when focused
+              },
+            }}
           />
           <Select
             name="arrivalDayTime"
             value={formData.arrivalDayTime}
             onChange={handleChange}
+            sx={{
+              '& .MuiInputLabel-root': {
+                color: '#ff6b35', // Label color
+              },
+              '& .MuiInputLabel-root.Mui-focused': {
+                color: '#ff6b35', // Label color when focused
+              },
+            }}
           >
             <MenuItem value="am">AM</MenuItem>
             <MenuItem value="pm">PM</MenuItem>
@@ -252,6 +333,14 @@ export default function CreateTransportationForm() {
           value={formData.departureLocationDisc}
           onChange={handleChange}
           margin="normal"
+          sx={{
+            '& .MuiInputLabel-root': {
+              color: '#ff6b35', // Label color
+            },
+            '& .MuiInputLabel-root.Mui-focused': {
+              color: '#ff6b35', // Label color when focused
+            },
+          }}
         />
         <Button onClick={() => { setIsMapVisible(true); setLocationType('departure'); }}>
           Choose Departure Location on Map
@@ -278,6 +367,14 @@ export default function CreateTransportationForm() {
           value={formData.arrivalLocationDisc}
           onChange={handleChange}
           margin="normal"
+          sx={{
+            '& .MuiInputLabel-root': {
+              color: '#ff6b35', // Label color
+            },
+            '& .MuiInputLabel-root.Mui-focused': {
+              color: '#ff6b35', // Label color when focused
+            },
+          }}
         />
         <Button onClick={() => { setIsMapVisible1(true); setLocationType('arrival'); }}>
           Choose Arrival Location on Map
@@ -307,6 +404,14 @@ export default function CreateTransportationForm() {
           margin="normal"
           error={!!errorMessages.price}
           helperText={errorMessages.price}
+          sx={{
+            '& .MuiInputLabel-root': {
+              color: '#ff6b35', // Label color
+            },
+            '& .MuiInputLabel-root.Mui-focused': {
+              color: '#ff6b35', // Label color when focused
+            },
+          }}
         />
         <TextField
           fullWidth
@@ -318,6 +423,14 @@ export default function CreateTransportationForm() {
           margin="normal"
           error={!!errorMessages.discount}
           helperText={errorMessages.discount}
+          sx={{
+            '& .MuiInputLabel-root': {
+              color: '#ff6b35', // Label color
+            },
+            '& .MuiInputLabel-root.Mui-focused': {
+              color: '#ff6b35', // Label color when focused
+            },
+          }}
         />
         <FormControlLabel
           control={
@@ -325,6 +438,14 @@ export default function CreateTransportationForm() {
               checked={formData.ac}
               onChange={handleChange}
               name="ac"
+              sx={{
+                '& .MuiInputLabel-root': {
+                  color: '#ff6b35', // Label color
+                },
+                '& .MuiInputLabel-root.Mui-focused': {
+                  color: '#ff6b35', // Label color when focused
+                },
+              }}
             />
           }
           label="Air Conditioning"
@@ -335,6 +456,14 @@ export default function CreateTransportationForm() {
               checked={formData.bookingOpened}
               onChange={handleChange}
               name="bookingOpened"
+              sx={{
+                '& .MuiInputLabel-root': {
+                  color: '#ff6b35', // Label color
+                },
+                '& .MuiInputLabel-root.Mui-focused': {
+                  color: '#ff6b35', // Label color when focused
+                },
+              }}
             />
           }
           label="Booking Open"
@@ -348,7 +477,13 @@ export default function CreateTransportationForm() {
           type="submit"
           variant="contained"
           color="primary"
-          sx={{ mt: 3 }}
+          sx={{
+            mt: 3,
+            backgroundColor: 'primary', // Initial background color
+            '&:hover': {
+              backgroundColor: '#ff6b35', // Hover background color
+            },
+          }}
         >
           Create Transportation
         </Button>

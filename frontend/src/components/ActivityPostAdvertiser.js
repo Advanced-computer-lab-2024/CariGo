@@ -8,7 +8,7 @@ const StyledCard = styled(Card)(({ theme }) => ({
   display: 'flex',
   width: '100%',
   margin: theme.spacing(2),
-  backgroundColor: theme.palette.background.paper,
+  backgroundColor: "#ffffff",
   boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
   transition: 'transform 0.3s ease',
   '&:hover': {

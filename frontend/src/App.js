@@ -125,6 +125,7 @@ import WishlistPage from "./Pages/viewWishlist.js";
 //import ChooseSignUP from "./Pages/ChooseSignUp";
 import OrderListScreen from "./Pages/Tourist/Orders/OrderListScreen.jsx";
 import OrderDetailScreen from "./Pages/Tourist/Orders/OrderDetailScreen.jsx";
+import ActivityPostAdvList from "./components/ActivityPostAdvList.js";
 
 import ViewReport from "./components/Report/ViewReport.jsx";
 import Table from "./components/Report/Table.jsx";
@@ -171,6 +172,7 @@ function App() {
       />
       <Route path="tour_guide/itineraries" element={<UserViewItineraries />} />
       <Route path="tour_guide/inactive_itineraries" element={<InactiveItineraries />} />
+      <Route path="Advertiser/ActivityList" element = {< ActivityPostAdvList />}/>
       
       <Route path="tour_guide/itineraries/:id" element={<ItineraryDetails />} />
       <Route path="Tour-Guide/Report" element={<Report />} />
