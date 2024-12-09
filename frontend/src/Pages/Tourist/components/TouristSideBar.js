@@ -306,7 +306,7 @@ export default function Side() {
                   )}
 
                   <ListItemButton
-                    gref="/change-password"
+                    href="/change-password"
                     sx={{
                       padding: "5% 2%",
                       gap: 1,
