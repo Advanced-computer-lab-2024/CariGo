@@ -35,7 +35,7 @@ const ItineraryList = () => {
         };
 
         fetchItineraries();
-    }, []);
+    }, [itineraries]);
 
     return (
         <Grid container spacing={0} sx={{ display: 'flex', flexDirection: 'column', width: '100vw' }}>

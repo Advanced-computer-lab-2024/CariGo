@@ -87,6 +87,19 @@ export default function ItineraryPost({
     }
   };
 
+  // const handleShare = (e) => {
+  //   e.stopPropagation();
+  //   // Implement share functionality here
+  //   alert("Share functionality not implemented yet");
+  // };
+
+  // const handleBookmark = (e) => {
+  //   e.stopPropagation();
+  //   setIsBookmarked(!isBookmarked);
+  //   // Implement bookmark functionality here
+  //   alert("Bookmark functionality not implemented yet");
+  // };
+
   return (
     <Card
       sx={{
