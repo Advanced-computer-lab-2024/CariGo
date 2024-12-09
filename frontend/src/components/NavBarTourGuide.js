@@ -223,7 +223,7 @@ function ResponsiveAppBar() {
   }
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: "#004c74" }}>
+    <AppBar position="static" sx={{ backgroundColor: "#004E89" }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Avatar
@@ -237,13 +237,17 @@ function ResponsiveAppBar() {
             component="a"
             href="#app-bar-with-responsive-menu"
             sx={{
-              mr: 2,
-              display: { xs: "none", md: "flex" },
-              fontFamily: "monospace",
+              fontFamily: "Poppins, sans-serif",
               fontWeight: 700,
-              letterSpacing: ".3rem",
-              color: "inherit",
+              fontSize: "1.5rem",
+              letterSpacing: ".2rem",
+              background: "linear-gradient(90deg, #C0754D, #D59D80)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
               textDecoration: "none",
+              "&:hover": {
+                color: "#C6C6D0",
+              },
             }}
           >
             CariGO
