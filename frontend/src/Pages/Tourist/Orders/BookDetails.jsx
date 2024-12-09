@@ -2,7 +2,7 @@ import TouristNB from "../components/TouristNavBar";
 import { BaseLinkGreen } from "./styles/button";
 import styled from "styled-components";
 import { Container } from "./styles/styles";
-
+import { useLocation } from 'react-router-dom';
 import { UserContent, UserDashboardWrapper } from "./styles/user";
 import UserMenu from "./components/user/UserMenu";
 import { Link, useNavigate } from "react-router-dom";
@@ -328,95 +328,122 @@ max-width: 640px;
 const breadcrumbItems = [
   { label: "Home", link: "/" },
   { label: "Order", link: "/order" },
-  { label: "Order Details", link: "/order_detail" },
+  { label: "Booking Details", link: "/BookDetails" },
 ];
 
-const OrderDetailScreen = () => {
+const BookDetails = () => {
   const navigate = useNavigate();
   //const {ord} = useContext(OrderContext)
-  const { id } = useParams();
+
+  
+  
+  //console.log(state);
+  const { id,type } = useParams();
   const [order,setOrder] = useState(null)
   const [products,setProducts] = useState(null)
+  const [book,setbook]= useState(null);
+  const { state } = useLocation();
   useEffect(() => {
-    const fetchTitles = async () => {
-        const token = localStorage.getItem('jwt'); // Get the token from local storage
-        const userId = localStorage.getItem("id"); // Get user ID if needed
-        console.log(userId);
-        console.log(token);
-        //const revenue =null;
-        try {
-            const response = await fetch(`http://localhost:4000/cariGo/cart/order/${id}`, {
-                method: "GET", // Change this to "POST" if your backend expects it
-                headers: {
-                    "Authorization": `Bearer ${token}`, // Send the token in the Authorization header
+    
+    setbook(state);
+    //console.log(state.ActivityId.start_date);
+    
 
-                }
-            });
-
-            // console.log(Request.json())
-
-            if (!response.ok) {
-                console.log(response)
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const json = await response.json().catch((err) => {
-                console.error('Error parsing JSON:', err);
-                throw new Error('Invalid JSON response');
-            });
-            // setRevenue(json.Revenue);
-            console.log("Fetched Titles:", json.products);
-            setOrder(json)
-            
-            setProducts(json.products)
-          //  setTitles(json.activityTitles)
-            //setEvents(json.report); // Set activities if response is okay
-            //  if(revenue)
-            //onHandleRev(json.Revenue)
-        } catch (error) {
-            console.log('Error fetching activities:', error);
-        }
-    }
-    fetchTitles();
-    console.log(order?order.state:"null");
+    //console.log(order?order.state:"null");
 }, [])
+
 let message;
 const [done,setDone] = useState(false)
-switch(order?.state){
-  case 'processing': message=317;break;
-  case 'shipped':message=511;break;
-  case 'delivered':message=693;break;
-  default : message=168;
 
+
+  const currentTime = new Date();
+  let activityStartDate;
+  if(type=="activity"){
+ activityStartDate = new Date(state?.ActivityId?.start_date);}
+ else if (type=="itenerary"){
+  activityStartDate = new Date(state?. ItineraryId?.start_date);
+ }
+ else if (type=="hotel"){
+  activityStartDate = new Date(state?. hotelData?.offer?.checkInDate);
+ }
+
+ else if (type=="flight"){
+  activityStartDate = new Date(state?. flightData?.segments[0]?.departure?.time);
+ }
+
+// Calculate the difference in hours
+const timeDifference = (activityStartDate - currentTime) / (1000 * 60 * 60);
+
+if (timeDifference <= 48) {
+  message = 693; // Activity starts in less than 48 hours
+} else {
+  message = 317; // Activity starts in 48 hours or more
 }
+
 const folderPics = `http://localhost:4000/public/img/products/`;
 const handleCancel = async () => {
-  const cancelOrder = window.confirm("Are you sure you want to cancel this order?");
-  if (cancelOrder) {
+  const cancelBooking = window.confirm("Are you sure you want to cancel this booking?");
+  if (cancelBooking) {
     try {
       const token = localStorage.getItem('jwt');
       if (!token) {
         throw new Error("No token found. Please log in.");
       }
-
-      await axios.patch(`/cariGo/cart/Cancel`, {
-        OrderId: id,
+      if (type=="activity"){
+      await axios.patch(`/cariGo/activity/CancelActivityBooking`, {
+        bookingId: state._id,
       },
       {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-      });
+      });}
+      else if (type=="itenerary"){
+        await axios.patch(`/cariGo/Event/CancelItineraryBooking`, {
+          bookingId:state._id ,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+      }
+      else if (type=="hotel"){
+        await axios.patch(`http://localhost:4000/cariGo/flights//CancelhBooking`, {bookingId: state?._id,}, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+      }
+      else if (type=="flight"){
+        await axios.patch(`http://localhost:4000/cariGo/flights//CancelfBooking`, {bookingId: state?._id,}, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+      }
+      else if (type=="transportation"){
+        await axios.patch(`http://localhost:4000/cariGo/transportation/CancelBooking/${state?._id}`, {}, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+      }
 
-      alert("Order canceled successfully");
-      
-      
+
+      alert("activity booking canceled successfully");
+      navigate(`/Tourist/book/${type}`);
+      window.location.reload();
       const rate = parseFloat(JSON.parse(localStorage.getItem("conversionRate")))||1;
       console.log(rate);
       await axios.patch(`/cariGo/users/UpdateWallet`, {
         numOfTickets:1,
-        price:order.totalPrice,
+        price:state?.TotalPrice,
         conversionRate:1
       },
       {
@@ -426,23 +453,15 @@ const handleCancel = async () => {
         },
       });
       alert("refunded to your wallet successfully");
+
       // Add a 5-second delay before reloading the page
-      setDone(true)
-      // useEffect(() => {
-        const timer = setTimeout(() => {
-          window.location.href = "/Tourist/orders"; // Navigate to the desired page
-        }, 2000); // 2 seconds
-    
-      //   return () => clearTimeout(timer); // Cleanup the timer on unmount
-      // }, []);
-    
-    //navigate('/ord')
+    setTimeout(() => {
+      
+    }, 100); // 5000 ms = 5 seconds
     } catch (error) {
       console.error('Failed to cancel Activity booking:', error.response ? error.response.data : error.message);
       alert(`An error occurred while canceling the booking. Details: ${error.message},${error.response.data.message}`);
     }
-      
-    
   }
 };
 
@@ -455,23 +474,23 @@ const currencyCode = localStorage.getItem("currencyCode") || "USD";
       
         {/* <Breadcrumb items={breadcrumbItems} /> */}
         <UserDashboardWrapper>
-          <DetailMenu type="order"/>
+          <DetailMenu type="book" />
           <UserContent style={{marginLeft:"90px"}}>
           
             <div className="flex items-center justify-start btn-and-title-wrapper">
               <Link
-                to="/order"
+                to="/book"
                 className="btn-go-back inline-flex items-center justify-center text-xxl"
               >
                 <i className="bi bi-chevron-left"></i>
               </Link>
-              <Fab color="#ff4d4d" size="medium" onClick={()=>navigate('/Tourist/orders')} sx={{color: '#ff4d4d',marginLeft:"0px"}} style={{marginLeft:"-70px",marginRight:"20px",marginTop:"-10px"}}>
+              <Fab color="#ff4d4d" size="medium" onClick={()=>navigate(`/Tourist/book/${type}`)} sx={{color: '#ff4d4d',marginLeft:"0px"}} style={{marginLeft:"-70px",marginRight:"20px",marginTop:"-10px"}}>
         <IconChevronLeft width={24}  />
       </Fab>
-              <Title titleText={"Order Details"} />
+              <Title titleText={"Booking Details"} />
             </div>
 
-            {order && <div className="order-d-wrapper">
+            { <div className="order-d-wrapper">
               <div
   className="order-details-card"
   style={{
@@ -510,7 +529,8 @@ const currencyCode = localStorage.getItem("currencyCode") || "USD";
           marginBottom: "8px",
         }}
       >
-        Order no: #{order._id}
+        #{state?.ActivityId?.title}{state?.ItineraryId?.title} {state?.hotelData?.hotelName}
+        {state?.flightData?.airlineName}{state?.TransportationId?.carType} {state?.TransportationId?.plateNumber}
       </h4>
       <p
         className="text-lg font-medium text-gray"
@@ -520,7 +540,7 @@ const currencyCode = localStorage.getItem("currencyCode") || "USD";
           marginBottom: "0",
         }}
       >
-        Total : {currencyFormat(order.totalPrice)}
+        Total : {currencyFormat(state?.TotalPrice ||0)}
       </p>
     </div>
     
@@ -536,7 +556,7 @@ const currencyCode = localStorage.getItem("currencyCode") || "USD";
         marginBottom: "10px",
       }}
     >
-      Shipping Address
+       Address
     </h5>
     <div
       className="address-grid"
@@ -556,10 +576,10 @@ const currencyCode = localStorage.getItem("currencyCode") || "USD";
             display: "block",
           }}
         >
-          Street:
+         
         </span>
         <span style={{ fontSize: "14px", color: "#6d6d6d" }}>
-          {order.shippingAddress.street}
+          {state?.ActivityId?.discription} {state?. ItineraryId?.pick_up}
         </span>
       </div>
       <div>
@@ -571,10 +591,11 @@ const currencyCode = localStorage.getItem("currencyCode") || "USD";
             display: "block",
           }}
         >
-          City:
+         
         </span>
         <span style={{ fontSize: "14px", color: "#6d6d6d" }}>
-          {order.shippingAddress.city}
+          {order?.ActivityId?.shippingAddress?.city} {order?. ItineraryId?.shippingAddress?.city}
+          {state?.TransportationId?.departureLocation?.discription}{state?. ItineraryId?.drop_off}
         </span>
       </div>
       <div>
@@ -586,10 +607,12 @@ const currencyCode = localStorage.getItem("currencyCode") || "USD";
             display: "block",
           }}
         >
-          State:
+          
         </span>
         <span style={{ fontSize: "14px", color: "#6d6d6d" }}>
-          {order.shippingAddress.state}
+          {state?.ActivityId?.shippingAddress?.state}{order?. ItineraryId?.shippingAddress?.state}
+          {state?.TransportationId?.arrivalLocation?.discription}{state?. ItineraryId?.language}
+         
         </span>
       </div>
       <div>
@@ -601,10 +624,10 @@ const currencyCode = localStorage.getItem("currencyCode") || "USD";
             display: "block",
           }}
         >
-          Postal Code:
+          
         </span>
         <span style={{ fontSize: "14px", color: "#6d6d6d" }}>
-          {order.shippingAddress.postalCode}
+          {order?.shippingAddress?.postalCode} {state?.hotelData?.offer?.room?.typeEstimated?.beds} {state?.hotelData?.offer?.room?.typeEstimated?.bedType}
         </span>
       </div>
       <div>
@@ -616,14 +639,61 @@ const currencyCode = localStorage.getItem("currencyCode") || "USD";
             display: "block",
           }}
         >
-          Country:
+          
         </span>
         <span style={{ fontSize: "14px", color: "#6d6d6d" }}>
-          {order.shippingAddress.country}
+          {state?.ActivityId?.shippingAddress?.country} {order?. ItineraryId?.shippingAddress?.country}
+          {state?.hotelData?.offer?.room?.typeEstimated?.category}
+        </span>
+      </div>
+      <div
+  className="segments-grid"
+  style={{
+    display: "grid",
+    gridTemplateColumns: "1fr",
+    rowGap: "10px",
+  }}
+>
+{state?.flightData?.segments?.length > 0 ? (
+  state?.flightData?.segments.map((segment, index) => (
+    <div
+      key={index}
+      style={{
+        border: "1px solid #ccc",
+        borderRadius: "8px",
+        padding: "10px",
+        textAlign: "left", 
+        
+        marginBottom: "20px" ,marginLeft:"-460px",// Ensures left alignment
+        display: "flex",   // Aligns items inside flexibly
+        flexDirection: "column",
+       alignSelf: "flex-start", // Align the segments grid to the start of the parent container
+       // Aligns content to the top
+      }}
+    >
+      <div>
+        <span style={{ fontWeight: "600", color: "#333333" }}>Departure:</span>{" "}
+        <span style={{ fontSize: "14px", color: "#6d6d6d" }}>
+          {segment.departure.airport || "N/A"} at {segment.departure.time || "N/A"}
+        </span>
+      </div>
+      <div>
+        <span style={{ fontWeight: "600", color: "#333333" }}>Arrival:</span>{" "}
+        <span style={{ fontSize: "14px", color: "#6d6d6d" }}>
+          {segment.arrival.airport || "N/A"} at {segment.arrival.time || "N/A"}
         </span>
       </div>
     </div>
+  ))
+) : (
+  " "
+)}
+
+</div>
+
+    </div>
   </div>
+
 
   {/* Additional Information */}
   <div
@@ -647,9 +717,9 @@ const currencyCode = localStorage.getItem("currencyCode") || "USD";
   </div>
 </div>
 
-{!done && <OrderDetailMessageWrapper className="order-message flex items-center justify-start" style={{marginLeft:`${message}px`}}>
+{ <OrderDetailMessageWrapper className="order-message flex items-center justify-start" style={{marginLeft:`${message}px`}}>
                 <p className="font-semibold text-gray" style={{marginTop:"-10px",marginLeft:"-8px"}}>
-                  Your Order is here
+                   Your Ticket on the TimeLine
                   
                 </p>
               </OrderDetailMessageWrapper>}
@@ -657,35 +727,31 @@ const currencyCode = localStorage.getItem("currencyCode") || "USD";
                 <div className="order-status bg-silver">
                   <div className="order-status-dot status-done bg-silver" style={{marginTop:"-12px",marginLeft:"-2.5px"}}>
                     <span className="order-status-text font-semibold text-center no-wrap text-silver">
-                      Order Placed
+                      Ticked booked
                     </span>
                   </div>
-                  <div className={`order-status-dot status${order.state==="processing"?"-current":"-done"} bg-silver`} style={{marginTop:"-12px",marginBottom:"10px"}}>
+                  <div className={`order-status-dot status${timeDifference >= 48?"-current":"-done"} bg-silver`} style={{marginTop:"-12px",marginBottom:"10px"}}>
                     <span className="order-status-text font-semibold text-center no-wrap text-silver">
-                      In Progress
+                      you  can cancel
                     </span>
                   </div>
-                  <div className={`order-status-dot status${order.state==="shipped"?"-current":"-done"} bg-silver`} style={{marginTop:"-12px"}}>
+                  <div className={`order-status-dot status${timeDifference <= 48?"-current":"-done"} bg-silver`} style={{marginTop:"-12px"}}>
                     <span className="order-status-text font-semibold text-center no-wrap text-silver">
-                      Shipped
+                      you can't cancel
                     </span>
                   </div>
-                  <div className={`order-status-dot status${order.state==="delivered"?"-current":""} bg-silver`} style={{marginRight:"-2px",marginTop:"-12px"}}>
-                    <span className="order-status-text font-semibold text-center no-wrap text-silver">
-                      Delivered
-                    </span>
-                  </div>
+\
                 </div>
               </OrderDetailStatusWrapper>}
              
 
               
-                {products?.map((item) => {
-                  return (
+                {
+                  
                     <OrderDetailListWrapper className="order-d-list" style={{marginLeft:"190px",marginTop:"30px"}}>
                     <div
                     className="order-d-item"
-                    key={item.productId}
+                    key={state?.ActivityId}
                     style={{
                       display: "grid",
                       gridTemplateColumns: "120px auto auto",
@@ -715,8 +781,8 @@ const currencyCode = localStorage.getItem("currencyCode") || "USD";
                       }}
                     >
                       <img
-                        src={folderPics+""+item.productId.mainImage}
-                        alt={item.name}
+                        src={folderPics+""+state?.ActivityId}
+                        alt={state?.name}
                         style={{
                           width: "100%",
                           height: "100%",
@@ -742,7 +808,9 @@ const currencyCode = localStorage.getItem("currencyCode") || "USD";
                           margin: 0,
                         }}
                       >
-                        {item.productId.name}
+                        {state?.ActivityId?.title}{state?.ItineraryId?.title}
+                        {state?.hotelData?.hotelName} {state?.flightData?.airlineName}
+                        {state?.TransportationId?.carType} {state?.TransportationId?.plateNumber}
                       </p>
                   
                       {/* Product Attributes */}
@@ -752,7 +820,7 @@ const currencyCode = localStorage.getItem("currencyCode") || "USD";
                           margin: 0,
                         }}
                       >
-                        <span style={{ fontWeight: "600" }}>Price:</span> {item.productId.price || "N/A"}
+                        <span style={{ fontWeight: "600" }}>Price:</span> {state?.ActivityId?.price ||state?. ItineraryId?.price ||state?.hotelData?.offer?.price?.total||state?.flightData?.price?.total|| state?.TransportationId?.price||"N/A"}
                       </p>
                       <p
                         style={{
@@ -760,7 +828,7 @@ const currencyCode = localStorage.getItem("currencyCode") || "USD";
                           margin: 0,
                         }}
                       >
-                        <span style={{ fontWeight: "600" }}>Qty:</span> {item.quantity}
+                        <span style={{ fontWeight: "600" }}>Qty:</span> {state?.NumberOfTickets}
                       </p>
                     </div>
                   
@@ -783,7 +851,7 @@ const currencyCode = localStorage.getItem("currencyCode") || "USD";
                           margin: 0,
                         }}
                       >
-                        {currencyFormat(item.totalPrice)}
+                        {currencyFormat(state?.TotalPrice ||0)}
                       </p>
                     </div>
                   </div>
@@ -792,34 +860,46 @@ const currencyCode = localStorage.getItem("currencyCode") || "USD";
 
 
                   </OrderDetailListWrapper>      
-                  );
-                })}
+                 
+               }
              
               
-             <div style={{marginTop:"50px",marginLeft:"800px",marginBottom:"100px"}}>
-              {!done && <BaseLinkGreen
-    // to={"/Tourist/orders"}
+             <div style={{ marginTop: "50px", marginLeft: "800px", marginBottom: "100px" }}>
+  {!done && (
+    <BaseLinkGreen
+      // to={"/Tourist/orders"}
       style={{
-        backgroundColor: 'linear-gradient(135deg, #ff4d4d, #126782)',
-        borderColor:'linear-gradient(135deg, #ff4d4d, #126782)',
-
-      color: 'white',
-      textDecoration: 'none',
-      padding: '10px 20px',
-      borderRadius: '5px',
-      fontSize: '14px',
-      width:"130px",
-      fontWeight: '500',
-      transition: 'all 0.3s ease',
+        backgroundColor: state.Status === false || timeDifference < 48
+          ? "#e0e0e0" // Gray background for disabled button
+          : "linear-gradient(135deg, #ff4d4d, #126782)",
+        borderColor: state.Status === false || timeDifference < 48
+          ? "#b0b0b0" // Gray border for disabled button
+          : "linear-gradient(135deg, #ff4d4d, #126782)",
+        color: state.Status === false || timeDifference < 48
+          ? "#808080" // Gray text for disabled button
+          : "white",
+        textDecoration: "none",
+        padding: "10px 20px",
+        borderRadius: "5px",
+        fontSize: "14px",
+        width: "130px",
+        fontWeight: "500",
+        transition: "all 0.3s ease",
+        cursor: state.Status === false || timeDifference < 48
+          ? "not-allowed" // Prevent interaction
+          : "pointer", // Enable interaction
       }}
-     // onMouseOut={(e) => (e.target.style.backgroundColor = '#126782')}
-    onClick={handleCancel}
-   >
+      onClick={
+        state.Status === false || timeDifference < 48
+          ? null // Disable action when button is disabled
+          : handleCancel
+      }
+    >
       Cancel Order
-    </BaseLinkGreen>}
-    
-        
-    </div>
+    </BaseLinkGreen>
+  )}
+</div>
+
             </div>}
           </UserContent>
         </UserDashboardWrapper>
@@ -828,4 +908,4 @@ const currencyCode = localStorage.getItem("currencyCode") || "USD";
   );
 };
 
-export default OrderDetailScreen;
+export default BookDetails;

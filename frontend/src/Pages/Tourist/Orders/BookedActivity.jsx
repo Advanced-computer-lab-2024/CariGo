@@ -5,7 +5,7 @@ import { UserContent, UserDashboardWrapper } from "./styles/user";
 import UserMenu from "./components/user/UserMenu";
 import Title from "./components/common/Title";
 import { breakpoints, defaultTheme } from "./styles/themes/default";
-
+import { useParams, useNavigate } from "react-router-dom";
 import OrderItemList from "./components/user/OrderItemList";
 import { useState,useEffect } from "react";
 import TouristNB from "../components/TouristNavBar";
@@ -92,7 +92,9 @@ const breadcrumbItems = [
   { label: "Order", link: "/order" },
 ];
 
-const OrderListScreen = () => {
+const BookedActivity = () => {
+  const { type } = useParams();
+  const [activities, setActivities] = useState([]);
   const [currentOrders, setCurrentOrders] = useState([]); // Store current orders
   const [pastOrders, setPastOrders] = useState([]); // Store past orders
   const [filteredOrders, setFilteredOrders] = useState([]); // Store filtered orders
@@ -105,61 +107,146 @@ const OrderListScreen = () => {
   const [active,setActive] = useState(true)
   const [completed,setCompleted] = useState(false)
   const [ord,setOrders] = useState(null)
-  const handleCancel= () =>{
-    setOrders([...currentOrders,...pastOrders])
-    setCancelled(true)
-    setActive(false)
-    setCompleted(false)
-  }
-  const handleActive= () =>{
-    setOrders(currentOrders)
-    setCancelled(false)
-    setActive(true)
-    setCompleted(false)
-  }
-  const handleComplete= () =>{
-    setOrders(pastOrders)
-    setCancelled(false)
-    setActive(false)
-    setCompleted(true)
-  }
+  const handleCancel = () => {
+  
+    const filteredActivities = activities.filter(activity => activity.Status === false);
+   
+    setFilteredOrders(filteredActivities);
+    setCancelled(true);
+    setActive(false);
+    setCompleted(false);
+  };
+
+  const handleActive = () => {
+    const today = new Date();
+    const filteredActivities = activities.filter(activity => {
+      let activityStartDate;
+      if (type=="activity"){
+      activityStartDate = new Date(activity?.ActivityId?.start_date);}
+      else if (type=="itenerary"){
+        activityStartDate = new Date(activity?.ItineraryId?.start_date); 
+      }
+      else if (type=="hotel"){
+        activityStartDate = new Date(activity?.hotelData?.offer?.
+          checkInDate); 
+      }
+      else if (type=="flight"){
+        activityStartDate = new Date(activity?.flightData?.segments[0]?.departure?.time);
+      }
+      else if (type=="transportation"){
+        activityStartDate = new Date(activity?.TransportationId?.date);
+      }
+      return activity.Status === true && activityStartDate >= today;
+    });
+    setFilteredOrders(filteredActivities);
+    setCancelled(false);
+    setActive(true);
+    setCompleted(false);
+  };
+
+  const handleComplete = () => {
+    const today = new Date();
+    const filteredActivities = activities.filter(activity => {
+      let activityStartDate;
+      if (type=="activity"){
+        activityStartDate = new Date(activity?.ActivityId?.start_date);}
+      else if (type=="itenerary"){
+          activityStartDate = new Date(activity?.ItineraryId?.start_date); 
+        }
+      else if (type=="hotel") {
+        activityStartDate = new Date(activity?.hotelData?.offer?.checkInDate); 
+      }
+      else if (type=="flight"){
+        activityStartDate = new Date(activity?.flightData?.segments[0]?.departure?.time);
+      }
+      else if (type=="transportation"){
+        activityStartDate = new Date(activity?.TransportationId?.date);
+      }
+      return activityStartDate < today && activity.Status === true;
+    });
+    setFilteredOrders(filteredActivities);
+    setCancelled(false);
+    setActive(false);
+    setCompleted(true);
+  };
+
   
   
   useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        const token = localStorage.getItem("jwt");
-        const response = await fetch("http://localhost:4000/cariGo/cart/MyOrders", {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+    const fetchActivities = async () => {
+        // Renamed from fetchItineraries to fetchActivities
+        try {
+          const token = localStorage.getItem("jwt");
+          let response;
+          if (type==="activity"){
+          response = await fetch(
+            `http://localhost:4000/cariGo/activity/MyActivityBookings`,
+            {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+            });}
+          else if (type==="itenerary"){
+           // const token = localStorage.getItem("jwt");
+             response = await fetch(
+              `http://localhost:4000/Event/MyItineraryBookings`,
+              {
+                method: "GET",
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                  "Content-Type": "application/json",
+                },
+              }
+            );
+          }
+          else if(type==="hotel"){
+             response = await fetch(`http://localhost:4000/cariGo/flights//MyhBookings`, {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+            });
+          }
+          else if (type=="flight"){
+            response = await fetch(`http://localhost:4000/cariGo/flights//MyfBookings`, {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+            });
+          }
+          else if (type=="transportation"){
+             response = await fetch(`http://localhost:4000/cariGo/transportation/MyBookings`, {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+            });
+          }
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          const json = await response.json();
+          setActivities(json); // Changed from setItineraries to setActivities
+          console.log(json);
+        } catch (error) {
+          console.log("Error fetching activities:", error);
         }
-
-        const json = await response.json();
-      
-        // Set the current and past orders based on the API response
-        setCurrentOrders(json.currentOrders); // Set current orders
-        setPastOrders(json.pastOrders); // Set past orders
-        setData(json)
-        setOrders([...json.currentOrders, ...json.pastOrders])
-        console.log(json)
-        // By default, show both past and current orders
-        setFilteredOrders([...json.currentOrders, ...json.pastOrders]);
-      } catch (error) {
-        console.log("Error fetching orders:", error);
+      };
+  
+      fetchActivities();
+    }, []);
+  
+    useEffect(() => {
+      if (activities.length > 0) {
+        handleActive(); // Only call handleActive when activities are not empty
       }
-    };
-
-    fetchOrders();
-  }, []);
-  
-  
+    }, [activities]);
   //setOrders(active?orders.currentOrders:completed?orders.pastOrders:[...orders.currentOrders, ...orders.pastOrders])
   const handleFilterChange = (event) => {
     const filter = event.target.value;
@@ -197,9 +284,9 @@ const OrderListScreen = () => {
       <Container style={{marginTop:"0px",marginLeft:"-10px"}}>
         {/* <Breadcrumb items={breadcrumbItems} /> */}
         <UserDashboardWrapper>
-          <UserMenu type="order"/>
+          <UserMenu type="book"/>
           <UserContent style={{marginLeft:"50px"}}>
-            { <Title titleText={"Your Orders"} />}
+            { <Title titleText={"Your Bookings"} />}
             <div className="order-tabs">
               <div className="order-tabs-heads">
                 <button
@@ -230,7 +317,7 @@ const OrderListScreen = () => {
 
               <div className="order-tabs-contents">
                 <div className="order-tabs-content" id="active">
-                    {ord && <OrderItemList orders = {ord}  cancelledOnly={cancelled} completed={completed} active={active} type={'order'}/>}
+                    {filteredOrders && <OrderItemList orders = {filteredOrders}  cancelledOnly={cancelled} completed={completed} active={active} type={type}/>}
                 </div>
                 
               </div>
@@ -243,4 +330,4 @@ const OrderListScreen = () => {
   );
 };
 
-export default OrderListScreen;
+export default BookedActivity;

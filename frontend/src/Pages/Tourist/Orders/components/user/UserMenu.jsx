@@ -6,6 +6,8 @@ import { breakpoints, defaultTheme } from "../../styles/themes/default";
 
 import vedio from "../../orders.mp4"
 import vedio2 from "../../sale.mp4"
+import vedio4 from "../../sale.mp4";
+import giraffe from "../../orders.mp4";
 const NavMenuWrapper = styled.nav`
   margin-top: 32px;
   
@@ -66,7 +68,7 @@ const NavMenuWrapper = styled.nav`
   }
 `;
 
-const UserMenu = () => {
+const UserMenu = (type) => {
   const [username, setUsername] = useState(localStorage.getItem('username'))
   const location = useLocation();
   return (
@@ -85,7 +87,7 @@ const UserMenu = () => {
     width="100%" 
     style={{ borderRadius: "1px", boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)" }}
   >
-    <source src={vedio} type="video/mp4" />
+    <source src={type=="order"?vedio:vedio4} type="video/mp4" />
     
     Your browser does not support the video tag.
   </video>
@@ -102,7 +104,7 @@ const UserMenu = () => {
     width="100%" 
     style={{ borderRadius: "1px", boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)" }}
   >
-    <source src={vedio2} type="video/mp4" />
+    <source src={type=="order"?vedio2:giraffe} type="video/mp4" />
     
     Your browser does not support the video tag.
   </video>
