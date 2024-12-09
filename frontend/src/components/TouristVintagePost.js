@@ -185,7 +185,7 @@ export default function VintageTouristCard({
             cursor: "pointer",
             transition: "background-color 0.3s",
           }}
-          onClick={() => navigate(`/viewingAllvintage/${id}`)}
+          onClick={() => navigate(`/vintage/${id}`)}
         >
           More Details
         </button>
