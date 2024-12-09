@@ -10,6 +10,7 @@ import {Box} from '@mui/material';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import FavoriteOutlinedIcon from '@mui/icons-material/FavoriteOutlined';
 import { ToastContainer } from "react-toastify";
+import Container from "@mui/material/Container";
 import avatar from "../../assets/profilePic.png";
 
 const folderPics = `http://localhost:4000/public/img/products/`;
@@ -424,7 +425,7 @@ const removeProductFromWishlist = async () => {
             </div>
           </Col>
         </Row>
-
+        <Container maxWidth="xl">
         {/* Product Reviews Section */}
         <Divider style={{ margin: '40px 0' }} />
         <Row>
@@ -433,6 +434,7 @@ const removeProductFromWishlist = async () => {
             <ProductReviews id={id} />
           </Col>
         </Row>
+        </Container>
       </Content>
 </Box></Box>
   );

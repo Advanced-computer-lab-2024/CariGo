@@ -38,6 +38,7 @@ export default function ActivityDetail() {
   const [localInterestedUsers, setLocalInterestedUsers] = useState([]);
   const [token, setToken] = useState(localStorage.getItem("jwt"));
   const [user, setUser] = useState();
+
   const [tourist,setTourist]=useState(false);
 
   useEffect(() => {
@@ -187,6 +188,7 @@ setTourist(true);
   }
   return (
     <Box sx={{ display: "flex", backgroundColor: "#f9f9f9", minHeight: "100vh" }}>
+
     <Box>       {!token ? <GuestSideBar /> : <TouristSideBar />}
     </Box>
 
