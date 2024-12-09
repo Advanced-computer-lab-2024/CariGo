@@ -465,7 +465,7 @@ CariGo
   }}
 >
   <Badge
-    badgeContent={notifications.length}
+    badgeContent={unReadNotifications.length}
     color="error"
     sx={{
       "& .MuiBadge-badge": {
