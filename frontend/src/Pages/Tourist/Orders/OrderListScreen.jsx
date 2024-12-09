@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Container } from "./styles/styles";
-import TouristSideBar from "../components/TouristSideBar";
+
 import { UserContent, UserDashboardWrapper } from "./styles/user";
 import UserMenu from "./components/user/UserMenu";
 import Title from "./components/common/Title";

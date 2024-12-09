@@ -471,8 +471,8 @@ const currencyCode = localStorage.getItem("currencyCode") || "USD";
   return (
     <OrderDetailScreenWrapper className="page-py-spacing">
       <TouristNB />
-      { <TouristSideBar />}
-      <Container style={{marginLeft:"-10px"}}>
+      <TouristSideBar />
+      <Container style={{marginTop:"75px",marginLeft:"50px"}}>
       
         {/* <Breadcrumb items={breadcrumbItems} /> */}
         <UserDashboardWrapper>

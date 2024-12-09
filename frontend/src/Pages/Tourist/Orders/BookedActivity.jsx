@@ -283,9 +283,8 @@ const BookedActivity = () => {
   return (
     <OrderListScreenWrapper className="page-py-spacing">
       <TouristNB />
-             { <TouristSideBar />}
-      
-      <Container style={{marginTop:"0px",marginLeft:"-10px"}}>
+      <TouristSideBar />
+      <Container style={{marginTop:"75px",marginLeft:"50px"}}>
         {/* <Breadcrumb items={breadcrumbItems} /> */}
         <UserDashboardWrapper>
           <UserMenu type="book"/>
