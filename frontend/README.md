@@ -87,9 +87,20 @@ npm run format:fix
 
 
 ## Features & Screenshots
+
+##### book flights/hotels/transportations , look for activities , book itineraries with tour guides or just find out about historical places in your next destination, and even see what souvnirs you want to buy all in one place !
+
+![Screenshot 2024-12-09 050946](https://hackmd.io/_uploads/Hy0FW14VJg.png)
+
+
 ##### filter through and scroll into endless choices of activites to add to oyur next trip!!
 
 ![Screenshot 2024-12-09 035654](https://hackmd.io/_uploads/B1JgXR7Nyx.png)
+
+##### manage and edit everything smoothly with our easy to use admin home layout !
+
+![Screenshot (2645)](https://hackmd.io/_uploads/rJRRD0mNJg.png)
+
 
 ## Code Examples
 <details>
@@ -756,3 +767,4 @@ For anyone who would like to contribute in the development of the project just c
 
 
 ## License
+MIT License
