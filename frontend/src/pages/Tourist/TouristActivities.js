@@ -72,7 +72,7 @@ export default function TouristViewVintage() {
     const filtered = activities.filter((activity) => {
       return (
         (activity.title && activity.title.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (activity.tag && activity.tag.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        //(activity.tag && activity.tag.includes(searchTerm.toLowerCase())) ||
         (activity.Category && activity.Category.toLowerCase().includes(searchTerm.toLowerCase()))
       );
     });

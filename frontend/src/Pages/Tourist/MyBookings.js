@@ -11,6 +11,7 @@ import RateReviewIcon from "@mui/icons-material/RateReview"; // Review icon for 
 import PersonPinIcon from "@mui/icons-material/PersonPin"; // New icon for Tour Guide review
 import ItineraryReviewForm from "../../components/itineraryReviewForm.js"; // Import the itinerary review form
 import TourGuideReviewForm from "../../components/TourGuideReviewForm.js"; // Import the new Tour Guide review form
+import { Today } from "@mui/icons-material";
 
 
 const MyBookings = () => {
@@ -230,7 +231,7 @@ const MyBookings = () => {
                   onClick={() =>
                     openTourGuideReviewFormHandler(itinerary.ItineraryId.author)
                   }
-                  disabled={option !== "Done"}
+                  disabled={!(itinerary.Status && new Date(itinerary.ItineraryId.start_date)<new Date() )}
                 >
                   <PersonPinIcon />
                 </IconButton>
