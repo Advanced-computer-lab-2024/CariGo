@@ -29,9 +29,9 @@ import TouristSideBar from "./Tourist/components/TouristSideBar";
 
 import AddressManager from "../components/AdressManager.jsx";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
-import { loadStripe } from '@stripe/stripe-js';
-import PaymentPopup from './PaymentPopup';
-import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from "@stripe/stripe-js";
+import PaymentPopup from "./PaymentPopup";
+import { Elements } from "@stripe/react-stripe-js";
 import axios from "axios";
 
 import PropTypes from "prop-types";
@@ -53,10 +53,13 @@ import {
   KeyboardArrowUp,
   Close as CloseIcon,
   CheckCircle as CheckCircleIcon,
-} from '@mui/icons-material';
+} from "@mui/icons-material";
+import productImage2 from "./image/product.png";
 
-const stripePromise = loadStripe('pk_test_51QLoL4AkXvwFjwTIX8acMj27pC8YxdOhmoUzn0wbUhej1xUFgFlfgYtXRGmggbKUI6Yfpxz08i9shcsfszv6y9iP0007q608Ny'); // Publishable key
-
+const stripePromise = loadStripe(
+  "pk_test_51QLoL4AkXvwFjwTIX8acMj27pC8YxdOhmoUzn0wbUhej1xUFgFlfgYtXRGmggbKUI6Yfpxz08i9shcsfszv6y9iP0007q608Ny"
+); // Publishable key
+const folderPics = `http://localhost:4000/public/img/products/`;
 const API_BASE_URL = "http://localhost:4000/cariGo";
 
 const CartComponent = () => {
@@ -65,7 +68,7 @@ const CartComponent = () => {
   const [promoCodeError, setPromoCodeError] = useState("");
   const [basePrice, setBasePrice] = useState(0);
   const [error, setError] = React.useState(false);
-  const [discount,SetDiscount] = React.useState(100);
+  const [discount, SetDiscount] = React.useState(100);
   const [promoCode, setPromoCode] = React.useState(""); // State to store the promo code input
   const [isPaymentPopupOpen, setIsPaymentPopupOpen] = useState(false);
   const [cartItems, setCartItems] = useState([]);
@@ -74,9 +77,6 @@ const CartComponent = () => {
   const [selectedItemId, setSelectedItemId] = useState(null);
   const [addresses, setAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
-
-
-  
 
   const conversionRate = parseFloat(
     localStorage.getItem("conversionRate") || "1"
@@ -90,7 +90,7 @@ const CartComponent = () => {
 
   useEffect(() => {
     calculateTotal();
-  }, [cartItems,discount]);
+  }, [cartItems, discount]);
 
   const fetchCart = async () => {
     try {
@@ -141,7 +141,7 @@ const CartComponent = () => {
         throw new Error("Failed to fetch addresses");
       }
       const data = await response.json();
-      setUser(data)
+      setUser(data);
       setAddresses(data.addresses || []);
     } catch (error) {
       console.error("Error fetching addresses:", error);
@@ -153,9 +153,8 @@ const CartComponent = () => {
       (sum, item) => sum + item.productId.price * item.quantity,
       0
     );
-    let priceAfterDiscount = total *(1-(discount/100));
-    if(priceAfterDiscount == 0)
-      priceAfterDiscount = total;
+    let priceAfterDiscount = total * (1 - discount / 100);
+    if (priceAfterDiscount == 0) priceAfterDiscount = total;
     setBasePrice(total);
     setTotalCost(priceAfterDiscount);
   };
@@ -217,10 +216,10 @@ const CartComponent = () => {
 
   const handleCkeckoutClick = () => {
     const token = localStorage.getItem("jwt");
-      if (!token) {
-        console.error("User is not logged in.");
-        return;
-      }
+    if (!token) {
+      console.error("User is not logged in.");
+      return;
+    }
     if (!selectedAddress) {
       alert("Please select a shipping address");
       return;
@@ -249,8 +248,8 @@ const CartComponent = () => {
         },
         body: JSON.stringify({
           shippingAddress: selectedAddress,
-          paymentAmount:totalCost,
-          PaymentMethod:PaymentMethod,
+          paymentAmount: totalCost,
+          PaymentMethod: PaymentMethod,
         }),
       });
 
@@ -313,7 +312,6 @@ const CartComponent = () => {
     }
   };
 
-
   const handleRedeem = async () => {
     try {
       const token = localStorage.getItem("jwt");
@@ -353,7 +351,6 @@ const CartComponent = () => {
         "http://localhost:4000/cariGo/Event/cancelPromoCode",
         { code: promoCode },
         {
-          
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`, // Make sure token is passed in the correct format
@@ -364,7 +361,7 @@ const CartComponent = () => {
       if (response.status === 200) {
         SetDiscount(100); // Set discount when promo code is valid
         setError(false); // Clear error state
-        setPromoCode(''); // Reset the text field value
+        setPromoCode(""); // Reset the text field value
       }
     } catch (err) {
       console.error("Error redeeming promo code:", err);
@@ -375,325 +372,373 @@ const CartComponent = () => {
   };
 
   return (
-    <Box sx={{ display: "flex", backgroundColor: "#f9f9f9", minHeight: "100vh" }}>
-    <Box> <TouristSideBar /> </Box>
+    <Box
+      sx={{ display: "flex", backgroundColor: "#f9f9f9", minHeight: "100vh" }}
+    >
+      <Box>
+        {" "}
+        <TouristSideBar />{" "}
+      </Box>
+      <Box
+        sx={{
+          flexGrow: 1,
+          marginLeft: "80px",
+          marginTop: "64px",
+          padding: "16px",
+        }}
+      >
+        <TouristNavBar />
 
-    <Box sx={{ flexGrow: 1, marginLeft: "80px", marginTop: "64px", padding: "16px",}}>
-      <TouristNavBar />
+        <Container maxWidth="lg" sx={{ py: 4 }}>
+          <Typography variant="h4" sx={styles.pageTitle}>
+            Shopping Cart
+          </Typography>
 
-      <Container maxWidth="lg" sx={{ py: 4 }}>
-        <Typography variant="h4" sx={styles.pageTitle}>
-          Shopping Cart
-        </Typography>
+          {/* Main Content Grid */}
+          <Grid container spacing={3}>
+            {/* Cart Items Section */}
+            <Grid item xs={12} md={8}>
+              {/* Address Selection */}
+              <Box sx={styles.addressSelection}>
+                <AddressManager
+                  addresses={addresses}
+                  onAddressSelect={handleAddressSelect}
+                  onAddNewAddress={handleAddNewAddress}
+                />
+              </Box>
 
-        {/* Main Content Grid */}
-        <Grid container spacing={3}>
-          {/* Cart Items Section */}
-          <Grid item xs={12} md={8}>
-            {/* Address Selection */}
-            <Box sx={styles.addressSelection}>
-              <AddressManager
-                addresses={addresses}
-                onAddressSelect={handleAddressSelect}
-                onAddNewAddress={handleAddNewAddress}
-              />
-            </Box>
+              {/* Cart Items */}
+              {cartItems && cartItems.length > 0 ? (
+                cartItems.map((item) => (
+                  <Card key={item.productId._id} sx={styles.productCard}>
+                    <CardContent>
+                      <Grid container spacing={2}>
+                        {/* Product Image */}
+                        <Grid item xs={3}>
+                          <Box
+                            component="img"
+                            src={
+                              item.productId.mainImage
+                                ? folderPics + item.productId.mainImage
+                                : productImage2
+                            }
+                            alt={item.productId.name}
+                            sx={styles.productImage}
+                          />
+                        </Grid>
 
-            {/* Cart Items */}
-            {cartItems && cartItems.length > 0 ? (
-              cartItems.map((item) => (
-                <Card key={item.productId._id} sx={styles.productCard}>
-                  <CardContent>
-                    <Grid container spacing={2}>
-                      {/* Product Image */}
-                      <Grid item xs={3}>
-                        <Box
-                          component="img"
-                          src="/placeholder.svg"
-                          alt={item.productId.name}
-                          sx={styles.productImage}
-                        />
-                      </Grid>
-                      
-                      {/* Product Details */}
-                      <Grid item xs={9}>
-                        <Box sx={styles.productDetails}>
-                          <Typography variant="h6" sx={styles.productName}>
-                            {item.productId.name}
-                          </Typography>
-                          <Typography sx={styles.productDescription}>
-                            {item.productId.description}
-                          </Typography>
-                          
-                          {/* Price and Quantity Controls */}
-                          <Box sx={styles.priceQuantityContainer}>
-                            <Box sx={styles.quantityControl}>
-                              <IconButton 
-                                onClick={() => updateQuantity(item.productId._id, -1)}
-                                sx={styles.quantityButton}
-                              >
-                                {item.quantity === 1 ? <DeleteIcon /> : <RemoveIcon />}
-                              </IconButton>
-                              <Typography sx={styles.quantity}>{item.quantity}</Typography>
-                              <IconButton 
-                                onClick={() => updateQuantity(item.productId._id, 1)}
-                                sx={styles.quantityButton}
-                              >
-                                <AddIcon />
-                              </IconButton>
-                            </Box>
-                            <Typography sx={styles.productPrice}>
-                              ${(item.productId.price * conversionRate).toFixed(2)} {code}
+                        {/* Product Details */}
+                        <Grid item xs={9}>
+                          <Box sx={styles.productDetails}>
+                            <Typography variant="h6" sx={styles.productName}>
+                              {item.productId.name}
                             </Typography>
-                          </Box>
-                        </Box>
-                      </Grid>
-                    </Grid>
-                  </CardContent>
-                </Card>
-              ))
-            ) : (
-              <Typography sx={styles.emptyCart}>Your cart is empty.</Typography>
-            )}
-          </Grid>
+                            <Typography sx={styles.productDescription}>
+                              {item.productId.description}
+                            </Typography>
 
-          {/* Order Summary Section */}
-          <Grid item xs={12} md={4}>
-            <Card sx={styles.summaryCard}>
-              <CardContent>
-                <Typography variant="h6" sx={styles.summaryTitle}>
-                  Order Summary
+                            {/* Price and Quantity Controls */}
+                            <Box sx={styles.priceQuantityContainer}>
+                              <Box sx={styles.quantityControl}>
+                                <IconButton
+                                  onClick={() =>
+                                    updateQuantity(item.productId._id, -1)
+                                  }
+                                  sx={styles.quantityButton}
+                                >
+                                  {item.quantity === 1 ? (
+                                    <DeleteIcon />
+                                  ) : (
+                                    <RemoveIcon />
+                                  )}
+                                </IconButton>
+                                <Typography sx={styles.quantity}>
+                                  {item.quantity}
+                                </Typography>
+                                <IconButton
+                                  onClick={() =>
+                                    updateQuantity(item.productId._id, 1)
+                                  }
+                                  sx={styles.quantityButton}
+                                >
+                                  <AddIcon />
+                                </IconButton>
+                              </Box>
+                              <Typography sx={styles.productPrice}>
+                                $
+                                {(
+                                  item.productId.price * conversionRate
+                                ).toFixed(2)}{" "}
+                                {code}
+                              </Typography>
+                            </Box>
+                          </Box>
+                        </Grid>
+                      </Grid>
+                    </CardContent>
+                  </Card>
+                ))
+              ) : (
+                <Typography sx={styles.emptyCart}>
+                  Your cart is empty.
                 </Typography>
-                
-                <Box sx={styles.summaryRow}>
-                  <Typography>Original Price</Typography>
-                  <Typography>${(basePrice * conversionRate).toFixed(2)}</Typography>
-                </Box>
-                
-                {error && (
+              )}
+            </Grid>
+
+            {/* Order Summary Section */}
+            <Grid item xs={12} md={4}>
+              <Card sx={styles.summaryCard}>
+                <CardContent>
+                  <Typography variant="h6" sx={styles.summaryTitle}>
+                    Order Summary
+                  </Typography>
+
                   <Box sx={styles.summaryRow}>
-                    <Typography color="success.main">Savings</Typography>
-                    <Typography color="success.main">
-                      -${((basePrice * conversionRate) * (discount/100)).toFixed(2)}
+                    <Typography>Original Price</Typography>
+                    <Typography>
+                      ${(basePrice * conversionRate).toFixed(2)}
                     </Typography>
                   </Box>
-                )}
 
-                <Box sx={styles.divider} />
-                
-                <Box sx={styles.summaryRow}>
-                  <Typography variant="h6">Total</Typography>
-                  <Typography variant="h6">
-                    ${(totalCost * conversionRate).toFixed(2)}
-                  </Typography>
-                </Box>
-
-                {/* Promo Code Section */}
-                <Box sx={styles.promoSection}>
-                  <Button
-                    onClick={() => setIsExpanded(!isExpanded)}
-                    sx={styles.promoButton}
-                  >
-                    {isExpanded ? 'Hide' : 'Add'} promo code
-                    {isExpanded ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
-                  </Button>
-                  
-                  <Collapse in={isExpanded}>
-                    <Box sx={styles.promoContent}>
-                      {!error ? (
-                        <Box sx={styles.promoInputContainer}>
-                          <TextField
-                            value={promoCode}
-                            onChange={(e) => setPromoCode(e.target.value)}
-                            placeholder="Enter promo code"
-                            variant="outlined"
-                            fullWidth
-                            error={!!promoCodeError}
-                            helperText={promoCodeError}
-                            sx={styles.promoInput}
-                          />
-                          <Button
-                            variant="contained"
-                            onClick={handleRedeem}
-                            sx={styles.applyButton}
-                          >
-                            Apply
-                          </Button>
-                        </Box>
-                      ) : (
-                        <Paper sx={styles.appliedPromo}>
-                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                            <CheckCircleIcon color="success" />
-                            <Box>
-                              <Typography variant="subtitle2">
-                                {promoCode} applied
-                              </Typography>
-                              <Typography variant="caption" color="text.secondary">
-                                {(discount/100 * 100).toFixed(0)}% off
-                              </Typography>
-                            </Box>
-                          </Box>
-                          <IconButton
-                            onClick={handleCancel}
-                            size="small"
-                            sx={styles.removePromoButton}
-                          >
-                            <CloseIcon />
-                          </IconButton>
-                        </Paper>
-                      )}
+                  {error && (
+                    <Box sx={styles.summaryRow}>
+                      <Typography color="success.main">Savings</Typography>
+                      <Typography color="success.main">
+                        -$
+                        {(
+                          basePrice *
+                          conversionRate *
+                          (discount / 100)
+                        ).toFixed(2)}
+                      </Typography>
                     </Box>
-                  </Collapse>
-                </Box>
+                  )}
 
-                <Button
-                  variant="contained"
-                  fullWidth
-                  onClick={handleCkeckoutClick}
-                  sx={styles.checkoutButton}
-                >
-                  Proceed to Checkout
-                </Button>
-              </CardContent>
-            </Card>
+                  <Box sx={styles.divider} />
+
+                  <Box sx={styles.summaryRow}>
+                    <Typography variant="h6">Total</Typography>
+                    <Typography variant="h6">
+                      ${(totalCost * conversionRate).toFixed(2)}
+                    </Typography>
+                  </Box>
+
+                  {/* Promo Code Section */}
+                  <Box sx={styles.promoSection}>
+                    <Button
+                      onClick={() => setIsExpanded(!isExpanded)}
+                      sx={styles.promoButton}
+                    >
+                      {isExpanded ? "Hide" : "Add"} promo code
+                      {isExpanded ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+                    </Button>
+
+                    <Collapse in={isExpanded}>
+                      <Box sx={styles.promoContent}>
+                        {!error ? (
+                          <Box sx={styles.promoInputContainer}>
+                            <TextField
+                              value={promoCode}
+                              onChange={(e) => setPromoCode(e.target.value)}
+                              placeholder="Enter promo code"
+                              variant="outlined"
+                              fullWidth
+                              error={!!promoCodeError}
+                              helperText={promoCodeError}
+                              sx={styles.promoInput}
+                            />
+                            <Button
+                              variant="contained"
+                              onClick={handleRedeem}
+                              sx={styles.applyButton}
+                            >
+                              Apply
+                            </Button>
+                          </Box>
+                        ) : (
+                          <Paper sx={styles.appliedPromo}>
+                            <Box
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 1,
+                              }}
+                            >
+                              <CheckCircleIcon color="success" />
+                              <Box>
+                                <Typography variant="subtitle2">
+                                  {promoCode} applied
+                                </Typography>
+                                <Typography
+                                  variant="caption"
+                                  color="text.secondary"
+                                >
+                                  {((discount / 100) * 100).toFixed(0)}% off
+                                </Typography>
+                              </Box>
+                            </Box>
+                            <IconButton
+                              onClick={handleCancel}
+                              size="small"
+                              sx={styles.removePromoButton}
+                            >
+                              <CloseIcon />
+                            </IconButton>
+                          </Paper>
+                        )}
+                      </Box>
+                    </Collapse>
+                  </Box>
+
+                  <Button
+                    variant="contained"
+                    fullWidth
+                    onClick={handleCkeckoutClick}
+                    sx={styles.checkoutButton}
+                  >
+                    Proceed to Checkout
+                  </Button>
+                </CardContent>
+              </Card>
+            </Grid>
           </Grid>
-        </Grid>
-      </Container>
+        </Container>
 
-      {/* Payment Popup */}
-      <Elements stripe={stripePromise}>
-        {isPaymentPopupOpen && (
-          <PaymentPopup
-            open={handleCkeckoutClick}
-            onClose={() => setIsPaymentPopupOpen(false)}
-            checkoutCart={checkoutCart}
-            amount={totalCost}
-            user={user}
-          />
-        )}
-      </Elements>
-   </Box> </Box>
+        {/* Payment Popup */}
+        <Elements stripe={stripePromise}>
+          {isPaymentPopupOpen && (
+            <PaymentPopup
+              open={handleCkeckoutClick}
+              onClose={() => setIsPaymentPopupOpen(false)}
+              checkoutCart={checkoutCart}
+              amount={totalCost}
+              user={user}
+            />
+          )}
+        </Elements>
+      </Box>{" "}
+    </Box>
   );
 };
 
 const styles = {
   pageTitle: {
-    color: '#004e89',
+    color: "#004e89",
     mb: 4,
     fontWeight: 500,
   },
   addressSelection: {
     mb: 3,
     p: 2,
-    backgroundColor: '#f7e1c6',
+    backgroundColor: "#f7e1c6",
     borderRadius: 1,
-    display: 'flex',
+    display: "flex",
     gap: 2,
-    alignItems: 'center',
+    alignItems: "center",
   },
   addressSelect: {
-    color: '#004e89',
-    backgroundColor: 'white',
-    '& .MuiOutlinedInput-notchedOutline': {
-      borderColor: '#1a659e',
+    color: "#004e89",
+    backgroundColor: "white",
+    "& .MuiOutlinedInput-notchedOutline": {
+      borderColor: "#1a659e",
     },
-    '&:hover .MuiOutlinedInput-notchedOutline': {
-      borderColor: '#004e89',
+    "&:hover .MuiOutlinedInput-notchedOutline": {
+      borderColor: "#004e89",
     },
-    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-      borderColor: '#ff6b36',
+    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+      borderColor: "#ff6b36",
     },
-    '& .MuiSvgIcon-root': {
-      color: '#1a659e',
+    "& .MuiSvgIcon-root": {
+      color: "#1a659e",
     },
   },
   newAddressButton: {
-    backgroundColor: '#ff6b36',
-    color: 'white',
-    '&:hover': {
-      backgroundColor: '#e55a2f',
+    backgroundColor: "#ff6b36",
+    color: "white",
+    "&:hover": {
+      backgroundColor: "#e55a2f",
     },
   },
   productCard: {
     mb: 2,
-    backgroundColor: '#f7e1c6',
-    color: '#004e89',
-    border: '1px solid rgba(26, 101, 158, 0.12)',
+    backgroundColor: "#f7e1c6",
+    color: "#004e89",
+    border: "1px solid rgba(26, 101, 158, 0.12)",
   },
   productImage: {
-    width: '100%',
-    height: 'auto',
+    width: "100%",
+    height: "auto",
     borderRadius: 1,
-    backgroundColor: 'white',
+    backgroundColor: "white",
   },
   productDetails: {
-    display: 'flex',
-    flexDirection: 'column',
-    height: '100%',
+    display: "flex",
+    flexDirection: "column",
+    height: "100%",
   },
   productName: {
-    color: '#004e89',
+    color: "#004e89",
     mb: 1,
   },
   productDescription: {
-    color: '#1a659e',
+    color: "#1a659e",
     mb: 2,
   },
   priceQuantityContainer: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    mt: 'auto',
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    mt: "auto",
   },
   quantityControl: {
-    display: 'flex',
-    alignItems: 'center',
+    display: "flex",
+    alignItems: "center",
     gap: 1,
   },
   quantityButton: {
-    color: '#1a659e',
-    '&:hover': {
-      backgroundColor: 'rgba(26, 101, 158, 0.08)',
+    color: "#1a659e",
+    "&:hover": {
+      backgroundColor: "rgba(26, 101, 158, 0.08)",
     },
   },
   quantity: {
-    color: '#004e89',
+    color: "#004e89",
     mx: 2,
   },
   productPrice: {
-    color: '#ff6b36',
-    fontWeight: 'bold',
+    color: "#ff6b36",
+    fontWeight: "bold",
   },
   summaryCard: {
-    backgroundColor: '#f7e1c6',
-    color: '#004e89',
-    position: 'sticky',
+    backgroundColor: "#f7e1c6",
+    color: "#004e89",
+    position: "sticky",
     top: 24,
   },
   summaryTitle: {
     mb: 3,
-    color: '#004e89',
+    color: "#004e89",
   },
   summaryRow: {
-    display: 'flex',
-    justifyContent: 'space-between',
+    display: "flex",
+    justifyContent: "space-between",
     mb: 2,
   },
   divider: {
     my: 2,
-    height: '1px',
-    backgroundColor: 'rgba(26, 101, 158, 0.12)',
+    height: "1px",
+    backgroundColor: "rgba(26, 101, 158, 0.12)",
   },
   promoSection: {
     mt: 3,
     mb: 3,
   },
   promoButton: {
-    color: '#ff6b36',
-    textTransform: 'none',
+    color: "#ff6b36",
+    textTransform: "none",
     p: 0,
-    '&:hover': {
-      backgroundColor: 'transparent',
+    "&:hover": {
+      backgroundColor: "transparent",
       opacity: 0.8,
     },
   },
@@ -701,81 +746,81 @@ const styles = {
     mt: 2,
   },
   promoInputContainer: {
-    display: 'flex',
+    display: "flex",
     gap: 1,
   },
   promoInput: {
     flex: 1,
-    '& .MuiOutlinedInput-root': {
-      color: '#004e89',
-      backgroundColor: 'white',
-      '& fieldset': {
-        borderColor: '#1a659e',
+    "& .MuiOutlinedInput-root": {
+      color: "#004e89",
+      backgroundColor: "white",
+      "& fieldset": {
+        borderColor: "#1a659e",
       },
-      '&:hover fieldset': {
-        borderColor: '#004e89',
+      "&:hover fieldset": {
+        borderColor: "#004e89",
       },
-      '&.Mui-focused fieldset': {
-        borderColor: '#ff6b36',
+      "&.Mui-focused fieldset": {
+        borderColor: "#ff6b36",
       },
     },
-    '& .MuiFormHelperText-root': {
-      color: '#ff1744',
+    "& .MuiFormHelperText-root": {
+      color: "#ff1744",
     },
   },
   applyButton: {
-    backgroundColor: '#ff6b36',
-    color: 'white',
-    '&:hover': {
-      backgroundColor: '#e55a2f',
+    backgroundColor: "#ff6b36",
+    color: "white",
+    "&:hover": {
+      backgroundColor: "#e55a2f",
     },
   },
   appliedPromo: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
     p: 1,
-    backgroundColor: 'rgba(76, 175, 80, 0.08)',
-    border: '1px solid #4caf50',
+    backgroundColor: "rgba(76, 175, 80, 0.08)",
+    border: "1px solid #4caf50",
   },
   removePromoButton: {
-    color: '#ff1744',
-    '&:hover': {
-      backgroundColor: 'rgba(255, 23, 68, 0.08)',
+    color: "#ff1744",
+    "&:hover": {
+      backgroundColor: "rgba(255, 23, 68, 0.08)",
     },
   },
   checkoutButton: {
     mt: 3,
-    backgroundColor: '#ff6b36',
-    color: 'white',
-    '&:hover': {
-      backgroundColor: '#e55a2f',
+    backgroundColor: "#ff6b36",
+    color: "white",
+    "&:hover": {
+      backgroundColor: "#e55a2f",
     },
   },
   dialogPaper: {
-    backgroundColor: '#f7e1c6',
-    color: '#004e89',
+    backgroundColor: "#f7e1c6",
+    color: "#004e89",
   },
   dialogInput: {
-    '& .MuiOutlinedInput-root': {
-      color: '#004e89',
-      backgroundColor: 'white',
-      '& fieldset': {
-        borderColor: '#1a659e',
+    "& .MuiOutlinedInput-root": {
+      color: "#004e89",
+      backgroundColor: "white",
+      "& fieldset": {
+        borderColor: "#1a659e",
       },
-      '&:hover fieldset': {
-        borderColor: '#004e89',
+      "&:hover fieldset": {
+        borderColor: "#004e89",
       },
-      '&.Mui-focused fieldset': {
-        borderColor: '#ff6b36',
+      "&.Mui-focused fieldset": {
+        borderColor: "#ff6b36",
       },
     },
-    '& .MuiInputLabel-root': {
-      color: '#1a659e',
+    "& .MuiInputLabel-root": {
+      color: "#1a659e",
     },
   },
   dialogButton: {
-    color: '#004e89',
+    color: "#004e89",
   },
 };
 

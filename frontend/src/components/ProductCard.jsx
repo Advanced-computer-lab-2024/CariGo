@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from 'react-router-dom';
+import productImage from "../assets/product.png";
 
 const StarIcon = ({ filled }) => (
   <svg
@@ -22,7 +23,7 @@ const ProductCard = ({ product }) => {
     <div className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
       <div className="aspect-square relative overflow-hidden bg-[#ff6b35]/10">
         <img
-          src={product.mainImage ? folderPics + product.mainImage : "./product.png"}
+          src={product.mainImage ? folderPics + product.mainImage : productImage}
           alt={product?.name}
           className="object-cover w-full h-full hover:scale-105 transition-transform duration-300"
         />

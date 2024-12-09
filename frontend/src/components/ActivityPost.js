@@ -27,7 +27,7 @@ export default function ActivityPost({
   const [savedActivities, setSavedActivities] = React.useState([]);
 
   useEffect(() => {
-    const fetchSavedActivities = async () => {
+    const fetchSavedItineraries = async () => {
       const token = localStorage.getItem("jwt");
       const userId = localStorage.getItem("id");
 
@@ -42,54 +42,20 @@ export default function ActivityPost({
             Authorization: `Bearer ${token}`,
           },
         });
-        const userSavedActivities = response.data.savedActivities || [];
+        const userSavedActivities = response.data.savedEvents || [];
         setSavedActivities(userSavedActivities);
         setIsBookmarked(userSavedActivities.includes(id));
       } catch (error) {
-        console.error("Error fetching saved activities:", error);
+        console.error("Error fetching saved itineraries:", error);
       }
     };
 
-    fetchSavedActivities();
+    fetchSavedItineraries();
   }, [id]);
 
   const formatDate = (dateString) => {
     const options = { year: "numeric", month: "long", day: "numeric" };
     return new Date(dateString).toLocaleDateString(undefined, options);
-  };
-
-  const handleDelete = async (e) => {
-    e.stopPropagation();
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this activity?"
-    );
-    if (confirmDelete) {
-      try {
-        const token = localStorage.getItem("jwt");
-        if (!token) {
-          throw new Error("No token found. Please log in.");
-        }
-
-        await axios.delete(`/cariGo/Event/activities/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        setSnackbarMessage("Activity deleted successfully");
-        setSnackbarOpen(true);
-        navigate("/activities");
-      } catch (error) {
-        console.error(
-          "Failed to delete activity:",
-          error.response ? error.response.data : error.message
-        );
-        setSnackbarMessage(
-          `An error occurred while deleting the activity. Details: ${error.message}`
-        );
-        setSnackbarOpen(true);
-      }
-    }
   };
 
   const handleBookmark = async (e) => {
@@ -104,13 +70,13 @@ export default function ActivityPost({
     }
 
     try {
-      const updatedSavedActivities = isBookmarked
-        ? savedActivities.filter((activityId) => activityId !== id)
+      const updatedSavedItineraries = isBookmarked
+        ? savedActivities.filter((itineraryId) => itineraryId !== id)
         : [...savedActivities, id];
 
       await axios.patch(
         `/cariGo/users/update/${userId}`,
-        { savedActivities: updatedSavedActivities },
+        { savedEvents: updatedSavedItineraries },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -118,18 +84,18 @@ export default function ActivityPost({
         }
       );
 
-      setSavedActivities(updatedSavedActivities);
+      setSavedActivities(updatedSavedItineraries);
       setIsBookmarked(!isBookmarked);
       setSnackbarMessage(
         isBookmarked
-          ? "Activity removed from bookmarks"
-          : "Activity bookmarked successfully"
+          ? "Itinerary removed from bookmarks"
+          : "Itinerary bookmarked successfully"
       );
       setSnackbarOpen(true);
     } catch (error) {
-      console.error("Error bookmarking activity:", error);
+      console.error("Error bookmarking itinerary:", error);
       setSnackbarMessage(
-        "Failed to bookmark activity. Please try again later."
+        "Failed to bookmark itinerary. Please try again later."
       );
       setSnackbarOpen(true);
     }
@@ -332,11 +298,31 @@ export default function ActivityPost({
     price: {
       fontSize: "20px",
       fontWeight: "bold",
-      color: "#F6F6F6",
-      backgroundColor: "#ff6b35",
-      padding: "2px 8px",
-      borderRadius: "4px",
-      display: "inline-block",
+      color: "#004e89", // Lapis Blue
+    },
+    discountContainer: {
+      display: "flex",
+      alignItems: "center",
+      gap: "8px",
+      marginTop: "8px",
+    },
+    discountBadge: {
+      backgroundColor: "#f7e1c6", // Yellow Shimmer
+      color: "#ff6b35", // Bright Orange
+      padding: "4px 8px",
+      borderRadius: "16px",
+      fontSize: "14px",
+      fontWeight: "bold",
+    },
+    discountedPrice: {
+      fontSize: "18px",
+      fontWeight: "bold",
+      color: "#004e89", // Lapis Blue
+    },
+    originalPrice: {
+      fontSize: "16px",
+      color: "#1a659e", // Jazz Blue
+      textDecoration: "line-through",
     },
     location: {
       fontSize: "14px",
@@ -357,25 +343,17 @@ export default function ActivityPost({
   };
 
   const priceNumber = parseFloat(price);
-  const discountedPrice =
-    discount > 0 ? (priceNumber * (1 - discount/100)).toFixed(2) : priceNumber.toFixed(2);
-  const priceDisplay =
-    discount > 0 ? (
-      <>
-        <span
-          style={{
-            ...styles.price,
-            textDecoration: "line-through",
-            color: "#ccc",
-          }}
-        >
-          ${priceNumber.toFixed(2)}
-        </span>
-        <span style={styles.price}>${discountedPrice}</span>
-      </>
-    ) : (
-      <span style={styles.price}>${discountedPrice}</span>
-    );
+  const discountedPrice = discount > 0 ? (priceNumber * (1 - discount/100)).toFixed(2) : priceNumber.toFixed(2);
+
+  const priceDisplay = discount > 0 ? (
+    <div style={styles.discountContainer}>
+      <span style={styles.discountBadge}>{discount.toFixed(0)}% OFF</span>
+      <span style={styles.discountedPrice}>${discountedPrice}</span>
+      <span style={styles.originalPrice}>${priceNumber.toFixed(2)}</span>
+    </div>
+  ) : (
+    <span style={styles.discountedPrice}>${discountedPrice}</span>
+  );
 
   return (
     <div style={styles.card}>
@@ -418,7 +396,7 @@ export default function ActivityPost({
       </div>
       <div style={styles.content}>
         <h2 style={styles.title}>{title}</h2>
-        <p style={styles.author}>by {author?.username ? author?.username :"Big Bang"}</p>
+        <p style={styles.author}>by {author?.username ? author?.username : "Big Bang"}</p>
         <div style={styles.ratingContainer}>
           {"★★★★★".split("").map((star, index) => (
             <span
@@ -433,27 +411,7 @@ export default function ActivityPost({
           ))}
           <span style={styles.ratingText}>{rating}</span>
         </div>
-        <div style={styles.priceLanguageContainer}>
-          {priceDisplay}
-          {discount > 0 && (
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              style={{ color: "#ff6b35", marginLeft: "8px" }}
-            >
-              <path d="M12 3v18M3 12h18" />
-            </svg>
-          )}
-          <span style={styles.language}>
-            {discount > 0 ? `${(discount).toFixed(0)}% off` : ""}
-          </span>
-        </div>
+        {priceDisplay}
         <div style={styles.dateContainer}>
           <svg
             width="16"
