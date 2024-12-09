@@ -24,7 +24,9 @@ import {
   Grid,
 } from "@mui/material";
 import RateReviewIcon from "@mui/icons-material/RateReview";
-import Navbar from "./Tourist/components/TouristNavBar";
+import TouristNavBar from "./Tourist/components/TouristNavBar";
+import TouristSideBar from "./Tourist/components/TouristSideBar";
+
 import AddressManager from "../components/AdressManager.jsx";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { loadStripe } from '@stripe/stripe-js';
@@ -373,8 +375,12 @@ const CartComponent = () => {
   };
 
   return (
-    <Box sx={{ backgroundColor: "#f6f6f6", minHeight: "100vh" }}>
-      <Navbar />
+    <Box sx={{ display: "flex", backgroundColor: "#f9f9f9", minHeight: "100vh" }}>
+    <Box> <TouristSideBar /> </Box>
+
+    <Box sx={{ flexGrow: 1, marginLeft: "80px", marginTop: "64px", padding: "16px",}}>
+      <TouristNavBar />
+
       <Container maxWidth="lg" sx={{ py: 4 }}>
         <Typography variant="h4" sx={styles.pageTitle}>
           Shopping Cart
@@ -566,7 +572,7 @@ const CartComponent = () => {
           />
         )}
       </Elements>
-    </Box>
+   </Box> </Box>
   );
 };
 
