@@ -89,7 +89,7 @@ npm run format:fix
 ## Features & Screenshots
 ##### filter through and scroll into endless choices of activites to add to oyur next trip!!
 
-![Screenshot 2024-12-09 035654](https://github.com/Advanced-computer-lab-2024/CariGo/images/Screenshot 2024-12-09 035654.png)
+![Screenshot 2024-12-09 035654](https://github.com/Advanced-computer-lab-2024/CariGo/images/Screenshot-2024-12-09-035654.png)
 
 
 ##### manage and edit everything smoothly with our easy to use admin home layout !
