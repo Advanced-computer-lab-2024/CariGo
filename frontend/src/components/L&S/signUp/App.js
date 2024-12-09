@@ -5,7 +5,7 @@ import SignInForm from "./SignIn";
 import SignUpForm from "../SignUp";
 import FormContainer from "./su";
 export default function Sign() {
-  const [type, setType] = useState("signIn");
+  const [type, setType] = useState(localStorage.getItem('s'));
   const [signUp,setSignUp] = useState(false)
   const handleOnClick = text => {
     if (text !== type) {

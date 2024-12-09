@@ -158,7 +158,7 @@ function App() {
     <Route path="Tourist/order_detail/:id" element={<OrderDetailScreen />} />
           
         <Route path="/" element={<HomePageGuest />} /> {/* Default route */}
-        <Route path="/s" element={<Sign />} /> 
+        <Route path="/signIn-Up" element={<Sign />} /> 
         <Route path="/tourist/MyBookings" element={<MyBookings />} /> {/* Default route */}
         <Route path="/tourist/MyBookedActivities" element={<MyBookedActivities />} /> {/* Default route */}
         <Route path="/tourist/MyBookedTransportation" element={<MyBookedTransportation />} /> 

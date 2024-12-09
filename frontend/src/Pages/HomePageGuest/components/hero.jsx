@@ -24,14 +24,16 @@ export default function Hero() {
 
 
   const navigateToSignUp = () => {
+    localStorage.setItem('s',"signUp")
     navigate(
-      "/"
+      "/signIn-Up"
     );
   };  
   
   const navigateToLogIn = () => {
+    localStorage.setItem('s',"signIn")
     navigate(
-      "/login"
+      "/signIn-Up"
     );
   };
 
