@@ -13,7 +13,9 @@ import {
   Stack,
 } from "@mui/material";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
-import NavBar from "./Tourist/components/TouristNavBar";
+import TouristNavBar from "./Tourist/components/TouristNavBar";
+import TouristSideBar from "./Tourist/components/TouristSideBar";
+
 import ActivityList from "../components/ActivityListUser";
 
 export default function UserViewActivities() {
@@ -74,8 +76,12 @@ export default function UserViewActivities() {
   }, []);
 
   return (
-    <Box sx={{ minHeight: "100vh", backgroundColor: "#f5f5f5" }}>
-      <NavBar />
+    <Box sx={{ display: "flex", backgroundColor: "#f9f9f9", minHeight: "100vh" }}>
+    <Box> <TouristSideBar /> </Box>
+
+    <Box sx={{ flexGrow: 1, marginLeft: "80px", marginTop: "64px", padding: "16px",}}>
+      <TouristNavBar />
+
       <Container maxWidth="lg" sx={{ mt: 8, mb: 4 }}>
         <Typography
           variant="h4"
@@ -119,5 +125,5 @@ export default function UserViewActivities() {
         )}
       </Container>
     </Box>
-  );
+ </Box> );
 }

@@ -24,7 +24,9 @@ import {
   Grid,
 } from "@mui/material";
 import RateReviewIcon from "@mui/icons-material/RateReview";
-import Navbar from "./Tourist/components/TouristNavBar";
+import TouristNavBar from "./Tourist/components/TouristNavBar";
+import TouristSideBar from "./Tourist/components/TouristSideBar";
+
 import AddressManager from "../components/AdressManager.jsx";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { loadStripe } from '@stripe/stripe-js';
@@ -52,10 +54,9 @@ import {
   Close as CloseIcon,
   CheckCircle as CheckCircleIcon,
 } from '@mui/icons-material';
-import TouristSideBar from "./Tourist/components/TouristSideBar";
-import productImage2 from "../assets/product.png"
+
 const stripePromise = loadStripe('pk_test_51QLoL4AkXvwFjwTIX8acMj27pC8YxdOhmoUzn0wbUhej1xUFgFlfgYtXRGmggbKUI6Yfpxz08i9shcsfszv6y9iP0007q608Ny'); // Publishable key
-const folderPics = `http://localhost:4000/public/img/products/`;
+
 const API_BASE_URL = "http://localhost:4000/cariGo";
 
 const CartComponent = () => {
@@ -374,12 +375,15 @@ const CartComponent = () => {
   };
 
   return (
-    <Box sx={{ backgroundColor: "#f6f6f6", minHeight: "100vh" }}>
-      <Navbar />
-      <TouristSideBar/>
-      <Container maxWidth="lg" sx={{ py: 4, marginTop: 5 }}>
+    <Box sx={{ display: "flex", backgroundColor: "#f9f9f9", minHeight: "100vh" }}>
+    <Box> <TouristSideBar /> </Box>
+
+    <Box sx={{ flexGrow: 1, marginLeft: "80px", marginTop: "64px", padding: "16px",}}>
+      <TouristNavBar />
+
+      <Container maxWidth="lg" sx={{ py: 4 }}>
         <Typography variant="h4" sx={styles.pageTitle}>
-          Shopping Cart <ShoppingCartIcon fontSize="large" />
+          Shopping Cart
         </Typography>
 
         {/* Main Content Grid */}
@@ -405,7 +409,7 @@ const CartComponent = () => {
                       <Grid item xs={3}>
                         <Box
                           component="img"
-                          src={item.productId.mainImage ? folderPics + item.productId.mainImage : productImage2}
+                          src="/placeholder.svg"
                           alt={item.productId.name}
                           sx={styles.productImage}
                         />
@@ -568,7 +572,7 @@ const CartComponent = () => {
           />
         )}
       </Elements>
-    </Box>
+   </Box> </Box>
   );
 };
 

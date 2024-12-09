@@ -18,10 +18,10 @@ import {
   LocationOn,
   Star,
 } from "@mui/icons-material";
-import TouristNavBar from "../Pages/Tourist/components/TouristNavBar.js";
-import GuestNavBar from "../Pages/Tourist/components/GuestNavBar";
-import GuestSideBar from "../Pages/Tourist/components/GuestSideBar";
+import TouristNavBar from "../Pages/Tourist/components/TouristNavBar";
 import TouristSideBar from "../Pages/Tourist/components/TouristSideBar";
+import GuestSideBar from "../Pages/Tourist/components/GuestSideBar";
+import GuestNavBar from "../Pages/Tourist/components/GuestNavBar";
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import BookingPaymentPopUp from "../Pages/Tourist/components/BookingPaymentPopUp";
 import { jwtDecode } from "jwt-decode";
@@ -38,10 +38,8 @@ export default function ActivityDetail() {
   const [localInterestedUsers, setLocalInterestedUsers] = useState([]);
   const token = localStorage.getItem("jwt");
   const [user, setUser] = useState();
-const [tourist,setTourist]= useState(false);
+const [tourist,setTourist]=useState(false);
 
-  if(token) setTourist(true);
-  
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -184,24 +182,18 @@ const [tourist,setTourist]= useState(false);
     }
   };
 
+  if(!token){
+setTourist(true);
+  }
   return (
-   <Box sx={{ display: "flex", backgroundColor: "#f9f9f9", minHeight: "100vh" }}>
-    {/* Sidebar */}
-    <Box>
-      {!tourist ? <GuestSideBar /> : <TouristSideBar />}
+    <Box sx={{ display: "flex", backgroundColor: "#f9f9f9", minHeight: "100vh" }}>
+    <Box>       {!tourist ? <GuestSideBar /> : <TouristSideBar />}
     </Box>
 
-    {/* Main Content Area */}
-    <Box
-      sx={{
-        flexGrow: 1,
-        marginLeft: "80px", // Sidebar width
-        marginTop: "64px", // AppBar height
-        padding: "16px",
-      }}
-    >
-      {/* Top Navbar */}
-      {!tourist ? <GuestNavBar /> : <TouristNavBar />}
+    <Box sx={{ flexGrow: 1, marginLeft: "80px", marginTop: "64px", padding: "16px",}}>
+    {!tourist ? <GuestNavBar /> : <TouristNavBar />}
+
+
       <Box>
         <Button
           onClick={() => navigate(`/activities`)}
@@ -633,7 +625,6 @@ const [tourist,setTourist]= useState(false);
           </Grid>
         </Paper>
       </Box>
-      </Box>
-      </Box> 
+  </Box></Box>
   );
 }

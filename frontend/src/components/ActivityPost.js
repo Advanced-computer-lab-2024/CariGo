@@ -332,31 +332,11 @@ export default function ActivityPost({
     price: {
       fontSize: "20px",
       fontWeight: "bold",
-      color: "#004e89", // Lapis Blue
-    },
-    discountContainer: {
-      display: "flex",
-      alignItems: "center",
-      gap: "8px",
-      marginTop: "8px",
-    },
-    discountBadge: {
-      backgroundColor: "#f7e1c6", // Yellow Shimmer
-      color: "#ff6b35", // Bright Orange
-      padding: "4px 8px",
-      borderRadius: "16px",
-      fontSize: "14px",
-      fontWeight: "bold",
-    },
-    discountedPrice: {
-      fontSize: "18px",
-      fontWeight: "bold",
-      color: "#004e89", // Lapis Blue
-    },
-    originalPrice: {
-      fontSize: "16px",
-      color: "#1a659e", // Jazz Blue
-      textDecoration: "line-through",
+      color: "#F6F6F6",
+      backgroundColor: "#ff6b35",
+      padding: "2px 8px",
+      borderRadius: "4px",
+      display: "inline-block",
     },
     location: {
       fontSize: "14px",
@@ -377,17 +357,25 @@ export default function ActivityPost({
   };
 
   const priceNumber = parseFloat(price);
-  const discountedPrice = discount > 0 ? (priceNumber * (1 - discount/100)).toFixed(2) : priceNumber.toFixed(2);
-
-  const priceDisplay = discount > 0 ? (
-    <div style={styles.discountContainer}>
-      <span style={styles.discountBadge}>{discount.toFixed(0)}% OFF</span>
-      <span style={styles.discountedPrice}>${discountedPrice}</span>
-      <span style={styles.originalPrice}>${priceNumber.toFixed(2)}</span>
-    </div>
-  ) : (
-    <span style={styles.discountedPrice}>${discountedPrice}</span>
-  );
+  const discountedPrice =
+    discount > 0 ? (priceNumber * (1 - discount/100)).toFixed(2) : priceNumber.toFixed(2);
+  const priceDisplay =
+    discount > 0 ? (
+      <>
+        <span
+          style={{
+            ...styles.price,
+            textDecoration: "line-through",
+            color: "#ccc",
+          }}
+        >
+          ${priceNumber.toFixed(2)}
+        </span>
+        <span style={styles.price}>${discountedPrice}</span>
+      </>
+    ) : (
+      <span style={styles.price}>${discountedPrice}</span>
+    );
 
   return (
     <div style={styles.card}>
@@ -430,7 +418,7 @@ export default function ActivityPost({
       </div>
       <div style={styles.content}>
         <h2 style={styles.title}>{title}</h2>
-        <p style={styles.author}>by {author?.username ? author?.username : "Big Bang"}</p>
+        <p style={styles.author}>by {author?.username ? author?.username :"Big Bang"}</p>
         <div style={styles.ratingContainer}>
           {"★★★★★".split("").map((star, index) => (
             <span
@@ -445,7 +433,27 @@ export default function ActivityPost({
           ))}
           <span style={styles.ratingText}>{rating}</span>
         </div>
-        {priceDisplay}
+        <div style={styles.priceLanguageContainer}>
+          {priceDisplay}
+          {discount > 0 && (
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              style={{ color: "#ff6b35", marginLeft: "8px" }}
+            >
+              <path d="M12 3v18M3 12h18" />
+            </svg>
+          )}
+          <span style={styles.language}>
+            {discount > 0 ? `${(discount).toFixed(0)}% off` : ""}
+          </span>
+        </div>
         <div style={styles.dateContainer}>
           <svg
             width="16"
