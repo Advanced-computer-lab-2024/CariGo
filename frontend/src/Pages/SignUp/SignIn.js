@@ -32,8 +32,9 @@ import Checkbox from "@mui/material/Checkbox";
 import { useNavigate } from "react-router-dom";
 // import avatar from "../../../public/profile.png"
 const steps = ["User Information", "Upload Documents", "Terms & Conditions"];
-function SignIn({ role, preferences }) {
+function SignIn({role,  preferences }) {
   //console.log(role);
+  role = localStorage.getItem('role');
   if(role==="Tourist")
     steps[1] = "Select Your Preferences"
   const [formData, setFormData] = useState({username:"", // Change from 'email' to 'username'
@@ -58,7 +59,8 @@ function SignIn({ role, preferences }) {
   const [activeStep, setActiveStep] = React.useState(0);
   const [selectedFiles, setSelectedFiles] = useState(null);
   const [checked , setChecked] = useState(false);
-  localStorage.setItem('role',role)
+  localStorage.setItem('role',"Tourist")
+  
   const handleNext = () => {
     setActiveStep(activeStep + 1);
   };
@@ -238,7 +240,7 @@ function SignIn({ role, preferences }) {
   };
   return (
     <>
-      <CssBaseline enableColorScheme />
+      {/* <CssBaseline enableColorScheme /> */}
       <Box sx={{ position: "fixed", top: "1rem", right: "1rem" }}>
         <ColorModeIconDropdown />
       </Box>
@@ -328,7 +330,7 @@ function SignIn({ role, preferences }) {
               <Stepper
                 id="desktop-stepper"
                 activeStep={activeStep}
-                sx={{ width: "100%", height: 40 }}
+                sx={{ width: "100%", height: 40,marginTop:"-80px" }}
               >
                 {steps.map((label) => (
                   <Step
@@ -421,7 +423,7 @@ function SignIn({ role, preferences }) {
             ) : (
               <React.Fragment>
                 {getStepContent(activeStep)}
-                { activeStep===2 &&(<FormControlLabel
+                { activeStep===0 &&(<FormControlLabel style={{marginTop:"-90px"}}
             control={<Checkbox name="saveCard" required  checked={checked} onChange={()=>setChecked(!checked)} />}
             label="Accept Terms & Conditions"
           />)}
@@ -465,10 +467,10 @@ function SignIn({ role, preferences }) {
                       Previous
                     </Button>
                   )}
-                  {activeStep ===2 && checked &&
-                   (<Button type="submit"
+                  {activeStep ===0 && checked &&
+                   (<Button type="submit" style={{marginTop:"-100px",marginBottom:"50px"}}
                     variant="contained"
-                    endIcon={(activeStep === steps.length - 1) && <ChevronRightRoundedIcon />}
+                    endIcon={(activeStep === steps.length - 2) && <ChevronRightRoundedIcon />}
                     onClick={handleSignUp}
                     fullWidth
                     

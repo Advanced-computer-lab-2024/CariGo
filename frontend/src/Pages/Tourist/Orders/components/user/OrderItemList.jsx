@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { useState } from "react";
 const OrderItemList = ({ orders,cancelledOnly,completed,active}) => {
   const [filteredOrders,setOrders]= useState(orders)
-   console.log(orders)
+   
    let filtered;
    const today = new Date();
    if(active)
@@ -13,14 +13,14 @@ const OrderItemList = ({ orders,cancelledOnly,completed,active}) => {
   else
      if(completed)
       filtered = orders?.filter(
-        (order) => order.isCancelled && new Date(order.deliveryDate) <= new Date()
+        (order) => order.state==="delivered"
       );
     else
     filtered = orders?.filter(
       (order) => order.isCancelled
     );
     
-     
+    console.log(filtered)
      
      //setOrders(filtered)
 

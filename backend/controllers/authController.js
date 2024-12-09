@@ -104,6 +104,7 @@ exports.signup = catchAsync(async (req, res, next) => {
 });
 
 const createSendToken = (user, statusCode, res) => {
+  console.log(user._id)
   const token = signToken(user._id);
   const cookieOptions = {
     //browser will delete cookie after it has expired
@@ -282,6 +283,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
     });
 
     res.status(200).json({
+      url:resetURL,
       status: "success",
       message: "Token sent to email!",
     });
@@ -289,7 +291,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
     user.passwordResetToken = undefined;
     user.passwordResetExpires = undefined;
     await user.save({ validateBeforeSave: false });
-
+   
     return next(
       new AppError("There was an error sending the email. Try again later! ❌"),
       500
@@ -300,6 +302,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
 
 exports.resetPassword = catchAsync(async (req, res, next) => {
   // get user by token
+  console.log(req.params.token)
   const hashedToken = crypto
     .createHash("sha256")
     .update(req.params.token)
@@ -308,14 +311,14 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
     passwordResetToken: hashedToken,
     passwordResetExpires: { $gt: Date.now() },
   });
-
+  console.log(user)
   // set new password if token isn't expired and there is a user
   if (!user) {
     return next(
       new AppError("Token is invalid or expired. Please try again.", 400)
     );
   }
-
+  console.log(req.body.password +" "+req.body.passwordConfirm)
   user.password = req.body.password;
   user.passwordConfirm = req.body.passwordConfirm;
   user.passwordResetToken = undefined;

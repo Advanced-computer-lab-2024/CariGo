@@ -119,6 +119,7 @@ const OrderListScreen = () => {
   }
   const handleComplete= () =>{
     setOrders(pastOrders)
+    console.log(pastOrders)
     setCancelled(false)
     setActive(false)
     setCompleted(true)

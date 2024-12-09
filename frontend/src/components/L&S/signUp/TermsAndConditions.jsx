@@ -9,7 +9,7 @@ function TermsAndConditions() {
   
   return (
     <div style={{
-      height: '500px',      // Set a fixed height
+      height: '300px',      // Set a fixed height
       overflowY: 'scroll',  // Enable vertical scrolling
       border: '1px solid #ccc',
       padding: '10px'

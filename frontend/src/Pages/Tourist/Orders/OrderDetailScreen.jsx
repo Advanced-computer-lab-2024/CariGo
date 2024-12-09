@@ -797,7 +797,7 @@ const currencyCode = localStorage.getItem("currencyCode") || "USD";
              
               
              <div style={{marginTop:"50px",marginLeft:"800px",marginBottom:"100px"}}>
-              {!done && <BaseLinkGreen
+              {(!done && order.state!=="delivered") && <BaseLinkGreen
     // to={"/Tourist/orders"}
       style={{
         backgroundColor: 'linear-gradient(135deg, #ff4d4d, #126782)',
