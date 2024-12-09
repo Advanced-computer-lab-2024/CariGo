@@ -1,9 +1,7 @@
 import OrderItem from "./OrderItem";
 import ActivityItem from "./ActivityItem";
-import ActivityItem from "./ActivityItem";
 import PropTypes from "prop-types";
 import { useState } from "react";
-const OrderItemList = ({ orders,cancelledOnly,completed,active,type}) => {
 const OrderItemList = ({ orders,cancelledOnly,completed,active,type}) => {
   const [filteredOrders,setOrders]= useState(orders)
    console.log(orders)
@@ -13,7 +11,6 @@ const OrderItemList = ({ orders,cancelledOnly,completed,active,type}) => {
    }
    else if (type=='order'){
    const today = new Date();
-   
    
    if(active)
      filtered = orders?.filter(
@@ -28,7 +25,6 @@ const OrderItemList = ({ orders,cancelledOnly,completed,active,type}) => {
     filtered = orders?.filter(
       (order) => order.isCancelled
     );
-  }
   }
      
      
