@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Container } from "./styles/styles";
-
+import TouristSideBar from "../components/TouristSideBar";
 import { UserContent, UserDashboardWrapper } from "./styles/user";
 import UserMenu from "./components/user/UserMenu";
 import Title from "./components/common/Title";
@@ -194,6 +194,7 @@ const OrderListScreen = () => {
   return (
     <OrderListScreenWrapper className="page-py-spacing">
       <TouristNB />
+      { <TouristSideBar />}
       <Container style={{marginTop:"0px",marginLeft:"-10px"}}>
         {/* <Breadcrumb items={breadcrumbItems} /> */}
         <UserDashboardWrapper>

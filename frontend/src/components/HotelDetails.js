@@ -127,7 +127,7 @@ const HotelDetails = () =>{
             });
       
             if (response.data) {
-              navigate("/tourist/MyBookedHotels");
+              navigate("/Tourist/book/hotel");
             }
           } catch (error) {
             console.error("Error during booking:", error);

@@ -228,7 +228,7 @@ export default function Side() {
                   {anchorElBookings && (
                     <div>
                       <List sx={{ paddingLeft: 4, mt: "10px" }}>
-                        <a href="/tourist/MyBookedActivities">
+                        <a href="/Tourist/book/activity">
                           <ListItemButton
                             sx={{
                               padding: "5% 2%",
@@ -243,7 +243,7 @@ export default function Side() {
                         </a>
                         <Divider sx={{ backgroundColor: "lightgray" }} />
 
-                        <a href="/tourist/MyBookings">
+                        <a href="/Tourist/book/itenerary">
                           <ListItemButton
                             sx={{
                               padding: "5% 2%",
@@ -258,7 +258,7 @@ export default function Side() {
                         </a>
                         <Divider sx={{ backgroundColor: "lightgray" }} />
 
-                        <a href="/tourist/MyBookedHotels">
+                        <a href="/Tourist/book/hotel">
                           <ListItemButton
                             sx={{
                               padding: "5% 2%",
@@ -273,7 +273,7 @@ export default function Side() {
                         </a>
                         <Divider sx={{ backgroundColor: "lightgray" }} />
 
-                        <a href="/tourist/MyBookedFlights">
+                        <a href="/Tourist/book/flight">
                           <ListItemButton
                             sx={{
                               padding: "5% 2%",
@@ -288,7 +288,7 @@ export default function Side() {
                         </a>
                         <Divider sx={{ backgroundColor: "lightgray" }} />
 
-                        <a href="/tourist/MyBookedTransportation">
+                        <a href="/Tourist/book/Transportation">
                           <ListItemButton
                             sx={{
                               padding: "5% 2%",

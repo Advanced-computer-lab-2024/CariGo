@@ -9,6 +9,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import OrderItemList from "./components/user/OrderItemList";
 import { useState,useEffect } from "react";
 import TouristNB from "../components/TouristNavBar";
+import TouristSideBar from "../components/TouristSideBar";
 import vedio2 from "./sale.mp4"
 const OrderListScreenWrapper = styled.div`
   .order-tabs-contents {
@@ -107,6 +108,7 @@ const BookedActivity = () => {
   const [active,setActive] = useState(true)
   const [completed,setCompleted] = useState(false)
   const [ord,setOrders] = useState(null)
+  const [tourist,setTourist]=useState(false);
   const handleCancel = () => {
   
     const filteredActivities = activities.filter(activity => activity.Status === false);
@@ -281,6 +283,8 @@ const BookedActivity = () => {
   return (
     <OrderListScreenWrapper className="page-py-spacing">
       <TouristNB />
+             { <TouristSideBar />}
+      
       <Container style={{marginTop:"0px",marginLeft:"-10px"}}>
         {/* <Breadcrumb items={breadcrumbItems} /> */}
         <UserDashboardWrapper>

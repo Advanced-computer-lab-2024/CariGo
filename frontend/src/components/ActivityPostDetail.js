@@ -174,7 +174,7 @@ const [tourist,setTourist]=useState(false);
       });
 
       if (response.data) {
-        navigate("/tourist/MyBookedActivities");
+        navigate("/Tourist/book/activity");
       }
     } catch (error) {
       console.error("Error during booking:", error);

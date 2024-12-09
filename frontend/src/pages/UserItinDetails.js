@@ -192,7 +192,7 @@ const ItineraryDetails = () => {
       });
 
       if (response.data) {
-        navigate("/tourist/MyBookings");
+        navigate("/Tourist/book/itenerary");
       }
     } catch (error) {
       console.error("Error during booking:", error);

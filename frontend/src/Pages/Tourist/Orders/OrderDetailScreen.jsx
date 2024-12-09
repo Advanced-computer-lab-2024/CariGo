@@ -2,7 +2,7 @@ import TouristNB from "../components/TouristNavBar";
 import { BaseLinkGreen } from "./styles/button";
 import styled from "styled-components";
 import { Container } from "./styles/styles";
-
+import TouristSideBar from "../components/TouristSideBar";
 import { UserContent, UserDashboardWrapper } from "./styles/user";
 import UserMenu from "./components/user/UserMenu";
 import { Link, useNavigate } from "react-router-dom";
@@ -493,6 +493,7 @@ const OrderDetailScreen = () => {
   return (
     <OrderDetailScreenWrapper className="page-py-spacing">
       <TouristNB />
+      { <TouristSideBar />}
       <Container style={{ marginLeft: "-10px" }}>
         {/* <Breadcrumb items={breadcrumbItems} /> */}
         <UserDashboardWrapper>

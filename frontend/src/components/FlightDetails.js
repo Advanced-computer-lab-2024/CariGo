@@ -107,7 +107,7 @@ const FlightDetails = () =>{
         });
   
         if (response.data) {
-          navigate("/tourist/MyBookedFlights");
+          navigate("/Tourist/book/flight");
         }
       } catch (error) {
         console.error("Error during booking:", error);

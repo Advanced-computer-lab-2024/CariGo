@@ -19,6 +19,7 @@ import { useParams } from "react-router-dom";
 import { OrderContext } from "./components/user/OrderItem";
 //import { Navigate } from "react-router-dom";
 import DetailMenu from "./components/user/DetailMenu";
+import TouristSideBar from "../components/TouristSideBar";
 
 const OrderDetailScreenWrapper = styled.main`
   .btn-and-title-wrapper {
@@ -470,6 +471,7 @@ const currencyCode = localStorage.getItem("currencyCode") || "USD";
   return (
     <OrderDetailScreenWrapper className="page-py-spacing">
       <TouristNB />
+      { <TouristSideBar />}
       <Container style={{marginLeft:"-10px"}}>
       
         {/* <Breadcrumb items={breadcrumbItems} /> */}
