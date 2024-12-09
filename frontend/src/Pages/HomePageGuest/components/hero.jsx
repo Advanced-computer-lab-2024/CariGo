@@ -34,14 +34,14 @@ const Hero = () => {
 
     localStorage.setItem('s',"signUp")
     navigate(
-      "/signIn-Up"
+      "/login"
     );
   };  
   
   const navigateToLogIn = () => {
     localStorage.setItem('s',"signIn")
     navigate(
-      "/signIn-Up"
+      "/login"
     );
    // navigate("/login");
   };

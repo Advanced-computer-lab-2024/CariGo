@@ -165,13 +165,13 @@ function App() {
     <Route path="Tourist/order_detail/:id" element={<OrderDetailScreen />} />
           
         <Route path="/" element={<HomePageGuest />} /> {/* Default route */}
-        <Route path="/signIn-Up" element={<Sign />} /> 
+        <Route path="/login" element={<Sign />} /> 
         <Route path="/tourist/MyBookings" element={<MyBookings />} /> {/* Default route */}
         <Route path="/tourist/MyBookedActivities" element={<MyBookedActivities />} /> {/* Default route */}
         <Route path="/tourist/MyBookedTransportation" element={<MyBookedTransportation />} /> 
         <Route path="/tourist/MyBookedFlights" element={<MyBookedFlights />} /> 
         <Route path="/tourist/MyBookedHotels" element={<MyBookedHotels />} /> 
-        <Route path="/login" element={<LoginPage />} />
+        {/* <Route path="/login" element={<LoginPage />} /> */}
         <Route path="/how-to-use" element={<Demo />} />
 
         {/* <Route path="/choose-sign-up" element={<ChooseSignUp/>} /> */}

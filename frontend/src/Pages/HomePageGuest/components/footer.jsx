@@ -136,7 +136,7 @@ const Footer = () => {
           </Link>
         </li>
         <li style={menuItemStyle}>
-          <Link to="/SignIn-Up" style={menuLinkStyle}>
+          <Link to="/login" style={menuLinkStyle}>
             SignUp
           </Link>
         </li>
