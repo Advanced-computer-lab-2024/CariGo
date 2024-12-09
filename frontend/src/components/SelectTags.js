@@ -1,30 +1,10 @@
-
-
-import * as React from 'react';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import ListItemText from '@mui/material/ListItemText';
-import Select from '@mui/material/Select';
-import Checkbox from '@mui/material/Checkbox';
-
-const ITEM_HEIGHT = 30;
-const ITEM_PADDING_TOP = 2;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 150,
-      backgroundColor: 'rgba(233, 124, 255)',
-    },
-  },
-};
+import React, { useState, useEffect } from 'react';
+import { FormControl, InputLabel, Select, MenuItem, Box } from '@mui/material';
 
 export default function SelectTags({ tag = '', setTags }) {
-  const [names, setNames] = React.useState([]);
+  const [names, setNames] = useState([]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchTags = async () => {
       try {
         const response = await fetch('http://localhost:4000/Admin/getTags');
@@ -41,43 +21,28 @@ export default function SelectTags({ tag = '', setTags }) {
 
   const handleChange = (event) => {
     const selectedTag = event.target.value;
-    setTags(selectedTag); // Set the single selected tag
+    setTags(selectedTag);
   };
 
   return (
-    <div>
-      <FormControl sx={{ marginTop: '-18px', width: 300, height: 50, marginLeft: '-40px',backgroundColor:'white' }}>
-        <InputLabel id="demo-single-checkbox-label"
-          sx={{ fontSize: '14px', marginLeft: '40px', marginTop: '2px' }}
-        >
-         Tag 
-        </InputLabel>
+    <Box sx={{ minWidth: 120 }}>
+      <FormControl fullWidth>
+        <InputLabel id="tag-select-label">Tag</InputLabel>
         <Select
-          sx={{ scale: '0.65', borderRadius: '10px', marginLeft: '-15px' }}
-          labelId="demo-single-checkbox-label"
-          id="demo-single-checkbox"
+          labelId="tag-select-label"
+          id="tag-select"
           value={tag}
+          label="Tag"
           onChange={handleChange}
-          input={<OutlinedInput  />}
-          renderValue={(selected) => selected || 'Select a tag'}
-          MenuProps={MenuProps}
         >
           {names.map((name) => (
-            <MenuItem key={name} value={name}
-              sx={{
-                height: '25px',
-                maxWidth: '150px',
-                color: '#126782',
-                paddingLeft: '0px',
-                marginRight: "0px",
-                backgroundColor: 'white',
-              }}
-            >
+            <MenuItem key={name} value={name}>
               {name}
             </MenuItem>
           ))}
         </Select>
       </FormControl>
-    </div>
+    </Box>
   );
 }
+

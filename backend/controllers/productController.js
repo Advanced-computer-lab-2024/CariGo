@@ -102,7 +102,7 @@ const getTouristProducts = async (req, res) => {
     // Execute query with sorting, fallback to createdAt if no attributeToBeSorted
     const products = await Product.find(queryObj).sort(
       attributeToBeSorted ? "-ratingsAverage" : { createdAt: -1 }
-    );
+    ).populate("author"); // Fixed from ActivityModel to Activity
 
     // Send response
     res.status(200).json(products);

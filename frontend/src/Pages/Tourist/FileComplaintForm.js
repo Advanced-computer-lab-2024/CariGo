@@ -2,7 +2,10 @@ import React, { useState } from 'react';
 import axios from 'axios'; // Import axios for HTTP requests
 import { FaPencilAlt, FaStickyNote, FaCalendarAlt } from 'react-icons/fa';
 
-import ResponsiveAppBar from "./components/TouristNavBar";
+import {Box} from '@mui/material';
+import TouristNavBar from "./components/TouristNavBar";
+import TouristSideBar from "./components/TouristSideBar";
+
 const FileComplaintForm = () => {
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
@@ -41,8 +44,23 @@ const FileComplaintForm = () => {
   };
 
   return (
-    <>
-    <ResponsiveAppBar />
+       <Box sx={{ display: "flex", backgroundColor: "#f9f9f9", minHeight: "100vh" }}>
+    {/* Sidebar */}
+    <Box>
+      <TouristSideBar />
+    </Box>
+
+    {/* Main Content Area */}
+    <Box
+      sx={{
+        flexGrow: 1,
+        marginLeft: "80px", // Sidebar width
+        marginTop: "64px", // AppBar height
+        padding: "16px",
+      }}
+    >
+      {/* Top Navbar */}
+      <TouristNavBar />
     <div style={styles.container}>
       <h2 style={styles.heading}>File a Complaint</h2>
       <form onSubmit={handleSubmit} style={styles.form}>
@@ -84,7 +102,7 @@ const FileComplaintForm = () => {
       {successMessage && <p style={styles.successMessage}>{successMessage}</p>}
       {errorMessage && <p style={styles.errorMessage}>{errorMessage}</p>}
     </div>
-    </>
+    </Box></Box>
   );
 };
 

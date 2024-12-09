@@ -10,6 +10,7 @@ import OrderItemList from "./components/user/OrderItemList";
 import { useState,useEffect } from "react";
 import TouristNB from "../components/TouristNavBar";
 import vedio2 from "./sale.mp4"
+import TouristSideBar from "../components/TouristSideBar";
 const OrderListScreenWrapper = styled.div`
   .order-tabs-contents {
     margin-top: 40px;
@@ -195,10 +196,11 @@ const OrderListScreen = () => {
   return (
     <OrderListScreenWrapper className="page-py-spacing">
       <TouristNB />
-      <Container style={{marginTop:"0px",marginLeft:"-10px"}}>
+      <TouristSideBar />
+      <Container style={{marginTop:"70px",marginLeft:"50px"}}>
         {/* <Breadcrumb items={breadcrumbItems} /> */}
         <UserDashboardWrapper>
-          <UserMenu />
+          <UserMenu type="order"/>
           <UserContent style={{marginLeft:"50px"}}>
             { <Title titleText={"Your Orders"} />}
             <div className="order-tabs">
@@ -231,7 +233,7 @@ const OrderListScreen = () => {
 
               <div className="order-tabs-contents">
                 <div className="order-tabs-content" id="active">
-                    {ord && <OrderItemList orders = {ord}  cancelledOnly={cancelled} completed={completed} active={active}/>}
+                    {ord && <OrderItemList orders = {ord}  cancelledOnly={cancelled} completed={completed} active={active} type={'order'}/>}
                 </div>
                 
               </div>

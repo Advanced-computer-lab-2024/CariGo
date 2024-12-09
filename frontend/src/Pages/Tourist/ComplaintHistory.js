@@ -2,7 +2,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import ComplaintCard from "./components/ComplaintCard";
-import ResponsiveAppBar from "./components/TouristNavBar";
+import {Box} from '@mui/material';
+import TouristNavBar from "./components/TouristNavBar";
+import TouristSideBar from "./components/TouristSideBar";
 const ComplaintHistory = () => {
   const [complaints, setComplaints] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -38,8 +40,24 @@ const ComplaintHistory = () => {
   if (!complaints.length) return <div>No complaints found</div>;
 
   return (
-    <>
-      <ResponsiveAppBar />
+    <Box sx={{ display: "flex", backgroundColor: "#f9f9f9", minHeight: "100vh" }}>
+    {/* Sidebar */}
+    <Box>
+      <TouristSideBar />
+    </Box>
+
+    {/* Main Content Area */}
+    <Box
+      sx={{
+        flexGrow: 1,
+        marginLeft: "80px", // Sidebar width
+        marginTop: "64px", // AppBar height
+        padding: "16px",
+      }}
+    >
+      {/* Top Navbar */}
+      <TouristNavBar />
+
       <div>
         {complaints.map((complaint) => (
           <ComplaintCard
@@ -52,7 +70,7 @@ const ComplaintHistory = () => {
           />
         ))}
       </div>
-    </>
+      </Box></Box>
   );
 };
 

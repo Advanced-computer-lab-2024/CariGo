@@ -3,11 +3,21 @@ import { useParams } from "react-router-dom";
 import { Box, Typography, Chip, Avatar } from "@mui/material";
 import PinDropIcon from "@mui/icons-material/PinDrop";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-import ResponsiveAppBar from "./Tourist/components/TouristNavBar";
+import TouristNavBar from "./Tourist/components/TouristNavBar.js";
+import GuestNavBar from "./Tourist/components/GuestNavBar";
+import GuestSideBar from "./Tourist/components/GuestSideBar";
+import TouristSideBar from "./Tourist/components/TouristSideBar";
 
 const UserVintageDetails = () => {
   const { id } = useParams(); // Get the vintage ID from the URL
   const [vintage, setVintage] = useState(null);
+  const token = localStorage.getItem('jwt');
+  const [tourist,setTourist]= useState(false);
+
+  
+  if(token){
+    setTourist(true);
+  }
 
   useEffect(() => {
     const fetchVintageDetails = async () => {
@@ -66,8 +76,24 @@ const UserVintageDetails = () => {
   const conversionRate = localStorage.getItem("conversionRate")||1;
   const code = localStorage.getItem("currencyCode")||"EGP";
   return (
-    <div>
-      <ResponsiveAppBar />
+    <Box sx={{ display: "flex", backgroundColor: "#f9f9f9", minHeight: "100vh" }}>
+    {/* Sidebar */}
+    <Box>
+      {!tourist ? <GuestSideBar /> : <TouristSideBar />}
+    </Box>
+
+    {/* Main Content Area */}
+    <Box
+      sx={{
+        flexGrow: 1,
+        marginLeft: "80px", // Sidebar width
+        marginTop: "64px", // AppBar height
+        padding: "16px",
+      }}
+    >
+      {/* Top Navbar */}
+      {!tourist ? <GuestNavBar /> : <TouristNavBar />}
+
       <Box sx={{ padding: "20px", maxWidth: "1200px", margin: "auto" }}>
         <Box
           sx={{
@@ -142,7 +168,8 @@ const UserVintageDetails = () => {
           </Box>
         </div>
       </Box>
-    </div>
+      </Box>
+      </Box>
   );
 };
 

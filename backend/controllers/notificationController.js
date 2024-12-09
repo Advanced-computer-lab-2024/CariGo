@@ -6,6 +6,7 @@ const Itinerary = require("../models/Itinerary");
 const Product = require("../models/Product");
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
+const PromoCode = require("../models/PromoCode"); // Adjust the path as necessary
 
 exports.sendNotification = async (
   userId,
@@ -232,5 +233,21 @@ exports.checkProductStock = async (productId) => {
   const product = await Product.findById(productId);
   if (product && product.quantity === 0) {
     await this.sendOutOfStockNotification(productId);
+  }
+};
+
+exports.sendPromoCodeNotification = async (UserId,promoCodeId) => {
+  const user = await User.findById(UserId);
+  const promo_code= await PromoCode.findById(promoCodeId);
+  if (user && promo_code) {
+    console.log("sendPromoCodeNotification in");
+    const message = `Happy Birthday! 🎉 Use this promo code to celebrate your day with us! "${promo_code.code}" please use it before ${promo_code.expirationDate.toDateString()}`;
+      await this.sendNotification(
+        UserId,
+        message,
+        "promo_code",
+        promoCodeId,
+        "PromoCode"
+      );
   }
 };

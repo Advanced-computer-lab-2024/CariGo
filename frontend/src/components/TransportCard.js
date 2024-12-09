@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useState,useEffect} from "react";
 import { useNavigate } from 'react-router-dom';
 import { Box ,Typography,Card,Button,Divider,Link} from "@mui/material";
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
@@ -10,6 +10,12 @@ import SellIcon from '@mui/icons-material/Sell';
 import AcUnitIcon from '@mui/icons-material/AcUnit';
 import CallIcon from '@mui/icons-material/Call';
 import NumbersIcon from '@mui/icons-material/Numbers';
+import axios from "axios";
+import BookingPaymentPopUp from "../Pages/Tourist/components/BookingPaymentPopUp";
+import { jwtDecode } from "jwt-decode";
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+const stripePromise = loadStripe('pk_test_51QLoL4AkXvwFjwTIX8acMj27pC8YxdOhmoUzn0wbUhej1xUFgFlfgYtXRGmggbKUI6Yfpxz08i9shcsfszv6y9iP0007q608Ny'); // Publishable key
 
 
 const TransportCard = ({Transportation}) =>{
@@ -18,6 +24,35 @@ const TransportCard = ({Transportation}) =>{
   const departureLocStr=Transportation.departureLocation.description;
   const arrival= Transportation.arrivalTime;
   const arrivalLocStr=Transportation.arrivalLocation.description;
+  const [user, setUser] = useState();
+  const [token,setToken] = useState(localStorage.getItem('jwt'));
+  const navigate = useNavigate();
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const token = localStorage.getItem("jwt");
+        const id = jwtDecode(token).id;
+  
+        const response = await axios.get(
+          `http://localhost:4000/cariGo/users/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+          
+        console.log("API Response Data:", response.data); // Logs the fetched data
+        setUser(Object.assign({}, response.data));
+      } catch (err) {
+        console.error("Error fetching profile:", err);
+      }
+    };
+   
+    fetchUser();
+    }, []);
+  
+    const [isPaymentPopupOpen, setIsPaymentPopupOpen] = useState(false);
   
     const formatDuration = (duration) => {
       if (!duration) return ""; // Handle cases where duration might be undefined
@@ -47,10 +82,46 @@ const TransportCard = ({Transportation}) =>{
       // After the user is done viewing the map, use navigate(-1) to go back to the previous page
         // This acts like history.goBack()
     };
-    const navigate = useNavigate();
     const handleBook=() =>{
-      navigate(`/checkout/transportation/${Transportation._id}`);
+      //navigate(`/checkout/transportation/${Transportation._id}`);
+      if (token){
+        setIsPaymentPopupOpen(true);
+      }
+        
+      else navigate(`/login`);
     }
+    const handlePlaceOrder = async (paymentMethod,TotalPrice,NumberOfTickets) => {
+      // setLoading(true);
+      try {
+        const token = localStorage.getItem("jwt");
+        if (!token) {
+          throw new Error("No token found. Please log in.");
+        }
+        
+  
+        const endpoint = `http://localhost:4000/cariGo/Transportation/BookTransportation/${Transportation._id}`;
+  
+        // const payload = 
+        console.log(paymentMethod,TotalPrice,NumberOfTickets)
+        const response = await axios.post(endpoint, {
+          PaymentMethod:paymentMethod,
+          TotalPrice:TotalPrice,
+          NumberOfTickets:NumberOfTickets
+        }, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+  
+        if (response.data) {
+          navigate("Tourist/book/transportation");
+        }
+      } catch (error) {
+        console.error("Error during booking:", error);
+        // setError(error.response?.data?.error || 'Booking failed');
+      }
+    };
 const rate = localStorage.getItem("conversionRate")|| 1;
   return (
     <Card variant="outlined"  sx={{
@@ -190,7 +261,25 @@ const rate = localStorage.getItem("conversionRate")|| 1;
       <Button onClick={handleBook}
       sx={{color:'white',  backgroundColor:'#ff4d4d', borderRadius:'5px',fontSize:'17px',
         position:'absolute' ,right:'-10px', bottom:'-5px',width:'70px',height:'40px'}} 
-      >Book</Button> 
+      >Book
+        </Button>
+        <Elements stripe={stripePromise}>
+           {isPaymentPopupOpen && (
+            <BookingPaymentPopUp
+              open={isPaymentPopupOpen}
+              onClose={() => setIsPaymentPopupOpen(false)}
+              checkoutCart={handlePlaceOrder}
+              amount={(Transportation.price * rate).toFixed(2)}
+              user={user}
+              itineraryName={`${Transportation.carType} number ${Transportation.plateNumber}`} 
+              startDate={Transportation.date}
+              endDate={Transportation.date}
+              departureTime={`${Transportation.departureTime.hours}:${Transportation.departureTime.minutes}:${Transportation.departureTime.dayTime}`}
+              arrivalTime={`${Transportation.arrivalTime.hours}:${Transportation.arrivalTime.minutes}:${Transportation.arrivalTime.dayTime}`}
+              type={true}
+            />
+          )}
+        </Elements>
       </Box>
 
       </Box>

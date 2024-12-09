@@ -2,6 +2,7 @@ const User = require("../models/User.js");
 const mongoose = require("mongoose");
 const productModel = require("../models/Product.js");
 const PromoCode = require("../models/PromoCode"); // Adjust the path as necessary
+const notificationController = require("../controllers/notificationController");
 
 // get all users
 const getUsers = async (req, res) => {
@@ -170,6 +171,7 @@ const birthDayPromoCode = async () => {
         });
 
         console.log("Message sent to %s: %s", user.email, info.messageId);
+        await notificationController.sendPromoCodeNotification(user._id, promoCode._id);
       }
     }
     console.log({ message: "promo code sent successfully." });

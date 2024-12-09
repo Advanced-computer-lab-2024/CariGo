@@ -7,8 +7,10 @@ import TopBar from "./TopBar.jsx";
 
 const CreatePromoCode = () => {
   const [form] = Form.useForm();
+
   const token = localStorage.getItem("jwt");
   const navigate = useNavigate();
+
 
   const handleSubmit = async (values) => {
     try {
@@ -100,7 +102,6 @@ const CreatePromoCode = () => {
                   style={{ width: "100%" }}
                 />
               </Form.Item>
-
               <Form.Item
                 label="Expiration Date"
                 name="expirationDate"

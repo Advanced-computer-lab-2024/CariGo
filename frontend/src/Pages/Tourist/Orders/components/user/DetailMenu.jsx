@@ -5,6 +5,10 @@ import vedio from "../../orders.mp4";
 import blackD from "../../black.mp4";
 import { useState } from "react";
 import vedio2 from "../../orderD.mp4";
+import vedio3 from "../../orders.mp4";
+import vedio4 from "../../orderD.mp4";
+import giraffe from "../../black.mp4";
+
 import { BaseLinkGreen } from "../../styles/button";
 import { breakpoints, defaultTheme } from "../../styles/themes/default";
 
@@ -70,7 +74,7 @@ const NavMenuWrapper = styled.nav`
   }
 `;
 
-const DetailMenu = () => {
+const DetailMenu = (type) => {
   const [username, setUsername] = useState(localStorage.getItem('username'))
   const location = useLocation();
   const handleCancel = ()=>{
@@ -93,7 +97,7 @@ const DetailMenu = () => {
     width="100%" 
     style={{ borderRadius: "1px", boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)" }}
   >
-    <source src={vedio} type="video/mp4" />
+    <source src={type==="order"? vedio: vedio4} type="video/mp4" />
     
     Your browser does not support the video tag.
   </video>
@@ -111,7 +115,7 @@ const DetailMenu = () => {
     width="100%" 
     style={{ borderRadius: "1px", boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)" }}
   >
-    <source src={vedio2} type="video/mp4" />
+    <source src={type=="order"?vedio2:vedio3} type="video/mp4" />
     
     Your browser does not support the video tag.
   </video>
@@ -129,7 +133,7 @@ const DetailMenu = () => {
     width="100%" 
     style={{ borderRadius: "1px", boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)" }}
   >
-    <source src={blackD} type="video/mp4" />
+    <source src={type=="order"?blackD :giraffe} type="video/mp4" />
     
     Your browser does not support the video tag.
   </video>

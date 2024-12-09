@@ -221,7 +221,7 @@ const getActivitiesByIds = async (req, res) => {
     const activityIds = ids.split(',');
 
     // Fetch activities based on the provided IDs
-    const activities = await Activity.find({ '_id': { $in: activityIds } });
+    const activities = await Activity.find({ '_id': { $in: activityIds } }).populate('tag').populate('author');
 
     if (!activities || activities.length === 0) {
       return res.status(404).json({ message: "Activities not found" });
@@ -445,17 +445,18 @@ const updateActivity = async (req, res) => {
       {...otherFields, ...req.body },
       { new: true }
     );
-
+    console.log("in1????")
     if (!updatedActivity) {
       return res.status(404).json({ message: "Activity not found" });
     }
-
+    console.log("in2????")
     if(req.body.isFlagged){
       if(req.body.isFlagged === true){
-        await notificationController.sendFlaggedContentNotification(updateActivity.author, id, 'Activity' , updateActivity.title);
+        console.log("in the if statement????")
+        await notificationController.sendFlaggedContentNotification(updatedActivity.author, id, 'Activity' , updatedActivity.title);
       }
     }
-
+    console.log("in3????")
     res.status(200).json(updatedActivity);
   } catch (error) {
     res.status(500).json({ message: "Error updating Activity", error });

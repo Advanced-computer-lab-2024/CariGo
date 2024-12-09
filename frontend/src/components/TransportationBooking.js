@@ -7,6 +7,8 @@ import dayjs from 'dayjs';
 import {Box,Button,Typography,Link,List,ListItem,ClickAwayListener,Menu,MenuItem,TextField,InputAdornment,CircularProgress} from "@mui/material";
 import TransportCardList from "./TransportCardList";
 import MyMapComponent from './Map.js';
+import gif from "../Pages/image/deerWalkinggif.gif";
+
 
 export default function TransportBooking(){
   const [departureLocation, setDepartureLocation] = useState(() => {
@@ -44,15 +46,21 @@ export default function TransportBooking(){
     // };
 
     const [isLoading, setIsLoading] = useState(false);
+    const [showLoadingGif, setShowLoadingGif] = useState(false); 
+
     const[error, setError] = useState("");
   
-        
+    
     // Function to handle the search button click
     const handleSearchClick = async () => {
+      setShowLoadingGif(true); // Update 3: Added this line
+      setIsLoading(true);
        //to reset scroll bar position on new search
        if (sessionStorage.getItem('scrollPosition')) {
         sessionStorage.setItem('scrollPosition',0)
       }
+      setShowLoadingGif(false);
+
 
       const queryParams = new URLSearchParams({
         depLon: departureLocation.lng,
@@ -86,8 +94,9 @@ export default function TransportBooking(){
           setError("no Transportaions available");
       }
       finally {
-        console.log('fetched transports',transports);    
+        // console.log('fetched transports',transports);    
         setIsLoading(false);
+        setShowLoadingGif(true);
       }
     };
 
@@ -185,21 +194,51 @@ export default function TransportBooking(){
             </Box >
       
                {/* Render HotelCard if hotels are available */}
-               <Box sx={{padding:"20px", marginLeft:"10%" , overflow:'auto',marginTop:'4%',}}>
-              {isLoading ? (
-                      <CircularProgress sx={{ color: '#126782', margin: '70px' }} />
-                    ) : (
-                      transports ? (
-                        transports.length > 0 ? (
-                          <TransportCardList transports={transports} />
-                        ) : (
-                          <Typography color="#126782" variant="h6" sx={{ textAlign: 'center', mt: 4 , marginTop:'60px'}}>{error}</Typography>
-                        )
-                      ) : (
-                        <Typography color="#126782" variant="h6" sx={{ textAlign: 'center', mt: 4 , marginTop:'60px'}}>{error}</Typography>
-                      )
-                    )}
-                </Box>
+               <>
+        {((!showLoadingGif&&!isLoading) || (!isLoading && transports.length === 0)) ? ( 
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "200px",
+                width: "100%",
+              }}
+            >
+              <div
+                className="absolute inset-0 flex flex-col items-start justify-center"
+                style={{ transform: "translateY(80px) translateX(905px)" }}
+              >
+                <img
+                  src={gif}
+                  alt="Loading"
+                  width="130"
+                  height="130"
+                  style={{
+                    transform: "translateX(70px)",
+                    maxWidth: "100%",
+                    maxHeight: "100%",
+                  }}
+                />
+                <h2 className="bg-gradient-to-r from-[#004e89] via-[#004e89] to-[#004e89] bg-clip-text text-2xl font-semibold text-transparent">
+                  ____________________________
+                </h2>
+              </div>
+            </Box>
+          ) : isLoading ? (
+            <CircularProgress sx={{ color: "#126782", margin: "70px" }} />
+          ) : (
+            transports ? (
+              transports.length > 0 ? (
+                <TransportCardList transports={transports} />
+              ) : (
+                <Typography color="#126782" variant="h6" sx={{ textAlign: 'center', mt: 4 , marginTop:'60px'}}>{error}</Typography>
+              )
+            ) : (
+              <Typography color="#126782" variant="h6" sx={{ textAlign: 'center', mt: 4 , marginTop:'60px'}}>{error}</Typography>
+            )
+          )}
+        </>
             </Box>
           </LocalizationProvider>
           

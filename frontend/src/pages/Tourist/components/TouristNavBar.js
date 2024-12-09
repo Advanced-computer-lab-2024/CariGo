@@ -20,8 +20,29 @@ import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
 import axios from "axios";
 import Badge from '@mui/material/Badge';
 import { UserOutlined, BellOutlined, MessageOutlined, CheckCircleOutlined, WarningOutlined } from '@ant-design/icons'; // Import the icons
-import BookmarkBorderOutlinedIcon from '@mui/icons-material/BookmarkBorderOutlined';
-import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
+import { 
+  Notifications as NotificationIcon, 
+  Favorite as FavoriteIcon, 
+  Bookmark as BookmarkIcon, 
+  // Edit as EditIcon, 
+  // ArrowBack as ArrowBackIcon,
+  // Delete as DeleteIcon
+} from '@mui/icons-material';
+import { ListItemIcon } from '@mui/material';
+
+import { useTheme } from '@mui/material/styles';
+import {
+  Flag as FlagIcon,
+  EventAvailable as EventAvailableIcon,
+  Event as EventIcon,
+  Inventory as InventoryIcon,
+  LocalOffer as LocalOfferIcon,
+} from '@mui/icons-material';
+// import { Menu, MenuItem } from '@mui/material';
+
+
+
+
 
 const pages = [
   "Suggested For You",
@@ -34,6 +55,17 @@ const pages = [
 const settings = ["My Profile", "Logout", "Change Password"];
 
 function TouristNB() {
+  const [anchorEl2, setAnchorEl2] = React.useState(null);
+  const handleMenuOpen2 = (event) => {
+    setAnchorEl2(event.currentTarget);
+  };
+  const handleMenuClose2 = () => {
+    setAnchorEl2(null);
+  };
+  const isMenuOpen = Boolean(anchorEl2);
+
+
+  const theme = useTheme();
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const [anchorElBookings, setAnchorElBookings] = React.useState(null);
@@ -41,15 +73,48 @@ function TouristNB() {
   const [anchorElComplaints, setAnchorElComplaints] = React.useState(null); // Complaints menu state
   const [anchorElNotifications, setAnchorElNotifications] = useState(null); // Notification menu anchor
   const [notifications, setNotifications] = useState([]);
+  const [unReadNotifications, setUnReadNotifications] = useState([]);
+  const [sortedNotifications, setSortedNotifications] = useState([]);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
 
   useEffect(() => {
+    const fetchUnReadNotifications = async () => {
+      try {
+        const token = localStorage.getItem('jwt');
+        const response = await axios.get('http://localhost:4000/cariGo/notifications/unread', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setUnReadNotifications(response.data.data.notifications); // Update state
+        return response.data.data.notifications; // Return unread notifications
+      } catch (error) {
+        console.error('Error fetching unread notifications:', error);
+      }
+    }
     const fetchNotifications = async () => {
       try {
         const token = localStorage.getItem('jwt');
+        const unReadNotifications = await fetchUnReadNotifications();
         const response = await axios.get('http://localhost:4000/cariGo/notifications/', {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setNotifications(response.data.data.notifications);
+
+        // Fetch all notifications
+        const allNotifications = response.data.data.notifications;
+
+        // Filter to get only the read notifications
+        const readNotifications = allNotifications.filter(
+          (notification) =>
+            !unReadNotifications.some((unread) => unread._id === notification._id) // Adjust "id" to your unique key
+        );
+
+        setNotifications(readNotifications);
+
+        // Combine unread and read notifications (unread first)
+        const sortedArray = [...unReadNotifications, ...readNotifications];
+
+        // Set the sorted notifications
+        setSortedNotifications(sortedArray);
       } catch (error) {
         console.error('Error fetching notifications:', error);
       }
@@ -66,10 +131,43 @@ function TouristNB() {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      // Update state to remove the marked notification
-      setNotifications((prev) => prev.filter((notification) => notification._id !== id));
+      // Update state to remove the marked notification from unread notifications
+      setUnReadNotifications((prev) => prev.filter((notification) => notification._id !== id));
+
+      // Move the notification to the readNotifications list (you can find it in the sortedNotifications)
+      const updatedSortedNotifications = sortedNotifications.map((notification) =>
+        notification._id === id
+          ? { ...notification, isRead: true } // Mark as read by setting `isRead` to true
+          : notification
+      );
+
+      setSortedNotifications(updatedSortedNotifications);
+
+      // Optionally, if you want to update only `readNotifications` (in case you separate them out)
+      const updatedReadNotifications = updatedSortedNotifications.filter(
+        (notification) => notification.isRead
+      );
+
+      setNotifications(updatedReadNotifications);
     } catch (error) {
       console.error('Error marking notification as read:', error);
+    }
+  };
+
+  const getIcon = (type) => {
+    switch (type) {
+      case 'flagged_content':
+        return <FlagIcon style={{ color: 'red' }} />;
+      case 'booking_opened':
+        return <EventAvailableIcon style={{ color: 'green' }} />;
+      case 'upcoming_event':
+        return <EventIcon style={{ color: 'blue' }} />;
+      case 'out_of_stock':
+        return <InventoryIcon style={{ color: 'orange' }} />;
+      case 'promo_code':
+        return <LocalOfferIcon style={{ color: 'ff683c' }} />;
+      default:
+        return <NotificationIcon style={{ color: 'gray' }} />;
     }
   };
 
@@ -98,21 +196,33 @@ function TouristNB() {
   const handleOpenNotifications = (event) => {
     setAnchorElNotifications(event.currentTarget);
   };
+
   const handleCloseNotifications = () => {
     setAnchorElNotifications(null);
+  };
+  
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
   };
   const handleWishlist=()=>{
     navigate("/wishlist")
   }
+  const handleBookmark=()=>{
+    navigate("/tourist/BookmarkedItineraries")
+  }
 
-  const getIcon = (type) => {
-    switch (type) {
-      case 'success': return <CheckCircleOutlined style={{ color: 'green' }} />;
-      case 'warning': return <WarningOutlined style={{ color: 'orange' }} />;
-      case 'info': return <MessageOutlined style={{ color: 'blue' }} />;
-      default: return <BellOutlined />;
-    }
-  };
+  // const getIcon = (type) => {
+  //   switch (type) {
+  //     case 'success': return <CheckCircleOutlined style={{ color: 'green' }} />;
+  //     case 'warning': return <WarningOutlined style={{ color: 'orange' }} />;
+  //     case 'info': return <MessageOutlined style={{ color: 'blue' }} />;
+  //     default: return <BellOutlined />;
+  //   }
+  // };
 
   // Navigation functions
   const loadSuggestedForYou = () => {
@@ -227,222 +337,184 @@ function TouristNB() {
 
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: "#004c74" , padding:'0.5%' ,}}>
-      <Container maxWidth="xl">
-        <Toolbar disableGutters>
+    <AppBar 
+    position="sticky" 
+    sx={{ 
+      backgroundColor: "#004E89", 
+      height: '60px', 
+      minHeight: '60px',
+      top: 0, // Explicitly set to top of the viewport
+      justifyContent: 'center',
+      position: 'fixed', // Try fixed instead of sticky
+      padding:'0.5%' ,
+      top: 0,
+      left: 0,
+      right: 0,
+      zIndex: 1200, 
+      
+    }}
+    
+  >
+
+      <Toolbar disableGutters variant="dense">
+
+     
+    <Container maxWidth="xl">
+
+      <Toolbar sx={{ display: 'flex',  height: '55px', minHeight: '63px', justifyContent: 'space-between', alignItems: 'center' }}>
+        {/* Logo and Name */}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <Avatar
             alt="Logo"
             src={logoImage}
-            sx={{ width: 40, height: 40, mr: 2 }}
+            sx={{ width: 40, height: 40 }}
           />
-          <Typography
-            variant="h6"
-            noWrap
-            component={Link}
-            to="/tgHome"
-            sx={{
-              mr: 2,
-              display: { xs: "none", md: "flex" },
-              fontFamily: "monospace",
-              fontWeight: 700,
-              letterSpacing: ".3rem",
-              color: "inherit",
-              textDecoration: "none",
-            }}
-          >
-            CariGO
-          </Typography>
-
-          {/* Mobile Menu */}
-          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
-            <IconButton
-              size="large"
-              aria-label="open navigation menu"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleOpenNavMenu}
-              color="inherit"
-            >
-              <MenuIcon />
-            </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorElNav}
-              anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-              keepMounted
-              transformOrigin={{ vertical: "top", horizontal: "left" }}
-              open={Boolean(anchorElNav)}
-              onClose={handleCloseNavMenu}
-              sx={{ display: { xs: "block", md: "none" } }}
-            >
-              {pages.map((page, index) => (
-                <MenuItem key={index} onClick={handleCloseNavMenu}>
-                  <Typography sx={{ textAlign: "center" }}>{page}</Typography>
-                </MenuItem>
-              ))}
-              {/* Bookings Dropdown in Mobile View */}
-              <MenuItem onClick={handleOpenBookingsMenu}>
-                <Typography sx={{ textAlign: "center" }}>Bookings</Typography>
-              </MenuItem>
-            
-            </Menu>
-          </Box>
-
-          {/* Desktop Menu */}
-          <Box sx={{ flexGrow: 1, display:'flex',}}>
-            {/* main options box */}
-            <Box sx={{display:'flex', marginBottom:'-2.5%', marginTop:'0%',width:'80%' }}>
-            <Button
-              onClick={loadSuggestedForYou}
-              sx={{ 
-                my: 2, color: "white", display: "block" ,
-                transition: "all 0.3s ease",
-                fontSize:'15px',
-                "&:hover": {
-                  fontSize: "16px",
-                  paddingLeft: "1%", 
-                  paddingRight:'1%',
-                },
-              }}
-            >
-              {pages[0]}
-            </Button>
-            <Button
-              onClick={loadActivities}
-              sx={{ 
-                my: 2, color: "white", display: "block" ,
-                transition: "all 0.3s ease", 
-                fontSize:'15px',
-                "&:hover": {
-                  fontSize: "16px",
-                  //paddingLeft: "1%", 
-                  paddingRight:'1%',
-                },
-              }}
-            >
-              {pages[1]}
-            </Button>
-            <Button
-              onClick={loadItinerary}
-              sx={{ 
-                my: 2, color: "white", display: "block" ,
-                transition: "all 0.3s ease",
-                fontSize:'15px',
-                "&:hover": {
-                  fontSize: "16px",
-                  paddingLeft: "1%", 
-                  paddingRight:'1%',
-                },
-              }}
-            >
-              {pages[2]}
-            </Button>
-            <Button
-              onClick={loadHistoricalPlaces}
-              sx={{ 
-                my: 2, color: "white", display: "block" ,
-                transition: "all 0.3s ease",
-                fontSize:'15px',
-                "&:hover": {
-                  fontSize: "16px",
-                  paddingLeft: "1%", 
-                  paddingRight:'1%',
-                },
-              }}
-            >
-              {pages[3]}
-            </Button>
-            <Button
-              onClick={loadProducts}
-              sx={{ 
-                my: 2, color: "white", display: "block" ,
-                transition: "all 0.3s ease", 
-                fontSize:'15px',
-                "&:hover": {
-                  fontSize: "16px",
-                  paddingLeft: "1%", 
-                  paddingRight:'1%',
-                },
-              }}
-            >
-              {pages[4]}
-            </Button>
-            {/* Bookings Dropdown in Desktop View */}
-            {/* <Box> */}
-              <Button
-                onClick={loadBookServices}
-                className={Boolean(anchorElBookings) ? "menu-open" : ""} // Add a class if menu is open
-                sx={{ 
-                  my: 2, color: "white", display: "block" ,
-                  transition: "all 0.3s ease", 
-                  fontSize:'15px',
-                  "&:hover ": {
-                    fontSize: "16px",
-                    paddingLeft: "1%", 
-                    paddingRight:'1%',
-                  },
-                }}
-              >
-                Book Services
-              </Button>
-              
-            </Box>
-          </Box>
-          {/* </Box> */}
-          {/* end of main options box */}
-
-            {/* Notification Icon */}
-          {/* Icons Section */}
-        <Box sx={{ display: 'flex', alignItems: 'center', marginRight: 2 }}>
-          {/* Favorite Icon */}
-          <IconButton
-            size="large"
-            aria-label="show favorites"
-            color="inherit"
-            onClick={handleWishlist}
-            sx={{ marginRight: 1 }}
-          >
-            <FavoriteBorderOutlinedIcon sx={{ fontSize: '33px', color: 'white' }} />
-          </IconButton>
-
-          {/* Bookmark Icon */}
-          <IconButton
-            size="large"
-            aria-label="show bookmarks"
-            color="inherit"
-            sx={{ marginRight: 1 }}
-          >
-            <BookmarkBorderOutlinedIcon sx={{ fontSize: '33px', color: 'white' }} />
-          </IconButton>
-
-          {/* Notification Icon */}
-          <IconButton
-            size="large"
-            aria-label="show notifications"
-            aria-controls="notification-menu"
-            aria-haspopup="true"
-            onClick={handleOpenNotifications}
-            color="inherit"
-          >
-            <Badge
-              badgeContent={notifications.length}
-              color="error"
-              sx={{
-                '& .MuiBadge-badge': {
-                  right: 1.5,
-                  top: 10,
-                  fontSize: '0.75rem',
-                  minWidth: '16px',
-                  height: '16px',
-                  borderRadius: '50%',
-                },
-              }}
-            >
-              <BellOutlined style={{ fontSize: '33px', color: 'white', marginRight: '1px' }} />
-            </Badge>
-          </IconButton>
+         <Typography
+variant="h6"
+noWrap
+component={Link}
+to="/tgHome"
+sx={{
+  fontFamily: "Poppins, sans-serif",
+  fontWeight: 700,
+  fontSize: "1.5rem",
+  letterSpacing: ".2rem",
+  background: "linear-gradient(90deg, #C0754D, #D59D80)",
+  WebkitBackgroundClip: "text",
+  WebkitTextFillColor: "transparent",
+  textDecoration: "none",
+  "&:hover": {
+    color: "#C6C6D0",
+  },
+}}
+>
+CariGo
+</Typography>
         </Box>
 
+        {/* Icons */}
+        <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+{/* Favorite Icon */}
+<IconButton
+  size="medium"
+  aria-label="show favorites"
+  color="inherit"
+  sx={{
+    marginRight: 1,
+    "&:hover": {
+      color: "#D59D80", // Hover color for icon
+      transform: "scale(1.1)", // Slight zoom effect
+      transition: "all 0.3s ease",
+    },
+  }}
+  onClick={handleWishlist}
+>
+  <FavoriteIcon sx={{ fontSize: "33px", color: "white" }} />
+</IconButton>
+
+{/* Bookmark Icon */}
+<IconButton
+  size="medium"
+  aria-label="show bookmarks"
+  color="inherit"
+  sx={{
+    marginRight: 0.5,
+    "&:hover": {
+      color: "#D59D80",
+      transform: "scale(1.1)",
+      transition: "all 0.3s ease",
+    },
+  }}
+  // onClick={handleBookmark}
+  onClick={handleMenuOpen2}
+>
+
+
+  <BookmarkIcon sx={{ fontSize: "33px", color: "white" }} />
+</IconButton>
+<Menu
+  anchorEl={anchorEl2}
+  open={isMenuOpen}
+  onClose={handleMenuClose2}
+  PaperProps={{
+    style: { padding: 0, marginTop: 10 },
+  }}
+>
+  <MenuItem onClick={() => { handleMenuClose2(); navigate("/tourist/BookmarkedItineraries")/* Add itineraries function here */ }}>
+    Itineraries
+  </MenuItem>
+  <MenuItem onClick={() => { handleMenuClose2(); navigate("/tourist/BookmarkedActivities")/* Add activities function here */ }}>
+    Activities
+  </MenuItem>
+</Menu>
+
+{/* Notification Icon */}
+<IconButton
+  size="medium"
+  aria-label="show notifications"
+  aria-controls="notification-menu"
+  aria-haspopup="true"
+  onClick={handleOpenNotifications}
+  color="inherit"
+  sx={{
+    "&:hover": {
+      color: "#D59D80",
+      transform: "scale(1.1)",
+      transition: "all 0.3s ease",
+    },
+  }}
+>
+  <Badge
+    badgeContent={unReadNotifications.length}
+    color="error"
+    sx={{
+      "& .MuiBadge-badge": {
+        right: 1.5,
+        top: 10,
+        fontSize: "0.75rem",
+        minWidth: "16px",
+        height: "16px",
+        borderRadius: "50%",
+        backgroundColor: "#C0754D", // Custom badge color
+        color: "white",
+      },
+    }}
+  >
+    <NotificationIcon
+      style={{ fontSize: "33px", color: "white", marginRight: "10px" }}
+    />
+  </Badge>
+</IconButton>
+
+{/* User Settings */}
+
+<UserBadge userId={userId} size= "100px"/>
+
+<Tooltip title="Profile">
+<IconButton
+  href="/tourist-profile"
+  sx={{
+    p: 0,
+    "&:hover": {
+      transform: "rotate(10deg)", // Slight rotate effect
+      transition: "all 0.3s ease",
+    },
+  }}
+>
+   {/* User Badge */}
+  <Avatar
+    alt="User Avatar"
+    sx={{
+      width: 35,
+      height: 35,
+      border: "2px solid #f7e1c6", // Light cream accent border
+      "&:hover": {
+        boxShadow: "0 4px 8px rgba(0,0,0,0.3)", // Add a shadow effect
+      },
+    }}
+  />
+</IconButton>
+</Tooltip>
 
 <Menu
   id="notification-menu"
@@ -452,56 +524,79 @@ function TouristNB() {
   transformOrigin={{ vertical: 'top', horizontal: 'right' }}
   open={Boolean(anchorElNotifications)}
   onClose={handleCloseNotifications}
-  sx={{
-    mt: 1,
-    boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)', // Soft shadow
-    borderRadius: '8px', // Rounded corners
-    overflow: 'hidden',
-    minWidth: '300px', // Ensure a consistent width
+  PaperProps={{
+    elevation: 0,
+    sx: {
+      overflow: 'visible',
+      filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+      mt: 1.5,
+      '& .MuiAvatar-root': {
+        width: 32,
+        height: 32,
+        ml: -0.5,
+        mr: 1,
+      },
+      '&:before': {
+        content: '""',
+        display: 'block',
+        position: 'absolute',
+        top: 0,
+        right: 14,
+        width: 10,
+        height: 10,
+        bgcolor: 'background.paper',
+        transform: 'translateY(-50%) rotate(45deg)',
+        zIndex: 0,
+      },
+    },
   }}
 >
-  {notifications.length > 0 ? (
-    notifications.map((notification) => (
+  {sortedNotifications.length > 0 ? (
+    sortedNotifications.map((notification) => (
       <MenuItem
         key={notification._id}
         sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          py: 1, // Padding for better spacing
-          gap: 2, // Space between the icon and message
-          borderBottom: '1px solid #e0e0e0', // Divider between notifications
-        }}
+          py: 1,
+                px: 2,
+                borderBottom: '1px solid #e0e0e0',
+                backgroundColor: notification.isRead ? 'white' : '#f0f8ff',
+                '&:hover': {
+                  backgroundColor: notification.isRead ? '#f5f5f5' : '#e6f3ff',
+                },
+              }}
       >
-        <Box sx={{ display: 'flex', alignItems: 'center', flex: 1 }}>
-          {getIcon(notification.type)}
-          <Box sx={{ ml: 1 }}>
-            <Typography variant="body1">
-              {notification.message}
-            </Typography>
-            <Typography
-              variant="caption"
-              sx={{ color: 'gray', fontSize: '0.75rem' }}
-            >
-              {/* {new Date(notification.date).toLocaleTimeString()} Time */}
-            </Typography>
-          </Box>
-        </Box>
-        <Button
+        <ListItemIcon>
+                {getIcon(notification.type)}
+              </ListItemIcon>
+              <ListItemText
+                primary={notification.message}
+                secondary={new Date(notification.createdAt).toLocaleString()}
+                primaryTypographyProps={{
+                  variant: 'body2',
+                  fontWeight: notification.isRead ? 'normal' : 'bold',
+                }}
+                secondaryTypographyProps={{
+                  variant: 'caption',
+                }}
+              />
+        {!notification.isRead &&(
+          <Button
           size="small"
-          variant="text"
-          sx={{
-            color: notifications.length > 0 ? '#2196F3' : 'gray',
-            textTransform: 'none',
-            fontSize: '0.75rem',
-            ':hover': {
-              color: 'black',
-            },
-          }}
+                  variant="outlined"
+                  sx={{
+                    ml: 2,
+                    minWidth: 'auto',
+                    color: 'primary.main',
+                    borderColor: 'primary.main',
+                    '&:hover': {
+                      backgroundColor: 'primary.light',
+                    },
+                  }}
           onClick={() => markAsRead(notification._id)}
         >
           Mark as Read
         </Button>
+        )}
       </MenuItem>
     ))
   ) : (
@@ -510,163 +605,11 @@ function TouristNB() {
     </MenuItem>
   )}
 </Menu>
-          {/* User Badge */}
-          <UserBadge userId={userId} />
-
-          {/* User Settings Menu */}
-          <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-              <IconButton onClick={toggleDrawer} sx={{ p: 0 }}>
-                <Avatar alt="User Avatar" />
-              </IconButton>
-            </Tooltip>
-
-            <Drawer
-              anchor="right"
-              open={drawerOpen}
-              onClose={toggleDrawer}
-              PaperProps={{
-                sx: {
-                  width: '15%',
-                  height: '100%',
-                  backgroundColor: '#004c74',
-                  color: 'white',
-                  borderLeft: '1px solid #126782',
-                  overflowY: 'auto',
-                  '&::-webkit-scrollbar': {
-                    display: 'none',
-                  },
-                },
-              }}
-            >
-              {/* Back arrow to close */}
-              <IconButton onClick={toggleDrawer} sx={{ alignSelf: 'flex-start', padding: 1 }}>
-                <ArrowBackIcon sx={{ fill: 'white' }} />
-              </IconButton>
-
-              {/* Drawer Content */}
-              <Box sx={{ padding: '5%' }}>
-                <List sx={{ padding: 0 }}>
-                  {/* Profile */}
-                  <ListItemButton  onClick={loadProfile} sx={{ padding: '5% 2%', gap: 1 }}>
-                    <Avatar alt="User Avatar" sx={{scale:'0.8'}} />
-                    <Typography sx={{ fontSize: '18px' }}>My Profile</Typography>
-                  </ListItemButton>
-                  <Divider sx={{ backgroundColor: 'lightgray' }} />
-
-                  {/* Change Password */}
-                  <ListItemButton  onClick={handleChangePass} sx={{ padding: '5% 2%', gap: 1 }}>
-                    <EditIcon sx={{ fontSize: '25px' }} />
-                    <Typography sx={{ fontSize: '18px' }}>Change Password</Typography>
-                  </ListItemButton>
-                  <Divider sx={{ backgroundColor: 'lightgray' }} />
-
-                  {/* Choose Currency */}
-                  <ListItemButton  onClick={handleOpenCurrencyDialog} sx={{ padding: '5% 2%', gap: 1 }}>
-                    <CurrencyExchangeIcon sx={{ fontSize: '25px' }} />
-                    <Typography sx={{ fontSize: '18px' }}>Choose Currency</Typography>
-                  </ListItemButton>
-                  <Divider sx={{ backgroundColor: 'lightgray' }} />
-
-                  {/* File Complaint */}
-                  <ListItemButton onClick={loadFileComplaint} sx={{ padding: '5% 2%', gap: 1 }}>
-                    <Typography sx={{ fontSize: '18px' }}>File Complaint</Typography>
-                  </ListItemButton>
-                  <Divider sx={{ backgroundColor: 'lightgray' }} />
-
-                  {/* Complaint History */}
-                  <ListItemButton onClick={loadComplaintHistory} sx={{ padding: '5% 2%', gap: 1 }}>
-                    <Typography sx={{ fontSize: '18px' }}>Complaint History</Typography>
-                  </ListItemButton>
-                  <Divider sx={{ backgroundColor: 'lightgray' }} />
-
-                  {/* My Bookings */}
-                  <ListItemButton
-                    onClick={() => setAnchorElBookings(!anchorElBookings)}
-                    sx={{
-                      padding: '5% 2%',
-                      gap: 0.3,
-                      '&:hover .arrow-icon': {
-                        opacity: 1, // Make arrow visible on hover
-                        transform: 'translateX(0)',
-                      },
-                    }}
-                  >
-                    <Typography sx={{ fontSize: '18px' }}>My Bookings</Typography>
-                    <Box
-                      className="arrow-icon"
-                      sx={{
-                        opacity: anchorElBookings ? 1 : 0, // Always visible if `anchorElBookings` is true
-                        transform: anchorElBookings ? 'translateX(0)' : 'translateX(10px)', // Slight movement when hidden
-                        transition: 'opacity 0.3s ease, transform 0.3s ease', // Smooth appearance and disappearance
-                      }}
-                    >
-                      {anchorElBookings ? (
-                        <KeyboardArrowDownIcon sx={{ fontSize: '26px',mt:'1%' }} />
-                      ) : (
-                        <ArrowForwardIosIcon sx={{ fontSize: '16px' }} />
-                      )}
-                    </Box>
-                  </ListItemButton>
-
-                  {anchorElBookings && (
-                    <List sx={{ paddingLeft: 4 ,left:0,'& .MuiListItemButton-root': { justifyContent: 'flex-start', },mt:'-5%',}}>
-                      <ListItemButton onClick={loadBookedActivities} >
-                        <Typography sx={{ fontSize: '16px', ml:'-10%' }}>Booked Activities</Typography>
-                      </ListItemButton>
-                      <Divider sx={{ backgroundColor: 'lightgray' }} />
-                      <ListItemButton button onClick={loadBookedItineraries}>
-                        <Typography sx={{ fontSize: '16px', ml:'-10%'  }}>Booked Itineraries</Typography>
-                      </ListItemButton>
-                      <Divider sx={{ backgroundColor: 'lightgray' }} />
-                      <ListItemButton button onClick={loadBookedHotels}>
-                        <Typography sx={{ fontSize: '16px', ml:'-10%'  }}>Booked Hotels</Typography>
-                      </ListItemButton>
-                      <Divider sx={{ backgroundColor: 'lightgray' }} />
-                      <ListItemButton onClick={loadBookedFlights}>
-                        <Typography sx={{ fontSize: '16px', ml:'-10%'  }}>Booked Flights</Typography>
-                      </ListItemButton>
-                      <Divider sx={{ backgroundColor: 'lightgray' }} />
-                      <ListItemButton onClick={loadBookedTransportation}>
-                        <Typography sx={{ fontSize: '16px', ml:'-10%', }}>Booked Transportation</Typography>
-                      </ListItemButton>
-                    </List>
-                  )}
-                  <Divider sx={{ backgroundColor: 'lightgray' }} />
-
-                  {/* My Orders */}
-                  <ListItemButton onClick={loadBookedFlights} sx={{ padding: '5% 2%', gap: 1 }}>
-                    <Typography sx={{ fontSize: '18px' }}>My Orders</Typography>
-                  </ListItemButton>
-                  <Divider sx={{ backgroundColor: 'lightgray' }} />
-
-                  {/* Logout */}
-                  <ListItemButton onClick={handleLogout} sx={{ padding: '5% 2%', gap: 1 }}>
-                    <LogoutIcon sx={{ fontSize: '24px' }} />
-                    <Typography sx={{ fontSize: '18px' }}>Logout</Typography>
-                  </ListItemButton>
-                  <Divider sx={{ backgroundColor: 'lightgray' }} />
-
-                  {/* Delete Account */}
-                  <ListItemButton onClick={handleDeleteAccount} sx={{ padding: '5% 2%', gap: 1 ,color: '#ff4d4d' }}>
-                    <DeleteIcon sx={{ fontSize: '24px' }} />
-                    <Typography sx={{ fontSize: '18px' }}>Delete Account</Typography>
-                  </ListItemButton>
-                  <Divider sx={{ backgroundColor: 'lightgray' }} />
-                </List>
-              </Box>
-            </Drawer>
-              {/* Button to Open Currency Dialog */}
-
-              {/* Currency Conversion Dialog */}
-              {/* <CurrencyConversion
-                open={openCurrencyDialog}
-                onClose={handleCloseCurrencyDialog}
-              />
-            </Menu> */}
-          </Box>
+  
+             </Box>
         </Toolbar>
       </Container>
+      </Toolbar>
     </AppBar>
   );
 }

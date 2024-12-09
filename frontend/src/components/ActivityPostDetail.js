@@ -18,8 +18,17 @@ import {
   LocationOn,
   Star,
 } from "@mui/icons-material";
-import NavBar from "../Pages/Tourist/components/TouristNavBar";
+import TouristNavBar from "../Pages/Tourist/components/TouristNavBar";
+import TouristSideBar from "../Pages/Tourist/components/TouristSideBar";
+import GuestSideBar from "../Pages/Tourist/components/GuestSideBar";
+import GuestNavBar from "../Pages/Tourist/components/GuestNavBar";
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import BookingPaymentPopUp from "../Pages/Tourist/components/BookingPaymentPopUp";
+import { jwtDecode } from "jwt-decode";
+import axios from "axios";
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+const stripePromise = loadStripe('pk_test_51QLoL4AkXvwFjwTIX8acMj27pC8YxdOhmoUzn0wbUhej1xUFgFlfgYtXRGmggbKUI6Yfpxz08i9shcsfszv6y9iP0007q608Ny'); // Publishable key
 
 
 export default function ActivityDetail() {
@@ -27,11 +36,42 @@ export default function ActivityDetail() {
   const [activity, setActivities] = useState({});
   const navigate = useNavigate();
   const [localInterestedUsers, setLocalInterestedUsers] = useState([]);
-  const token = localStorage.getItem("jwt");
+  const [token, setToken] = useState(localStorage.getItem("jwt"));
+  const [user, setUser] = useState();
+
+  const [tourist,setTourist]=useState(false);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        // const token = localStorage.getItem("jwt");
+        const id = jwtDecode(token).id;
+  
+        const response = await axios.get(
+          `http://localhost:4000/cariGo/users/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+          
+        console.log("API Response Data:", response.data); // Logs the fetched data
+        setUser(Object.assign({}, response.data));
+      } catch (err) {
+        console.error("Error fetching profile:", err);
+      }
+    };
+   
+    fetchUser();
+    }, []);
+
+  const [isPaymentPopupOpen, setIsPaymentPopupOpen] = useState(false);
 
   const handleClick = () => {
     if (token)
-      navigate(`/checkout/activity/${id}`); // Update the navigation path
+      setIsPaymentPopupOpen(true);
+      //navigate(`/checkout/activity/${id}`); // Update the navigation path
     else navigate(`/login`);
   };
 
@@ -112,9 +152,50 @@ export default function ActivityDetail() {
   const conversionRate = localStorage.getItem("conversionRate") || 1;
   const code = localStorage.getItem("currencyCode") || "EGP";
 
+  const handlePlaceOrder = async (paymentMethod,TotalPrice,NumberOfTickets) => {
+    // setLoading(true);
+    try {
+      // const token = localStorage.getItem("jwt");
+      if (!token) {
+        throw new Error("No token found. Please log in.");
+      }
+      
+
+      const endpoint = `http://localhost:4000/cariGo/activity/BookActivity/${id}`;
+
+      const response = await axios.post(endpoint, {
+        PaymentMethod:paymentMethod,
+        TotalPrice:TotalPrice,
+        NumberOfTickets:NumberOfTickets
+      }, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.data) {
+        navigate("/Tourist/book/activity");
+      }
+    } catch (error) {
+      console.error("Error during booking:", error);
+      // setError(error.response?.data?.error || 'Booking failed');
+    }
+  };
+
+  if(!token){
+setTourist(true);
+  }
   return (
-    <>
-      <NavBar />
+    <Box sx={{ display: "flex", backgroundColor: "#f9f9f9", minHeight: "100vh" }}>
+
+    <Box>       {!token ? <GuestSideBar /> : <TouristSideBar />}
+    </Box>
+
+    <Box sx={{ flexGrow: 1, marginLeft: "80px", marginTop: "64px", padding: "16px",}}>
+    {!token ? <GuestNavBar /> : <TouristNavBar />}
+
+
       <Box>
         <Button
           onClick={() => navigate(`/activities`)}
@@ -123,7 +204,7 @@ export default function ActivityDetail() {
             color: "#126782",
             borderRadius: "8px",
             width: "80px",
-            ml: "11%",
+            ml: "1%",
             mt: "2%",
             mb: "0%",
             fontSize: "18px",
@@ -427,7 +508,7 @@ export default function ActivityDetail() {
                 sx={{
                   padding: "20px",
                   position: "sticky",
-                  top: "20px",
+                  top: "70px",
                   backgroundColor: activity.isOpened ? "#ffffff" : "#f0f4f8",
                   border: activity.isOpened ? "none" : "2px dashed #126782",
                   transition: "all 0.3s ease-in-out",
@@ -470,6 +551,20 @@ export default function ActivityDetail() {
                     >
                       Book Now
                     </Button>
+                    <Elements stripe={stripePromise}>
+                      {isPaymentPopupOpen && (
+                        <BookingPaymentPopUp
+                          open={isPaymentPopupOpen}
+                          onClose={() => setIsPaymentPopupOpen(false)}
+                          checkoutCart={handlePlaceOrder}
+                          amount={(activity.price * conversionRate).toFixed(2)}
+                          user={user}
+                          itineraryName={activity.title} 
+                          startDate={activity.start_date}
+                          endDate={activity.end_date}
+                        />
+                      )}
+                    </Elements>
                   </>
                 ) : (
                   <Box sx={{ textAlign: "center" }}>
@@ -532,6 +627,6 @@ export default function ActivityDetail() {
           </Grid>
         </Paper>
       </Box>
-    </>
+  </Box></Box>
   );
 }

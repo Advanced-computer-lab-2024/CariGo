@@ -1,29 +1,37 @@
-// import React, { useRef, useState } from "react";
-import { Button } from "./ui/button";
-import ModalVideo from "./model-video";
-import VideoThumb from "./images/hero-image-01.jpg";
-import Video from "./videos/video.mp4";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import Video from "./videos/yacht.mp4";
+import MagazineCover from "./images/magazine1.png";
+import MagazinePage from "./images/magazinePage.png";
+import Logo from "./images/logo.png";
+import HeroBackground from "./images/HeroBg.jpg"; 
 
+const Hero = () => {
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isComicOpen, setIsComicOpen] = useState(false);
 
-export default function Hero() {
-  // const videoRef = useRef(null);
-  // const [isPlaying, setIsPlaying] = useState(false);
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
-  // const handlePlayClick = () => {
-  //   if (videoRef.current) {
-  //     if (isPlaying) {
-  //       videoRef.current.pause();
-  //     } else {
-  //       videoRef.current.play();
-  //     }
-  //     setIsPlaying(!isPlaying);
-  //   }
-  // };
+  const handleComicClick = () => {
+    setIsComicOpen(true);
+  };
+
+  const handleOutsideClick = (e) => {
+    if (e.target === e.currentTarget) {
+      setIsComicOpen(false);
+    }
+  };
+
   const navigate = useNavigate();
 
-
   const navigateToSignUp = () => {
+
     localStorage.setItem('s',"signUp")
     navigate(
       "/signIn-Up"
@@ -35,55 +43,161 @@ export default function Hero() {
     navigate(
       "/signIn-Up"
     );
+   // navigate("/login");
+  };
+
+  const videoContainerStyle = {
+    position: "relative",
+    width: "200px",
+    height: "256px",
+    boxShadow: "0 4px 10px rgba(0, 0, 0, 0.3)",
+    borderRadius: "10px",
+    overflow: "hidden",
+    transform: "translate(145px, -15px)",
+  };
+
+  const buttonContainerStyle = {
+    position: "relative",
+    width: "142px",
+    height: "42px",
+    boxShadow: "0 4px 10px rgba(0, 0, 0, 0.3)",
+    borderRadius: "10px",
+    overflow: "hidden",
+    transform: "translate(125px, -200px)",
+  };
+
+  const logoContainerStyle = {
+    position: "relative",
+    width: "100px",
+    height: "100px",
+    borderRadius: "10px",
+    overflow: "hidden",
+    transform: "translate(86px, -275px)",
+  };
+
+  const videoStyle = {
+    width: "100%",
+    height: "100%",
+
   };
 
   return (
-    <section className="relative mx-auto max-w-7xl px-4 pt-20 sm:px-6 lg:px-8">
-      <div className="flex flex-col items-center lg:flex-row lg:items-center lg:justify-between">
-        <div className="lg:w-1/2 lg:pr-8 text-center lg:text-left">
-          <h1 className="bg-gradient-to-r from-[#01324c] to-[#01324c] bg-clip-text text-4xl font-bold text-transparent sm:text-5xl lg:text-6xl">
-            Carigo: Hat Shantitk w El Ba2i 3alina
-          </h1>
-          <p className="mx-auto mt-4 max-w-2xl text-lg text-transparent bg-gradient-to-r from-[#4f7489] to-[#037bba] bg-clip-text lg:mt-6">
-            Carry the vibe, leave the rest to us!
-          </p>
-          <div className="mt-8 flex flex-col items-center gap-4 lg:items-start lg:flex-row lg:mt-10">
-            <Button
-              className="btn group w-full max-w-sm bg-gradient-to-t from-[#FF683C] to-[#037bba] bg-[length:100%_100%] bg-[bottom] text-white shadow-[inset_0px_1px_0px_0px_theme(colors.white/.16)] hover:bg-[length:100%_150%] sm:mb-0 sm:w-auto"
-              href="#0"
-              onClick={navigateToSignUp}
-            >
-              <span className="relative inline-flex items-center">
-                SignUp Now
-                <span className="ml-1 tracking-normal text-white/50 transition-transform group-hover:translate-x-0.5">
-                  -&gt;
-                </span>
+    <div
+      className="relative h-screen overflow-hidden"
+      style={{
+        backgroundImage: `url(${HeroBackground})`, // Set the background image
+        backgroundSize: "cover", // Ensure the image covers the entire area
+        backgroundPosition: "center", // Center the image
+        backgroundRepeat: "no-repeat", // Prevent repeating
+      }}
+    >
+      {/* Background text */}
+      <div
+        className="absolute inset-0 flex flex-col items-start justify-center pointer-events-none pl-20"
+        style={{ transform: "translateY(-18px)" }} // Move text up by 5px
+      >
+        <div className="flex items-start justify-start w-full">
+          <h1 className="text-[10vw] font-black leading-none tracking-tighter">
+            <span className="relative">
+              <span className="absolute inset-0 text-[#f7c59f] opacity-10">
+                CARI
               </span>
-            </Button>
-            <Button
-              className="btn relative w-full max-w-sm bg-gradient-to-b from-[#037bba] to-[#FF683C] bg-[length:100%_100%] bg-[bottom] text-gray-300 before:pointer-events-none before:absolute before:inset-0 before:rounded-[inherit] before:border before:border-transparent  hover:bg-[length:100%_150%] sm:ml-4 sm:w-auto"
-              href="#0"
-              onClick={navigateToLogIn}
-            >
-              Log-in to CariGo
-            </Button>
-          </div>
+              <span className="relative text-transparent [-webkit-text-stroke:2px_#f7c59f] [text-stroke:2px_#f7c59f]">
+                CARI
+              </span>
+            </span>
+            <span className="text-[#ff6b35]">&</span>
+            <span className="relative">
+              <span className="absolute inset-0 text-[#f7c59f] opacity-10">
+                GO
+              </span>
+              <span className="relative text-transparent [-webkit-text-stroke:2px_#f7c59f] [text-stroke:2px_#f7c59f]">
+                GO
+              </span>
+            </span>
+          </h1>
         </div>
-
-        <div className="lg:w-1/2 lg:pl-8 flex justify-center">
-          <div className="w-full max-w-2xl">
-            <ModalVideo
-              thumb={VideoThumb}
-              thumbWidth={1500}
-              thumbHeight={900}
-              thumbAlt="Modal video thumbnail"
-              video={Video}
-              videoWidth={1920}
-              videoHeight={1080}
-            />
-          </div>
+        <div
+          className="text-[2.9vw] font-bold text-[#f7e1c6] opacity-40"
+          style={{ transform: "translateY(-5px)" }} // Move text up by 5px
+        >
+          HAT SHANTITAK W EL BA2I 3ALINA
         </div>
       </div>
-    </section>
+
+      {/* Scroll indicator */}
+      <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 text-white animate-bounce">
+        &#9660;
+      </div>
+
+      {/* Comic book image */}
+      <div
+        className={`flex justify-center items-center absolute inset-0 transition-all duration-1000 ease-in-out ${
+          isScrolled ? "opacity-100" : "opacity-0 translate-y-full"
+        }`}
+      >
+        <img
+          src={MagazineCover}
+          alt="Comic Book Cover"
+          className="object-cover cursor-pointer"
+          width={850}
+          height={702}
+          onClick={handleComicClick}
+        />
+      </div>
+
+      {/* Open comic book */}
+      {isComicOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50"
+          onClick={handleOutsideClick}
+        >
+          <div
+            className="flex justify-center items-center rounded-lg relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src={MagazinePage}
+              alt="Comic Book Page"
+              className="z-10 mb-4"
+              width={850}
+              height={702}
+            />
+            <div
+              className="absolute z-20 flex justify-center items-center"
+              style={videoContainerStyle}
+            >
+              <video
+                src={Video}
+                controls
+                autoPlay
+                loop
+                muted
+                style={videoStyle}
+              ></video>
+            </div>
+            <div
+              className="absolute z-20 flex justify-center items-center"
+              style={buttonContainerStyle}
+            >
+              <button
+                className="absolute bg-[#ea563b] text-white px-4 py-2 rounded hover:[#a24534] transition-colors"
+                onClick={() => navigateToSignUp()}
+              >
+                SignUp Now
+              </button>
+            </div>
+            <div
+              className="absolute z-20 flex justify-center items-center"
+              style={logoContainerStyle}
+            >
+              <img src={Logo} alt="logo" width={850} height={702} />
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
-}
+};
+
+export default Hero;
