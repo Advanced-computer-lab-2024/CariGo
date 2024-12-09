@@ -397,7 +397,7 @@ function TouristNB() {
                 variant="h6"
                 noWrap
                 component={Link}
-                to="/tgHome"
+                to="/"
                 sx={{
                   fontFamily: "Poppins, sans-serif",
                   fontWeight: 700,
