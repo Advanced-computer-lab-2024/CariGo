@@ -700,7 +700,12 @@ this route is used to generate sales reports using the url /review followed by t
 - **/:id :** a get/delete/patch request that read/deletes/updates a review by its id
 
 
-### request
+### delete account request
+handles all operations related to requests used by the url /delReq followed by the following:
+
+-**/createReq :** a post method to create a delete request
+-**/getReq :** a get method to read a delete request
+-**delReq :** a delete method to delete a user's account 
 
 ### cart
 used to handle all operations related to the cart as follows:
@@ -782,7 +787,7 @@ For anyone who would like to contribute in the development of the project just c
 ## License
 MIT License
 
-Copyright (c) 2024 rahma ahmed
+Copyright (c) 2024 Rahma Ahmed, Yasmeen Mohamed Shaaban, Mohamed Hossameldin Abdulbaki , Menna Wahba
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
