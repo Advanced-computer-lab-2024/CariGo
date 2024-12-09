@@ -699,7 +699,6 @@ this route is used to generate sales reports :
 - **/product :** a post request to review a product
 - **/:id :** a get/delete/patch request that read/deletes/updates a review by its id
 
-
 ### delete account request
 handles all operations related to requests used by the url /delReq followed by the following:
 
