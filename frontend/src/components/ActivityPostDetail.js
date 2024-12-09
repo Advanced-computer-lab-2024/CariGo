@@ -18,7 +18,10 @@ import {
   LocationOn,
   Star,
 } from "@mui/icons-material";
-import NavBar from "../Pages/Tourist/components/TouristNavBar";
+import TouristNavBar from "../Pages/Tourist/components/TouristNavBar";
+import TouristSideBar from "../Pages/Tourist/components/TouristSideBar";
+import GuestSideBar from "../Pages/Tourist/components/GuestSideBar";
+import GuestNavBar from "../Pages/Tourist/components/GuestNavBar";
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import BookingPaymentPopUp from "../Pages/Tourist/components/BookingPaymentPopUp";
 import { jwtDecode } from "jwt-decode";
@@ -35,6 +38,7 @@ export default function ActivityDetail() {
   const [localInterestedUsers, setLocalInterestedUsers] = useState([]);
   const token = localStorage.getItem("jwt");
   const [user, setUser] = useState();
+const [tourist,setTourist]=useState(false);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -178,9 +182,18 @@ export default function ActivityDetail() {
     }
   };
 
+  if(!token){
+setTourist(true);
+  }
   return (
-    <>
-      <NavBar />
+    <Box sx={{ display: "flex", backgroundColor: "#f9f9f9", minHeight: "100vh" }}>
+    <Box>       {!tourist ? <GuestSideBar /> : <TouristSideBar />}
+    </Box>
+
+    <Box sx={{ flexGrow: 1, marginLeft: "80px", marginTop: "64px", padding: "16px",}}>
+    {!tourist ? <GuestNavBar /> : <TouristNavBar />}
+
+
       <Box>
         <Button
           onClick={() => navigate(`/activities`)}
@@ -189,7 +202,7 @@ export default function ActivityDetail() {
             color: "#126782",
             borderRadius: "8px",
             width: "80px",
-            ml: "11%",
+            ml: "1%",
             mt: "2%",
             mb: "0%",
             fontSize: "18px",
@@ -493,7 +506,7 @@ export default function ActivityDetail() {
                 sx={{
                   padding: "20px",
                   position: "sticky",
-                  top: "20px",
+                  top: "70px",
                   backgroundColor: activity.isOpened ? "#ffffff" : "#f0f4f8",
                   border: activity.isOpened ? "none" : "2px dashed #126782",
                   transition: "all 0.3s ease-in-out",
@@ -612,6 +625,6 @@ export default function ActivityDetail() {
           </Grid>
         </Paper>
       </Box>
-    </>
+  </Box></Box>
   );
 }

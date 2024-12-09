@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Box, Button } from "@mui/material";
-import NavBar from "./components/TouristNavBar";
+import TouristNavBar from "./components/TouristNavBar";
+import TouristSideBar from "./components/TouristSideBar";
 import FlightIcon from '@mui/icons-material/Flight';
 import LocationCityIcon from '@mui/icons-material/LocationCity';
 import CommuteIcon from '@mui/icons-material/Commute';
@@ -44,8 +45,23 @@ export default function BookingPage() {
   }, []); // Empty dependency array ensures this runs once on mount
 
   return (
-    <div>
-      <NavBar />
+    <Box sx={{ display: "flex", backgroundColor: "#f9f9f9", minHeight: "100vh" }}>
+    {/* Sidebar */}
+    <Box>
+      <TouristSideBar />
+    </Box>
+
+    {/* Main Content Area */}
+    <Box
+      sx={{
+        flexGrow: 1,
+        marginLeft: "80px", // Sidebar width
+        marginTop: "64px", // AppBar height
+        padding: "16px",
+      }}
+    >
+      {/* Top Navbar */}
+      <TouristNavBar />
       <Box sx={{ 
         display: 'flex', 
         borderBottom: 1,
@@ -109,7 +125,7 @@ export default function BookingPage() {
         {selectedBooking === "hotel" && <HotelBooking />}
         {selectedBooking === "transportation" && <TransportationBooking />}
       </Box>
-    </div>
+   </Box></Box>
   );
 }
 

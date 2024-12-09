@@ -53,7 +53,7 @@ import SignUp from './Pages/Signup.js';
 import { jwtDecode } from 'jwt-decode';
 import CreateActivityForm from "./Pages/CreateActivityForm.js";
 import TouristProfile from "./Pages/Tourist/TouristProfile.js";
-import TouristGuestHome from "./Pages/HomePageTourist/App/page.jsx";
+import TouristGuestHome from "./Pages/Tourist/TouristHome.js";
 import ViewProductsTourist from "./Pages/Tourist/TouristProducts2.js";
 import GuestHome from "./Pages/Guest/GuestHome.js";
 import TouristActivities from './Pages/Tourist/TouristActivities.js';
@@ -90,6 +90,7 @@ import FlightDetails from "./components/FlightDetails";
 import FileComplaintForm from "./Pages/Tourist/FileComplaintForm";
 import ActivityPostDetail from "./components/ActivityPostDetail.js";
 import CreatePromoCode from './Pages/createPromoCode';
+import Demo from "../src/Pages/HowToUse/demo.jsx";
 // import HotelBooking from "./Pages/Tourist/HotelBooking.js";
 
 import BookingPage from "./Pages/Tourist/Booking.js";
@@ -165,6 +166,8 @@ function App() {
         <Route path="/tourist/MyBookedFlights" element={<MyBookedFlights />} /> 
         <Route path="/tourist/MyBookedHotels" element={<MyBookedHotels />} /> 
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/how-to-use" element={<Demo />} />
+
         {/* <Route path="/choose-sign-up" element={<ChooseSignUp/>} /> */}
       <Route
         path="tour_guide/profile"
