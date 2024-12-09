@@ -9,7 +9,7 @@ export default function UserAcList({ activities }) {
       {activities.map((activity, index) => (
         <React.Fragment key={index}>
           <ListItem alignItems="flex-start" sx={{ flexDirection: 'column', py: 2 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1, color: '#126782' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1,  color: "#00355a"}}>
               <Event sx={{ mr: 1 }} />
               <Typography variant="h6" component="div" >
                 {activity.name}
@@ -18,7 +18,7 @@ export default function UserAcList({ activities }) {
             <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
               {activity.description}
             </Typography>
-            <Box sx={{ display: 'flex', alignItems: 'center', color: '#126782' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', color: '#ff6b35' }}>
               <AccessTime sx={{ mr: 1, fontSize: 'small' }} />
               <Typography variant="body2" component="span">
                 {activity.startDate} - {activity.endDate}

@@ -102,7 +102,7 @@ const getTouristProducts = async (req, res) => {
     // Execute query with sorting, fallback to createdAt if no attributeToBeSorted
     const products = await Product.find(queryObj).sort(
       attributeToBeSorted ? "-ratingsAverage" : { createdAt: -1 }
-    );
+    ).populate("author"); // Fixed from ActivityModel to Activity
 
     // Send response
     res.status(200).json(products);
@@ -181,10 +181,35 @@ const unarchiveProduct = catchAsync(async (req, res, next) => {
     data: { product },
   });
 });
+const getTitlesForEachUser = async (req, res) => {
+  const id  = req.params.id;
+  console.log(id)
+  try {
+    const products= await Product.find({author:id}); // Fixed from ActivityModel to Activity, and use findById(id)
+    if (!products) {
+      return res.status(404).json({ message: "Activity not found" });
+    }
+  //console.log(activities)
+ // console.log("---------------")
+  //console.log(itineraries)
+    const Ptitles =(products)?products.map(activity => activity.name):[];
+    
+   
+    //const titles = ;
+   // Atitles.push(...Ititles);
+    res.status(200).json(
+      {productTitles:Ptitles,
+        success:true
+      });
+  } catch (error) {
+    res.status(500).json({ message: "An error occurred", error });
+  }
+};
 
 module.exports = {
   createProduct,
   getProducts,
+  getTitlesForEachUser,
   getTouristProducts,
   getSellersProducts,
   getProduct,

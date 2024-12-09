@@ -19,7 +19,7 @@ const OrderItemList = ({ orders,cancelledOnly,completed,active,type}) => {
   else
      if(completed)
       filtered = orders?.filter(
-        (order) => order.isCancelled && new Date(order.deliveryDate) <= new Date()
+        (order) => order.state==="delivered"
       );
     else
     filtered = orders?.filter(

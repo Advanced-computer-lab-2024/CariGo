@@ -256,7 +256,7 @@ const readItinerariesByIds = async (req, res) => {
     const itineraryIds = ids.split(","); // Split the ids into an array
     // Fetch the itineraries from the database based on these IDs
     const itineraries = await Itinerary.find({ _id: { $in: itineraryIds } })
-    .populate('author');
+    .populate('author').populate('tags');
     
 
     res.status(200).json(itineraries);
@@ -288,7 +288,7 @@ const readAllItineraries = async (req, res) => {
     let query = itineraryModel.find({
       start_date: { $gte: today },
       isActive: true,
-    }).populate("tags");
+    }).populate("tags author");
 
     // Check if a tag title is provided
     let itineraries = []; // Declare itineraries with let
@@ -386,7 +386,7 @@ const suggestedItineraries = async (req, res) => {
         isFlagged: false,
         tags: { $in: tags },
       })
-      .populate("tags");
+      .populate("tags").populate("author"); // Ensure populated tag information is returned
     res.json(itineraries);
   } catch (error) {
     res.status(500).json({ error: "Error fetching itineraries" });
@@ -412,7 +412,7 @@ const suggestedActivities = async (req, res) => {
         isFlagged: false,
         tag: { $in: tagIds }, // Check if activity's tag is in the provided tags list
       })
-      .populate("tag"); // Ensure populated tag information is returned
+      .populate("tag author"); // Ensure populated tag information is returned
     console.log(itineraries);
     res.json(itineraries);
   } catch (error) {

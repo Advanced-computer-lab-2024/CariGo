@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate } from 'react-router-dom';
 import { Box ,Typography,Button, Divider} from "@mui/material";
@@ -9,6 +9,14 @@ import { useLocation } from 'react-router-dom';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import AirlinesIcon from '@mui/icons-material/Airlines';
 import TimelapseIcon from '@mui/icons-material/Timelapse';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import axios from "axios";
+import ExtraServicesPaymenPopUp from "../Pages/Tourist/components/ExtraServicesPaymenPopUp";
+import { jwtDecode } from "jwt-decode";
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+const stripePromise = loadStripe('pk_test_51QLoL4AkXvwFjwTIX8acMj27pC8YxdOhmoUzn0wbUhej1xUFgFlfgYtXRGmggbKUI6Yfpxz08i9shcsfszv6y9iP0007q608Ny'); // Publishable key
+
 
 const FlightDetails = () =>{
   const { state } = useLocation();
@@ -21,10 +29,36 @@ const FlightDetails = () =>{
   const availableSeats= flightData.numberOfBookableSeats;
   const bookBefore = flightData.lastTicketingDate;
   const currency=localStorage.getItem("currencyCode") ||"EGP" ;
+  const [user, setUser] = useState();
+  const [token,setToken] = useState(localStorage.getItem('jwt'));
     // Function to format the duration string
     const navigate = useNavigate();
 
+    useEffect(() => {
+      const fetchUser = async () => {
+        try {
+          const token = localStorage.getItem("jwt");
+          const id = jwtDecode(token).id;
     
+          const response = await axios.get(
+            `http://localhost:4000/cariGo/users/${id}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+            
+          
+          setUser(Object.assign({}, response.data));
+        } catch (err) {
+          console.error("Error fetching profile:", err);
+        }
+      };
+     
+      fetchUser();
+      }, []);
+
     const formatDuration = (duration) => {
       if (!duration) return ""; // Handle cases where duration might be undefined
   
@@ -40,27 +74,71 @@ const FlightDetails = () =>{
       window.scrollTo(0, 0);
     }
 
+    const [isPaymentPopupOpen, setIsPaymentPopupOpen] = useState(false);
     const handleBookClick=() =>{
-      navigate(`/ExtraServicesCheckOut/flight`,{ state: { flightData } }) ;
+      //navigate(`/ExtraServicesCheckOut/flight`,{ state: { flightData } }) ;
+      if (token){
+        setIsPaymentPopupOpen(true);
+      }
+        
+      else navigate(`/login`);
     };
-
+    const handlePlaceOrder = async (paymentMethod,TotalPrice) => {
+      // setLoading(true);
+      try {
+        const token = localStorage.getItem("jwt");
+        if (!token) {
+          throw new Error("No token found. Please log in.");
+        }
+        
+  
+        const endpoint = `http://localhost:4000/cariGo/flights//BookFlight`;
+  
+        // const payload = 
+        const response = await axios.post(endpoint, {
+          PaymentMethod:paymentMethod,
+          TotalPrice:TotalPrice,
+          flightData : flightData
+        }, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+  
+        if (response.data) {
+          navigate("/tourist/MyBookedFlights");
+        }
+      } catch (error) {
+        console.error("Error during booking:", error);
+        // setError(error.response?.data?.error || 'Booking failed');
+      }
+    };
   return (
-    <Box sx={{display:'flex', flexDirection:'column', gap:'0px', margin:'20px', marginLeft:'10%'}}>
-      <Button onClick={handleBackCLick}
-          sx={{ backgroundColor: "#126782", color: 'white', borderRadius: '8px', width: '80px', fontSize:'18px', marginLeft:'20px' }}>
+    <Box sx={{display:'flex', flexDirection:'column', gap:'0px',width:'70%', margin:'2% 15%', alignItems:'center'}}>
+      <Button
+         onClick={handleBackCLick}
+          sx={{
+            backgroundColor: "white",
+            color: "#126782",
+            borderRadius: "8px",
+            width: "80px",
+            ml: "2%",mb:'0%',
+            fontSize:'18px',
+            alignSelf:'flex-start'
+          }}
+        >
+          <ArrowBackIosIcon/>
           Back
-      </Button>
+        </Button>
     <Box   sx={{
       border: '2px solid #126782', 
       borderColor:'#126782',
       borderRadius:'10px', 
       maxHeight:'1000px',
-      //display: 'inline-flex', 
-      //flexDirection:'column', 
-      width:'950px', 
-      margin:'20px',
-      marginTop:'20px',
-      marginRight:'60px',
+      width:'89%', 
+      mb:'2%',
+      //width:'950px',
       color:'#126782',
       }}>
       <Box sx={{margin:'20px', position:'relative'}}>  {/*gives some spacing from borders */}
@@ -190,11 +268,31 @@ const FlightDetails = () =>{
             }}>
             Book
           </Button>
+          <Elements stripe={stripePromise}>
+            {isPaymentPopupOpen && (
+              <ExtraServicesPaymenPopUp
+                open={isPaymentPopupOpen}
+                onClose={() => setIsPaymentPopupOpen(false)}
+                checkoutCart={handlePlaceOrder}
+                amount={(price * rate).toFixed(2)}
+                user={user}
+                ServiceName={`${airlineName}`} 
+                startDate={flightData.segments[0].departure.time}
+                endDate={flightData.segments[0].arrival.time}
+                flightNumber={flightData.segments[0].flightNumber}
+                type={"flight"}
+              />
+            )}
+          </Elements>
           </Box>
       </Box>
       
     </Box>
     </Box>
+    <h4 className="bg-gradient-to-r from-[#01324c] via-[#01324c] to-[#01324c] bg-clip-text text-2xl font-semibold text-transparent md:text-5xl" 
+       style={{margin:"2% 0%"}}>
+    ___________________________ 🦌 ___________________________
+        </h4>
     </Box>
   );
 };

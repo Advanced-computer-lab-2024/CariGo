@@ -8,8 +8,9 @@ import { IconArrowUpLeft } from '@tabler/icons-react';
 import DashboardCard from './DashboardCard';
 
 const YearlyBreakup = ({revenue}) => {
+  const def = 0;
   // chart color
-  const theme = useTheme();
+    const theme = useTheme();
   const primary = theme.palette.primary.main;
   const primarylight = '#ecf2ff';
   const successlight = theme.palette.success.light;
@@ -74,8 +75,11 @@ const YearlyBreakup = ({revenue}) => {
       <Grid container spacing={3}>
         {/* column */}
         <Grid item xs={7} sm={7}>
-          {revenue &&<Typography variant="h3" fontWeight="700">
+          {revenue>0 &&<Typography variant="h3" fontWeight="700">
             {"$"+revenue}
+          </Typography>}
+          {revenue===0 &&<Typography variant="h3" fontWeight="700">
+            {"$0"}
           </Typography>}
           <Stack direction="row" spacing={1} mt={1} alignItems="center">
             <Avatar sx={{ bgcolor: successlight, width: 27, height: 27 }}>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Box, Typography, Chip, Avatar } from "@mui/material";
+import { Box, Typography, Chip, Avatar,Grid,Paper  } from "@mui/material";
 import PinDropIcon from "@mui/icons-material/PinDrop";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import StarIcon from "@mui/icons-material/Star";
@@ -64,6 +64,7 @@ const ItineraryDetails = () => {
         setItinerary(data);
         setLocalActivities(data.activities);
         setSelectedTags(data.tags || []); // Initialize selected tags
+        setLocalCategory(data.category);
         console.log("gayez", localActivities);
         if (isEditing) {
           setIsEditing(false); // Set editing mode to false after update
@@ -75,6 +76,9 @@ const ItineraryDetails = () => {
     };
     fetchItineraryDetails();
   }, [refreshKey, activityTrigger]); // Include `id` in dependencies
+
+  // const handleDialogOpen = () => setOpenDialog(true);
+  // const handleDialogClose = () => setOpenDialog(false);
 
   const toggleIsActive = async (newStatus) => {
     try {
@@ -212,207 +216,197 @@ const ItineraryDetails = () => {
     }
   };
   return (
-    <div>
+    <Box sx={{ backgroundColor: "#F2F0EF", minHeight: "100vh" }}>
       <NavBar />
-      <Box sx={{ padding: "20px", maxWidth: "1200px", margin: "auto" }}>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            marginBottom: "20px",
-          }}
-        >
-          <Avatar sx={{ bgcolor: "#126782", width: 56, height: 56 }}>
-            {title?.charAt(0) || "A"} {/* Safely handle author name */}
-          </Avatar>
-          <Typography
-            variant="h4"
-            sx={{ margin: "10px 0", fontWeight: "bold" }}
-          >
-            {title || "Anonymous"} {/* Safely handle author name */}
+      <Box sx={{ padding: "40px", maxWidth: "1400px", margin: "auto" }}>
+        <Box sx={{ textAlign: 'center', marginBottom: '40px' }}>
+          {/* <Avatar sx={{ bgcolor: "#004e89", width: 100, height: 100, margin: 'auto', fontSize: '3rem' }}>
+            {title?.charAt(0) || "A"}
+          </Avatar> */}
+          <Typography variant="h3" sx={{ margin: "20px 0", fontWeight: "bold", color: "#004e89" }}>
+            {title || "Anonymous"}
           </Typography>
-          {tags?.map((tag) => (
-            <Chip
-              key={tag._id}
-              label={tag.title}
-              sx={{ backgroundColor: "#126782", color: "white", margin: "5px" }}
-            />
-          ))}
-          {/* Tags component for selecting tags */}
-          <div>
-            <Typography
-              variant="body1"
-              sx={{ fontSize: "18px", marginBottom: "5px" }}
-            >
-              <strong>Select Tags:</strong>
-            </Typography>
-            <ItineraryTags
-              selectedTags={selectedTags}
-              setSelectedTags={handleTagChange}
-            />
-            <Typography
-              variant="body1"
-              sx={{ fontSize: "18px", marginBottom: "5px", marginTop: "10px" }}
-            >
-              <strong>Category:</strong>{" "}
-            </Typography>
-            <SelectCategory
-              tag={category}
-              setTags={handleCategoryChange} // Pass handler to update category
-            />
-          </div>
         </Box>
 
-        <Box
-          component="img"
-          src={logoImage || ""}
-          alt="Itinerary Image"
-          sx={{
-            width: "100%",
-            maxHeight: "400px",
-            borderRadius: "10px",
-            objectFit: "cover",
-            marginBottom: "20px",
-          }}
-        />
-        <div className="company-info">
-          <Box sx={{ marginBottom: "20px" }}>
-            <ItineraryUpdate
-              itinerary={itinerary}
-              setItinerary={setItinerary}
-              setRefreshKey={setRefreshKey}
-            />
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                marginBottom: "10px",
-              }}
-            >
-              <StarIcon sx={{ color: "#FFD700", marginRight: "5px" }} />
-              <Typography variant="body1" sx={{ fontSize: "18px" }}>
-                {ratingsAverage || "No rating"}
-              </Typography>
-            </Box>
-            <Typography
-              variant="body1"
-              sx={{ fontSize: "18px", marginBottom: "5px" }}
-            >
-              <strong>Start Date:</strong> {formatDateTime(start_date)}
-            </Typography>
-            <Typography
-              variant="body1"
-              sx={{ fontSize: "18px", marginBottom: "5px" }}
-            >
-              <strong>End Date:</strong> {formatDateTime(end_date)}
-            </Typography>
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                marginBottom: "5px",
-              }}
-            >
-              <PinDropIcon sx={{ marginRight: "5px" }} />
-              <Typography variant="body1">
-                <strong>Locations:</strong>{" "}
-                {locations?.join(", ") || "Not specified"}
-              </Typography>
-            </Box>
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                marginBottom: "5px",
-              }}
-            >
-              <AttachMoneyIcon sx={{ marginRight: "5px" }} />
-              <Typography variant="body1">
-                <strong>Price:</strong>{" "}
-                {price ? `$${price}` : "Price not specified"}
-              </Typography>
-            </Box>
-            <Typography variant="body1" sx={{ fontSize: "18px" }}>
-              <strong>Language of Tour Guide:</strong>{" "}
-              {language || "No transportation info"}
-            </Typography>
-            <Typography variant="body1" sx={{ fontSize: "18px" }}>
-              <strong>Transportation:</strong>{" "}
-              {transportation || "No transportation info"}
-            </Typography>
-            <Typography variant="body1" sx={{ fontSize: "18px" }}>
-              <strong>Pick-up:</strong> {pick_up || "No transportation info"}
-            </Typography>
-            <Typography variant="body1" sx={{ fontSize: "18px" }}>
-              <strong>Drop-off:</strong> {drop_off || "No transportation info"}
-            </Typography>
-            <Typography variant="body1" sx={{ fontSize: "18px" }}>
-              <strong>Accommodation:</strong>{" "}
-              {accommodation || "No accommodation info"}
-            </Typography>
-            <Typography variant="body1" sx={{ fontSize: "18px" }}>
-              <strong>Accessibility:</strong>{" "}
-              {accessibility || "No accessibility info"}
-            </Typography>
-            <Typography variant="body1" sx={{ fontSize: "18px" }}>
-              <strong>Activities:</strong>
+        <Grid container spacing={4}>
+          {/* Left side: Tags, Category, and Selection */}
+          <Grid item xs={12} md={4}>
+            <Paper elevation={3} sx={{ padding: '30px', borderRadius: '15px', backgroundColor: '#fff', marginBottom: '30px' }}>
+              <Typography variant="h6" sx={{ marginBottom: '20px', color: '#004e89' }}>Tags</Typography>
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginBottom: '20px' }}>
+                {tags?.map((tag) => (
+                  <Chip
+                    key={tag._id}
+                    label={tag.title}
+                    sx={{ backgroundColor: "#ff6b35", color: "white", borderRadius: '20px' }}
+                  />
+                ))}
+              </Box>
+              <Typography variant="h6" sx={{ marginBottom: '20px', marginTop: '30px', color: '#004e89' }}>Category</Typography>
+              <Chip
+                label={category?.title || "No Category"}
+                sx={{ backgroundColor: "#004e89", color: "white", borderRadius: '20px' }}
+              />
+            </Paper>
+
+            <Paper elevation={3} sx={{ padding: '30px', borderRadius: '15px', backgroundColor: '#fff', marginBottom: '30px' }}>
+              <Typography variant="h6" sx={{ marginBottom: '20px', color: '#004e89' }}>Select Tags</Typography>
+              <ItineraryTags
+                selectedTags={selectedTags}
+                setSelectedTags={handleTagChange}
+              />
+            </Paper>
+
+            <Paper elevation={3} sx={{ padding: '30px', borderRadius: '15px', backgroundColor: '#fff' ,height: '200px', width: '100%'}}>
+              <Typography variant="h6" sx={{ marginBottom: '20px', color: '#004e89' }}>Select Category</Typography>
+              <SelectCategory
+                tag={localCategory}
+                setTags={handleCategoryChange}
+              />
+            </Paper>
+          </Grid>
+
+          {/* Right side: Itinerary Details */}
+          <Grid item xs={12} md={8}>
+            <Paper elevation={3} sx={{ padding: '68px', borderRadius: '15px', backgroundColor: '#fff', marginBottom: '30px' }}>
+              <Box
+                component="img"
+                src={logoImage || ""}
+                alt="Itinerary Image"
+                sx={{
+                  width: "100%",
+                  maxHeight: "300px",
+                  borderRadius: "10px",
+                  objectFit: "cover",
+                  marginBottom: "30px",
+                }}
+              />
+
+              
+
+              <Grid container spacing={4}>
+                <Grid item xs={12} md={6}>
+                  <Box sx={{ display: "flex", alignItems: "center", marginBottom: "20px" }}>
+                    <StarIcon sx={{ color: "#ff6b35", marginRight: "10px" }} />
+                    <Typography variant="h6" sx={{ color: '#004e89' }}>
+                      {ratingsAverage || "No rating"}
+                    </Typography>
+                  </Box>
+                  <Typography variant="body1" sx={{ marginBottom: "15px" }}>
+                    <strong>Start Date:</strong> {formatDateTime(start_date)}
+                  </Typography>
+                  <Typography variant="body1" sx={{ marginBottom: "15px" }}>
+                    <strong>End Date:</strong> {formatDateTime(end_date)}
+                  </Typography>
+                  <Box sx={{ display: "flex", alignItems: "center", marginBottom: "15px" }}>
+                    <PinDropIcon sx={{ marginRight: "10px", color: '#ff6b35' }} />
+                    <Typography variant="body1">
+                      <strong>Locations:</strong> {locations?.join(", ") || "Not specified"}
+                    </Typography>
+                  </Box>
+                  <Box sx={{ display: "flex", alignItems: "center", marginBottom: "15px" }}>
+                    <AttachMoneyIcon sx={{ marginRight: "10px", color: '#ff6b35' }} />
+                    <Typography variant="body1">
+                      <strong>Price:</strong> {price ? `$${price}` : "Price not specified"}
+                    </Typography>
+                  </Box>
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <Typography variant="body1" sx={{ marginBottom: "15px" }}>
+                    <strong>Language of Tour Guide:</strong> {language || "Not specified"}
+                  </Typography>
+                  <Typography variant="body1" sx={{ marginBottom: "15px" }}>
+                    <strong>Transportation:</strong> {transportation || "Not specified"}
+                  </Typography>
+                  <Typography variant="body1" sx={{ marginBottom: "15px" }}>
+                    <strong>Pick-up:</strong> {pick_up || "Not specified"}
+                  </Typography>
+                  <Typography variant="body1" sx={{ marginBottom: "15px" }}>
+                    <strong>Drop-off:</strong> {drop_off || "Not specified"}
+                  </Typography>
+                  <Typography variant="body1" sx={{ marginBottom: "15px" }}>
+                    <strong>Accommodation:</strong> {accommodation || "Not specified"}
+                  </Typography>
+                  <Typography variant="body1" sx={{ marginBottom: "15px" }}>
+                    <strong>Accessibility:</strong> {accessibility || "Not specified"}
+                  </Typography>
+                </Grid>
+              </Grid>
+              <ItineraryUpdate
+                itinerary={itinerary}
+                setItinerary={setItinerary}
+                setRefreshKey={setRefreshKey}
+              />
+            </Paper>
+            
+
+            
+          </Grid>
+        </Grid>
+        <Paper elevation={3} sx={{ padding: '30px', borderRadius: '15px', backgroundColor: '#fff', marginBottom: '30px',width:'1320px' }}>
+              <Typography variant="h5" sx={{ marginBottom: '20px', color: '#004e89' }}>Activities</Typography>
               <ItineraryActivityList
                 activities={activities}
                 updateActivity={updateActivity}
                 deleteActivity={deleteActivity}
                 createActivity={createActivity}
               />
-            </Typography>
-          </Box>
-          <Button
-            variant="contained"
-            color={itinerary.isActive ? "error" : "primary"} // Red button for deactivation
-            onClick={handleDialogOpen}
-            sx={{ marginTop: "20px" }}
-          >
-            {itinerary.isActive ? "Deactivate Itinerary" : "Activate Itinerary"}
-          </Button>
-          {!itinerary.isOpened && 
-          <Button
-            variant="contained"
-            color={"primary"} // Red button for deactivation
-            onClick={openBookings}
-            sx={{ marginTop: "20px" }}
-          >
-            {"Open Bookings"}
-          </Button>
-          } 
-          {/* Confirmation dialog */}
-          <Dialog open={openDialog} onClose={handleDialogClose}>
-            <DialogTitle>
-              {itinerary.isActive
-                ? "Confirm Deactivation"
-                : "Confirm Activation"}
-            </DialogTitle>
-            <DialogContent>
-              <DialogContentText>
-                {itinerary.isActive
-                  ? "Are you sure you want to deactivate this itinerary?"
-                  : "Are you sure you want to activate this itinerary?"}
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={handleDialogClose} color="primary">
-                Cancel
-              </Button>
+            </Paper>
+
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: '30px' }}>
               <Button
-                onClick={() => toggleIsActive(!itinerary.isActive)}
-                color="error"
-                autoFocus
+                variant="contained"
+                color={itinerary.isActive ? "error" : "primary"}
+                onClick={handleDialogOpen}
+                sx={{ 
+                  backgroundColor: itinerary.isActive ? '#ff6b35' : '#004e89', 
+                  '&:hover': { backgroundColor: itinerary.isActive ? '#e55a2b' : '#003d6f' },
+                  // borderRadius: '20px'
+                }}
               >
-                Confirm
+                {itinerary.isActive ? "Deactivate Itinerary" : "Activate Itinerary"}
               </Button>
-            </DialogActions>
-          </Dialog>
-        </div>
+              {!itinerary.isOpened && 
+                <Button
+                  variant="contained"
+                  onClick={openBookings}
+                  sx={{ 
+                    backgroundColor: '#004e89', 
+                    '&:hover': { backgroundColor: '#003d6f' },
+                    borderRadius: '20px'
+                  }}
+                >
+                  Open Bookings
+                </Button>
+              }
+            </Box>
+
+        <Dialog open={openDialog} onClose={handleDialogClose}>
+          <DialogTitle>
+            {itinerary.isActive ? "Confirm Deactivation" : "Confirm Activation"}
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              {itinerary.isActive
+                ? "Are you sure you want to deactivate this itinerary?"
+                : "Are you sure you want to activate this itinerary?"}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleDialogClose} sx={{ color: '#a70000' }}>
+              Cancel
+            </Button>
+            <Button
+              onClick={() => toggleIsActive(!itinerary.isActive)}
+              sx={{ color: '#004e89' }}
+              autoFocus
+            >
+              Confirm
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Box>
-    </div>
+    </Box>
   );
 };
 

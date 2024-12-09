@@ -132,34 +132,7 @@ export default function Checkout(props, { activityId },) {
   const [clientSecret, setClientSecret] = useState(null);
   const [isPaymentCompleted, setIsPaymentCompleted] = React.useState(false);
   const stripePromise = loadStripe('pk_test_51QLoL4AkXvwFjwTIX8acMj27pC8YxdOhmoUzn0wbUhej1xUFgFlfgYtXRGmggbKUI6Yfpxz08i9shcsfszv6y9iP0007q608Ny'); // Publishable key
-  
-  // const confirmPayment = async (clientSecret, cardElement) => {
-  //   const stripe = await stripePromise;
-  //   console.log(clientSecret,cardElement);
-  //   console.log("stripe confirm"+stripe)
-  //   // Use the cardElement directly
-  //   const { paymentMethod, error: paymentMethodError } = await stripe.createPaymentMethod({
-  //     type: 'card',
-  //     card: cardElement,
-  //   });
-  //   console.log("done")
-  //   if (paymentMethodError) {
-  //     console.error('Error creating payment method:', paymentMethodError.message);
-  //     return;
-  //   }
-  //   const { paymentIntent, error } = await stripe.confirmCardPayment(clientSecret, {
-  //     payment_method: paymentMethod.id,
-  //   });
-  
-  //   if (error) {
-  //     console.error('Payment failed:', error.message);
-  //   } else if (paymentIntent) {
-  //     console.log('Payment successful:', paymentIntent);
-  //     alert('Payment successful!');
-  //   }
-  // };
-  
-  
+   
   const handlePlaceOrder = async () => {
     // setLoading(true);
     try {

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate } from 'react-router-dom';
 import { Box ,Typography,Button, Divider, Link, IconButton} from "@mui/material";
@@ -12,6 +12,12 @@ import PinDropIcon from '@mui/icons-material/PinDrop';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import { ExpandMore, ExpandLess } from '@mui/icons-material';
+import axios from "axios";
+import ExtraServicesPaymenPopUp from "../Pages/Tourist/components/ExtraServicesPaymenPopUp";
+import { jwtDecode } from "jwt-decode";
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+const stripePromise = loadStripe('pk_test_51QLoL4AkXvwFjwTIX8acMj27pC8YxdOhmoUzn0wbUhej1xUFgFlfgYtXRGmggbKUI6Yfpxz08i9shcsfszv6y9iP0007q608Ny'); // Publishable key
 
 const HotelDetails = () =>{
     const { state } = useLocation();
@@ -19,12 +25,39 @@ const HotelDetails = () =>{
     const offer = state.offer;
 
     const [isDescriptionVisible, setDescriptionVisible] = useState(false);
+    const [user, setUser] = useState();
+    const [token,setToken] = useState(localStorage.getItem('jwt'));
     const handleToggleDescription = () => {
       setDescriptionVisible(!isDescriptionVisible);
     };
 
     // Function to format the duration string
     const navigate = useNavigate();
+    
+    useEffect(() => {
+      const fetchUser = async () => {
+        try {
+          const token = localStorage.getItem("jwt");
+          const id = jwtDecode(token).id;
+    
+          const response = await axios.get(
+            `http://localhost:4000/cariGo/users/${id}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+            
+         
+          setUser(Object.assign({}, response.data));
+        } catch (err) {
+          console.error("Error fetching profile:", err);
+        }
+      };
+     
+      fetchUser();
+      }, []);
 
     function calculateStayDuration(checkInDate, checkOutDate) {
         // Convert the input dates to Date objects
@@ -58,14 +91,51 @@ const HotelDetails = () =>{
         navigate(`/book-services`);
         window.scrollTo(0, 0);
         }
-        const token = localStorage.getItem('jwt');
+        const [isPaymentPopupOpen, setIsPaymentPopupOpen] = useState(false);
         const handleBookClick=() =>{
-
-         navigate(`/ExtraServicesCheckOut/hotel`,{ state: { hotel,offer } }) ;
+         //navigate(`/ExtraServicesCheckOut/hotel`,{ state: { hotel,offer } }) ;
+          if (token){
+            setIsPaymentPopupOpen(true);
+          }
+            
+          else navigate(`/login`);
         };
-
+        const handlePlaceOrder = async (paymentMethod,TotalPrice) => {
+          // setLoading(true);
+          try {
+            const token = localStorage.getItem("jwt");
+            if (!token) {
+              throw new Error("No token found. Please log in.");
+            }
+            
+      
+            const endpoint = `http://localhost:4000/cariGo/flights//BookHotel`;
+      
+            // const payload = 
+            const response = await axios.post(endpoint, {
+              PaymentMethod:paymentMethod,
+              TotalPrice:TotalPrice,
+              hotelData : {
+                hotelName: hotel.hotel.name,  // Replace with actual property you need
+                offer: offer  // Assuming offer is a variable in your scope
+              }
+            }, {
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+            });
+      
+            if (response.data) {
+              navigate("/tourist/MyBookedHotels");
+            }
+          } catch (error) {
+            console.error("Error during booking:", error);
+            // setError(error.response?.data?.error || 'Booking failed');
+          }
+        };
   return (
-    <Box sx={{display:'flex', flexDirection:'column', gap:'0px', margin:'20px', marginLeft:'10%'}}>
+    <Box sx={{display:'flex', flexDirection:'column', gap:'0px', margin:'20px', marginLeft:'10%',alignItems:'center'}}>
       <Button onClick={handleBackCLick}
           sx={{ backgroundColor: "#126782", color: 'white', borderRadius: '8px', width: '80px', fontSize:'18px', marginLeft:'20px' }}>
           Back
@@ -204,11 +274,30 @@ const HotelDetails = () =>{
             }}>
             Book
           </Button>
+          <Elements stripe={stripePromise}>
+            {isPaymentPopupOpen && (
+              <ExtraServicesPaymenPopUp
+                open={isPaymentPopupOpen}
+                onClose={() => setIsPaymentPopupOpen(false)}
+                checkoutCart={handlePlaceOrder}
+                amount={(offer.price.total)}
+                user={user}
+                ServiceName={hotel.hotel.name} 
+                startDate={offer.checkInDate}
+                endDate={offer.checkOutDate}
+                type={"hotel"}
+                currency={offer.price.currency}
+              />
+            )}
+          </Elements>
           </Box>
       </Box>
       
     </Box>
     </Box>
+    <h4 className="bg-gradient-to-r from-[#01324c] via-[#01324c] to-[#01324c] bg-clip-text text-2xl font-semibold text-transparent md:text-5xl" overflowX="auto">
+          ___________________________ 🦌 ___________________________
+        </h4>
     </Box>
   );
 };
