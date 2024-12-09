@@ -692,7 +692,7 @@ this route is used to review activities,itineraries,tour guides and products usi
 
 ### sales report
 
-this route is used to generate sales reports using the url /review followed by the following :
+this route is used to generate sales reports :
 - **/activity :** a post request to review a activity
 - **/itinerary :** a post request to review a itinerary
 - **/tourGuide :** a post request to review a tourGuide

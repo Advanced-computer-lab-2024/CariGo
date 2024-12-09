@@ -692,13 +692,31 @@ this route is used to review activities,itineraries,tour guides and products usi
 
 ### sales report
 
-this route is used to generate sales reports using the url /review followed by the following :
+this route is used to generate sales reports :
 - **/activity :** a post request to review a activity
 - **/itinerary :** a post request to review a itinerary
 - **/tourGuide :** a post request to review a tourGuide
 - **/product :** a post request to review a product
 - **/:id :** a get/delete/patch request that read/deletes/updates a review by its id
 
+
+### delete account request
+handles all operations related to requests used by the url /delReq followed by the following:
+
+-**/createReq :** a post method to create a delete request
+-**/getReq :** a get method to read a delete request
+-**delReq :** a delete method to delete a user's account 
+
+### cart
+used to handle all operations related to the cart as follows:
+- **/ :**  a get method to read a user's cart
+- **/order/:id :** a get method to read a simgle order by its id
+- **/edit :** a patch method to edit a product in a user's cart
+- **/remove/:id :** a patch method to remove an item from a user's cart by its id
+-**/clear :** a patch method to clear a user's cart
+-**MyOrders** a get method to read all of a tourist's orders
+-**/cancel :** a patch method for a tourist to cancel an order
+-**/checkout :** a post method to checkout a cart
 
 ## Tests
 
@@ -768,3 +786,23 @@ For anyone who would like to contribute in the development of the project just c
 
 ## License
 MIT License
+
+Copyright (c) 2024 Rahma Ahmed, Yasmeen Mohamed Shaaban, Mohamed Hossameldin Abdulbaki , Menna Wahba
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
