@@ -700,6 +700,19 @@ this route is used to generate sales reports using the url /review followed by t
 - **/:id :** a get/delete/patch request that read/deletes/updates a review by its id
 
 
+### request
+
+### cart
+used to handle all operations related to the cart as follows:
+- **/ :**  a get method to read a user's cart
+- **/order/:id :** a get method to read a simgle order by its id
+- **/edit :** a patch method to edit a product in a user's cart
+- **/remove/:id :** a patch method to remove an item from a user's cart by its id
+-**/clear :** a patch method to clear a user's cart
+-**MyOrders** a get method to read all of a tourist's orders
+-**/cancel :** a patch method for a tourist to cancel an order
+-**/checkout :** a post method to checkout a cart
+
 ## Tests
 
 **Tests were done primarily on Postman. To test an API endpoint using Postman, you can follow these general instructions:**
