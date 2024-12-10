@@ -87,7 +87,7 @@ const Footer = () => {
   };
 
   const navigateToItirenaries = () => {
-    navigate("/user_itineraries");
+    navigate("/Tourist-itineraries");
   };
 
   const navigateToActivities = () => {
@@ -95,7 +95,7 @@ const Footer = () => {
   };
 
   const navigateToHome = () => {
-    navigate("/Home");
+    navigate("/");
   };
 
   return (
@@ -131,7 +131,7 @@ const Footer = () => {
 
       <ul style={menuStyle}>
         <li style={menuItemStyle}>
-          <Link to="/Home" style={menuLinkStyle}>
+          <Link to="/" style={menuLinkStyle}>
             Home
           </Link>
         </li>
@@ -141,7 +141,7 @@ const Footer = () => {
           </Link>
         </li>
         <li style={menuItemStyle}>
-          <Link to="/user_itineraries" style={menuLinkStyle}>
+          <Link to="/Tourist-itineraries" style={menuLinkStyle}>
             Itineraries
           </Link>
         </li>
