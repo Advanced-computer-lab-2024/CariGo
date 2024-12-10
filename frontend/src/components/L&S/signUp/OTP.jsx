@@ -65,7 +65,7 @@ function OTP(message,finished) {
         formData.passwordConfirm=""
       }} catch (error) {
         console.error("Error:", error.message);
-        alert("Login failed: " + error.message);
+        alert("Password Mismatch Or Invalid Password");
       }
     }
     
