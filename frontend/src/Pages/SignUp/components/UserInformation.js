@@ -368,6 +368,8 @@ console.log(userRole);
   
         console.log("Photo uploaded successfully:", await imageResponse.json());
       }
+      alert("Sign Up is Done Successfully")
+      window.location.href = "/SignIn-Up";
     } catch (error) {
       console.error("Error during signup process:", error.message);
       alert("Signup failed: Please Check how to use tutorial" );
