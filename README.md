@@ -786,7 +786,7 @@ For anyone who would like to contribute in the development of the project just c
 ## License
 MIT License
 
-Copyright (c) 2024 Rahma Ahmed, Yasmeen Mohamed Shaaban, Mohamed Hossameldin Abdulbaki , Menna Wahba
+Copyright (c) 2024 Rahma Ahmed, Yasmeen Mohamed Shaaban, Mohamed Hossameldin Abdulbaki , Menna Wahba, Shahd Ayman Taha, Arwa Saad Shalabi , shahd wael abdelkhalek , Abdelrahman Zakzouk, Ali Hossam , Omar Magdy
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
