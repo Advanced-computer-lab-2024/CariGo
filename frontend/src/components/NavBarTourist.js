@@ -190,7 +190,7 @@ function ResponsiveAppBar() {
             variant="contained"
             color="secondary"
             sx={{ marginLeft: 2 }}
-            onClick={() => navigate("/login")} // Replace with your login logic
+            onClick={() => navigate("/SignIn-Up")} // Replace with your login logic
           >
             Login
           </Button>

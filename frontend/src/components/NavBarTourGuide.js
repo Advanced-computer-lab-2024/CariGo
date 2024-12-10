@@ -385,7 +385,7 @@ function ResponsiveAppBar() {
                       localStorage.removeItem("id");
                       localStorage.removeItem("token");
                       localStorage.removeItem("role");
-                      navigate("/login"); // Example navigation after logout
+                      navigate("/SignIn-Up"); // Example navigation after logout
                     }
                   }}
                 >

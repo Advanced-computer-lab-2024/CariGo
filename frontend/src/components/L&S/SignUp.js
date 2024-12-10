@@ -37,16 +37,17 @@ function SignUpForm({handleSignUp}) {
   };
  const handle = (data) =>{
   localStorage.setItem("role",data)
+  console.log(data)
         handleSignUp(true)
  }
   return (
     <div className="form-container sign-up-container">
       <form className="form" onSubmit={handleOnSubmit}>
         <h1 className="h1">Create Account</h1>
-        <h1 className="h1" style={{marginTop:"10px"}}>AS</h1>
+        <h1 className="h1" style={{marginTop:"10px"}}>AS </h1>
         <div className="social-container" style={{gap:2}}> 
           
-          <button onClick={()=>handle("Advertiser")} id="Advertiser" className="social a" style={{marginRight:"40px"}}>
+          <button onClick={()=>{localStorage.setItem("role","Advertiser");handleSignUp(true)}} id="Advertiser" className="social a" style={{marginRight:"40px"}}>
           <Tooltip title="Advertiser">
           <Avatar alt="A" sx={{ width: 56, height: 56 }} src={adv} />
           </Tooltip>

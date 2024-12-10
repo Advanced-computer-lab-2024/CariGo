@@ -20,13 +20,6 @@ export default function UploadDocumentsPage({onDocsSubmit}) {
   });
 const userRole=localStorage.getItem('role');
 console.log(userRole);
-// const userRole = "Tour_Guide"; // Set this dynamically as needed
-//   const [selectedFiles, setSelectedFiles] = useState({
-//     id: null,
-//     certificate: null,
-//     taxationRegistryCard: null,
-//   });
-
   // Handle file selection changes
   const handleFileChange = (e) => {
     const { name, files } = e.target;
@@ -42,17 +35,7 @@ console.log(userRole);
     event.preventDefault();
     const formData = new FormData();
 
-    // Append files to formData
-    // if (selectedFiles.id) formData.append('id', selectedFiles.id);
-    // selectedFiles.certificates.forEach((file, idx) =>
-    //   formData.append(`certificates`, file)
-    // );
-    // if (selectedFiles.taxationRegistryCard) {
-    //   formData.append('taxationRegistryCard', selectedFiles.taxationRegistryCard);
-    // }
-    // for (let [key, value] of formData.entries()) {
-    //     console.log(key, value); // Logs each entry in formData
-    //   }
+    
 
     if (selectedFiles.id) formData.append('id', selectedFiles.id);
     if (userRole === "Tour_Guide" && selectedFiles.certificates.length > 0) {
