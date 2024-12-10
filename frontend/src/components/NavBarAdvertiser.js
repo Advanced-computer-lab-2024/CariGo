@@ -212,7 +212,7 @@ function TouristNB() {
   const handleLogout = () => {
     handleCloseUserMenu();
     // Add your logout logic here
-    navigate("/login"); // Example navigation after logout
+    navigate("/SignIn-Up"); // Example navigation after logout
   };
   const handleChangePass = () => {
     handleCloseUserMenu();

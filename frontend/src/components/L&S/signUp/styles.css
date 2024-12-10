@@ -55,7 +55,7 @@
 .button {
   border-radius: 20px;
   border: 1px solid #ff4b2b;
-  background-color: #ff4b2b;
+  background-color: #ff4d4d;
   color: #ffffff;
   font-size: 12px;
   font-weight: bold;
@@ -178,9 +178,9 @@ button.ghost {
 }
 
 .overlay {
-  background: #ff416c;
+  background: linear-gradient(135deg, #ff4d4d, #126782);
   background: -webkit-linear-gradient(to right, #ff4b2b, #ff416c);
-  background: linear-gradient(to right, #ff4b2b, #ff416c);
+  /* background: linear-gradient(to right, #ff4b2b, #ff416c); */
   background-repeat: no-repeat;
   background-size: cover;
   background-position: 0 0;

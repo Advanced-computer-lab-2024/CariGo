@@ -125,12 +125,12 @@ import CartComponent from "./Pages/ProductsCart.js";
 import WishlistPage from "./Pages/viewWishlist.js";
 //import ChooseSignUP from "./Pages/ChooseSignUp";
 import OrderListScreen from "./Pages/Tourist/Orders/OrderListScreen.jsx";
-
+import Temp from "./components/L&S/signUp/App2.jsx";
 import BookedActivity from "./Pages/Tourist/Orders/BookedActivity.jsx";
 import OrderDetailScreen from "./Pages/Tourist/Orders/OrderDetailScreen.jsx";
 import ActivityPostAdvList from "./components/ActivityPostAdvList.js";
 import BookDetails from "./Pages/Tourist/Orders/BookDetails.jsx";
-
+import OTP from "./components/L&S/signUp/OTP.jsx";
 import ViewReport from "./components/Report/ViewReport.jsx";
 import Table from "./components/Report/Table.jsx";
 function App() {
@@ -163,7 +163,7 @@ function App() {
     <Route path="/Tourist/book/:type" element={<BookedActivity />} />
     
     <Route path="Tourist/order_detail/:id" element={<OrderDetailScreen />} />
-          
+    <Route path="/OTP/" element={<Temp />} />  
         <Route path="/" element={<HomePageGuest />} /> {/* Default route */}
         <Route path="/signIn-Up" element={<Sign />} /> 
         <Route path="/tourist/MyBookings" element={<MyBookings />} /> {/* Default route */}

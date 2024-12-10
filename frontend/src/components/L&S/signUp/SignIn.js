@@ -1,5 +1,6 @@
 //import { useState } from "react";
 import React, { useState } from "react";
+
 import { useNavigate } from "react-router-dom";
 //import { forgotPassword } from "../../../../../backend/controllers/authController";
 function SignInForm() {
@@ -32,38 +33,7 @@ function SignInForm() {
   const handleSubmitLogin = async (event) => {
     //formData.email=formData.username
     event.preventDefault();
-    if(reset){
-      console.log(formData)
-      try{
-        const response = await fetch(`${url}`, {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
-        });
-          console.log(response)
-        if (!response.ok) {
-          if (response.status === 401) {
-            throw new Error("Unauthorized: Incorrect username or password");
-          }
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        
-
-        const data = await response.json();
-
-        setReset(false)
-        setSign(true)
-        formData.email=""
-        formData.username=""
-        formData.password=""
-        alert("reset password Successfully")
-        formData.passwordConfirm=""
-      } catch (error) {
-        console.error("Error:", error.message);
-        alert("Login failed: " + error.message);
-      }
-  
-    }else
+    
      if(passwordForgotten){
       setReset(true)
       setSign(false)
@@ -83,8 +53,16 @@ function SignInForm() {
       }
     
       const data = await response.json();
-      setUrl(data.url) 
-      //setPasswordForgotten(false) 
+      const parts = data.url.split("/");
+      localStorage.setItem("code",parts[6])
+      //localStorage.setItem('url',data.url)
+      //setUrl(data.url) 
+      const url = data.url
+      localStorage.setItem("star",url)
+      console.log(localStorage.getItem("star"))
+      console.log(localStorage.getItem("code"))
+      setPasswordForgotten(false)
+      setSign(true) 
       // navigate('/admin');
     } catch (error) {
       console.error("Error:", error.message);
@@ -158,7 +136,7 @@ function SignInForm() {
       // navigate('/admin');
     } catch (error) {
       console.error("Error:", error.message);
-      alert("Login failed: " + error.message);
+      alert("Login failed: Invalid Credentials");
     }   }
  
   };
@@ -208,26 +186,20 @@ function SignInForm() {
           value={formData.email}
           onChange={handleChange}
         />}
-        {(!passwordForgotten || reset) &&<input className="input"
+        {(sign) &&<input className="input"
           type="password"
           name="password"
           placeholder="Password"
           value={formData.password}
           onChange={handleChange}
         />}
-            {reset &&<input className="input"
-          type="password"
-          placeholder="password Confirm"
-          name="passwordConfirm"
-          value={formData.passwordConfirm}
-          onChange={handleChange}
-        />}
-        {!passwordForgotten && <button  onClick={handleForgetPass} className="a" style={{marginTop:"-6px",marginLeft:"130px",marginBottom:"40px"}}>
-          <span className="span" style={{marginLeft:"80px"}}>
-          Forgot your password?</span></button>}
-        {sign && <button className="button" style={{marginTop:"20px"}}>{"Sign In"}</button>}
-        {passwordForgotten && <button className="button" style={{marginTop:"20px"}}>{"Send Email"}</button>}
-        {reset && <button className="button" style={{marginTop:"20px"}}>{"Reset Password"}</button>}
+            
+        {!passwordForgotten && <button  onClick={handleForgetPass} className="" style={{marginTop:"-6px",marginLeft:"130px",marginBottom:"40px"}}>
+          {sign &&<span className="span" style={{marginLeft:"80px"}}>
+          Forgot your password?</span>}</button>}
+        {sign && <button className="button" type="submit" style={{marginTop:"20px"}}>{"Sign In"}</button>}
+        {passwordForgotten && <button className="button" type="submit" style={{marginTop:"20px"}}>{"Send Email"}</button>}
+          
       </form>
     </div>
   );

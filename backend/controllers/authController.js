@@ -15,7 +15,7 @@ const signToken = (id) => {
 
 exports.signup = catchAsync(async (req, res, next) => {
   const userType = req.body.role;
-  // console.log(req.body);
+   console.log(req.body);
   if (userType === "admin" || userType === "Tourism_Governer") {
     return next(
       new AppError(
@@ -32,7 +32,7 @@ exports.signup = catchAsync(async (req, res, next) => {
   }
 
   // console.log(userType);
-
+  console.log(1);
   let newUserData;
   if (userType === "Advertiser") {
     newUserData = {
@@ -97,15 +97,25 @@ exports.signup = catchAsync(async (req, res, next) => {
     ...req.body,
     passwordChangedAt: Date.now(),
   };
+  console.log(newUserData);
+  try {
+    const newUser = await User.create(newUserData);
+    console.log("New User Created:", newUser); // Debugging log
+    createSendToken(newUser, 201, res);
+} catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ message: "Internal Server Error", error: error.message });
+}
 
-  const newUser = await User.create(newUserData);
-
-  createSendToken(newUser, 201, res);
+  console.log(4);
 });
 
 const createSendToken = (user, statusCode, res) => {
+  console.log(5);
   console.log(user._id)
+  console.log(5.4);
   const token = signToken(user._id);
+  console.log(6);
   const cookieOptions = {
     //browser will delete cookie after it has expired
     expires: new Date(
@@ -113,9 +123,11 @@ const createSendToken = (user, statusCode, res) => {
     ),
     httpOnly: true,
   };
+  console.log(6);
   if (process.env.NODE_ENV === "production") cookieOptions.secure = true;
-
+  console.log(7);
   res.cookie("jwt", token, cookieOptions);
+  console.log(8);
   // Remove password from output
   user.password = undefined;
 
@@ -255,7 +267,7 @@ exports.restrictTo = (...roles) => {
 exports.forgotPassword = catchAsync(async (req, res, next) => {
   // Get user based on POSTed email
   const user = await User.findOne({ email: req.body.email });
-
+   
   // if email does not exist
   if (!user) {
     return next(new AppError("There is no user with email address 📧❌", 404));
@@ -272,9 +284,9 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   const resetURL = `${req.protocol}://${req.get(
     "host"
   )}/cariGo/users/resetPassword/${resetToken}`;
-
-  const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL} 🔑.\nIf you didn't forget your password, please ignore this email!`;
-
+ const url = `http://localhost:3000/OTP/?resetPasswordUrl=${resetURL}`
+  //const userMessage = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL} 🔑.\nIf you didn't forget your password, please ignore this email!`;
+  const message =  `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${url} 🔑.\nIf you didn't forget your password, please ignore this email!`;
   try {
     await sendEmail({
       email: user.email,
