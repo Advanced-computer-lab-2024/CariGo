@@ -1,7 +1,9 @@
 # Carigo
+
 A virtual trip planner to make your travels easier and help you book everything in one place
 
 ## Table of Contents
+
 - [Motivation](#Motivation)
 - [Build Status](#Build-Status)
 - [Code Style](#Code-Style)
@@ -15,30 +17,35 @@ A virtual trip planner to make your travels easier and help you book everything 
 - [Contribute](#Contribute)
 - [Credits](#Credits)
 - [License](#License)
+
 ## Motivation
+
 want to plan you next trip without gettign a major headache?
 with Carigo you can plan and book everything in your trip from activites near your destination to your plane tickets in one place!!
 
 ## Build Status
+
 this project is still under development and not publishable to the public
 
 ## Code Style
+
 the project is split among 2 folder
+
 1. **frontned**
-    this folder has everything related to the clients side and is split into
-    - **components:** folder with most of the website front end componentns
-    - **Pages:** folder that has all the .js files that are full pages on the website
-        - some folders inside the pages folder have a sub components folder that has components specific to these folders
-    - **assets :** this folder is used to hold any images used inside our frontend
+   this folder has everything related to the clients side and is split into
+   - **components:** folder with most of the website front end componentns
+   - **Pages:** folder that has all the .js files that are full pages on the website
+     - some folders inside the pages folder have a sub components folder that has components specific to these folders
+   - **assets :** this folder is used to hold any images used inside our frontend
 2. **backend**
-    this is where the server side is handled and it si split into a few main folders
-    - **controllers :** this has the controllers for all the main elements of our project and where all the code for the API functions is written
-    - **routes :** the folder that handles creating routes for all API functions created inside controllers
-    - **models :** contains the database models for all pur database elements 
-    - **middleware:** used to hold the code for anu authentication procees required
-    - **public/img :** a folder used to hold all the uploaded images / documents for admin approval
-    - **utils :**  contains functions that help controllers in things such as error checking and sending emails
-    3. **We use [Prettier](https://prettier.io/)** to enforce a consistent code style.
+   this is where the server side is handled and it si split into a few main folders
+   - **controllers :** this has the controllers for all the main elements of our project and where all the code for the API functions is written
+   - **routes :** the folder that handles creating routes for all API functions created inside controllers
+   - **models :** contains the database models for all pur database elements
+   - **middleware:** used to hold the code for anu authentication procees required
+   - **public/img :** a folder used to hold all the uploaded images / documents for admin approval
+   - **utils :** contains functions that help controllers in things such as error checking and sending emails
+   3. **We use [Prettier](https://prettier.io/)** to enforce a consistent code style.
 
 <details>
 <summary>Useful Commands</summary>
@@ -56,35 +63,46 @@ npm run format
 ```bash
 npm run format:fix
 ```
+
 </details>
 ## Screenshots
 
 ## Frameworks-used
+
 #### MERN stack
+
 - **MonogDB:** MongoDB is used to host our server.
-- **Express:** Express is used to interface our back and front ends. 
+- **Express:** Express is used to interface our back and front ends.
 - **React:** React.js is used to build our website frontend.
-- **Node:** Node.js is used as our backend runtime environment in Javascript. 
+- **Node:** Node.js is used as our backend runtime environment in Javascript.
 - **postman :** postman was used to test our routes before implementing them into frontend
 
-#### Frontend Libraries 
+#### Frontend Libraries
+
 - **Material UI (6.1.9):** we use mui as alot of its built in components are easier to use than HTML
 - **joy :** to validate user inputs
 - basic HTML components
 - **jwt-decode**: to decode user token to get user id when needed
-#### Backend Libraries 
+
+#### Backend Libraries
+
 - **bcrypt:** was used for hashing and unhashing of passwords and authentication perposes
 - **dotenv:** to get data for the .env file to avoid exposing private keys
 - **node-schedule**: was used for tasks that need scheduling like checking daily for birhdays and notifications
 - **nodemon**: in order to recompile the code each time a modification was made
-#### User Communication 
+
+#### User Communication
+
 - **nodeMailer**: was used to send emails
-#### Payment 
+
+#### Payment
+
 - **stripe**: was used to handle card payments
 - **exchangerate-api.com**: was user for currency conversion
-#### HTTP client 
-- **Axios**: to handle communication between frotend and backend
 
+#### HTTP client
+
+- **Axios**: to handle communication between frotend and backend
 
 ## Features & Screenshots
 
@@ -93,8 +111,6 @@ npm run format:fix
 **book flights/hotels/transportations , look for activities , book itineraries with a tour guides or just find out about historical places in your next destination, and even see what souvnirs you want to buy all in one place !**
 
 ![choices home](images/choices%20home.png)
-
-
 
 **filter through and scroll into endless choices of activites to add to oyur next trip!!**
 
@@ -135,7 +151,6 @@ npm run format:fix
 
 ![alt text](images/suggested_for_you.png)
 
-
 **look for any souvenir you want to buy on your trip via our gift shop 🎁**
 
 ![alt text](images/gift_shop.png)
@@ -157,34 +172,38 @@ npm run format:fix
 **also easily and smoothly manage your profile settings**
 
 ![alt text](<images/profile settings.png>)
+**In the advertiser profile you can create your own activities/transportaion**
+
+![alt text](<tourist create transportation.png>)
+![alt text](<tourist create activity.png>)
 
 **now that the insides of your trip is planned there is still 1 more step!!**<br/>
-***✨ transportation and accomodation ✨***<br/>
+**_✨ transportation and accomodation ✨_**<br/>
 **book any flights 🛬 , hotels 🏨, or even in trip trnasportation 🚕 🚎 provided by our advertisers easily through our website!!**
 
 ![alt text](images/select_service.png)
 
-![text](images/search_flight.png) 
-![text](images/search_hotel.png) 
+![text](images/search_flight.png)
+![text](images/search_hotel.png)
 ![text](images/search_transport.png)
 
 **manage and edit everything smoothly with our easy to use admin home layout !**
 ![Screenshot (2645)](https://hackmd.io/_uploads/rJRRD0mNJg.png)
 
-
 ## Code Examples
+
 <details>
 <summary>Routes Example</summary>
 
 ```js
-const adminRouter= require("./routes/adminRouter.js");
+const adminRouter = require("./routes/adminRouter.js");
 const productRouter = require("./routes/productRouter.js");
 const experienceRouter = require("./routes/experienceRouter");
 const amadusRouter = require("./routes/amadusRouter.js");
 const transportationRouter = require("./routes/transportationRouter.js");
 const purchaseRouter = require("./routes/purchaseRouter.js");
 const DeleteRequestRouter = require("./routes/deleteRequestRouter.js");
-const notificationRoutes = require('./routes/notificationRouter.js');
+const notificationRoutes = require("./routes/notificationRouter.js");
 const salesReportRouter = require("./routes/salesReportRouter.js");
 ```
 
@@ -271,7 +290,6 @@ exports.deleteTourist = catchAsync(async (req, res, next) => {
     data: null,
   });
 });
-
 ```
 
 </details>
@@ -280,7 +298,6 @@ exports.deleteTourist = catchAsync(async (req, res, next) => {
 <summary>Create Product Example</summary>
 
 ```js
-
 const createProduct = async (req, res) => {
   const userId = new mongoose.Types.ObjectId(req.body.author); // Convert to ObjectId
   const userType = await userModel.findOne({ _id: userId }); // Project only 'roles' field
@@ -323,46 +340,57 @@ const createProduct = async (req, res) => {
 ```js
 const mongoose = require("mongoose");
 
-const notificationSchema = new mongoose.Schema({
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
+const notificationSchema = new mongoose.Schema(
+  {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    message: {
+      type: String,
+      required: true,
+    },
+    type: {
+      type: String,
+      enum: [
+        "flagged_content",
+        "booking_opened",
+        "upcoming_event",
+        "out_of_stock",
+        "promo_code",
+      ],
+      required: true,
+    },
+    contentId: {
+      type: mongoose.Schema.Types.ObjectId,
+      refPath: "contentModel",
+    },
+    contentModel: {
+      type: String,
+      enum: ["Itinerary", "Activity", "Product", "PromoCode"],
+      required: function () {
+        return this.contentId != null;
+      },
+    },
+    isRead: {
+      type: Boolean,
+      default: false,
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
+    scheduledFor: {
+      type: Date,
+    },
+    emailSent: {
+      type: Boolean,
+      default: false,
+    },
   },
-  message: {
-    type: String,
-    required: true
-  },
-  type: {
-    type: String,
-    enum: ['flagged_content', 'booking_opened', 'upcoming_event', 'out_of_stock',"promo_code"],
-    required: true
-  },
-  contentId: {
-    type: mongoose.Schema.Types.ObjectId,
-    refPath: 'contentModel'
-  },
-  contentModel: {
-    type: String,
-    enum: ['Itinerary', 'Activity', 'Product',"PromoCode"],
-    required: function() { return this.contentId != null; }
-  },
-  isRead: {
-    type: Boolean,
-    default: false
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
-  },
-  scheduledFor: {
-    type: Date
-  },
-  emailSent: {
-    type: Boolean,
-    default: false
-  }
-}, { timestamps: true });
+  { timestamps: true }
+);
 
 notificationSchema.index({ userId: 1, createdAt: -1 });
 
@@ -426,19 +454,17 @@ const baseUserValidationSchema = Joi.object({
 ```js
 import { jwtDecode } from "jwt-decode";
 
-
-
 const authenticateToken = (req, res) => {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1]; // Extract the token from the Authorization header
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1]; // Extract the token from the Authorization header
 
-    if (!token) return res.sendStatus(401); // If there's no token, respond with 401
+  if (!token) return res.sendStatus(401); // If there's no token, respond with 401
 
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-        if (err) return res.sendStatus(403); // If token is invalid, respond with 403 Forbidden
-        req.user = user; // Attach the user information to the request object
-        // next(); // Call the next middleware or route handler
-    });
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+    if (err) return res.sendStatus(403); // If token is invalid, respond with 403 Forbidden
+    req.user = user; // Attach the user information to the request object
+    // next(); // Call the next middleware or route handler
+  });
 };
 
 exports.authenticateToken = authenticateToken;
@@ -496,7 +522,6 @@ const AllItineraries = () => {
 };
 
 export default AllItineraries;
-
 ```
 
 </details>
@@ -505,33 +530,37 @@ export default AllItineraries;
 <summary>app routing Example in react</summary>
 
 ```js
-
 function App() {
- return (
-  //  <AuthProvider>
+  return (
+    //  <AuthProvider>
     <Router>
-    <Routes>
-    <Route path="/Tourist/orders" element={<OrderListScreen />} />
-    
-    <Route path="Tourist/order_detail/:id" element={<OrderDetailScreen />} />
-          
+      <Routes>
+        <Route path="/Tourist/orders" element={<OrderListScreen />} />
+        <Route
+          path="Tourist/order_detail/:id"
+          element={<OrderDetailScreen />}
+        />
         <Route path="/" element={<HomePageGuest />} /> {/* Default route */}
         <Route path="/tourist/MyBookings" element={<MyBookings />} /> {/* Default route */}
-        <Route path="/tourist/MyBookedActivities" element={<MyBookedActivities />} /> {/* Default route */}
-        <Route path="/tourist/MyBookedTransportation" element={<MyBookedTransportation />} /> 
-        <Route path="/tourist/MyBookedFlights" element={<MyBookedFlights />} /> 
-        <Route path="/tourist/MyBookedHotels" element={<MyBookedHotels />} /> 
+        <Route
+          path="/tourist/MyBookedActivities"
+          element={<MyBookedActivities />}
+        />{" "}
+        {/* Default route */}
+        <Route
+          path="/tourist/MyBookedTransportation"
+          element={<MyBookedTransportation />}
+        />
+        <Route path="/tourist/MyBookedFlights" element={<MyBookedFlights />} />
+        <Route path="/tourist/MyBookedHotels" element={<MyBookedHotels />} />
         <Route path="/login" element={<LoginPage />} />
       </Routes>
-      </Router>
-
-);
+    </Router>
+  );
 }
-
 ```
 
 </details>
-
 
 ## Installation
 
@@ -566,13 +595,12 @@ cd frontend
 npm install
 ```
 
-
-
 ## API References
- 
+
 ### Activities
 
 handles all operations related to activities on the system ans is used by /activities followed by the following :
+
 - **/ :** a GET function that read all activities to be viewed by a tourist/guest and internally handles any filtering
 - **/getadvact :** a GET function that reads all activites created by the logged in advertiser
 - **/createActivity :** a POST function that allows advertisers to create a new activity
@@ -588,9 +616,8 @@ handles all operations related to activities on the system ans is used by /activ
 - **/CancelActivityBooking :** a PATCH function used to cancel a booked activity as long as it has not started
 - **/readActivitiesByIds :** a GET function used to read multiple itineraries by the string of ids provided in the query
 
-    
 ### Itineraries
- 
+
 handles all operations related to itineraries on the system ans is used by /Event followed by the following :
 
 <details>
@@ -607,82 +634,76 @@ handles all operations related to itineraries on the system ans is used by /Even
 
   ```json
   {
-      "author": "66ff16b8be4fe3e1ff765d90",
-      "activities": [
-          {
-              "name": "Hiking",
-              "start_date": "2024-10-10",
-              "end_date": "2024-10-11",
-              "description": "A scenic mountain hiking tour."
-          },
-          {
-              "name": "Boat Ride",
-              "start_date": "2024-10-12",
-              "end_date": "2024-10-12",
-              "description": "A relaxing boat ride along the river."
-          }
-      ],
-      "language": "English",
-      "price": 150,
-      "locations": ["Mountain Trail", "River Valley"],
-      "pick_up": "City Center, Main Square",
-      "drop_off": "City Center, Main Square",
-      "availability": {
-          "dates": ["2024-10-10", "2024-10-12"]
+    "author": "66ff16b8be4fe3e1ff765d90",
+    "activities": [
+      {
+        "name": "Hiking",
+        "start_date": "2024-10-10",
+        "end_date": "2024-10-11",
+        "description": "A scenic mountain hiking tour."
       },
-      "isBooked": false,
-      "booked_users": []
+      {
+        "name": "Boat Ride",
+        "start_date": "2024-10-12",
+        "end_date": "2024-10-12",
+        "description": "A relaxing boat ride along the river."
+      }
+    ],
+    "language": "English",
+    "price": 150,
+    "locations": ["Mountain Trail", "River Valley"],
+    "pick_up": "City Center, Main Square",
+    "drop_off": "City Center, Main Square",
+    "availability": {
+      "dates": ["2024-10-10", "2024-10-12"]
+    },
+    "isBooked": false,
+    "booked_users": []
   }
   ```
 
 #### Response
 
-  ```json
-  {
-      "author": "66ff16b8be4fe3e1ff765d90",
-      "activities": [
-          {
-              "name": "Hiking",
-              "end_date": "2024-10-11T00:00:00.000Z",
-              "description": "A scenic mountain hiking tour.",
-              "_id": "676433af43a3234b9bb9469f"
-          },
-          {
-              "name": "Boat Ride",
-              "end_date": "2024-10-12T00:00:00.000Z",
-              "description": "A relaxing boat ride along the river.",
-              "_id": "676433af43a3234b9bb946a0"
-          }
-      ],
-      "language": "English",
-      "price": 150,
-      "locations": [
-          "Mountain Trail",
-          "River Valley"
-      ],
-      "pick_up": "City Center, Main Square",
-      "drop_off": "City Center, Main Square",
-      "availability": {
-          "dates": [
-              "2024-10-10T00:00:00.000Z",
-              "2024-10-12T00:00:00.000Z"
-          ]
-      },
-      "isBooked": false,
-      "booked_users": [],
-      "ratingsAverage": 4.5,
-      "ratingsQuantity": 0,
-      "tags": [],
-      "isActive": true,
-      "isFlagged": false,
-      "isOpened": false,
-      "interestedUsers": [],
-      "_id": "676433af43a3234b9bb9469e",
-      "createdAt": "2024-12-19T14:54:39.938Z",
-      "updatedAt": "2024-12-19T14:54:39.938Z",
-      "__v": 0
-  }
-  ```
+```json
+{
+  "author": "66ff16b8be4fe3e1ff765d90",
+  "activities": [
+    {
+      "name": "Hiking",
+      "end_date": "2024-10-11T00:00:00.000Z",
+      "description": "A scenic mountain hiking tour.",
+      "_id": "676433af43a3234b9bb9469f"
+    },
+    {
+      "name": "Boat Ride",
+      "end_date": "2024-10-12T00:00:00.000Z",
+      "description": "A relaxing boat ride along the river.",
+      "_id": "676433af43a3234b9bb946a0"
+    }
+  ],
+  "language": "English",
+  "price": 150,
+  "locations": ["Mountain Trail", "River Valley"],
+  "pick_up": "City Center, Main Square",
+  "drop_off": "City Center, Main Square",
+  "availability": {
+    "dates": ["2024-10-10T00:00:00.000Z", "2024-10-12T00:00:00.000Z"]
+  },
+  "isBooked": false,
+  "booked_users": [],
+  "ratingsAverage": 4.5,
+  "ratingsQuantity": 0,
+  "tags": [],
+  "isActive": true,
+  "isFlagged": false,
+  "isOpened": false,
+  "interestedUsers": [],
+  "_id": "676433af43a3234b9bb9469e",
+  "createdAt": "2024-12-19T14:54:39.938Z",
+  "updatedAt": "2024-12-19T14:54:39.938Z",
+  "__v": 0
+}
+```
 
 </details>
 
@@ -700,93 +721,84 @@ handles all operations related to itineraries on the system ans is used by /Even
 
   ```json
   {
-      "activities": [
-          {
-              "name": "Mountain test ys 3baqi",
-              "end_date": "2024-12-01T11:00:00.000Z",
-              "description": "A scenic hike through the mountain trails with a professional guide.",
-              "_id": "67024111056c479208da9935"
-          },
-          {
-              "name": "Lakeside Picnic",
-              "end_date": "2024-12-01T14:00:00.000Z",
-              "description": "A relaxing picnic by the lake with local delicacies and stunning views.",
-              "_id": "67024111056c479208da9936"
-          },
-          {
-              "name": "Volley Ball",
-              "end_date": "2024-12-01T14:00:00.000Z",
-              "description": "A relaxing picnic by the lake with local delicacies and stunning views."
-          }
-      ],
-      "tags": ["67029818e93b4336b41ee134", "670189d71120edeecf46a036"]
+    "activities": [
+      {
+        "name": "Mountain test ys 3baqi",
+        "end_date": "2024-12-01T11:00:00.000Z",
+        "description": "A scenic hike through the mountain trails with a professional guide.",
+        "_id": "67024111056c479208da9935"
+      },
+      {
+        "name": "Lakeside Picnic",
+        "end_date": "2024-12-01T14:00:00.000Z",
+        "description": "A relaxing picnic by the lake with local delicacies and stunning views.",
+        "_id": "67024111056c479208da9936"
+      },
+      {
+        "name": "Volley Ball",
+        "end_date": "2024-12-01T14:00:00.000Z",
+        "description": "A relaxing picnic by the lake with local delicacies and stunning views."
+      }
+    ],
+    "tags": ["67029818e93b4336b41ee134", "670189d71120edeecf46a036"]
   }
   ```
 
 #### Response
 
-  ```json
-  {
-      "availability": {
-          "dates": []
-      },
-      "_id": "6703bfa0a040b8a99567f43a",
-      "author": "66fffbc17931c2669f7d034c",
-      "activities": [
-          {
-              "name": "Mountain test ys 3baqi",
-              "end_date": "2024-12-01T11:00:00.000Z",
-              "description": "A scenic hike through the mountain trails with a professional guide.",
-              "_id": "67024111056c479208da9935"
-          },
-          {
-              "name": "Lakeside Picnic",
-              "end_date": "2024-12-01T14:00:00.000Z",
-              "description": "A relaxing picnic by the lake with local delicacies and stunning views.",
-              "_id": "67024111056c479208da9936"
-          },
-          {
-              "name": "Volley Ball",
-              "end_date": "2024-12-01T14:00:00.000Z",
-              "description": "A relaxing picnic by the lake with local delicacies and stunning views.",
-              "_id": "67643b1043a3234b9bb947b2"
-          }
-      ],
-      "start_date": "2025-10-07T11:01:00.000Z",
-      "end_date": "2025-10-24T11:01:00.000Z",
-      "transportation": "Bus",
-      "accommodation": "Milano Hotel",
-      "language": "",
-      "price": 103,
-      "locations": [
-          "Castle",
-          "Museum",
-          "kda y3ny"
-      ],
-      "pick_up": "",
-      "drop_off": "",
-      "accessibility": "",
-      "isBooked": true,
-      "booked_users": [],
-      "ratingsAverage": 4.5,
-      "tags": [
-          "67029818e93b4336b41ee134",
-          "670189d71120edeecf46a036"
-      ],
-      "createdAt": "2024-10-07T11:01:52.979Z",
-      "updatedAt": "2024-12-19T15:26:08.665Z",
-      "__v": 0,
-      "isActive": true,
-      "isFlagged": false,
-      "title": "mashi",
-      "category": null,
-      "interestedUsers": [
-          "67306b51011b72d218a47293"
-      ],
-      "isOpened": true,
-      "ratingsQuantity": 0
-  }
-  ```
+```json
+{
+  "availability": {
+    "dates": []
+  },
+  "_id": "6703bfa0a040b8a99567f43a",
+  "author": "66fffbc17931c2669f7d034c",
+  "activities": [
+    {
+      "name": "Mountain test ys 3baqi",
+      "end_date": "2024-12-01T11:00:00.000Z",
+      "description": "A scenic hike through the mountain trails with a professional guide.",
+      "_id": "67024111056c479208da9935"
+    },
+    {
+      "name": "Lakeside Picnic",
+      "end_date": "2024-12-01T14:00:00.000Z",
+      "description": "A relaxing picnic by the lake with local delicacies and stunning views.",
+      "_id": "67024111056c479208da9936"
+    },
+    {
+      "name": "Volley Ball",
+      "end_date": "2024-12-01T14:00:00.000Z",
+      "description": "A relaxing picnic by the lake with local delicacies and stunning views.",
+      "_id": "67643b1043a3234b9bb947b2"
+    }
+  ],
+  "start_date": "2025-10-07T11:01:00.000Z",
+  "end_date": "2025-10-24T11:01:00.000Z",
+  "transportation": "Bus",
+  "accommodation": "Milano Hotel",
+  "language": "",
+  "price": 103,
+  "locations": ["Castle", "Museum", "kda y3ny"],
+  "pick_up": "",
+  "drop_off": "",
+  "accessibility": "",
+  "isBooked": true,
+  "booked_users": [],
+  "ratingsAverage": 4.5,
+  "tags": ["67029818e93b4336b41ee134", "670189d71120edeecf46a036"],
+  "createdAt": "2024-10-07T11:01:52.979Z",
+  "updatedAt": "2024-12-19T15:26:08.665Z",
+  "__v": 0,
+  "isActive": true,
+  "isFlagged": false,
+  "title": "mashi",
+  "category": null,
+  "interestedUsers": ["67306b51011b72d218a47293"],
+  "isOpened": true,
+  "ratingsQuantity": 0
+}
+```
 
 </details>
 
@@ -803,12 +815,12 @@ handles all operations related to itineraries on the system ans is used by /Even
 
 #### Response
 
-  ```json
-  {
-      "status": "success",
-      "message": "Itinerary deleted successfully."
-  }
-  ```
+```json
+{
+  "status": "success",
+  "message": "Itinerary deleted successfully."
+}
+```
 
 </details>
 
@@ -820,10 +832,11 @@ handles all operations related to itineraries on the system ans is used by /Even
 - **/MyItineraryBookings :** a GET function used to show the logged in tourist all their booked itineraries
 - **/CancelItineraryBooking :** a PATCH function used to cancel a booked itinerary as long as it has not started
 - **/readItinerariesByIds :** a GET function used to read multiple itineraries by the string of ids provided in the query
-    
+
 ### Historical places
 
 handles all operations related to historical places on the system ans is used by/Event followed by the following :
+
 - **/viewAllVintage :** a GET function that read all historical places without applying any filters to them
 - **/readAllVintages :** a GET function that read all historical places viewable to tourist/guest and internally handles any tag filtering
 - **/readSingleVintage/:vintageId :** a GET function to get a single historical place by id
@@ -831,15 +844,15 @@ handles all operations related to historical places on the system ans is used by
 - **/updateVintage/:vintageId :** a PATCH function to update an historical place by id
 - **/deleteVintage/:id :** a DELETE function to delete an historical place by id
 - **shareVintage/:id :** a GET function to share an itinerary by its id
-   
-    
+
 ### Products
 
 handles all operations related to products on the system ans is used by /products followed by the following :
+
 - **/ :** a get function that returns all the products available in the market with all it info
 - **/:id :** a get function that returns all the data for a single product which is specified by the id in the URL
- - **/getSellersProducts/:id :** a get function that returns all the products for a specific seller using their id
- - **/getTitles/:id :**  a get function that returns all product titles taht belong to a user based on their id
+- **/getSellersProducts/:id :** a get function that returns all the products for a specific seller using their id
+- **/getTitles/:id :** a get function that returns all product titles taht belong to a user based on their id
 - **/createProduct :** a post function that creates a new product by the seller that is currently logged in
 - **/deleteProduct/:id :** a delet function that deletes a product from the system using the specified id
 - **/updateProduct/:id :** a patch function that updates the info of the selected product using the id provided in the url
@@ -847,24 +860,24 @@ handles all operations related to products on the system ans is used by /product
 - **/unarchiveProduct/:id :** a patch function that updates the status of the selected product to be unarchived using the id provided in the url by seller or admin
 - **/getTitles/:id :** a get function that gets the titles of all the products available on the system for a selected seller or admin
 - **/tourist-products :** a get function that gets the all products available on the system that matches a specified search or fillter
-  
-    
+
 ### purchases
 
 /purchaseRouter followed by the following :
-- **/productPurchases/:id :** a get function that returns a specific product using id 
+
+- **/productPurchases/:id :** a get function that returns a specific product using id
 - **/purchases :** a get function that returns all the data of all product on the system
- - **/userPurchases :** a get function that returns all the purchases for the logged in user
+- **/userPurchases :** a get function that returns all the purchases for the logged in user
 - **/makePurchase :** a post function that handle the logic of purchasing in the data base
 - **/deleteProduct/:id :** a delet function that deletes a product from the system using the specified id
 - **/updateProduct/:id :** a patch function that updates the info of the selected product using the id provided in the url
-    
 
 ### Transportations
- 
+
 handles all operations related to transportations on the system ans is used by /transportation followed by the following:
+
 - **/ :** a get function that reads all transportations
-- **/getadvTrans  :** a get function that reads all transportations created by the logged in advertiser
+- **/getadvTrans :** a get function that reads all transportations created by the logged in advertiser
 - **/getOne/:id :** a GET function to get a single transportation by id
 - **/createTransportation :** a POST function that allows advertisers to create a new transportation
 - **/updateTransportation/:id :** a PATCH function to update a transportation by id
@@ -872,43 +885,43 @@ handles all operations related to transportations on the system ans is used by /
 - **/BookTransportation/:TransportationId :** a post function to book a transportation using its id
 - **/MyBookings :** a get request used to read a tourist's booked transportations
 - **/CancelBooking/:bookId :** a patch request used to cancel a transportation booking using its id
-    
-    
+
 ### flights and hotels
 
 both flight and hotels are done using amadeus api and use /flights followed by the following:
+
 - **/cities :** a get request that reads available cities and filters them based don user typing
 - **/getFlights :** a get method that reads all available flights based on inputed fields
 - **/seatMap :** a get method that reads the seatmap of a specific flight to get extra info about that flight
 - **/hotels :** a get method that reads all available hotels based on inputed fields values
-- **/hotelDetails :** a get method that reads all of a single hotel's booking details 
+- **/hotelDetails :** a get method that reads all of a single hotel's booking details
 - **/BookFlight :** a post method used to book an flight
 - **/BookHotel :** a post method used to book an hotel
-- **/MyfBookings :** a get request that reads all of a tourist's booked flights 
-- **/MyhBookings :** a get request that reads all of a tourist's booked hotels 
+- **/MyfBookings :** a get request that reads all of a tourist's booked flights
+- **/MyhBookings :** a get request that reads all of a tourist's booked hotels
 - **/CancelfBooking :** a patch request that cancels a flight booking as long as its date hasnt come yet
 - **/CancelhBooking :** a patch request that cancels a hotel booking as long as its start date hasnt come yet
-    
-    
+
 ### tourist
- 
+
 handles all operations specific to tourist :
+
 - **/MyAccount :** a get request to get a logged in tourist's account
 - **/updateMe :** a patch request to update a logged in tourist's account
 - **/deleteMe :** a delete request to delete a logged in tourist's account
 - **/fileComplaint :** a post request to allow a tourist to file a complaint
 - **/myComplaints :** a get request that reads all of a tourist's filled complaints
-    
-    
+
 ### advertiser
 
 handles all operations specific to advertiser :
+
 - **/MyAccount :** a get request to get a logged in advertiser's account
 - **/updateMe :** a patch request to update a logged in advertiser's account
 - **/deleteMe :** a delete request to delete a logged in advertiser's account
-   
-  
+
 ### user
+
 <details>
 <summary>GET / - Read All Users</summary>
 
@@ -1013,66 +1026,61 @@ handles all operations specific to advertiser :
 
   ```json
   {
-      "username": "adel",
-      "password": "123456"
+    "username": "adel",
+    "password": "123456"
   }
   ```
 
 #### Response
 
-  ```json
-  {
-      "status": "success",
-      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3NjQzODNjNDNhMzIzNGI5YmI5NDZiYyIsImlhdCI6MTczNDYyMTI4NiwiZXhwIjoxNzQyMzk3Mjg2fQ.iKOso-u-7PmXDaywwpiKPlSDVVRSdOQLDureM9j-KeQ",
-      "data": {
-          "user": {
-              "_id": "6764383c43a3234b9bb946bc",
-              "username": "adel",
-              "email": "adel@gmail.com",
-              "role": "Tourist",
-              "mobile_number": "01555229073",
-              "nationality": "Egypt",
-              "DOB": "2005-02-16T00:00:00.000Z",
-              "job": "meow",
-              "wallet": 0,
-              "experience": [],
-              "ratingsAverage": 4.5,
-              "ratingsQuantity": 0,
-              "previous_work": [],
-              "years_of_experience": 0,
-              "sellerName": "",
-              "description": "",
-              "website_link": "http://guc.edu.eg",
-              "hotline": null,
-              "activities": [],
-              "about": "",
-              "isActive": true,
-              "verified": false,
-              "activityGuests": 0,
-              "passwordChangedAt": "2024-12-19T15:14:04.507Z",
-              "documentApprovalStatus": "Pending",
-              "certificates": [],
-              "loyaltyPoints": 0,
-              "level": 1,
-              "badge": "Bronze",
-              "pointsAvailable": 0,
-              "selectedTags": [
-                  "67029818e93b4336b41ee134",
-                  "6724fab76d94a24e93137efe"
-              ],
-              "wishList": [],
-              "savedEvents": [],
-              "savedItineraries": [
-                  "6703bfa0a040b8a99567f43a"
-              ],
-              "addresses": [],
-              "createdAt": "2024-12-19T15:14:04.513Z",
-              "updatedAt": "2024-12-19T15:14:40.365Z",
-              "__v": 0
-          }
-      }
+```json
+{
+  "status": "success",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3NjQzODNjNDNhMzIzNGI5YmI5NDZiYyIsImlhdCI6MTczNDYyMTI4NiwiZXhwIjoxNzQyMzk3Mjg2fQ.iKOso-u-7PmXDaywwpiKPlSDVVRSdOQLDureM9j-KeQ",
+  "data": {
+    "user": {
+      "_id": "6764383c43a3234b9bb946bc",
+      "username": "adel",
+      "email": "adel@gmail.com",
+      "role": "Tourist",
+      "mobile_number": "01555229073",
+      "nationality": "Egypt",
+      "DOB": "2005-02-16T00:00:00.000Z",
+      "job": "meow",
+      "wallet": 0,
+      "experience": [],
+      "ratingsAverage": 4.5,
+      "ratingsQuantity": 0,
+      "previous_work": [],
+      "years_of_experience": 0,
+      "sellerName": "",
+      "description": "",
+      "website_link": "http://guc.edu.eg",
+      "hotline": null,
+      "activities": [],
+      "about": "",
+      "isActive": true,
+      "verified": false,
+      "activityGuests": 0,
+      "passwordChangedAt": "2024-12-19T15:14:04.507Z",
+      "documentApprovalStatus": "Pending",
+      "certificates": [],
+      "loyaltyPoints": 0,
+      "level": 1,
+      "badge": "Bronze",
+      "pointsAvailable": 0,
+      "selectedTags": ["67029818e93b4336b41ee134", "6724fab76d94a24e93137efe"],
+      "wishList": [],
+      "savedEvents": [],
+      "savedItineraries": ["6703bfa0a040b8a99567f43a"],
+      "addresses": [],
+      "createdAt": "2024-12-19T15:14:04.513Z",
+      "updatedAt": "2024-12-19T15:14:40.365Z",
+      "__v": 0
+    }
   }
-  ```
+}
+```
 
 </details>
 
@@ -1090,34 +1098,37 @@ handles all operations specific to advertiser :
 
   ```json
   {
-      "wishList": ["6727e1641335caa450eb86e0", "6727e317e14a2315d5dd6210"],
-      "savedEvents": ["67016df580e6bc147dba786c","67024b0e39b34c97c0efd15b"],
-      "savedItineraries": ["66ff1f804abdd1e973ecc18e","66fffe6bbd9ea1d61472dfab"],
-      "addresses":[
-          {
-          "street": "123 Main St",
-          "city": "Springfield",
-          "state": "IL",
-          "postalCode": "62701",
-          "country": "USA"
-      }]
+    "wishList": ["6727e1641335caa450eb86e0", "6727e317e14a2315d5dd6210"],
+    "savedEvents": ["67016df580e6bc147dba786c", "67024b0e39b34c97c0efd15b"],
+    "savedItineraries": [
+      "66ff1f804abdd1e973ecc18e",
+      "66fffe6bbd9ea1d61472dfab"
+    ],
+    "addresses": [
+      {
+        "street": "123 Main St",
+        "city": "Springfield",
+        "state": "IL",
+        "postalCode": "62701",
+        "country": "USA"
+      }
+    ]
   }
   ```
 
 #### Response
 
-  ```json
-  {
-      "acknowledged": true,
-      "modifiedCount": 1,
-      "upsertedId": null,
-      "upsertedCount": 0,
-      "matchedCount": 1
-  }
-  ```
+```json
+{
+  "acknowledged": true,
+  "modifiedCount": 1,
+  "upsertedId": null,
+  "upsertedCount": 0,
+  "matchedCount": 1
+}
+```
 
 </details>
-
 
 - **/signup :** a post request to signup a user
 - **/forgotPassword :** a post request to ask the user if they forgot their password in case of wrong credentials
@@ -1131,10 +1142,11 @@ handles all operations specific to advertiser :
 - **/changePassword :** a patch request to change a logged in user's password
 - **/UpdateWallet :** a patch request to change a user's wallet value
 - **/RedeemPoints :** a patch request to handle user reedeming points
-   
-    
-### admin 
+
+### admin
+
 to handle admin specific operations using the url /admin followed by:
+
 - **/getTags :** a get request to read all the tags on the system
 - **/createTag :** a post request to create a new tag
 - **/updateTag/:id :** a put request to pdate a tag using its id
@@ -1145,7 +1157,7 @@ to handle admin specific operations using the url /admin followed by:
 - **/deleteCategory/:id :** a delete request to delete a category
 - **/addAdmin :** a post request to add a new admin
 - **/deleteUser :** a post request to delete a user
-- **/addTourismGovernor :** a post request to adda  tourism governer
+- **/addTourismGovernor :** a post request to adda tourism governer
 - **/viewAllComplaints :** a get request to view all complaints on the system.
 - **/viewComplaint/:id :** a get request to view a complaints based on its id
 - **/updateComplaintStatus/:id :** a patch request to update a complaint's status by its id
@@ -1153,38 +1165,39 @@ to handle admin specific operations using the url /admin followed by:
 - **/filterComplaintsByStatus/:status :** get tequest to filter complaints by status
 - **/promo-code :** post request to create a promo code
 - **/report :** get request to generate a revenue report based on inputed fields
-- **/user_report :** a get request that generates a report about users 
-    
+- **/user_report :** a get request that generates a report about users
+
 ### experience
 
 /experience followed by the following :
+
 - **/createExperience :** a post function to create experience for the tour guide
 
-    
 ### notification
 
 /notifications followed by the following :
-- **/unreade :** a get function that returns the unread message of the current loggen in use 
+
+- **/unreade :** a get function that returns the unread message of the current loggen in use
 - **/ :** a get function that returns all the notification messages of the current loggen in use
 - **/:id :** a get function that returns the data of single notification using the id provided
 - **/:id :** a delete function that delets the notification with the id provided
 - **/mark-all-read :** a patch function that updates the read attribute of a the logged in user to true meaning that they are read.
 - **/:id/mark-read :** a patch function that updates the read attribute of single notification to ture meaning that this notification is read by user this attribute is selected using the id provided in the url
 
-
 ### review
 
 this route is used to review activities,itineraries,tour guides and products using the url /review followed by the following :
+
 - **/activity :** a post request to review a activity
 - **/itinerary :** a post request to review a itinerary
 - **/tourGuide :** a post request to review a tourGuide
 - **/product :** a post request to review a product
 - **/:id :** a get/delete/patch request that read/deletes/updates a review by its id
 
-
 ### sales report
 
 this route is used to generate sales reports :
+
 - **/activity :** a post request to review a activity
 - **/itinerary :** a post request to review a itinerary
 - **/tourGuide :** a post request to review a tourGuide
@@ -1192,40 +1205,42 @@ this route is used to generate sales reports :
 - **/:id :** a get/delete/patch request that read/deletes/updates a review by its id
 
 ### delete account request
+
 handles all operations related to requests used by the url /delReq followed by the following:
 
--**/createReq :** a post method to create a delete request
--**/getReq :** a get method to read a delete request
--**delReq :** a delete method to delete a user's account 
+-**/createReq :** a post method to create a delete request -**/getReq :** a get method to read a delete request -**delReq :** a delete method to delete a user's account
 
 ### cart
+
 used to handle all operations related to the cart as follows:
-- **/ :**  a get method to read a user's cart
+
+- **/ :** a get method to read a user's cart
 - **/order/:id :** a get method to read a simgle order by its id
 - **/edit :** a patch method to edit a product in a user's cart
-- **/remove/:id :** a patch method to remove an item from a user's cart by its id
--**/clear :** a patch method to clear a user's cart
--**MyOrders** a get method to read all of a tourist's orders
--**/cancel :** a patch method for a tourist to cancel an order
--**/checkout :** a post method to checkout a cart
+- **/remove/:id :** a patch method to remove an item from a user's cart by its id -**/clear :** a patch method to clear a user's cart -**MyOrders** a get method to read all of a tourist's orders -**/cancel :** a patch method for a tourist to cancel an order -**/checkout :** a post method to checkout a cart
 
 ## Tests
 
 **Tests were done primarily on Postman. To test an API endpoint using Postman, you can follow these general instructions:**
-   1. Open Postman. 
-   3. Select the HTTP method for the request: GET, POST, PUT, DELETE, etc. 
-   4. Enter the endpoint URL in the address bar. 
-   5. Optional: If the endpoint requires any query parameters or request body, add them in the corresponding sections. 
-   5. Click the "Send" button to send the request. 
-   6. Check the response status code and response body to ensure that the endpoint is functioning as expected. 
-   7. Repeat the process for any additional endpoints you want to test. 
-  
-   ###### **Note:** Some endpoints may require authentication or specific headers to be set in the request. Make sure to configure these accordingly in Postman before sending the request. 
+
+1.  Open Postman.
+2.  Select the HTTP method for the request: GET, POST, PUT, DELETE, etc.
+3.  Enter the endpoint URL in the address bar.
+4.  Optional: If the endpoint requires any query parameters or request body, add them in the corresponding sections.
+5.  Click the "Send" button to send the request.
+6.  Check the response status code and response body to ensure that the endpoint is functioning as expected.
+7.  Repeat the process for any additional endpoints you want to test.
+
+###### **Note:** Some endpoints may require authentication or specific headers to be set in the request. Make sure to configure these accordingly in Postman before sending the request.
 
 ## How to Use
+
 ##### first use the command
+
     npm i dotenv
-##### then create a .env file in the backend folder with the following code 
+
+##### then create a .env file in the backend folder with the following code
+
     PORT ="<the port number that you will run the backend on>"
     DATABASE ="<Your Mongo Connection String>"
     JWT_SECRET ="<Your Mongo Connection String>"
@@ -1238,17 +1253,21 @@ used to handle all operations related to the cart as follows:
     currencyConversionKey = "<currency conversion key used getting the conversion rate between currencies >"
     STRIPE_SECRET_KEY="<stripe key used for payments >"
 
-    
 after following the [installation](##Installation) steps you will need to open 2 terminals
+
 ##### on the first terminal run the server using the commands
+
     cd backend
     nodemon server
+
 ##### on the second terminal run the clinet side using the commands
+
     cd frontend
     npm run start
-    
+
 ## Contribute
-For anyone who would like to contribute in the development of the project just clone the repository using following link: 
+
+For anyone who would like to contribute in the development of the project just clone the repository using following link:
 
 [git clone Advanced-computer-lab-2024/CariGo](https://github.com/Advanced-computer-lab-2024/CariGo.git)
 
@@ -1263,7 +1282,7 @@ For anyone who would like to contribute in the development of the project just c
 - [Udemy nodejs-express-mongodb-bootcamp](https://www.udemy.com/course/nodejs-express-mongodb-bootcamp/)
 - [ChatGPT](https://chatgpt.com/)
 - [v0 by Vercel](https://v0.dev/chat/wofTmuLh0XR)
-- [Material ui]( https://mui.com/ )
+- [Material ui](https://mui.com/)
 - [Mongoose docs](https://mongoosejs.com/docs/)
 - [Express docs](https://expressjs.com/en/4x/api.html)
 - [ReactJs docs](https://reactjs.org/docs/getting-started.html)
@@ -1273,9 +1292,8 @@ For anyone who would like to contribute in the development of the project just c
 - [React Router docs](https://reactrouter.com/en/6.21.0)
 - [React Hook Form docs](https://react-hook-form.com/get-started)
 
-
-
 ## License
+
 MIT License
 
 Copyright (c) 2024 Rahma Ahmed, Yasmeen Mohamed Shaaban, Mohamed Hossameldin Abdulbaki , Menna Wahba
