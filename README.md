@@ -207,6 +207,15 @@ npm run format:fix
 
 ![alt text](<itineraries creation form.png>)
 
+**as a seller, view your profile and edit your personal details**
+![image](https://github.com/user-attachments/assets/41e52e60-df24-4cf6-b6c4-c4a10924c510)
+
+**a seller can add and manage products, sort them by ratings, filter and search their own products and archive or unarchive them**
+![image](https://github.com/user-attachments/assets/1c451fab-1156-46d8-bc09-6fb1a341fee1)
+
+**as a seller, get a sales report for your products which you can filter and download**
+![image](https://github.com/user-attachments/assets/5d823749-c2f4-4eef-84b3-84a1397a42a3)
+
 **as an admin, manage and edit everything smoothly with our easy to use admin home layout !**
 ![Screenshot (2645)](https://hackmd.io/_uploads/rJRRD0mNJg.png)
 
