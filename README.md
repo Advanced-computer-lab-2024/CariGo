@@ -177,6 +177,10 @@ npm run format:fix
 ![alt text](<tourist create transportation.png>)
 ![alt text](<tourist create activity.png>)
 
+**and you can view the wonderful activities/transportation from Activity Post and the My Transportations buttons**
+![alt text](<tourist transportation.png>)
+![alt text](<tourist activity post.png>)
+
 **now that the insides of your trip is planned there is still 1 more step!!**<br/>
 **_✨ transportation and accomodation ✨_**<br/>
 **book any flights 🛬 , hotels 🏨, or even in trip trnasportation 🚕 🚎 provided by our advertisers easily through our website!!**
