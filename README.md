@@ -173,6 +173,19 @@ npm run format:fix
 
 ![alt text](<images/profile settings.png>)
 
+
+**now that the insides of your trip is planned there is still 1 more step!!**<br/>
+**_✨ transportation and accomodation ✨_**<br/>
+**book any flights 🛬 , hotels 🏨, or even in trip trnasportation 🚕 🚎 provided by our advertisers easily through our website!!**
+
+![alt text](images/select_service.png)
+
+![text](images/search_flight.png)
+![text](images/search_hotel.png)
+![text](images/search_transport.png)
+
+**if you would like to join our website as ne of our advertisers,sellers and tour guides we have loads of diffrent features for you**
+<br/>
 **In the advertiser profile you can create your own activities/transportaion**
 ![alt text](<tourist create activity.png>)
 ![alt text](<tourist create transportation.png>)
@@ -194,16 +207,6 @@ npm run format:fix
 ![alt text](<create itinerary button-1.png>)
 
 ![alt text](<itineraries creation form.png>)
-
-**now that the insides of your trip is planned there is still 1 more step!!**<br/>
-**_✨ transportation and accomodation ✨_**<br/>
-**book any flights 🛬 , hotels 🏨, or even in trip trnasportation 🚕 🚎 provided by our advertisers easily through our website!!**
-
-![alt text](images/select_service.png)
-
-![text](images/search_flight.png)
-![text](images/search_hotel.png)
-![text](images/search_transport.png)
 
 **as an admin, manage and edit everything smoothly with our easy to use admin home layout !**
 ![Screenshot (2645)](https://hackmd.io/_uploads/rJRRD0mNJg.png)
