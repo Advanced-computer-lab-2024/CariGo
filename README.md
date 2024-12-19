@@ -182,10 +182,15 @@ npm run format:fix
 ![alt text](<tourist activity post.png>)
 
 **As a tour guide you can navigate to your active/inactive Itineraries**
+
+**The ative itineraries**
 ![alt text](<tourguide Itineraries.png>)
+
+**The inactive itineraries**
 ![alt text](<tourguide inactive itineraries.png>)
 
 **Through the button "CREATE NEW ITINERARY" you can create another exciting itineraries**
+
 ![alt text](<create itinerary button.png>)
 ![alt text](<itineraries creation form.png>)
 
