@@ -207,7 +207,7 @@ npm run format:fix
 
 ![alt text](<itineraries creation form.png>)
 
-**as a seller, view your profile and edit your personal details**
+**as a seller, view your profile and edit your personal details, receive a notification when your product is out of stock**
 ![image](https://github.com/user-attachments/assets/41e52e60-df24-4cf6-b6c4-c4a10924c510)
 
 **a seller can add and manage products, sort them by ratings, filter and search their own products and archive or unarchive them**
