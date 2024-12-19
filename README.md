@@ -4,19 +4,19 @@ A virtual trip planner to make your travels easier and help you book everything 
 
 ## Table of Contents
 
-- [Motivation](#Motivation)
-- [Build Status](#Build-Status)
-- [Code Style](#Code-Style)
-- [Frameworks used](#Frameworks-used)
-- [Features & Screenshots](#features--screenshots)
-- [Code Examples](#Code-Examples)
-- [Installation](#Installation)
-- [API References](#API-References)
-- [Tests](#Tests)
-- [How to Use](#How-to-Use)
-- [Contribute](#Contribute)
-- [Credits](#Credits)
-- [License](#License)
+- [Motivation](#Motivation) ✨
+- [Build Status](#Build-Status) 📋
+- [Code Style](#Code-Style) 💻
+- [Frameworks used](#Frameworks-used) 🛠️
+- [Features & Screenshots](#features--screenshots) 📸
+- [Code Examples](#Code-Examples) 🧩
+- [Installation](#Installation) 🔧
+- [API References](#API-References) 📚
+- [Tests](#Tests) ✅
+- [How to Use](#How-to-Use) 📖
+- [Contribute](#Contribute) 🤝
+- [Credits](#Credits) 🙏
+- [License](#License) 📜
 
 ## Motivation
 
