@@ -109,6 +109,10 @@ npm run format:fix
 
 ![alt text](images/itinerary_notify_me.png)
 
+**or if something simply interests you for a later trip archive it for later**
+
+![alt text](<images/saved activities.png>)
+
 **easily navigate through our website suing our simple side bar**
 
 ![alt text](<images/side_ bar.png>)
