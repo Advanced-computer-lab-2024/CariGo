@@ -109,6 +109,14 @@ npm run format:fix
 
 ![alt text](images/itinerary_notify_me.png)
 
+**easily navigate through our website suing our simple side bar**
+
+![alt text](images/side_bar.png)
+
+visiting a new country? look through all the historical places you dont wanna miss!!
+
+![alt text](images/historical_places.png)
+
 **manage and edit everything smoothly with our easy to use admin home layout !**
 
 ![Screenshot (2645)](https://hackmd.io/_uploads/rJRRD0mNJg.png)
