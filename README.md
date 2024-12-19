@@ -117,7 +117,7 @@ npm run format:fix
 
 ![alt text](<images/side_ bar.png>)
 
-visiting a new country? look through all the historical places you dont wanna miss!!
+**visiting a new country? look through all the historical places you dont wanna miss!!**
 
 ![alt text](images/historical_places.png)
 
@@ -125,7 +125,7 @@ visiting a new country? look through all the historical places you dont wanna mi
 
 ![alt text](images/sign_in.png)
 
-or if you are new to our website sign up either as a tourist or as any of advertiser,seller ,or tour guide 
+**or if you are new to our website sign up either as a tourist or as any of advertiser,seller ,or tour guide**
 
 ![alt text](images/sign_up.png)
 
