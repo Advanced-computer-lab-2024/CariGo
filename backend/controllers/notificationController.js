@@ -24,21 +24,23 @@ exports.sendNotification = async (
     contentModel,
     scheduledFor,
   });
-
+  console.log("Notification sent:", notification.userId);
   if (["flagged_content", "upcoming_event", "out_of_stock", "booking_opened"].includes(type)) {
     await sendEmail(notification);
   }
 
   console.log("Notification sent:", notification);
+  
 };
 
 const sendEmail = async (notification) => {
   try {
+    console.log(notification)
     const user = await User.findById(notification.userId);
     if (!user || !user.email) {
       throw new Error("User email not found");
     }
-
+    console.log(user)
     const transporter = nodemailer.createTransport({
       service: 'Gmail',
       auth: {

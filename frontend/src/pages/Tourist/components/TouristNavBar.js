@@ -465,7 +465,7 @@ CariGo
   }}
 >
   <Badge
-    badgeContent={notifications.length}
+    badgeContent={unReadNotifications.length}
     color="error"
     sx={{
       "& .MuiBadge-badge": {
@@ -488,11 +488,11 @@ CariGo
 
 {/* User Settings */}
 
-<UserBadge userId={userId} />
+<UserBadge userId={userId} size= "100px"/>
 
-<Tooltip title="Open settings">
+<Tooltip title="Profile">
 <IconButton
-  onClick={handleMenuOpen}
+  href="/tourist-profile"
   sx={{
     p: 0,
     "&:hover": {
@@ -515,68 +515,6 @@ CariGo
   />
 </IconButton>
 </Tooltip>
-
-<Menu
-  anchorEl={anchorEl}
-  open={open}
-  onClose={handleMenuClose}
-PaperProps={{
-  elevation: 4,
-  sx: {
-    mt: 1.5,
-    boxShadow: "0 4px 10px rgba(0,0,0,0.2)",
-    borderRadius: "8px",
-    overflow: "auto",
-    backgroundColor: "#1a659e", // Deep blue background
-  },
-}}
-anchorOrigin={{
-  vertical: "bottom",
-  horizontal: "right",
-}}
-transformOrigin={{
-  vertical: "top",
-  horizontal: "right",
-}}
->
-<MenuItem
-  onClick={handleMenuClose}
-  component="a"
-  href="/tourist-profile"
-  sx={{
-    px: 3,
-    py: 1.5,
-    color: "#f7e1c6", // Light cream for text
-    fontSize: "15px",
-    fontWeight: "500",
-    "&:hover": {
-      backgroundColor: "#004e89", // Darker blue on hover
-      color: "#ffffff", // White text for better visibility
-    },
-  }}
->
-  Profile
-</MenuItem>
-<MenuItem
-  onClick={() => {
-    handleMenuClose();
-    handleLogout();
-  }}
-  sx={{
-    px: 3,
-    py: 1.5,
-    color: "#f7e1c6", // Light cream for text
-    fontSize: "15px",
-    fontWeight: "500",
-    "&:hover": {
-      backgroundColor: "#004e89", // Darker blue on hover
-      color: "#ffffff", // White text for better visibility
-    },
-  }}
->
-  Logout
-</MenuItem>
-</Menu>
 
 <Menu
   id="notification-menu"

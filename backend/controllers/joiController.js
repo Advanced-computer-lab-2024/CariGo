@@ -115,24 +115,24 @@ exports.validateUser = catchAsync(async (req, res, next) => {
   const { role } = req.body;
   const roleSchema = roleSchemas[role];
 
-  if (!roleSchema) {
-    return next(new AppError("Invalid role provided", 422));
-  }
+ // if (!roleSchema) {
+  //  return next(new AppError("Invalid role provided", 422));
+  //}
 
   // Merge base schema with role-specific schema
-  const combinedSchema = baseUserValidationSchema.concat(roleSchema);
+  //const combinedSchema = baseUserValidationSchema.concat(roleSchema);
 
   // Validate the entire request body using the combined schema
-  const { error } = combinedSchema.validate(req.body, { abortEarly: false });
-
-  if (error) {
-    return next(
-      new AppError(
-        error.details.map((detail) => detail.message).join(", "),
-        422
-      )
-    );
-  }
+  // const { error } = combinedSchema.validate(req.body, { abortEarly: false });
+  //   console.log(error)
+  // if (error) {
+  //   return next(
+  //     new AppError(
+  //       error.details.map((detail) => detail.message).join(", "),
+  //       422
+  //     )
+  //   );
+  // }
 
   next();
 });

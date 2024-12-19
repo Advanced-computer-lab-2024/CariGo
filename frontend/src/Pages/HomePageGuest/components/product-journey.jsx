@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import { TicketsPlane, Sparkles, ShoppingBag } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { useNavigate } from "react-router-dom";
@@ -5,21 +6,29 @@ import Spotlight from "./spotlight";
 import WorflowImg01 from "./images/workflow-01.png";
 import WorflowImg02 from "./images/workflow-02.png";
 import WorflowImg03 from "./images/workflow-03.png";
+import SimplePopup from './SimplePopup';
+
 
 export default function ProductJourney() {
   const navigate = useNavigate();
 
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [popupMessage, setPopupMessage] = useState('');
+
   const navigateToBookServices = () => {
-    navigate("/book-services");
+    setPopupMessage('Unlock more features to book services!');
+    setIsPopupOpen(true);
   };  
  
   const navigateToItirenaries = () => {
-    navigate("/user_itineraries");
+    navigate("/Tourist-itineraries");
   };  
   
   const navigateToProducts = () => {
-    navigate("/Tourist/Products");
+    setPopupMessage('Sign up to access our product catalog!');
+    setIsPopupOpen(true);
   };
+
 
   return (
     <section className="mx-auto max-w-6xl px-4 py-24 sm:px-6 lg:px-8">
@@ -113,6 +122,7 @@ export default function ProductJourney() {
           </CardContent>
         </Card>
       </Spotlight>
+      <SimplePopup isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)} message={popupMessage} />
     </section>
   );
 }

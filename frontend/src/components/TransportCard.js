@@ -115,7 +115,7 @@ const TransportCard = ({Transportation}) =>{
         });
   
         if (response.data) {
-          navigate("tourist/MyBookedTransportation");
+          navigate("Tourist/book/transportation");
         }
       } catch (error) {
         console.error("Error during booking:", error);

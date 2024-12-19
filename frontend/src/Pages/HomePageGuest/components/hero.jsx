@@ -31,7 +31,19 @@ const Hero = () => {
   const navigate = useNavigate();
 
   const navigateToSignUp = () => {
-    navigate("/login");
+
+    localStorage.setItem('s',"signUp")
+    navigate(
+      "/login"
+    );
+  };  
+  
+  const navigateToLogIn = () => {
+    localStorage.setItem('s',"signIn")
+    navigate(
+      "/login"
+    );
+   // navigate("/login");
   };
 
   const videoContainerStyle = {
@@ -66,6 +78,7 @@ const Hero = () => {
   const videoStyle = {
     width: "100%",
     height: "100%",
+
   };
 
   return (

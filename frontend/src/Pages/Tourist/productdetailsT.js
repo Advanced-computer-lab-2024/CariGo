@@ -4,10 +4,13 @@ import { Layout, Row, Col, Typography, Rate, Divider, Button, message } from "an
 import { ShoppingCartOutlined } from '@ant-design/icons';
 import ProductImageList from "../../components/ProductImageList";
 import ProductReviews from "../../components/ProductReviews";
-import ResponsiveAppBar from "./components/TouristNavBar";
+import TouristNavBar from "./components/TouristNavBar.js";
+import TouristSideBar from "./components/TouristSideBar";
+import {Box} from '@mui/material';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import FavoriteOutlinedIcon from '@mui/icons-material/FavoriteOutlined';
 import { ToastContainer } from "react-toastify";
+import Container from "@mui/material/Container";
 import avatar from "../../assets/profilePic.png";
 
 const folderPics = `http://localhost:4000/public/img/products/`;
@@ -334,10 +337,23 @@ const removeProductFromWishlist = async () => {
   const code = localStorage.getItem("currencyCode") || "EGP";
 
   return (
-    <Layout style={{ minHeight: "100vh" }}>
-      <Header style={{ background: "#001529", padding: 0 }}>
-        <ResponsiveAppBar />
-      </Header>
+    <Box sx={{ display: "flex", backgroundColor: "#f9f9f9", minHeight: "100vh" }}>
+    {/* Sidebar */}
+    <Box>
+      <TouristSideBar />
+    </Box>
+
+    {/* Main Content Area */}
+    <Box
+      sx={{
+        flexGrow: 1,
+        marginLeft: "80px", // Sidebar width
+        marginTop: "64px", // AppBar height
+        padding: "16px",
+      }}
+    >
+      {/* Top Navbar */}
+      <TouristNavBar />
       <ToastContainer />
       <Content style={{ padding: "20px", display: "flex", flexDirection: "column" }}>
         <Row style={{ flex: 1 }}>
@@ -409,7 +425,7 @@ const removeProductFromWishlist = async () => {
             </div>
           </Col>
         </Row>
-
+        <Container maxWidth="xl">
         {/* Product Reviews Section */}
         <Divider style={{ margin: '40px 0' }} />
         <Row>
@@ -418,8 +434,9 @@ const removeProductFromWishlist = async () => {
             <ProductReviews id={id} />
           </Col>
         </Row>
+        </Container>
       </Content>
-    </Layout>
+</Box></Box>
   );
 };
 

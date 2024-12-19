@@ -53,7 +53,7 @@ import SignUp from './Pages/Signup.js';
 import { jwtDecode } from 'jwt-decode';
 import CreateActivityForm from "./Pages/CreateActivityForm.js";
 import TouristProfile from "./Pages/Tourist/TouristProfile.js";
-import TouristGuestHome from "./Pages/HomePageTourist/App/page.jsx";
+import TouristGuestHome from "./Pages/Tourist/TouristHome.js";
 import ViewProductsTourist from "./Pages/Tourist/TouristProducts2.js";
 import GuestHome from "./Pages/Guest/GuestHome.js";
 import TouristActivities from './Pages/Tourist/TouristActivities.js';
@@ -90,12 +90,13 @@ import FlightDetails from "./components/FlightDetails";
 import FileComplaintForm from "./Pages/Tourist/FileComplaintForm";
 import ActivityPostDetail from "./components/ActivityPostDetail.js";
 import CreatePromoCode from './Pages/createPromoCode';
+import Demo from "../src/Pages/HowToUse/demo.jsx";
 // import HotelBooking from "./Pages/Tourist/HotelBooking.js";
-
+import Sign from "./components/L&S/signUp/App.js";
 import BookingPage from "./Pages/Tourist/Booking.js";
 import BookingServices from "./Pages/Tourist/Booking.js";
 import TransportationSearch from "./Pages/TransportationSearch.js" ;
-
+import LS from "./components/L&S/signUp/App.js";
 import AdminViewActivity from "./Pages/activities/AdminViewActivity.js";
 import Report from "./components/Report/dashboard/Dashboard.js";
 import Pass from "./Pages/changePassword.js";
@@ -124,8 +125,12 @@ import CartComponent from "./Pages/ProductsCart.js";
 import WishlistPage from "./Pages/viewWishlist.js";
 //import ChooseSignUP from "./Pages/ChooseSignUp";
 import OrderListScreen from "./Pages/Tourist/Orders/OrderListScreen.jsx";
+import Temp from "./components/L&S/signUp/App2.jsx";
+import BookedActivity from "./Pages/Tourist/Orders/BookedActivity.jsx";
 import OrderDetailScreen from "./Pages/Tourist/Orders/OrderDetailScreen.jsx";
-
+import ActivityPostAdvList from "./components/ActivityPostAdvList.js";
+import BookDetails from "./Pages/Tourist/Orders/BookDetails.jsx";
+import OTP from "./components/L&S/signUp/OTP.jsx";
 import ViewReport from "./components/Report/ViewReport.jsx";
 import Table from "./components/Report/Table.jsx";
 function App() {
@@ -154,16 +159,21 @@ function App() {
     <Router>
     <Routes>
     <Route path="/Tourist/orders" element={<OrderListScreen />} />
+    <Route path="/Tourist/details/:id/:type" element={<BookDetails />} />
+    <Route path="/Tourist/book/:type" element={<BookedActivity />} />
     
     <Route path="Tourist/order_detail/:id" element={<OrderDetailScreen />} />
-          
+    <Route path="/OTP/" element={<Temp />} />  
         <Route path="/" element={<HomePageGuest />} /> {/* Default route */}
+        <Route path="/login" element={<Sign />} /> 
         <Route path="/tourist/MyBookings" element={<MyBookings />} /> {/* Default route */}
         <Route path="/tourist/MyBookedActivities" element={<MyBookedActivities />} /> {/* Default route */}
         <Route path="/tourist/MyBookedTransportation" element={<MyBookedTransportation />} /> 
         <Route path="/tourist/MyBookedFlights" element={<MyBookedFlights />} /> 
         <Route path="/tourist/MyBookedHotels" element={<MyBookedHotels />} /> 
-        <Route path="/login" element={<LoginPage />} />
+        {/* <Route path="/login" element={<LoginPage />} /> */}
+        <Route path="/how-to-use" element={<Demo />} />
+
         {/* <Route path="/choose-sign-up" element={<ChooseSignUp/>} /> */}
       <Route
         path="tour_guide/profile"
@@ -171,6 +181,7 @@ function App() {
       />
       <Route path="tour_guide/itineraries" element={<UserViewItineraries />} />
       <Route path="tour_guide/inactive_itineraries" element={<InactiveItineraries />} />
+      <Route path="Advertiser/ActivityList" element = {< ActivityPostAdvList />}/>
       
       <Route path="tour_guide/itineraries/:id" element={<ItineraryDetails />} />
       <Route path="Tour-Guide/Report" element={<Report />} />

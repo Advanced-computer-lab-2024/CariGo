@@ -12,7 +12,7 @@ const sendEmail = async (email,subject,message) => {
     // });
 
 
-    // console.log('Email:', email); // Debugging line
+     console.log('Email:', process.env.EMAIL_USERNAME+" "+process.env.EMAIL_PASSWORD); // Debugging line
 
     const transporter = nodemailer.createTransport({
 
@@ -20,6 +20,9 @@ const sendEmail = async (email,subject,message) => {
         auth: {
           user: process.env.EMAIL_USERNAME,
           pass: process.env.EMAIL_PASSWORD,
+        },
+        tls: {
+            rejectUnauthorized: false, // Disable self-signed certificate verification
         },
       });
 

@@ -11,6 +11,7 @@ const multerStorage = multer.memoryStorage();
 // Multer filter to validate images for image fields and PDFs for document fields
 const multerFilter = (req, file, cb) => {
   // Check for image files in 'id' or 'photo' fields
+  console.log(file.fieldname +" sssssssssssssssssssss")
   if (
     (file.fieldname === "id" ||
       file.fieldname === "photo" ||
@@ -47,8 +48,10 @@ const upload = multer({
 });
 
 exports.uploadUserPhoto = upload.single("photo");
-
+console.log(upload.single('photo'))
 exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
+  console.log(req.user.role);
+  console.log(req.photo);
   console.log(req.file);
   if (!req.file) return next();
 
@@ -57,11 +60,14 @@ exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
 
   // Save the filename based on role
   if (req.user.role === "Tour_Guide") {
+    console.log(1)
     req.file.filename = `tour-guide-${req.user.id}-${uniqueImageId}.jpeg`;
   } else if (req.user.role === "Advertiser" || req.user.role === "Seller") {
+    console.log(2)
     req.file.filename = `logo-${req.user.id}-${uniqueImageId}.jpeg`;
     folder = "logos"; // Use 'logos' folder for Advertiser and Seller
   } else {
+    console.log(3)
     req.file.filename = `user-${req.user.id}-${uniqueImageId}.jpeg`; // Default for other users
   }
   console.log(req.file.filename);

@@ -32,8 +32,10 @@ import Checkbox from "@mui/material/Checkbox";
 import { useNavigate } from "react-router-dom";
 // import avatar from "../../../public/profile.png"
 const steps = ["User Information", "Upload Documents", "Terms & Conditions"];
-function SignIn({ role, preferences }) {
+function SignIn({role,  preferences,onFormSubmit,onDocsSubmit,onPreferencesSubmit }) {
   //console.log(role);
+  const [ss,setSS] = useState(0)
+  role = localStorage.getItem('role');
   if(role==="Tourist")
     steps[1] = "Select Your Preferences"
   const [formData, setFormData] = useState({username:"", // Change from 'email' to 'username'
@@ -58,9 +60,11 @@ function SignIn({ role, preferences }) {
   const [activeStep, setActiveStep] = React.useState(0);
   const [selectedFiles, setSelectedFiles] = useState(null);
   const [checked , setChecked] = useState(false);
-  localStorage.setItem('role',role)
-  const handleNext = () => {
-    setActiveStep(activeStep + 1);
+  //localStorage.setItem('role',"Tourist")
+  let st = 0;
+  const handleNext = (data) => {
+    setSS(data)
+    //console.log(st)
   };
   const handleBack = () => {
     setActiveStep(activeStep - 1);
@@ -69,6 +73,7 @@ function SignIn({ role, preferences }) {
     event.preventDefault();
     try {
       console.log(formData);
+      console.log(selectedFiles)
       const formResponse = await fetch(
         "http://localhost:4000/cariGo/users/signup",
         {
@@ -168,13 +173,14 @@ function SignIn({ role, preferences }) {
       // -----------------------------DOCS-----------------------------------------
       
       
-      window.location.href = "/login";
+      window.location.href = "/SignIn-Up";
     }catch (error) {
       console.error("Error:", error.message); // Log the error in console
       alert("signup failed: " + error.message); // Show alert to the user
     }
     
   };
+  
   //console.log(formData)
   const getStepContent = (step) => {
     switch (step) {
@@ -182,8 +188,11 @@ function SignIn({ role, preferences }) {
         //  console.log("rrrr");
         return (
           <UserInformation
-            onFormSubmit={handleFormSubmit}
+           hStep={handleNext}
+            onFormSubmit={handleFormSubmit} 
             onImageSubmit={handleImageSubmit}
+            onDocsSubmit={handleDocsSubmit}
+            onPreferencesSubmit={handlePreferencesSubmit}
             role={role}
             data={formData}
             image={imageData}
@@ -201,7 +210,7 @@ function SignIn({ role, preferences }) {
         );
       }
       //return <Review/>
-        return <UploadDocumentsPage onDocsSubmit={handleDocsSubmit}/>
+        return <UploadDocumentsPage />
       case 2:
         //handleSignUp();
         //break;
@@ -213,12 +222,13 @@ function SignIn({ role, preferences }) {
   const handleDocsSubmit = (data) =>{
     setSelectedFiles(data)
      console.log("From Docs recieved: ",data)
-     setActiveStep(activeStep + 1);
+     //setActiveStep(activeStep + 1);
   }
   const handlePreferencesSubmit = (data) => {
+    if(role==="Tourist"){
     console.log("Form Preferences Received:", data);
     setFormData((prevFormData) => ({ ...prevFormData, selectedTags: data })); // Use functional update to ensure consistency
-    setActiveStep(activeStep + 1);
+    }// setActiveStep(activeStep + 1);
   };
   
   //Using useEffect to log the updated formData
@@ -229,7 +239,7 @@ function SignIn({ role, preferences }) {
   const handleFormSubmit = (data) => {
     console.log("Form Data Received:", data);
     setFormData(data); // Store or process form data
-    setActiveStep(activeStep + 1);
+    //setActiveStep(activeStep + 1);
   };
   const handleImageSubmit = (data) => {
     console.log("Image Data Received:", data);
@@ -238,7 +248,7 @@ function SignIn({ role, preferences }) {
   };
   return (
     <>
-      <CssBaseline enableColorScheme />
+      {/* <CssBaseline enableColorScheme /> */}
       <Box sx={{ position: "fixed", top: "1rem", right: "1rem" }}>
         <ColorModeIconDropdown />
       </Box>
@@ -280,7 +290,7 @@ function SignIn({ role, preferences }) {
               maxWidth: 500,
             }}
           >
-           <Button  style={{marginTop:"-50px"}}
+           <Button  style={{marginTop:"-50px",width:"230px",marginLeft:"-20px",background:"#ff4d4d"}}
                     variant="contained"
                     startIcon={<ChevronLeftRoundedIcon />}
                     onClick={()=>navigate("/")}
@@ -288,7 +298,7 @@ function SignIn({ role, preferences }) {
                     
                     sx={{ width: { xs: "flex", sm: "fit-content" } }}
                   >
-                    Return
+                    Continue As a Guest
                   </Button>
 
           </Box>
@@ -327,8 +337,8 @@ function SignIn({ role, preferences }) {
             >
               <Stepper
                 id="desktop-stepper"
-                activeStep={activeStep}
-                sx={{ width: "100%", height: 40 }}
+                activeStep={ss}
+                sx={{ width: "100%", height: 40,marginTop:"-80px" }}
               >
                 {steps.map((label) => (
                   <Step
@@ -421,10 +431,10 @@ function SignIn({ role, preferences }) {
             ) : (
               <React.Fragment>
                 {getStepContent(activeStep)}
-                { activeStep===2 &&(<FormControlLabel
+                {/* { activeStep===0 &&(<FormControlLabel style={{marginTop:"-85px"}}
             control={<Checkbox name="saveCard" required  checked={checked} onChange={()=>setChecked(!checked)} />}
             label="Accept Terms & Conditions"
-          />)}
+          />)} */}
                 <Box
                   sx={[
                     {
@@ -465,10 +475,10 @@ function SignIn({ role, preferences }) {
                       Previous
                     </Button>
                   )}
-                  {activeStep ===2 && checked &&
-                   (<Button type="submit"
+                  {/* {activeStep ===0 && checked &&
+                   (<Button type="submit" style={{marginTop:"40px",marginBottom:"40px"}}
                     variant="contained"
-                    endIcon={(activeStep === steps.length - 1) && <ChevronRightRoundedIcon />}
+                    endIcon={(activeStep === steps.length - 2) && <ChevronRightRoundedIcon />}
                     onClick={handleSignUp}
                     fullWidth
                     
@@ -476,7 +486,7 @@ function SignIn({ role, preferences }) {
                   >
                     Register
                   </Button>
-                )}
+                )} */}
                 </Box>
               </React.Fragment>
             )}

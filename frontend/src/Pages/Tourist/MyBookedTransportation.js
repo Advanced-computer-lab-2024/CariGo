@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../../styles/index.css";
-import TouristNB from "./components/TouristNavBar";
+import TouristNavBar from "./components/TouristNavBar";
+import TouristSideBar from "./components/TouristSideBar";
 import { Box, Grid, MenuItem, TextField, Button, IconButton, CircularProgress, Typography, Menu } from '@mui/material';
 import { styled, alpha } from "@mui/material/styles";
 import SearchIcon from "@mui/icons-material/Search";
@@ -143,8 +144,12 @@ const MyBookedTransportation = () => {
   };
 
   return (
-    <div>
-      <TouristNB />
+    <Box sx={{ display: "flex", backgroundColor: "#f9f9f9", minHeight: "100vh" }}>
+    <Box> <TouristSideBar /> </Box>
+
+    <Box sx={{ flexGrow: 1, marginLeft: "80px", marginTop: "64px", padding: "16px",}}>
+      <TouristNavBar />
+
       <form>
         <TextField
           select
@@ -261,8 +266,7 @@ const MyBookedTransportation = () => {
           tourGuideId={selectedTourGuideId}
         />
       )} */}
-    </div>
-  );
+</Box></Box>  );
 };
 
 export default MyBookedTransportation;
