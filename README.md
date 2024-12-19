@@ -191,7 +191,7 @@ npm run format:fix
 
 **Through the button "CREATE NEW ITINERARY" you can create another exciting itineraries**
 
-![alt text](<create itinerary button.png>)
+![alt text](<create itinerary button-1.png>)
 
 ![alt text](<itineraries creation form.png>)
 
