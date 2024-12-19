@@ -948,7 +948,6 @@ handles all operations specific to advertiser :
 
 </details>
 
-- **/signup :** a post request to signup a user
 <details>
 <summary>POST /login - User Login</summary>
 
@@ -1026,9 +1025,6 @@ handles all operations specific to advertiser :
 
 </details>
 
-- **/forgotPassword :** a post request to ask the user if they forgot their password in case of wrong credentials
-- **/resetPassword/:token :** a patch request used to reset a users password given their token
-- **/update/:userId :** a patch request that updates user data given their id
 <details>
 <summary>PATCH /update/:userId - Update User Data</summary>
 
@@ -1071,6 +1067,11 @@ handles all operations specific to advertiser :
 
 </details>
 
+
+- **/signup :** a post request to signup a user
+- **/forgotPassword :** a post request to ask the user if they forgot their password in case of wrong credentials
+- **/resetPassword/:token :** a patch request used to reset a users password given their token
+- **/update/:userId :** a patch request that updates user data given their id
 - **/pending-documents :** a get request that allows an admin to view all pending requests
 - **/approve-document/:userId :** a patch request that allows an admin to approve documents uploaded by a certain user identified by their id
 - **/reject-document :** a patch request that allows an admin to reject documents uploaded by a certain user identified by their id
