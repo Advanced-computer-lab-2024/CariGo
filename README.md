@@ -651,6 +651,35 @@ cd Carigo
 cd frontend
 npm install
 ```
+then to run the website
+
+##### first use the command
+
+    npm i dotenv
+
+##### then create a .env file in the backend folder with the following code
+
+    PORT ="<the port number that you will run the backend on>"
+    DATABASE ="<Your Mongo Connection String>"
+    JWT_SECRET ="<Your Mongo Connection String>"
+    JWT_EXPIRES_IN="<the time token will expire after. meaning that the user will auto signout after that time>"
+    JWT_COOKIE_EXPIRES_IN="<the time the stored cookies will expire after. should be the same as "JWT_EXPIRES_IN">"
+    EMAIL_USERNAME="<the email address you will use in sending notifications and promocodes via mail>"
+    EMAIL_PASSWORD="<the app password that you will use to uthinticate your email address refer to google security to know how to create app password>"
+    clientSecret = "<amadus key used for hotel and flight bookings >"
+    clientId = "<amadus key used for hotel and flight bookings >"
+    currencyConversionKey = "<currency conversion key used getting the conversion rate between currencies >"
+    STRIPE_SECRET_KEY="<stripe key used for payments >"
+
+##### on the first terminal run the server using the commands
+
+    cd backend
+    nodemon server
+
+##### on the second terminal run the clinet side using the commands
+
+    cd frontend
+    npm run start
 
 ## API References
 
@@ -1292,35 +1321,33 @@ used to handle all operations related to the cart as follows:
 
 ## How to Use
 
-##### first use the command
+#### Tourist
+as a tourist you can sign up to create your won accountyou can then start brwosing throught all the 
+activities/itineraries made by our advertisers and tour guides, look for gifts in our gift shop, or
+plan your transportation or acommodation through our various options<br/>
+as a tourist you have a wallet in your profile that you can use for purchasses, 
+you can also always change your prefrencesfor your suggessted feed
 
-    npm i dotenv
+#### Advertiser
+to sign up as an advertiser you simply follow the sign up page steps and wait for your uploaded documents to be
+approved by an admin. <br/>
+after you have an account you can start creating either activities or transportations thta tourists can book with you.
 
-##### then create a .env file in the backend folder with the following code
+#### Seller
+to sign up as an advertiser you simply follow the sign up page steps and wait for your uploaded documents to be
+approved by an admin. <br/>
+after you have an account you can start selling your products to tourists and can see reports of your sales.
 
-    PORT ="<the port number that you will run the backend on>"
-    DATABASE ="<Your Mongo Connection String>"
-    JWT_SECRET ="<Your Mongo Connection String>"
-    JWT_EXPIRES_IN="<the time token will expire after. meaning that the user will auto signout after that time>"
-    JWT_COOKIE_EXPIRES_IN="<the time the stored cookies will expire after. should be the same as "JWT_EXPIRES_IN">"
-    EMAIL_USERNAME="<the email address you will use in sending notifications and promocodes via mail>"
-    EMAIL_PASSWORD="<the app password that you will use to uthinticate your email address refer to google security to know how to create app password>"
-    clientSecret = "<amadus key used for hotel and flight bookings >"
-    clientId = "<amadus key used for hotel and flight bookings >"
-    currencyConversionKey = "<currency conversion key used getting the conversion rate between currencies >"
-    STRIPE_SECRET_KEY="<stripe key used for payments >"
+#### Tour Guide
+to sign up as an advertiser you simply follow the sign up page steps and wait for your uploaded documents to be
+approved by an admin. <br/>
+after you have an account you can start creating detailed itinerares for tourists to book.<br/>
+these itineraries include things like your language, any supported accomodation or transportation 
+, and a list of activites that will be done during your itinerary.
 
-after following the [installation](##Installation) steps you will need to open 2 terminals
 
-##### on the first terminal run the server using the commands
+#### Admin
 
-    cd backend
-    nodemon server
-
-##### on the second terminal run the clinet side using the commands
-
-    cd frontend
-    npm run start
 
 ## Contribute
 
