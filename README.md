@@ -172,10 +172,10 @@ npm run format:fix
 **also easily and smoothly manage your profile settings**
 
 ![alt text](<images/profile settings.png>)
-**In the advertiser profile you can create your own activities/transportaion**
 
-![alt text](<tourist create transportation.png>)
+**In the advertiser profile you can create your own activities/transportaion**
 ![alt text](<tourist create activity.png>)
+![alt text](<tourist create transportation.png>)
 
 **and you can view the wonderful activities/transportation from Activity Post and the My Transportations buttons**
 ![alt text](<tourist transportation.png>)
