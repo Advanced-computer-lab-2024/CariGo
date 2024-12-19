@@ -542,8 +542,7 @@ handles all operations related to activities on the system ans is used by /activ
 ### Itineraries
  
 handles all operations related to itineraries on the system ans is used by /Event followed by the following :
-- **/readAllItineraries :** a GET function that read all itineraries and internally handles any filtering
-- **/readSingleItinerary/:itineraryId :** a GET function to get a single itinerary by id
+
 <details>
 <summary>POST /createItinerary - Create a new itinerary</summary>
 
@@ -763,6 +762,8 @@ handles all operations related to itineraries on the system ans is used by /Even
 
 </details>
 
+- **/readAllItineraries :** a GET function that read all itineraries and internally handles any filtering
+- **/readSingleItinerary/:itineraryId :** a GET function to get a single itinerary by id
 - **shareItinerary/:id :** a GET function to share an itinerary by its id
 - **/openBookings/:id :** a PATCH function used to set an itinerary's status to open by its id
 - **/BookItinerary/:ItineraryId :** a POST function used to book a certain itinerary by its id
