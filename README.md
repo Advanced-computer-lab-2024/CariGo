@@ -177,9 +177,17 @@ npm run format:fix
 ![alt text](<tourist create activity.png>)
 ![alt text](<tourist create transportation.png>)
 
-**and you can view the wonderful activities/transportation from Activity Post and the My Transportations buttons**
+**You can view your wonderful activities/transportation from Activity Post and the My Transportations buttons**
 ![alt text](<tourist transportation.png>)
 ![alt text](<tourist activity post.png>)
+
+**As a tour guide you can navigate to your active/inactive Itineraries**
+![alt text](<tourguide Itineraries.png>)
+![alt text](<tourguide inactive itineraries.png>)
+
+**Through the button "CREATE NEW ITINERARY" you can create another exciting itineraries**
+![alt text](<create itinerary button.png>)
+![alt text](<itineraries creation form.png>)
 
 **now that the insides of your trip is planned there is still 1 more step!!**<br/>
 **_✨ transportation and accomodation ✨_**<br/>
