@@ -1834,6 +1834,12 @@ these itineraries include things like your language, any supported accomodation 
 
 
 #### Admin
+you can only be added to the system by another admin. <br/> 
+once you are logged in,from your dashboard you can manage accounts, events, products, categories and preference tags. <br/>
+you can manage accounts by adding other admins or tourism governors to the system and approving or rejecting non tourists signing up to the website.<br/>
+you have full control over almost anything that the tourist is shown, from adding or editing products and such, to hiding or deleting them completely.<br/>
+you can make promocodes and view and resolve complaints.<br/>
+as an admin you can view reports of the types of users and the overall traffic on the website, and view sales report for everything being sold.
 
 
 ## Contribute
