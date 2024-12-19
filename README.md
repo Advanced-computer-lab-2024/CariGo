@@ -205,8 +205,44 @@ npm run format:fix
 ![text](images/search_hotel.png)
 ![text](images/search_transport.png)
 
-**manage and edit everything smoothly with our easy to use admin home layout !**
+**as an admin, manage and edit everything smoothly with our easy to use admin home layout !**
 ![Screenshot (2645)](https://hackmd.io/_uploads/rJRRD0mNJg.png)
+
+**as an admin, manage accounts by clicking on the pencil icon and filling in the required fields**
+![image](https://github.com/user-attachments/assets/6ff59b8f-996f-4c6d-ba79-231015e15159)
+
+**as an admin, accept or reject and download the docs of new users before they can access the website**
+![image](https://github.com/user-attachments/assets/93d881b2-d42d-4121-a430-3e144c575459)
+
+**as an admin you can view, sort, filter, search or add products to the gift shop!**
+![image](https://github.com/user-attachments/assets/85862ab7-7505-4c07-82da-8e659f886b41)
+
+**as an admin you can view, edit, delete or add the categories used for events and places**
+![image](https://github.com/user-attachments/assets/fda8b55f-0e06-476b-af88-c0a686323c4a)
+
+**as an admin you can view, edit, delete or add the preference tags used for historical events and places**
+![image](https://github.com/user-attachments/assets/292d2239-a21c-408e-9cf4-5185ae345f77)
+
+**as an admin, you can view the itineraries available on the website and approve them or mark them as appropriate**
+![image](https://github.com/user-attachments/assets/efbb282c-7988-4c1d-949d-eb2cdb2638c0)
+
+**as an admin, you can view the activities available on the website**
+![image](https://github.com/user-attachments/assets/23b90458-c79f-4666-b601-324cb06cc86f)
+
+**as an admin, you can view the complaints made by tourists and filter them by status of pending or resolved, and click on the Date header to sort them by date**
+![image](https://github.com/user-attachments/assets/24fe9154-554f-425f-92ea-f31abee52d22)
+
+**by clicking on the complaint, you an reply to the complaint or toggle its status**
+![image](https://github.com/user-attachments/assets/79b04ee1-2ffe-4bdf-879b-9b6117b8a576)
+
+**as an admin, you an create promocodes to be used in any payment made on the website**
+![image](https://github.com/user-attachments/assets/93468949-62c6-410a-87a2-db18eac0b0d8)
+
+**as an admin, you can view a report of all the users on the website, you can select a user role below the chart to filter it out of the data or click download to download the report**
+![image](https://github.com/user-attachments/assets/6565c8e6-462b-4381-abef-e30b95c85b42)
+
+**as an admin, you can view and filter a sales report of all types of sales made on the website and click on the category names at the top to view their data isolated**
+![image](https://github.com/user-attachments/assets/76d248e9-2f9b-4d80-a682-d32a690c4fb8)
 
 ## Code Examples
 
