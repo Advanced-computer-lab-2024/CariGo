@@ -173,7 +173,6 @@ npm run format:fix
 
 ![alt text](<images/profile settings.png>)
 
-
 **now that the insides of your trip is planned there is still 1 more step!!**<br/>
 **_✨ transportation and accomodation ✨_**<br/>
 **book any flights 🛬 , hotels 🏨, or even in trip trnasportation 🚕 🚎 provided by our advertisers easily through our website!!**
@@ -696,43 +695,43 @@ handles all operations related to activities on the system ans is used by /activ
 
 - **Endpoint:** `/BookActivity/:ActivityId`
 - **Method:** POST
-- **Description:**  books the activity specified in the id for the signed in user. note this end point needs a JWT token.
+- **Description:** books the activity specified in the id for the signed in user. note this end point needs a JWT token.
 - **Request Body:**
 
   ```json
   {
-      "PaymentMethod":"Wallet",
-        "TotalPrice":300,
-        "NumberOfTickets":3
+    "PaymentMethod": "Wallet",
+    "TotalPrice": 300,
+    "NumberOfTickets": 3
   }
   ```
 
 #### Response
 
-  ```json
-  {
-      "message": "Booked successfully",
-        "booking": {
-            "UserId": "676451bfcc3eb0c6bdfb3f8a",
-            "ActivityId": "672cbcce6227e653db4c7f9b",
-            "Status": true,
-            "PaymentMethod": "Wallet",
-            "CardNumber": "",
-            "NumberOfTickets": 3,
-            "TotalPrice": 300,
-            "_id": "676458bfcc3eb0c6bdfb3f97",
-            "createdAt": "2024-12-19T17:32:47.059Z",
-            "updatedAt": "2024-12-19T17:32:47.059Z",
-            "__v": 0
-        },
-        "loyaltyPointsEarned": 750,
-        "newTotalPoints": 150,
-        "newLevel": 1,
-        "newBadge": "Bronze",
-        "newPoints": 150,
-        "newWallet": 300
-  }
-  ```
+```json
+{
+  "message": "Booked successfully",
+  "booking": {
+    "UserId": "676451bfcc3eb0c6bdfb3f8a",
+    "ActivityId": "672cbcce6227e653db4c7f9b",
+    "Status": true,
+    "PaymentMethod": "Wallet",
+    "CardNumber": "",
+    "NumberOfTickets": 3,
+    "TotalPrice": 300,
+    "_id": "676458bfcc3eb0c6bdfb3f97",
+    "createdAt": "2024-12-19T17:32:47.059Z",
+    "updatedAt": "2024-12-19T17:32:47.059Z",
+    "__v": 0
+  },
+  "loyaltyPointsEarned": 750,
+  "newTotalPoints": 150,
+  "newLevel": 1,
+  "newBadge": "Bronze",
+  "newPoints": 150,
+  "newWallet": 300
+}
+```
 
 </details>
 
@@ -749,51 +748,49 @@ handles all operations related to activities on the system ans is used by /activ
 
 #### Response
 
-  ```json
+```json
 [
-    {
-        "_id": "676458bfcc3eb0c6bdfb3f97",
-        "UserId": "676451bfcc3eb0c6bdfb3f8a",
-        "ActivityId": {
-            "locations": {
-                "lon": "1234",
-                "lan": "54321"
-            },
-            "isOpened": false,
-            "_id": "672cbcce6227e653db4c7f9b",
-            "author": "66fe6614193a10b4e3523979",
-            "title": "Abdelhalim Hafez Concert",
-            "description": "سهرة غنائية مع الفنان عبدالحليم حافظ بدار الأوبرا المصرية ",
-            "start_date": "2024-11-11T00:00:00.000Z",
-            "end_date": "2024-11-12T00:00:00.000Z",
-            "price": 1500,
-            "Category": "6701a3211120edeecf46a094",
-            "discount": 5,
-            "tag": "6724faaa6d94a24e93137efa",
-            "bookingOpened": true,
-            "ratingsAverage": 4.5,
-            "ratingsQuantity": 0,
-            "isFlagged": false,
-            "createdAt": "2024-11-07T13:12:46.072Z",
-            "updatedAt": "2024-12-19T17:32:47.542Z",
-            "__v": 0,
-            "isActive": true,
-            "isBooked": true,
-            "interestedUsers": [
-                "674d976b0d385a0b92c2d5dc"
-            ]
-        },
-        "Status": true,
-        "PaymentMethod": "Wallet",
-        "CardNumber": "",
-        "NumberOfTickets": 3,
-        "TotalPrice": 300,
-        "createdAt": "2024-12-19T17:32:47.059Z",
-        "updatedAt": "2024-12-19T17:32:47.059Z",
-        "__v": 0
-    }
+  {
+    "_id": "676458bfcc3eb0c6bdfb3f97",
+    "UserId": "676451bfcc3eb0c6bdfb3f8a",
+    "ActivityId": {
+      "locations": {
+        "lon": "1234",
+        "lan": "54321"
+      },
+      "isOpened": false,
+      "_id": "672cbcce6227e653db4c7f9b",
+      "author": "66fe6614193a10b4e3523979",
+      "title": "Abdelhalim Hafez Concert",
+      "description": "سهرة غنائية مع الفنان عبدالحليم حافظ بدار الأوبرا المصرية ",
+      "start_date": "2024-11-11T00:00:00.000Z",
+      "end_date": "2024-11-12T00:00:00.000Z",
+      "price": 1500,
+      "Category": "6701a3211120edeecf46a094",
+      "discount": 5,
+      "tag": "6724faaa6d94a24e93137efa",
+      "bookingOpened": true,
+      "ratingsAverage": 4.5,
+      "ratingsQuantity": 0,
+      "isFlagged": false,
+      "createdAt": "2024-11-07T13:12:46.072Z",
+      "updatedAt": "2024-12-19T17:32:47.542Z",
+      "__v": 0,
+      "isActive": true,
+      "isBooked": true,
+      "interestedUsers": ["674d976b0d385a0b92c2d5dc"]
+    },
+    "Status": true,
+    "PaymentMethod": "Wallet",
+    "CardNumber": "",
+    "NumberOfTickets": 3,
+    "TotalPrice": 300,
+    "createdAt": "2024-12-19T17:32:47.059Z",
+    "updatedAt": "2024-12-19T17:32:47.059Z",
+    "__v": 0
+  }
 ]
-  ```
+```
 
 </details>
 
@@ -1018,7 +1015,69 @@ handles all operations related to itineraries on the system ans is used by /Even
 
 </details>
 
-- **/readAllItineraries :** a GET function that read all itineraries and internally handles any filtering
+<details>
+<summary>GET /readAllItineraries - Read All Itineraries</summary>
+
+### `GET /readAllItineraries` - Read All Itineraries
+
+#### Request
+
+- **Endpoint:** `/readAllItineraries`
+- **Method:** GET
+- **Description:** Retrieves all itineraries and handles any internal filtering based on query parameters.
+
+#### Response
+
+```json
+[
+  {
+    "_id": "676433af43a3234b9bb9469e",
+    "author": "66ff16b8be4fe3e1ff765d90",
+    "title": "Mountain Adventure",
+    "category": "Adventure",
+    "activities": [
+      {
+        "name": "Hiking",
+        "start_date": "2024-10-10T00:00:00.000Z",
+        "end_date": "2024-10-11T00:00:00.000Z",
+        "description": "A scenic mountain hiking tour."
+      },
+      {
+        "name": "Boat Ride",
+        "start_date": "2024-10-12T00:00:00.000Z",
+        "end_date": "2024-10-12T00:00:00.000Z",
+        "description": "A relaxing boat ride along the river."
+      }
+    ],
+    "start_date": "2024-10-10T00:00:00.000Z",
+    "end_date": "2024-10-12T00:00:00.000Z",
+    "transportation": "Bus",
+    "accommodation": "Mountain Lodge",
+    "language": "English",
+    "price": 150,
+    "locations": ["Mountain Trail", "River Valley"],
+    "pick_up": "City Center, Main Square",
+    "drop_off": "City Center, Main Square",
+    "availability": {
+      "dates": ["2024-10-10T00:00:00.000Z", "2024-10-12T00:00:00.000Z"]
+    },
+    "isBooked": false,
+    "booked_users": [],
+    "ratingsAverage": 4.5,
+    "ratingsQuantity": 0,
+    "tags": ["Adventure", "Nature"],
+    "isActive": true,
+    "isFlagged": false,
+    "isOpened": false,
+    "interestedUsers": [],
+    "createdAt": "2024-12-19T14:54:39.938Z",
+    "updatedAt": "2024-12-19T14:54:39.938Z"
+  }
+]
+```
+
+</details>
+
 - **/readSingleItinerary/:itineraryId :** a GET function to get a single itinerary by id
 - **shareItinerary/:id :** a GET function to share an itinerary by its id
 - **/openBookings/:id :** a PATCH function used to set an itinerary's status to open by its id
@@ -1065,6 +1124,150 @@ handles all operations related to products on the system ans is used by /product
 - **/makePurchase :** a post function that handle the logic of purchasing in the data base
 - **/deleteProduct/:id :** a delet function that deletes a product from the system using the specified id
 - **/updateProduct/:id :** a patch function that updates the info of the selected product using the id provided in the url
+
+### Cart
+
+/cart followed by the following :
+
+<details>
+<summary>GET / - Get User's Cart</summary>
+
+### `GET /` - Get User's Cart
+
+#### Request
+
+- **Endpoint:** `/`
+- **Method:** GET
+- **Description:** Retrieves the cart of the logged-in user. Requires a JWT token.
+
+#### Response
+
+```json
+{
+  "_id": "676483d8edef3d04b084735b",
+  "userId": "66fffbc17931c2669f7d034c",
+  "products": [
+    {
+      "productId": {
+        "_id": "6727e1641335caa450eb86e0",
+        "name": "ZNT11",
+        "price": 122,
+        "ratingsAverage": 1,
+        "mainImage": "product-672f9cf2b93779a66f559132-main-87e12241-9e86-4308-8bd1-fd5bad91cd7f.jpeg"
+      },
+      "quantity": 3,
+      "_id": "676483d8edef3d04b084735d"
+    }
+  ],
+  "__v": 0
+}
+```
+
+</details>
+
+<details>
+<summary>PATCH /edit - Edit User's Cart</summary>
+
+### `PATCH /edit` - Edit User's Cart
+
+#### Request
+
+- **Endpoint:** `/edit`
+- **Method:** PATCH
+- **Description:** Edits the user's cart by updating the quantity of a specified product. Requires a JWT token.
+- **Request Body:**
+
+  ```json
+  {
+    "productId": "6727e1641335caa450eb86e0",
+    "quantity": 1
+  }
+  ```
+
+#### Response
+
+```json
+{
+  "_id": "676483d8edef3d04b084735b",
+  "userId": "66fffbc17931c2669f7d034c",
+  "products": [
+    {
+      "productId": "6727e1641335caa450eb86e0",
+      "quantity": 3,
+      "_id": "676483d8edef3d04b084735d"
+    }
+  ],
+  "__v": 0
+}
+```
+
+</details>
+
+<details>
+<summary>POST /checkout - Checkout User's Order</summary>
+
+### `POST /checkout` - Checkout User's Order
+
+#### Request
+
+- **Endpoint:** `/checkout`
+- **Method:** POST
+- **Description:** Processes the checkout for the user's cart. Requires a JWT token.
+- **Request Body:**
+
+  ```json
+  {
+    "shippingAddress" : {
+        "street": "123 Main St",
+        "city": "Springfield",
+        "state": "IL",
+        "postalCode": "62701",
+        "country": "USA"
+    },
+    "PaymentMethod": "wallet",
+    "paymentAmount": 150
+  }
+  ```
+
+#### Response
+
+```json
+{
+    "message": "Order placed successfully",
+    "order": {
+        "userId": "66fffbc17931c2669f7d034c",
+        "products": [
+            {
+                "productId": "6727e1641335caa450eb86e0",
+                "quantity": 3,
+                "totalPrice": 366,
+                "_id": "676486d8edef3d04b084738b"
+            }
+        ],
+        "shippingAddress": {
+            "street": "123 Main St",
+            "city": "Springfield",
+            "state": "IL",
+            "postalCode": "62701",
+            "country": "USA"
+        },
+        "totalPrice": 150,
+        "state": "processing",
+        "PaymentMethod": "wallet",
+        "deliveryDate": "2024-12-26T20:49:28.676Z",
+        "isCancelled": false,
+        "purchaseIds": [
+            "676486d8edef3d04b0847388"
+        ],
+        "_id": "676486d8edef3d04b084738a",
+        "createdAt": "2024-12-19T20:49:28.678Z",
+        "updatedAt": "2024-12-19T20:49:28.678Z",
+        "__v": 0
+    }
+}
+```
+
+</details>
 
 ### Transportations
 
@@ -1121,22 +1324,23 @@ handles all operations specific to tourist :
 
 #### Response
 
-  ```json
-  {
-    "status": "success",
-    "data": {
-        "complaint": {
-            "title": "test",
-            "body": "testing the complain end point",
-            "status": "Pending",
-            "user": "676451bfcc3eb0c6bdfb3f8a",
-            "_id": "676475a7cc3eb0c6bdfb3fa4",
-            "date": "2024-12-19T19:36:07.389Z",
-            "__v": 0
-        }
+```json
+{
+  "status": "success",
+  "data": {
+    "complaint": {
+      "title": "test",
+      "body": "testing the complain end point",
+      "status": "Pending",
+      "user": "676451bfcc3eb0c6bdfb3f8a",
+      "_id": "676475a7cc3eb0c6bdfb3fa4",
+      "date": "2024-12-19T19:36:07.389Z",
+      "__v": 0
     }
   }
-  ```
+}
+```
+
 </details>
 
 <details>
@@ -1152,27 +1356,27 @@ handles all operations specific to tourist :
 
 #### Response
 
-  ```json
-  {
-    "status": "success",
-    "results": 1,
-    "data": {
-        "complaints": [
-            {
-                "_id": "676475a7cc3eb0c6bdfb3fa4",
-                "title": "test",
-                "body": "testing the complain end point",
-                "status": "Pending",
-                "user": "676451bfcc3eb0c6bdfb3f8a",
-                "date": "2024-12-19T19:36:07.389Z",
-                "__v": 0
-            }
-        ]
-    }
+```json
+{
+  "status": "success",
+  "results": 1,
+  "data": {
+    "complaints": [
+      {
+        "_id": "676475a7cc3eb0c6bdfb3fa4",
+        "title": "test",
+        "body": "testing the complain end point",
+        "status": "Pending",
+        "user": "676451bfcc3eb0c6bdfb3f8a",
+        "date": "2024-12-19T19:36:07.389Z",
+        "__v": 0
+      }
+    ]
   }
-  ```
-</details>
+}
+```
 
+</details>
 
 - **/MyAccount :** a get request to get a logged in tourist's account
 - **/updateMe :** a patch request to update a logged in tourist's account
@@ -1396,7 +1600,6 @@ handles all operations specific to advertiser :
 
 </details>
 
-
 <details>
 <summary>POST /signup - User signup</summary>
 
@@ -1426,51 +1629,49 @@ handles all operations specific to advertiser :
 
 #### Response
 
-  ```json
-  {
-    "status": "success",
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3NjQ1MWJmY2MzZWIwYzZiZGZiM2Y4YSIsImlhdCI6MTczNDYyNzc3NywiZXhwIjoxNzQyNDAzNzc3fQ.yf_rsQHPVS4i-J-xjnNbhMIbj5eHqYvOTHGFIyMqUYY",
-    "data": {
-        "user": {
-            "username": "TestUser",
-            "email": "testuser@test.com",
-            "role": "Tourist",
-            "mobile_number": "12345678910",
-            "nationality": "Egyptien",
-            "DOB": "2024-10-31T22:00:00.000Z",
-            "job": "student",
-            "wallet": 0,
-            "experience": [],
-            "ratingsAverage": 4.5,
-            "ratingsQuantity": 0,
-            "previous_work": [],
-            "years_of_experience": 0,
-            "activities": [],
-            "isActive": true,
-            "verified": false,
-            "activityGuests": 0,
-            "passwordChangedAt": "2024-12-19T17:02:55.653Z",
-            "documentApprovalStatus": "Pending",
-            "certificates": [],
-            "loyaltyPoints": 0,
-            "level": 1,
-            "badge": "Bronze",
-            "pointsAvailable": 0,
-            "selectedTags": [
-                "67029818e93b4336b41ee134"
-            ],
-            "wishList": [],
-            "savedEvents": [],
-            "savedItineraries": [],
-            "_id": "676451bfcc3eb0c6bdfb3f8a",
-            "addresses": [],
-            "createdAt": "2024-12-19T17:02:55.707Z",
-            "updatedAt": "2024-12-19T17:02:55.707Z",
-            "__v": 0
-        }
+```json
+{
+  "status": "success",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3NjQ1MWJmY2MzZWIwYzZiZGZiM2Y4YSIsImlhdCI6MTczNDYyNzc3NywiZXhwIjoxNzQyNDAzNzc3fQ.yf_rsQHPVS4i-J-xjnNbhMIbj5eHqYvOTHGFIyMqUYY",
+  "data": {
+    "user": {
+      "username": "TestUser",
+      "email": "testuser@test.com",
+      "role": "Tourist",
+      "mobile_number": "12345678910",
+      "nationality": "Egyptien",
+      "DOB": "2024-10-31T22:00:00.000Z",
+      "job": "student",
+      "wallet": 0,
+      "experience": [],
+      "ratingsAverage": 4.5,
+      "ratingsQuantity": 0,
+      "previous_work": [],
+      "years_of_experience": 0,
+      "activities": [],
+      "isActive": true,
+      "verified": false,
+      "activityGuests": 0,
+      "passwordChangedAt": "2024-12-19T17:02:55.653Z",
+      "documentApprovalStatus": "Pending",
+      "certificates": [],
+      "loyaltyPoints": 0,
+      "level": 1,
+      "badge": "Bronze",
+      "pointsAvailable": 0,
+      "selectedTags": ["67029818e93b4336b41ee134"],
+      "wishList": [],
+      "savedEvents": [],
+      "savedItineraries": [],
+      "_id": "676451bfcc3eb0c6bdfb3f8a",
+      "addresses": [],
+      "createdAt": "2024-12-19T17:02:55.707Z",
+      "updatedAt": "2024-12-19T17:02:55.707Z",
+      "__v": 0
     }
   }
-  ```
+}
+```
 
 </details>
 <details>
@@ -1487,22 +1688,22 @@ handles all operations specific to advertiser :
 
   ```json
   {
-      "numOfTickets":3,
-      "price":200,
-      "conversionRate":1
+    "numOfTickets": 3,
+    "price": 200,
+    "conversionRate": 1
   }
   ```
 
 #### Response
 
-  ```json
-  {
-    "message": "refund done successfully",
-    "updatedWallet": 1
-  }
-  ```
-</details>
+```json
+{
+  "message": "refund done successfully",
+  "updatedWallet": 1
+}
+```
 
+</details>
 
 - **/forgotPassword :** a post request to ask the user if they forgot their password in case of wrong credentials
 - **/resetPassword/:token :** a patch request used to reset a users password given their token
