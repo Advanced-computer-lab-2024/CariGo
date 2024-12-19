@@ -544,10 +544,225 @@ handles all operations related to activities on the system ans is used by /activ
 handles all operations related to itineraries on the system ans is used by /Event followed by the following :
 - **/readAllItineraries :** a GET function that read all itineraries and internally handles any filtering
 - **/readSingleItinerary/:itineraryId :** a GET function to get a single itinerary by id
-- **/readMyItineraries :** a GET function to read a logged in tour guide's itineraries
-- **/createItinerary :** a POST function to create a new itinerary
-- **/updateItinerary/:itineraryId :** a PATCH function to update an itinerary by id
-- **/itineraries/:id :** a DELETE function to delete an itinerary by id
+<details>
+<summary>POST /createItinerary - Create a new itinerary</summary>
+
+### `POST /createItinerary` - Create a new itinerary
+
+#### Request
+
+- **Endpoint:** `/createItinerary`
+- **Method:** POST
+- **Description:** Creates a new itinerary with activities, availability, and other details.
+- **Request Body:**
+
+  ```json
+  {
+      "author": "66ff16b8be4fe3e1ff765d90",
+      "activities": [
+          {
+              "name": "Hiking",
+              "start_date": "2024-10-10",
+              "end_date": "2024-10-11",
+              "description": "A scenic mountain hiking tour."
+          },
+          {
+              "name": "Boat Ride",
+              "start_date": "2024-10-12",
+              "end_date": "2024-10-12",
+              "description": "A relaxing boat ride along the river."
+          }
+      ],
+      "language": "English",
+      "price": 150,
+      "locations": ["Mountain Trail", "River Valley"],
+      "pick_up": "City Center, Main Square",
+      "drop_off": "City Center, Main Square",
+      "availability": {
+          "dates": ["2024-10-10", "2024-10-12"]
+      },
+      "isBooked": false,
+      "booked_users": []
+  }
+  ```
+
+#### Response
+
+  ```json
+  {
+      "author": "66ff16b8be4fe3e1ff765d90",
+      "activities": [
+          {
+              "name": "Hiking",
+              "end_date": "2024-10-11T00:00:00.000Z",
+              "description": "A scenic mountain hiking tour.",
+              "_id": "676433af43a3234b9bb9469f"
+          },
+          {
+              "name": "Boat Ride",
+              "end_date": "2024-10-12T00:00:00.000Z",
+              "description": "A relaxing boat ride along the river.",
+              "_id": "676433af43a3234b9bb946a0"
+          }
+      ],
+      "language": "English",
+      "price": 150,
+      "locations": [
+          "Mountain Trail",
+          "River Valley"
+      ],
+      "pick_up": "City Center, Main Square",
+      "drop_off": "City Center, Main Square",
+      "availability": {
+          "dates": [
+              "2024-10-10T00:00:00.000Z",
+              "2024-10-12T00:00:00.000Z"
+          ]
+      },
+      "isBooked": false,
+      "booked_users": [],
+      "ratingsAverage": 4.5,
+      "ratingsQuantity": 0,
+      "tags": [],
+      "isActive": true,
+      "isFlagged": false,
+      "isOpened": false,
+      "interestedUsers": [],
+      "_id": "676433af43a3234b9bb9469e",
+      "createdAt": "2024-12-19T14:54:39.938Z",
+      "updatedAt": "2024-12-19T14:54:39.938Z",
+      "__v": 0
+  }
+  ```
+
+</details>
+
+<details>
+<summary>PATCH /updateItinerary/:itineraryId - Update an itinerary by id</summary>
+
+### `PATCH /updateItinerary/:itineraryId` - Update an itinerary by id
+
+#### Request
+
+- **Endpoint:** `/updateItinerary/:itineraryId`
+- **Method:** PATCH
+- **Description:** Updates an existing itinerary with new activities, tags, and other details.
+- **Request Body:**
+
+  ```json
+  {
+      "activities": [
+          {
+              "name": "Mountain test ys 3baqi",
+              "end_date": "2024-12-01T11:00:00.000Z",
+              "description": "A scenic hike through the mountain trails with a professional guide.",
+              "_id": "67024111056c479208da9935"
+          },
+          {
+              "name": "Lakeside Picnic",
+              "end_date": "2024-12-01T14:00:00.000Z",
+              "description": "A relaxing picnic by the lake with local delicacies and stunning views.",
+              "_id": "67024111056c479208da9936"
+          },
+          {
+              "name": "Volley Ball",
+              "end_date": "2024-12-01T14:00:00.000Z",
+              "description": "A relaxing picnic by the lake with local delicacies and stunning views."
+          }
+      ],
+      "tags": ["67029818e93b4336b41ee134", "670189d71120edeecf46a036"]
+  }
+  ```
+
+#### Response
+
+  ```json
+  {
+      "availability": {
+          "dates": []
+      },
+      "_id": "6703bfa0a040b8a99567f43a",
+      "author": "66fffbc17931c2669f7d034c",
+      "activities": [
+          {
+              "name": "Mountain test ys 3baqi",
+              "end_date": "2024-12-01T11:00:00.000Z",
+              "description": "A scenic hike through the mountain trails with a professional guide.",
+              "_id": "67024111056c479208da9935"
+          },
+          {
+              "name": "Lakeside Picnic",
+              "end_date": "2024-12-01T14:00:00.000Z",
+              "description": "A relaxing picnic by the lake with local delicacies and stunning views.",
+              "_id": "67024111056c479208da9936"
+          },
+          {
+              "name": "Volley Ball",
+              "end_date": "2024-12-01T14:00:00.000Z",
+              "description": "A relaxing picnic by the lake with local delicacies and stunning views.",
+              "_id": "67643b1043a3234b9bb947b2"
+          }
+      ],
+      "start_date": "2025-10-07T11:01:00.000Z",
+      "end_date": "2025-10-24T11:01:00.000Z",
+      "transportation": "Bus",
+      "accommodation": "Milano Hotel",
+      "language": "",
+      "price": 103,
+      "locations": [
+          "Castle",
+          "Museum",
+          "kda y3ny"
+      ],
+      "pick_up": "",
+      "drop_off": "",
+      "accessibility": "",
+      "isBooked": true,
+      "booked_users": [],
+      "ratingsAverage": 4.5,
+      "tags": [
+          "67029818e93b4336b41ee134",
+          "670189d71120edeecf46a036"
+      ],
+      "createdAt": "2024-10-07T11:01:52.979Z",
+      "updatedAt": "2024-12-19T15:26:08.665Z",
+      "__v": 0,
+      "isActive": true,
+      "isFlagged": false,
+      "title": "mashi",
+      "category": null,
+      "interestedUsers": [
+          "67306b51011b72d218a47293"
+      ],
+      "isOpened": true,
+      "ratingsQuantity": 0
+  }
+  ```
+
+</details>
+
+<details>
+<summary>DELETE /itineraries/:id - Delete an itinerary by id</summary>
+
+### `DELETE /itineraries/:id` - Delete an itinerary by id
+
+#### Request
+
+- **Endpoint:** `/itineraries/:id`
+- **Method:** DELETE
+- **Description:** Deletes an existing itinerary by its id.
+
+#### Response
+
+  ```json
+  {
+      "status": "success",
+      "message": "Itinerary deleted successfully."
+  }
+  ```
+
+</details>
+
 - **shareItinerary/:id :** a GET function to share an itinerary by its id
 - **/openBookings/:id :** a PATCH function used to set an itinerary's status to open by its id
 - **/BookItinerary/:ItineraryId :** a POST function used to book a certain itinerary by its id
@@ -619,7 +834,7 @@ both flight and hotels are done using amadeus api and use /flights followed by t
 - **/BookFlight :** a post method used to book an flight
 - **/BookHotel :** a post method used to book an hotel
 - **/MyfBookings :** a get request that reads all of a tourist's booked flights 
-- - **/MyhBookings :** a get request that reads all of a tourist's booked hotels 
+- **/MyhBookings :** a get request that reads all of a tourist's booked hotels 
 - **/CancelfBooking :** a patch request that cancels a flight booking as long as its date hasnt come yet
 - **/CancelhBooking :** a patch request that cancels a hotel booking as long as its start date hasnt come yet
     
@@ -643,15 +858,220 @@ handles all operations specific to advertiser :
    
   
 ### user
+<details>
+<summary>GET / - Read All Users</summary>
 
-handles general user operations using the url /users followed by the following:
-- **/ :** a get request to read all users
+### `GET /` - Read All Users
+
+#### Response
+
+```json
+[
+  {
+    "_id": "67580a1a6ba6acf0268b4241",
+    "username": "hadwa_admin",
+    "email": "yasmeen.shaaban.aly@gmail.com",
+    "role": "Admin",
+    "wallet": 0,
+    "experience": [],
+    "ratingsAverage": 4.5,
+    "ratingsQuantity": 0,
+    "previous_work": [],
+    "years_of_experience": 0,
+    "activities": [],
+    "about": "test",
+    "isActive": true,
+    "verified": false,
+    "activityGuests": 0,
+    "documentApprovalStatus": "Pending",
+    "certificates": [],
+    "loyaltyPoints": 0,
+    "level": 1,
+    "badge": "Bronze",
+    "pointsAvailable": 0,
+    "selectedTags": [],
+    "wishList": [],
+    "savedEvents": [],
+    "savedItineraries": [],
+    "addresses": [],
+    "createdAt": "2024-12-10T09:30:02.174Z",
+    "updatedAt": "2024-12-10T09:30:02.174Z",
+    "__v": 0
+  },
+  {
+    "_id": "675763296ea83a5c273df4dc",
+    "username": "tourtour",
+    "email": "on@gmail.com",
+    "role": "Tour_Guide",
+    "mobile_number": "01067744295",
+    "nationality": "",
+    "DOB": null,
+    "job": "",
+    "wallet": 0,
+    "experience": [],
+    "ratingsAverage": 4.5,
+    "ratingsQuantity": 0,
+    "previous_work": [],
+    "years_of_experience": 0,
+    "sellerName": "",
+    "description": "",
+    "website_link": "http://guc.edu.eg",
+    "hotline": null,
+    "activities": [],
+    "about": "",
+    "isActive": true,
+    "verified": false,
+    "activityGuests": 0,
+    "passwordChangedAt": "2024-12-09T21:37:45.126Z",
+    "documentApprovalStatus": "Pending",
+    "certificates": [
+      "certificate-1733780265971-609784362.pdf",
+      "certificate-1733780265971-854811437.pdf"
+    ],
+    "loyaltyPoints": 0,
+    "level": 1,
+    "badge": "Bronze",
+    "pointsAvailable": 0,
+    "selectedTags": [],
+    "wishList": [],
+    "savedEvents": [],
+    "savedItineraries": [],
+    "addresses": [],
+    "createdAt": "2024-12-09T21:37:45.131Z",
+    "updatedAt": "2024-12-09T21:37:46.236Z",
+    "__v": 0,
+    "idDocument": "id-1733780265970-288420360.png",
+    "photo": "tour-guide-675763296ea83a5c273df4dc-69790ec4-9983-459f-8a09-11f96772be28.jpeg"
+  }
+]
+```
+
+</details>
+
 - **/signup :** a post request to signup a user
-- **/login :** a post request to login a user 
+<details>
+<summary>POST /login - User Login</summary>
+
+### `POST /login` - User Login
+
+#### Request
+
+- **Endpoint:** `/login`
+- **Method:** POST
+- **Description:** Authenticates a user and returns a JWT token.
+- **Request Body:**
+
+  ```json
+  {
+      "username": "adel",
+      "password": "123456"
+  }
+  ```
+
+#### Response
+
+  ```json
+  {
+      "status": "success",
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3NjQzODNjNDNhMzIzNGI5YmI5NDZiYyIsImlhdCI6MTczNDYyMTI4NiwiZXhwIjoxNzQyMzk3Mjg2fQ.iKOso-u-7PmXDaywwpiKPlSDVVRSdOQLDureM9j-KeQ",
+      "data": {
+          "user": {
+              "_id": "6764383c43a3234b9bb946bc",
+              "username": "adel",
+              "email": "adel@gmail.com",
+              "role": "Tourist",
+              "mobile_number": "01555229073",
+              "nationality": "Egypt",
+              "DOB": "2005-02-16T00:00:00.000Z",
+              "job": "meow",
+              "wallet": 0,
+              "experience": [],
+              "ratingsAverage": 4.5,
+              "ratingsQuantity": 0,
+              "previous_work": [],
+              "years_of_experience": 0,
+              "sellerName": "",
+              "description": "",
+              "website_link": "http://guc.edu.eg",
+              "hotline": null,
+              "activities": [],
+              "about": "",
+              "isActive": true,
+              "verified": false,
+              "activityGuests": 0,
+              "passwordChangedAt": "2024-12-19T15:14:04.507Z",
+              "documentApprovalStatus": "Pending",
+              "certificates": [],
+              "loyaltyPoints": 0,
+              "level": 1,
+              "badge": "Bronze",
+              "pointsAvailable": 0,
+              "selectedTags": [
+                  "67029818e93b4336b41ee134",
+                  "6724fab76d94a24e93137efe"
+              ],
+              "wishList": [],
+              "savedEvents": [],
+              "savedItineraries": [
+                  "6703bfa0a040b8a99567f43a"
+              ],
+              "addresses": [],
+              "createdAt": "2024-12-19T15:14:04.513Z",
+              "updatedAt": "2024-12-19T15:14:40.365Z",
+              "__v": 0
+          }
+      }
+  }
+  ```
+
+</details>
+
 - **/forgotPassword :** a post request to ask the user if they forgot their password in case of wrong credentials
 - **/resetPassword/:token :** a patch request used to reset a users password given their token
 - **/update/:userId :** a patch request that updates user data given their id
--**/pending-documents :** a get request that allows an admin to view all pending requests
+<details>
+<summary>PATCH /update/:userId - Update User Data</summary>
+
+### `PATCH /update/:userId` - Update User Data
+
+#### Request
+
+- **Endpoint:** `/update/:userId`
+- **Method:** PATCH
+- **Description:** Updates user data for the specified user ID.
+- **Request Body:**
+
+  ```json
+  {
+      "wishList": ["6727e1641335caa450eb86e0", "6727e317e14a2315d5dd6210"],
+      "savedEvents": ["67016df580e6bc147dba786c","67024b0e39b34c97c0efd15b"],
+      "savedItineraries": ["66ff1f804abdd1e973ecc18e","66fffe6bbd9ea1d61472dfab"],
+      "addresses":[
+          {
+          "street": "123 Main St",
+          "city": "Springfield",
+          "state": "IL",
+          "postalCode": "62701",
+          "country": "USA"
+      }]
+  }
+  ```
+
+#### Response
+
+  ```json
+  {
+      "acknowledged": true,
+      "modifiedCount": 1,
+      "upsertedId": null,
+      "upsertedCount": 0,
+      "matchedCount": 1
+  }
+  ```
+
+</details>
+
+- **/pending-documents :** a get request that allows an admin to view all pending requests
 - **/approve-document/:userId :** a patch request that allows an admin to approve documents uploaded by a certain user identified by their id
 - **/reject-document :** a patch request that allows an admin to reject documents uploaded by a certain user identified by their id
 - **/:id :** a get request that returns all the info of a single user identified bu their id
