@@ -98,7 +98,7 @@ npm run format:fix
 
 **filter through and scroll into endless choices of activites to add to oyur next trip!!**
 
-![activities filter](images/Screenshot%202024-12-09%20035654.png)
+![alt text](<images/activity page.png>)
 
 **book detailed iteneraries with trusted tour guides filled with exciting activities !**
 
