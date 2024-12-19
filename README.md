@@ -88,16 +88,28 @@ npm run format:fix
 
 ## Features & Screenshots
 
-##### book flights/hotels/transportations , look for activities , book itineraries with tour guides or just find out about historical places in your next destination, and even see what souvnirs you want to buy all in one place !
+![alt text](<images/ship home.png>)
 
-![Screenshot 2024-12-09 050946](/images/Screenshot 2024-12-09 035654.png)
+**book flights/hotels/transportations , look for activities , book itineraries with a tour guides or just find out about historical places in your next destination, and even see what souvnirs you want to buy all in one place !**
+
+![choices home](images/choices%20home.png)
 
 
-##### filter through and scroll into endless choices of activites to add to oyur next trip!!
 
-![Screenshot 2024-12-09 035654](https://hackmd.io/_uploads/B1JgXR7Nyx.png)
+**filter through and scroll into endless choices of activites to add to oyur next trip!!**
 
-##### manage and edit everything smoothly with our easy to use admin home layout !
+![activities filter](images/Screenshot%202024-12-09%20035654.png)
+
+**book detailed iteneraries with trusted tour guides filled with exciting activities !**
+
+![alt text](images/itinerary_details.png)
+![alt text](images/itinerary_activities.png)
+
+**like an itinerary but it isnt open for booking yet? simply click notify me and our system will send you a reminder when it is open :)**
+
+![alt text](images/itinerary_notify_me.png)
+
+**manage and edit everything smoothly with our easy to use admin home layout !**
 
 ![Screenshot (2645)](https://hackmd.io/_uploads/rJRRD0mNJg.png)
 
