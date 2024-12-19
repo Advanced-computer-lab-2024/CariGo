@@ -1125,149 +1125,6 @@ handles all operations related to products on the system ans is used by /product
 - **/deleteProduct/:id :** a delet function that deletes a product from the system using the specified id
 - **/updateProduct/:id :** a patch function that updates the info of the selected product using the id provided in the url
 
-### Cart
-
-/cart followed by the following :
-
-<details>
-<summary>GET / - Get User's Cart</summary>
-
-### `GET /` - Get User's Cart
-
-#### Request
-
-- **Endpoint:** `/`
-- **Method:** GET
-- **Description:** Retrieves the cart of the logged-in user. Requires a JWT token.
-
-#### Response
-
-```json
-{
-  "_id": "676483d8edef3d04b084735b",
-  "userId": "66fffbc17931c2669f7d034c",
-  "products": [
-    {
-      "productId": {
-        "_id": "6727e1641335caa450eb86e0",
-        "name": "ZNT11",
-        "price": 122,
-        "ratingsAverage": 1,
-        "mainImage": "product-672f9cf2b93779a66f559132-main-87e12241-9e86-4308-8bd1-fd5bad91cd7f.jpeg"
-      },
-      "quantity": 3,
-      "_id": "676483d8edef3d04b084735d"
-    }
-  ],
-  "__v": 0
-}
-```
-
-</details>
-
-<details>
-<summary>PATCH /edit - Edit User's Cart</summary>
-
-### `PATCH /edit` - Edit User's Cart
-
-#### Request
-
-- **Endpoint:** `/edit`
-- **Method:** PATCH
-- **Description:** Edits the user's cart by updating the quantity of a specified product. Requires a JWT token.
-- **Request Body:**
-
-  ```json
-  {
-    "productId": "6727e1641335caa450eb86e0",
-    "quantity": 1
-  }
-  ```
-
-#### Response
-
-```json
-{
-  "_id": "676483d8edef3d04b084735b",
-  "userId": "66fffbc17931c2669f7d034c",
-  "products": [
-    {
-      "productId": "6727e1641335caa450eb86e0",
-      "quantity": 3,
-      "_id": "676483d8edef3d04b084735d"
-    }
-  ],
-  "__v": 0
-}
-```
-
-</details>
-
-<details>
-<summary>POST /checkout - Checkout User's Order</summary>
-
-### `POST /checkout` - Checkout User's Order
-
-#### Request
-
-- **Endpoint:** `/checkout`
-- **Method:** POST
-- **Description:** Processes the checkout for the user's cart. Requires a JWT token.
-- **Request Body:**
-
-  ```json
-  {
-    "shippingAddress" : {
-        "street": "123 Main St",
-        "city": "Springfield",
-        "state": "IL",
-        "postalCode": "62701",
-        "country": "USA"
-    },
-    "PaymentMethod": "wallet",
-    "paymentAmount": 150
-  }
-  ```
-
-#### Response
-
-```json
-{
-    "message": "Order placed successfully",
-    "order": {
-        "userId": "66fffbc17931c2669f7d034c",
-        "products": [
-            {
-                "productId": "6727e1641335caa450eb86e0",
-                "quantity": 3,
-                "totalPrice": 366,
-                "_id": "676486d8edef3d04b084738b"
-            }
-        ],
-        "shippingAddress": {
-            "street": "123 Main St",
-            "city": "Springfield",
-            "state": "IL",
-            "postalCode": "62701",
-            "country": "USA"
-        },
-        "totalPrice": 150,
-        "state": "processing",
-        "PaymentMethod": "wallet",
-        "deliveryDate": "2024-12-26T20:49:28.676Z",
-        "isCancelled": false,
-        "purchaseIds": [
-            "676486d8edef3d04b0847388"
-        ],
-        "_id": "676486d8edef3d04b084738a",
-        "createdAt": "2024-12-19T20:49:28.678Z",
-        "updatedAt": "2024-12-19T20:49:28.678Z",
-        "__v": 0
-    }
-}
-```
-
-</details>
 
 ### Transportations
 
@@ -1787,9 +1644,146 @@ handles all operations related to requests used by the url /delReq followed by t
 
 used to handle all operations related to the cart as follows:
 
-- **/ :** a get method to read a user's cart
+<details>
+<summary>GET / - Get User's Cart</summary>
+
+### `GET /` - Get User's Cart
+
+#### Request
+
+- **Endpoint:** `/`
+- **Method:** GET
+- **Description:** Retrieves the cart of the logged-in user. Requires a JWT token.
+
+#### Response
+
+```json
+{
+  "_id": "676483d8edef3d04b084735b",
+  "userId": "66fffbc17931c2669f7d034c",
+  "products": [
+    {
+      "productId": {
+        "_id": "6727e1641335caa450eb86e0",
+        "name": "ZNT11",
+        "price": 122,
+        "ratingsAverage": 1,
+        "mainImage": "product-672f9cf2b93779a66f559132-main-87e12241-9e86-4308-8bd1-fd5bad91cd7f.jpeg"
+      },
+      "quantity": 3,
+      "_id": "676483d8edef3d04b084735d"
+    }
+  ],
+  "__v": 0
+}
+```
+
+</details>
+
+<details>
+<summary>PATCH /edit - Edit User's Cart</summary>
+
+### `PATCH /edit` - Edit User's Cart
+
+#### Request
+
+- **Endpoint:** `/edit`
+- **Method:** PATCH
+- **Description:** Edits the user's cart by updating the quantity of a specified product. Requires a JWT token.
+- **Request Body:**
+
+  ```json
+  {
+    "productId": "6727e1641335caa450eb86e0",
+    "quantity": 1
+  }
+  ```
+
+#### Response
+
+```json
+{
+  "_id": "676483d8edef3d04b084735b",
+  "userId": "66fffbc17931c2669f7d034c",
+  "products": [
+    {
+      "productId": "6727e1641335caa450eb86e0",
+      "quantity": 3,
+      "_id": "676483d8edef3d04b084735d"
+    }
+  ],
+  "__v": 0
+}
+```
+
+</details>
+
+<details>
+<summary>POST /checkout - Checkout User's Order</summary>
+
+### `POST /checkout` - Checkout User's Order
+
+#### Request
+
+- **Endpoint:** `/checkout`
+- **Method:** POST
+- **Description:** Processes the checkout for the user's cart. Requires a JWT token.
+- **Request Body:**
+
+  ```json
+  {
+    "shippingAddress" : {
+        "street": "123 Main St",
+        "city": "Springfield",
+        "state": "IL",
+        "postalCode": "62701",
+        "country": "USA"
+    },
+    "PaymentMethod": "wallet",
+    "paymentAmount": 150
+  }
+  ```
+
+#### Response
+
+```json
+{
+    "message": "Order placed successfully",
+    "order": {
+        "userId": "66fffbc17931c2669f7d034c",
+        "products": [
+            {
+                "productId": "6727e1641335caa450eb86e0",
+                "quantity": 3,
+                "totalPrice": 366,
+                "_id": "676486d8edef3d04b084738b"
+            }
+        ],
+        "shippingAddress": {
+            "street": "123 Main St",
+            "city": "Springfield",
+            "state": "IL",
+            "postalCode": "62701",
+            "country": "USA"
+        },
+        "totalPrice": 150,
+        "state": "processing",
+        "PaymentMethod": "wallet",
+        "deliveryDate": "2024-12-26T20:49:28.676Z",
+        "isCancelled": false,
+        "purchaseIds": [
+            "676486d8edef3d04b0847388"
+        ],
+        "_id": "676486d8edef3d04b084738a",
+        "createdAt": "2024-12-19T20:49:28.678Z",
+        "updatedAt": "2024-12-19T20:49:28.678Z",
+        "__v": 0
+    }
+}
+```
+</details>
+
 - **/order/:id :** a get method to read a simgle order by its id
-- **/edit :** a patch method to edit a product in a user's cart
 - **/remove/:id :** a patch method to remove an item from a user's cart by its id -**/clear :** a patch method to clear a user's cart -**MyOrders** a get method to read all of a tourist's orders -**/cancel :** a patch method for a tourist to cancel an order -**/checkout :** a post method to checkout a cart
 
 ## Tests
