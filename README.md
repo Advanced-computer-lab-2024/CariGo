@@ -658,6 +658,116 @@ npm install
 
 handles all operations related to activities on the system ans is used by /activities followed by the following :
 
+<details>
+<summary>POST /BookActivity/:ActivityId - book an activity</summary>
+
+### `POST /BookActivity/:ActivityId` - Book activity
+
+#### Request
+
+- **Endpoint:** `/BookActivity/:ActivityId`
+- **Method:** POST
+- **Description:**  books the activity specified in the id for the signed in user. note this end point needs a JWT token.
+- **Request Body:**
+
+  ```json
+  {
+      "PaymentMethod":"Wallet",
+        "TotalPrice":300,
+        "NumberOfTickets":3
+  }
+  ```
+
+#### Response
+
+  ```json
+  {
+      "message": "Booked successfully",
+        "booking": {
+            "UserId": "676451bfcc3eb0c6bdfb3f8a",
+            "ActivityId": "672cbcce6227e653db4c7f9b",
+            "Status": true,
+            "PaymentMethod": "Wallet",
+            "CardNumber": "",
+            "NumberOfTickets": 3,
+            "TotalPrice": 300,
+            "_id": "676458bfcc3eb0c6bdfb3f97",
+            "createdAt": "2024-12-19T17:32:47.059Z",
+            "updatedAt": "2024-12-19T17:32:47.059Z",
+            "__v": 0
+        },
+        "loyaltyPointsEarned": 750,
+        "newTotalPoints": 150,
+        "newLevel": 1,
+        "newBadge": "Bronze",
+        "newPoints": 150,
+        "newWallet": 300
+  }
+  ```
+
+</details>
+
+  <details>
+<summary>GET /MyActivityBookings - Create a new itinerary</summary>
+
+### `GET /MyActivityBookings` - My Activity Bookings
+
+#### Request
+
+- **Endpoint:** `/MyActivityBookings`
+- **Method:** GET
+- **Description:** show the logged in tourist all their booked activities. needs a JWT token.
+
+#### Response
+
+  ```json
+[
+    {
+        "_id": "676458bfcc3eb0c6bdfb3f97",
+        "UserId": "676451bfcc3eb0c6bdfb3f8a",
+        "ActivityId": {
+            "locations": {
+                "lon": "1234",
+                "lan": "54321"
+            },
+            "isOpened": false,
+            "_id": "672cbcce6227e653db4c7f9b",
+            "author": "66fe6614193a10b4e3523979",
+            "title": "Abdelhalim Hafez Concert",
+            "description": "سهرة غنائية مع الفنان عبدالحليم حافظ بدار الأوبرا المصرية ",
+            "start_date": "2024-11-11T00:00:00.000Z",
+            "end_date": "2024-11-12T00:00:00.000Z",
+            "price": 1500,
+            "Category": "6701a3211120edeecf46a094",
+            "discount": 5,
+            "tag": "6724faaa6d94a24e93137efa",
+            "bookingOpened": true,
+            "ratingsAverage": 4.5,
+            "ratingsQuantity": 0,
+            "isFlagged": false,
+            "createdAt": "2024-11-07T13:12:46.072Z",
+            "updatedAt": "2024-12-19T17:32:47.542Z",
+            "__v": 0,
+            "isActive": true,
+            "isBooked": true,
+            "interestedUsers": [
+                "674d976b0d385a0b92c2d5dc"
+            ]
+        },
+        "Status": true,
+        "PaymentMethod": "Wallet",
+        "CardNumber": "",
+        "NumberOfTickets": 3,
+        "TotalPrice": 300,
+        "createdAt": "2024-12-19T17:32:47.059Z",
+        "updatedAt": "2024-12-19T17:32:47.059Z",
+        "__v": 0
+    }
+]
+  ```
+
+</details>
+
 - **/ :** a GET function that read all activities to be viewed by a tourist/guest and internally handles any filtering
 - **/getadvact :** a GET function that reads all activites created by the logged in advertiser
 - **/createActivity :** a POST function that allows advertisers to create a new activity
@@ -668,8 +778,6 @@ handles all operations related to activities on the system ans is used by /activ
 - **/getTitles :**
 - **/openActivity/:id :** a PATCH function used to set an activity's status to open by its id
 - **/shareActivity/:id :** a GET function used to share an activity by its id
-- **/BookActivity/:ActivityId :** a POST function used to book a certain activity by its id
-- **/MyActivityBookings :** a GET function used to show the logged in tourist all their booked activities
 - **/CancelActivityBooking :** a PATCH function used to cancel a booked activity as long as it has not started
 - **/readActivitiesByIds :** a GET function used to read multiple itineraries by the string of ids provided in the query
 
@@ -963,11 +1071,83 @@ both flight and hotels are done using amadeus api and use /flights followed by t
 
 handles all operations specific to tourist :
 
+<details>
+<summary>Post /fileComplaint - Sends a complaint</summary>
+
+### `Post /fileComplaint` - User Login
+
+#### Request
+
+- **Endpoint:** `/fileComplaint`
+- **Method:** Post
+- **Description:** allow a tourist to file a complaint. needs a JWT token.
+- **Request Body:**
+
+  ```json
+  {
+    "title": "test",
+    "body": "testing the complain end point"
+  }
+  ```
+
+#### Response
+
+  ```json
+  {
+    "status": "success",
+    "data": {
+        "complaint": {
+            "title": "test",
+            "body": "testing the complain end point",
+            "status": "Pending",
+            "user": "676451bfcc3eb0c6bdfb3f8a",
+            "_id": "676475a7cc3eb0c6bdfb3fa4",
+            "date": "2024-12-19T19:36:07.389Z",
+            "__v": 0
+        }
+    }
+  }
+  ```
+</details>
+
+<details>
+<summary>GET /myComplaints - Sends a complaint</summary>
+
+### `GET /myComplaints` - User Login
+
+#### Request
+
+- **Endpoint:** `/myComplaints`
+- **Method:** GET
+- **Description:** retrives all of a tourist's filled complaints. needs a JWT token.
+
+#### Response
+
+  ```json
+  {
+    "status": "success",
+    "results": 1,
+    "data": {
+        "complaints": [
+            {
+                "_id": "676475a7cc3eb0c6bdfb3fa4",
+                "title": "test",
+                "body": "testing the complain end point",
+                "status": "Pending",
+                "user": "676451bfcc3eb0c6bdfb3f8a",
+                "date": "2024-12-19T19:36:07.389Z",
+                "__v": 0
+            }
+        ]
+    }
+  }
+  ```
+</details>
+
+
 - **/MyAccount :** a get request to get a logged in tourist's account
 - **/updateMe :** a patch request to update a logged in tourist's account
 - **/deleteMe :** a delete request to delete a logged in tourist's account
-- **/fileComplaint :** a post request to allow a tourist to file a complaint
-- **/myComplaints :** a get request that reads all of a tourist's filled complaints
 
 ### advertiser
 
@@ -1187,7 +1367,114 @@ handles all operations specific to advertiser :
 
 </details>
 
-- **/signup :** a post request to signup a user
+
+<details>
+<summary>POST /signup - User signup</summary>
+
+### `POST signup` - User Login
+
+#### Request
+
+- **Endpoint:** `/signup`
+- **Method:** POST
+- **Description:** creates a new user in the system.
+- **Request Body:**
+
+  ```json
+  {
+    "username": "TestUser",
+    "email": "TestUser@test.com",
+    "password": "123456",
+    "passwordConfirm": "123456",
+    "role": "Tourist",
+    "mobile_number": "12345678910",
+    "nationality": "Egyptien",
+    "job": "student",
+    "DOB": "11-01-2024",
+    "selectedTags": "67029818e93b4336b41ee134" //preference tags for user interests
+  }
+  ```
+
+#### Response
+
+  ```json
+  {
+    "status": "success",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3NjQ1MWJmY2MzZWIwYzZiZGZiM2Y4YSIsImlhdCI6MTczNDYyNzc3NywiZXhwIjoxNzQyNDAzNzc3fQ.yf_rsQHPVS4i-J-xjnNbhMIbj5eHqYvOTHGFIyMqUYY",
+    "data": {
+        "user": {
+            "username": "TestUser",
+            "email": "testuser@test.com",
+            "role": "Tourist",
+            "mobile_number": "12345678910",
+            "nationality": "Egyptien",
+            "DOB": "2024-10-31T22:00:00.000Z",
+            "job": "student",
+            "wallet": 0,
+            "experience": [],
+            "ratingsAverage": 4.5,
+            "ratingsQuantity": 0,
+            "previous_work": [],
+            "years_of_experience": 0,
+            "activities": [],
+            "isActive": true,
+            "verified": false,
+            "activityGuests": 0,
+            "passwordChangedAt": "2024-12-19T17:02:55.653Z",
+            "documentApprovalStatus": "Pending",
+            "certificates": [],
+            "loyaltyPoints": 0,
+            "level": 1,
+            "badge": "Bronze",
+            "pointsAvailable": 0,
+            "selectedTags": [
+                "67029818e93b4336b41ee134"
+            ],
+            "wishList": [],
+            "savedEvents": [],
+            "savedItineraries": [],
+            "_id": "676451bfcc3eb0c6bdfb3f8a",
+            "addresses": [],
+            "createdAt": "2024-12-19T17:02:55.707Z",
+            "updatedAt": "2024-12-19T17:02:55.707Z",
+            "__v": 0
+        }
+    }
+  }
+  ```
+
+</details>
+<details>
+<summary>PATCH /UpdateWallet - updates user wallet</summary>
+
+### `PATCH /UpdateWallet` - User Login
+
+#### Request
+
+- **Endpoint:** `/UpdateWallet`
+- **Method:** PATCH
+- **Description:** updates the user wallet to handle refunds. JWT is needed for this end point to work.
+- **Request Body:**
+
+  ```json
+  {
+      "numOfTickets":3,
+      "price":200,
+      "conversionRate":1
+  }
+  ```
+
+#### Response
+
+  ```json
+  {
+    "message": "refund done successfully",
+    "updatedWallet": 1
+  }
+  ```
+</details>
+
+
 - **/forgotPassword :** a post request to ask the user if they forgot their password in case of wrong credentials
 - **/resetPassword/:token :** a patch request used to reset a users password given their token
 - **/update/:userId :** a patch request that updates user data given their id
@@ -1197,7 +1484,6 @@ handles all operations specific to advertiser :
 - **/:id :** a get request that returns all the info of a single user identified bu their id
 - **/upload-documents :** a post request for users who are not tourist to upload documents to be reviewed by an admin
 - **/changePassword :** a patch request to change a logged in user's password
-- **/UpdateWallet :** a patch request to change a user's wallet value
 - **/RedeemPoints :** a patch request to handle user reedeming points
 
 ### admin
