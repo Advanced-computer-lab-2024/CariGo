@@ -1,4 +1,4 @@
-# Carigo
+# Carigo 🦌
 
 A virtual trip planner to make your travels easier and help you book everything in one place
 
