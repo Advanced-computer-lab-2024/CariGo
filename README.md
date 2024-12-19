@@ -111,14 +111,60 @@ npm run format:fix
 
 **easily navigate through our website suing our simple side bar**
 
-![alt text](images/side_bar.png)
+![alt text](<images/side_ bar.png>)
 
 visiting a new country? look through all the historical places you dont wanna miss!!
 
 ![alt text](images/historical_places.png)
 
-**manage and edit everything smoothly with our easy to use admin home layout !**
+**if you already have an account log in to be able to book anything**
 
+![alt text](images/sign_in.png)
+
+or if you are new to our website sign up either as a tourist or as any of advertiser,seller ,or tour guide 
+
+![alt text](images/sign_up.png)
+
+**select your prefrences upon sign up to get your own personalised feed!!**
+
+![alt text](<images/select prefrences.png>)
+
+![alt text](images/suggested_for_you.png)
+
+
+**look for any souvenir you want to buy on your trip via our gift shop 🎁**
+
+![alt text](images/gift_shop.png)
+
+**view your cart and check out all you tiems art once!!**
+
+![alt text](images/my_cart.png)
+
+**visit your cool looking profile with all your information**
+
+![alt text](images/tourist_profile.png)
+
+**navigate to your orders and view any past or current orders**
+
+![alt text](<images/profile options.png>)
+
+![alt text](<images/active orders.png>)
+
+**also easily and smoothly manage your profile settings**
+
+![alt text](<images/profile settings.png>)
+
+**now that the insides of your trip is planned there is still 1 more step!!**<br/>
+***✨ transportation and accomodation ✨***<br/>
+**book any flights 🛬 , hotels 🏨, or even in trip trnasportation 🚕 🚎 provided by our advertisers easily through our website!!**
+
+![alt text](images/select_service.png)
+
+![text](images/search_flight.png) 
+![text](images/search_hotel.png) 
+![text](images/search_transport.png)
+
+**manage and edit everything smoothly with our easy to use admin home layout !**
 ![Screenshot (2645)](https://hackmd.io/_uploads/rJRRD0mNJg.png)
 
 
